@@ -1,13 +1,13 @@
 package ro.go.adrhc.persistence.lucene.queries;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.FuzzyQuery;
 
 import java.util.Collection;
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor
+@UtilityClass
 public class FuzzyQueryFactory {
 	public static FuzzyQuery create(int levenshteinDistance, String fieldName, String text) {
 		return new FuzzyQuery(new Term(fieldName, text), levenshteinDistance);
