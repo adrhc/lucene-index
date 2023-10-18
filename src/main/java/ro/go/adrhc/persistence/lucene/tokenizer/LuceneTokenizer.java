@@ -27,14 +27,14 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 @Slf4j
 public record LuceneTokenizer(Analyzer analyzer, TokenizerProperties properties) {
 	public boolean containedDiffersSlightly(int levenshteinDistance,
-	                                        Set<String> containerTokens, String contained) throws IOException {
+			Set<String> containerTokens, String contained) throws IOException {
 		Set<String> containedTokens = tokenize(contained);
 		return containedDiffersSlightly(levenshteinDistance, containerTokens, containedTokens);
 	}
 
 	private boolean containedDiffersSlightly(int levenshteinDistance,
-	                                         Set<String> containerTokens,
-	                                         Set<String> containedTokens) {
+			Set<String> containerTokens,
+			Set<String> containedTokens) {
 		return SetUtils.difference(containedTokens, containerTokens).stream()
 				.allMatch(contained -> containerTokens.stream()
 						.anyMatch(container -> LevenshteinDistance.getDefaultInstance()
@@ -65,7 +65,7 @@ public record LuceneTokenizer(Analyzer analyzer, TokenizerProperties properties)
 
 	public Set<String> tokenize(@NonNull Collection<String> words) throws IOException {
 		Set<String> result = new HashSet<>();
-		for(String w : words) {
+		for (String w : words) {
 			result.addAll(tokenize(w));
 		}
 		return result;
