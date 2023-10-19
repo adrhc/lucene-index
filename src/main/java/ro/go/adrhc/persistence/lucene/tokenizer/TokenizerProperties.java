@@ -11,7 +11,7 @@ import java.util.List;
 @ToString
 public class TokenizerProperties {
 	private int minTokenLength;
-	private List<String> fixedPatternsNotToIndex;
-	private List<String> regexPatternsNotToIndex;
-	private List<String[]> charactersToReplaceBeforeIndexing;
+	private List<String> fixedPatternsNotToIndex = List.of();
+	private List<String> regexPatternsNotToIndex = List.of();
+	private List<String[]> charactersToReplaceBeforeIndexing = List.of();
 }
