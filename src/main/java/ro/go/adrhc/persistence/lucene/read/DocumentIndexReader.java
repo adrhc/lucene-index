@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,17 +37,20 @@ public class DocumentIndexReader implements AutoCloseable {
 		return new DocumentIndexReader(directory, indexReader, maxResultsPerSearchedSong);
 	}
 
-	public List<Document> getAll(Set<String> fieldNames) throws IOException {
+	public Stream<Document> getAll(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
-		List<Document> result = new ArrayList<>();
-		for (int docIndex = 0; docIndex < indexReader.maxDoc(); docIndex++) {
-			if (liveDocs != null && !liveDocs.get(docIndex)) {
-				continue;
-			}
-			result.add(toDocument(fieldNames, docIndex));
-		}
-		return result;
+//		List<Document> result = new ArrayList<>();
+//		for (int docIndex = 0; docIndex < indexReader.maxDoc(); docIndex++) {
+//			if (liveDocs != null && !liveDocs.get(docIndex)) {
+//				continue;
+//			}
+//			result.add(toDocument(fieldNames, docIndex));
+//		}
+		return IntStream.range(0, indexReader.maxDoc())
+				.filter(idx -> liveDocs == null || liveDocs.get(idx))
+				.mapToObj(idx -> toDocument(fieldNames, idx))
+				.flatMap(Optional::stream);
 	}
 
 	public List<ScoreAndDocument> search(Query query) throws IOException {
@@ -67,8 +73,13 @@ public class DocumentIndexReader implements AutoCloseable {
 	 * indexReader.document might fail if the document
 	 * is meanwhile purged (not only marked as removed)
 	 */
-	private Document toDocument(Set<String> fieldNames, int docIndex) throws IOException {
-		return indexReader.document(docIndex, fieldNames);
+	private Optional<Document> toDocument(Set<String> fieldNames, int docIndex) {
+		try {
+			return Optional.of(indexReader.document(docIndex, fieldNames));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Optional.empty();
 	}
 
 	private ScoreAndDocument toScoreAndDocument(
