@@ -16,10 +16,6 @@ public class FieldFactory {
 		return new Field(field.name(), value.toString(), IndexOptions.STORED_AND_ANALYZED);
 	}
 
-	public static Field storedAndAnalyzed(Enum<?> field, int value) {
-		return new Field(field.name(), String.valueOf(value), IndexOptions.STORED_AND_ANALYZED);
-	}
-
 	public static Field storedAndAnalyzed(Enum<?> field, Set<String> values) {
 		return new Field(field.name(), sortThenJoin(values), IndexOptions.STORED_AND_ANALYZED);
 	}
