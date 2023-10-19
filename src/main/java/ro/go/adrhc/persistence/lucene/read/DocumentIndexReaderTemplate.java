@@ -13,7 +13,7 @@ public record DocumentIndexReaderTemplate(int maxResultsPerSearchedSong, Path in
 	 * the Stream will actually run the DocumentIndexReader shall already be closed.
 	 */
 	public <U, E extends Exception> U useReader(
-			SneakyFunction<? super DocumentIndexReader, ? extends U, E> indexReaderFn)
+			SneakyFunction<DocumentIndexReader, ? extends U, E> indexReaderFn)
 			throws E, IOException {
 		try (DocumentIndexReader indexReader = DocumentIndexReader.of(indexPath, maxResultsPerSearchedSong)) {
 			U u = indexReaderFn.apply(indexReader);
