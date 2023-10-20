@@ -3,12 +3,11 @@ package ro.go.adrhc.persistence.lucene;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.tokenizer.LuceneTokenizer;
 import ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -22,11 +21,9 @@ public class LuceneIndex<T> {
 	private final SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 
-	public static <T> LuceneIndex<T> createRAMIndex(
-			Enum<?> idField, Path indexPath, LuceneTokenizer luceneTokenizer,
+	public static <T> LuceneIndex<T> createRAMIndex(Enum<?> idField, Analyzer analyzer,
 			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter) {
-		return new LuceneIndex<>(idField.name(), toDocumentConverter,
-				ramWriterTemplate(luceneTokenizer.analyzer()));
+		return new LuceneIndex<>(idField.name(), toDocumentConverter, ramWriterTemplate(analyzer));
 	}
 
 	public void addItems(Collection<T> items) throws IOException {

@@ -1,10 +1,11 @@
 package ro.go.adrhc.persistence.lucene;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.tokenizer.LuceneTokenizer;
 import ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.fsWriterTemplate;
 
 @Slf4j
+@Getter
 public class FSLuceneIndex<T> extends LuceneIndex<T> {
 	private final Path indexPath;
 
@@ -25,11 +27,10 @@ public class FSLuceneIndex<T> extends LuceneIndex<T> {
 		this.indexPath = indexPath;
 	}
 
-	public static <T> FSLuceneIndex<T> createFSIndex(
-			Enum<?> idField, LuceneTokenizer luceneTokenizer,
+	public static <T> FSLuceneIndex<T> createFSIndex(Enum<?> idField, Analyzer analyzer,
 			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter, Path indexPath) {
 		return new FSLuceneIndex<>(idField.name(), toDocumentConverter,
-				fsWriterTemplate(luceneTokenizer.analyzer(), indexPath), indexPath);
+				fsWriterTemplate(analyzer, indexPath), indexPath);
 	}
 
 	public void createOrReplace(Collection<T> items) throws IOException {
