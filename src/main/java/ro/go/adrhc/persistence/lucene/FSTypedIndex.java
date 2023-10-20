@@ -17,19 +17,19 @@ import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.f
 
 @Slf4j
 @Getter
-public class FSLuceneIndex<T> extends LuceneIndex<T> {
+public class FSTypedIndex<T> extends TypedIndex<T> {
 	private final Path indexPath;
 
-	public FSLuceneIndex(String idFieldName,
+	public FSTypedIndex(String idFieldName,
 			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter,
 			DocumentIndexWriterTemplate indexWriterTemplate, Path indexPath) {
 		super(idFieldName, toDocumentConverter, indexWriterTemplate);
 		this.indexPath = indexPath;
 	}
 
-	public static <T> FSLuceneIndex<T> createFSIndex(Enum<?> idField, Analyzer analyzer,
+	public static <T> FSTypedIndex<T> createFSIndex(Enum<?> idField, Analyzer analyzer,
 			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter, Path indexPath) {
-		return new FSLuceneIndex<>(idField.name(), toDocumentConverter,
+		return new FSTypedIndex<>(idField.name(), toDocumentConverter,
 				fsWriterTemplate(analyzer, indexPath), indexPath);
 	}
 

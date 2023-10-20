@@ -16,14 +16,14 @@ import static ro.go.adrhc.util.ConversionUtils.convertAll;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LuceneIndex<T> {
+public class TypedIndex<T> {
 	private final String idFieldName;
 	private final SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 
-	public static <T> LuceneIndex<T> createRAMIndex(Enum<?> idField, Analyzer analyzer,
+	public static <T> TypedIndex<T> createRAMIndex(Enum<?> idField, Analyzer analyzer,
 			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter) {
-		return new LuceneIndex<>(idField.name(), toDocumentConverter, ramWriterTemplate(analyzer));
+		return new TypedIndex<>(idField.name(), toDocumentConverter, ramWriterTemplate(analyzer));
 	}
 
 	public void addItems(Collection<T> items) throws IOException {
