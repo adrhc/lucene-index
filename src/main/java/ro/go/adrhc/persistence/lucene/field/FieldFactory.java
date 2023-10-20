@@ -1,7 +1,6 @@
-package ro.go.adrhc.persistence.lucene.write;
+package ro.go.adrhc.persistence.lucene.field;
 
 import org.apache.lucene.document.Field;
-import ro.go.adrhc.persistence.lucene.IndexOptions;
 
 import java.util.Set;
 

@@ -37,6 +37,10 @@ public class DocumentIndexReader implements AutoCloseable {
 		return new DocumentIndexReader(directory, indexReader, maxResultsPerSearchedSong);
 	}
 
+	public Stream<String> fieldStream(String fieldName) {
+		return getAll(Set.of(fieldName)).map(doc -> doc.get(fieldName));
+	}
+
 	public Stream<Document> getAll(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);

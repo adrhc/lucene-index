@@ -11,6 +11,7 @@ import org.apache.lucene.analysis.charfilter.MappingCharFilter;
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceCharFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import ro.go.adrhc.util.text.StringUtils;
 
@@ -26,19 +27,17 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 @Slf4j
 public record LuceneTokenizer(Analyzer analyzer, TokenizerProperties properties) {
+	/**
+	 * This works well as singleton only when StandardAnalyzer is thread safe!
+	 */
+	public static LuceneTokenizer standardTokenizer(TokenizerProperties tokenizerProperties) {
+		return new LuceneTokenizer(new StandardAnalyzer(), tokenizerProperties);
+	}
+
 	public boolean containedDiffersSlightly(int levenshteinDistance,
 			Set<String> containerTokens, String contained) throws IOException {
 		Set<String> containedTokens = tokenize(contained);
 		return containedDiffersSlightly(levenshteinDistance, containerTokens, containedTokens);
-	}
-
-	private boolean containedDiffersSlightly(int levenshteinDistance,
-			Set<String> containerTokens,
-			Set<String> containedTokens) {
-		return SetUtils.difference(containedTokens, containerTokens).stream()
-				.allMatch(contained -> containerTokens.stream()
-						.anyMatch(container -> LevenshteinDistance.getDefaultInstance()
-								.apply(container, contained) <= levenshteinDistance));
 	}
 
 	public Set<String> tokenize(String text) throws IOException {
@@ -97,6 +96,15 @@ public record LuceneTokenizer(Analyzer analyzer, TokenizerProperties properties)
 
 		// șțâăî = staii
 		return new ASCIIFoldingFilter(analyzerTokenStream);
+	}
+
+	private boolean containedDiffersSlightly(int levenshteinDistance,
+			Set<String> containerTokens,
+			Set<String> containedTokens) {
+		return SetUtils.difference(containedTokens, containerTokens).stream()
+				.allMatch(contained -> containerTokens.stream()
+						.anyMatch(container -> LevenshteinDistance.getDefaultInstance()
+								.apply(container, contained) <= levenshteinDistance));
 	}
 
 	private void endAndClose(TokenStream tokenStream) {

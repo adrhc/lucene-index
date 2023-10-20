@@ -13,20 +13,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.fsWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.ramWriterTemplate;
 import static ro.go.adrhc.util.ConversionUtils.convertAll;
 
 @RequiredArgsConstructor
 @Slf4j
-public class IndexUpdater<T> {
+public class LuceneIndex<T> {
 	private final String idFieldName;
 	private final SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 
-	public static <T> IndexUpdater<T> create(Enum<?> idField, Path indexPath,
-			LuceneTokenizer luceneTokenizer, SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter) {
-		return new IndexUpdater<>(idField.name(), toDocumentConverter,
-				fsWriterTemplate(luceneTokenizer.analyzer(), indexPath));
+	public static <T> LuceneIndex<T> createRAMIndex(
+			Enum<?> idField, Path indexPath, LuceneTokenizer luceneTokenizer,
+			SneakyFunction<T, Optional<Document>, IOException> toDocumentConverter) {
+		return new LuceneIndex<>(idField.name(), toDocumentConverter,
+				ramWriterTemplate(luceneTokenizer.analyzer()));
 	}
 
 	public void addItems(Collection<T> items) throws IOException {

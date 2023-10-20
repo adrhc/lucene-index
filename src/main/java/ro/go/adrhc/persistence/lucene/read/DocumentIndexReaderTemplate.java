@@ -8,17 +8,22 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public record DocumentIndexReaderTemplate(int maxResultsPerSearchedSong, Path indexPath) {
+	public <R, E extends Exception> R transformFieldStream(String fieldName,
+			SneakyFunction<Stream<String>, R, E> fieldStreamTransformer) throws IOException, E {
+		return useReader(indexReader -> fieldStreamTransformer.apply(indexReader.fieldStream(fieldName)));
+	}
+
 	/**
 	 * Make sure that songsIndexReaderFn does not return a Stream! at the moment
 	 * the Stream will actually run the DocumentIndexReader shall already be closed.
 	 */
-	public <U, E extends Exception> U useReader(
-			SneakyFunction<DocumentIndexReader, ? extends U, E> indexReaderFn)
-			throws E, IOException {
+	public <R, E extends Exception> R useReader(
+			SneakyFunction<DocumentIndexReader, R, E> indexReaderFn)
+			throws IOException, E {
 		try (DocumentIndexReader indexReader = DocumentIndexReader.of(indexPath, maxResultsPerSearchedSong)) {
-			U u = indexReaderFn.apply(indexReader);
-			Assert.isTrue(!(u instanceof Stream<?>), "Result must not be a stream!");
-			return u;
+			R result = indexReaderFn.apply(indexReader);
+			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
+			return result;
 		}
 	}
 }

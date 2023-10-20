@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene;
+package ro.go.adrhc.persistence.lucene.field;
 
 import org.apache.lucene.document.FieldType;
 
