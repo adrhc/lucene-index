@@ -10,7 +10,6 @@ import ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.ramWriterTemplate;
@@ -35,7 +34,7 @@ public class LuceneIndex<T> {
 		indexWriterTemplate.useWriter(writer -> writer.addDocuments(documents));
 	}
 
-	public void removeByIds(List<String> ids) throws IOException {
+	public void removeByIds(Collection<String> ids) throws IOException {
 		indexWriterTemplate.useWriter(writer -> writer.removeByFieldValues(idFieldName, ids));
 	}
 }
