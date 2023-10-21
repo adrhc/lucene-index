@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.write;
+package ro.go.adrhc.persistence.lucene.core.write;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
@@ -8,19 +8,16 @@ import org.apache.lucene.analysis.Analyzer;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriter.fsWriter;
-import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriter.ramWriter;
-
 @RequiredArgsConstructor
 public class DocumentIndexWriterTemplate {
 	private final SneakySupplier<DocumentIndexWriter, ? extends IOException> writerSupplier;
 
 	public static DocumentIndexWriterTemplate fsWriterTemplate(Analyzer analyzer, Path indexPath) {
-		return new DocumentIndexWriterTemplate(() -> fsWriter(analyzer, indexPath));
+		return new DocumentIndexWriterTemplate(() -> DocumentIndexWriter.fsWriter(analyzer, indexPath));
 	}
 
 	public static DocumentIndexWriterTemplate ramWriterTemplate(Analyzer analyzer) {
-		return new DocumentIndexWriterTemplate(() -> ramWriter(analyzer));
+		return new DocumentIndexWriterTemplate(() -> DocumentIndexWriter.ramWriter(analyzer));
 	}
 
 	public <E extends Exception> void useWriter(

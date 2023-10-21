@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.read;
+package ro.go.adrhc.persistence.lucene.core.read;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

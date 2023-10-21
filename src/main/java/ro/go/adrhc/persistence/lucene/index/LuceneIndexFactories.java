@@ -1,12 +1,12 @@
-package ro.go.adrhc.persistence.lucene;
+package ro.go.adrhc.persistence.lucene.index;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.analysis.Analyzer;
 
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.fsWriterTemplate;
-import static ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate.ramWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.core.write.DocumentIndexWriterTemplate.fsWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.core.write.DocumentIndexWriterTemplate.ramWriterTemplate;
 
 @UtilityClass
 public class LuceneIndexFactories {

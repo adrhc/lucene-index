@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.queries;
+package ro.go.adrhc.persistence.lucene.domain.queries;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.index.Term;

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.read;
+package ro.go.adrhc.persistence.lucene.core.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.tokenizer;
+package ro.go.adrhc.persistence.lucene.domain.tokenizer;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.write;
+package ro.go.adrhc.persistence.lucene.core.write;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static ro.go.adrhc.persistence.lucene.write.IndexWriterConfigFactories.createOrAppend;
+import static ro.go.adrhc.persistence.lucene.core.write.IndexWriterConfigFactories.createOrAppend;
 
 @RequiredArgsConstructor
 @Slf4j

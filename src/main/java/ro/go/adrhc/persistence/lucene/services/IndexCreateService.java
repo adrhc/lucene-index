@@ -1,8 +1,8 @@
 package ro.go.adrhc.persistence.lucene.services;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.FSLuceneIndex;
 import ro.go.adrhc.persistence.lucene.domain.DocumentsProvider;
+import ro.go.adrhc.persistence.lucene.index.FSLuceneIndex;
 
 import java.io.IOException;
 

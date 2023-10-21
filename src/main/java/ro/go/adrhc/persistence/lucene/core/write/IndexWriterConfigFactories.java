@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.write;
+package ro.go.adrhc.persistence.lucene.core.write;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.analysis.Analyzer;

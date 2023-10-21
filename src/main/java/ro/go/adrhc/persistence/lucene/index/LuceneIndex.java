@@ -1,9 +1,9 @@
-package ro.go.adrhc.persistence.lucene;
+package ro.go.adrhc.persistence.lucene.index;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.write.DocumentIndexWriterTemplate;
+import ro.go.adrhc.persistence.lucene.core.write.DocumentIndexWriterTemplate;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.queries;
+package ro.go.adrhc.persistence.lucene.domain.queries;
 
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;

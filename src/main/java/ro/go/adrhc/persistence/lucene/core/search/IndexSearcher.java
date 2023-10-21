@@ -1,11 +1,11 @@
-package ro.go.adrhc.persistence.lucene.search;
+package ro.go.adrhc.persistence.lucene.core.search;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.read.DocumentIndexReader;
-import ro.go.adrhc.persistence.lucene.read.DocumentIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
