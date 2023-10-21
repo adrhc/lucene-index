@@ -48,7 +48,7 @@ public class DocumentIndexWriter implements AutoCloseable {
 
 	public void removeByFieldValues(String fieldName, Collection<String> fieldValues) throws IOException {
 		Term[] terms = fieldValues.stream()
-				.peek(it -> log.debug("\nremoving \"{}\" from index", it))
+//				.peek(it -> log.debug("\nremoving \"{}\" from index", it))
 				.map(value -> new Term(fieldName, value))
 				.toArray(Term[]::new);
 		indexWriter.deleteDocuments(terms);
