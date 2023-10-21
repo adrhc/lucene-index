@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
+import org.apache.lucene.document.Document;
 import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
@@ -8,9 +9,14 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public record DocumentIndexReaderTemplate(int maxResultsPerSearchedSong, Path indexPath) {
-	public <R, E extends Exception> R transformFieldStream(String fieldName,
-			SneakyFunction<Stream<String>, R, E> fieldStreamTransformer) throws IOException, E {
-		return useReader(indexReader -> fieldStreamTransformer.apply(indexReader.fieldStream(fieldName)));
+	public <R, E extends Exception> R transformFieldValues(String fieldName,
+			SneakyFunction<Stream<String>, R, E> fieldValuesTransformer) throws IOException, E {
+		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllFieldValues(fieldName)));
+	}
+
+	public <R, E extends Exception> R transformDocuments(
+			SneakyFunction<Stream<Document>, R, E> documentsTransformer) throws IOException, E {
+		return useReader(indexReader -> documentsTransformer.apply(indexReader.getAll()));
 	}
 
 	/**
