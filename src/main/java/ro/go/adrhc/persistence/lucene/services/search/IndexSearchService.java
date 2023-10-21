@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class IndexSearcher<S, F> {
+public class IndexSearchService<S, F> {
 	private final DocumentIndexReaderTemplate documentIndexReaderTemplate;
 	private final SneakyFunction<S, Query, IOException> toQueryConverter;
 	private final IndexSearchResultFactory<S, F> toFoundConverter;
