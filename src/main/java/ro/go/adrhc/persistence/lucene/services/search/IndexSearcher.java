@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.search;
+package ro.go.adrhc.persistence.lucene.services.search;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
