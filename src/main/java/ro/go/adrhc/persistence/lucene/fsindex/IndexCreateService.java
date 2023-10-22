@@ -1,7 +1,6 @@
-package ro.go.adrhc.persistence.lucene.index;
+package ro.go.adrhc.persistence.lucene.fsindex;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.fsindex.FSLuceneIndex;
 import ro.go.adrhc.persistence.lucene.index.spi.DocumentsDatasource;
 
 import java.io.IOException;
@@ -9,9 +8,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class IndexCreateService {
 	private final DocumentsDatasource documentsDatasource;
-	private final FSLuceneIndex fsTypedIndex;
+	private final FSLuceneIndex fsLuceneIndex;
 
 	public void createOrReplace() throws IOException {
-		fsTypedIndex.createOrReplace(documentsDatasource.loadAll());
+		fsLuceneIndex.createOrReplace(documentsDatasource.loadAll());
 	}
 }

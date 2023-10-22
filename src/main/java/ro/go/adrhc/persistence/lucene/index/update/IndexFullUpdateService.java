@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.index.update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.fsindex.FSLuceneIndex;
+import ro.go.adrhc.persistence.lucene.index.LuceneIndex;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.spi.DocumentsDatasource;
 
@@ -19,7 +19,12 @@ public class IndexFullUpdateService {
 	private final String idField;
 	private final DocumentsDatasource documentsDatasource;
 	private final DocumentIndexReaderTemplate indexReaderTemplate;
-	private final FSLuceneIndex fsLuceneIndex;
+	private final LuceneIndex luceneIndex;
+
+	public static IndexFullUpdateService create(Enum<?> idField, DocumentsDatasource documentsDatasource,
+			DocumentIndexReaderTemplate indexReaderTemplate, LuceneIndex luceneIndex) {
+		return new IndexFullUpdateService(idField.name(), documentsDatasource, indexReaderTemplate, luceneIndex);
+	}
 
 	public void update() throws IOException {
 		IndexChanges changes = getIndexChanges();
@@ -42,11 +47,11 @@ public class IndexFullUpdateService {
 
 	private void applyIndexChanges(IndexChanges changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
-		fsLuceneIndex.removeByIds(changes.obsoleteIndexedIds());
+		luceneIndex.removeByIds(changes.obsoleteIndexedIds());
 		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
 		Collection<Document> documents = documentsDatasource.loadByIds(changes.notIndexedIds());
 		log.debug("\nadding {} metadata records to the index", documents.size());
-		fsLuceneIndex.addDocuments(documents);
-		log.debug("\n{} index updated!", fsLuceneIndex.getIndexPath());
+		luceneIndex.addDocuments(documents);
+		log.debug("\nIndex updated!");
 	}
 }
