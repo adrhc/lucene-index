@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.index.update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.index.LuceneIndex;
+import ro.go.adrhc.persistence.lucene.index.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.spi.DocumentsDatasource;
 
@@ -15,18 +15,18 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
-public class IndexFullUpdateService {
+public class DSIndexRestoreService {
 	private final String idField;
 	private final DocumentsDatasource documentsDatasource;
 	private final DocumentIndexReaderTemplate indexReaderTemplate;
-	private final LuceneIndex luceneIndex;
+	private final IndexUpdateService indexUpdateService;
 
-	public static IndexFullUpdateService create(Enum<?> idField, DocumentsDatasource documentsDatasource,
-			DocumentIndexReaderTemplate indexReaderTemplate, LuceneIndex luceneIndex) {
-		return new IndexFullUpdateService(idField.name(), documentsDatasource, indexReaderTemplate, luceneIndex);
+	public static DSIndexRestoreService create(Enum<?> idField, DocumentsDatasource documentsDatasource,
+			DocumentIndexReaderTemplate indexReaderTemplate, IndexUpdateService indexUpdateService) {
+		return new DSIndexRestoreService(idField.name(), documentsDatasource, indexReaderTemplate, indexUpdateService);
 	}
 
-	public void update() throws IOException {
+	public void restore() throws IOException {
 		IndexChanges changes = getIndexChanges();
 		if (changes.hasChanges()) {
 			applyIndexChanges(changes);
@@ -47,11 +47,11 @@ public class IndexFullUpdateService {
 
 	private void applyIndexChanges(IndexChanges changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
-		luceneIndex.removeByIds(changes.obsoleteIndexedIds());
+		indexUpdateService.removeByIds(changes.obsoleteIndexedIds());
 		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
 		Collection<Document> documents = documentsDatasource.loadByIds(changes.notIndexedIds());
 		log.debug("\nadding {} metadata records to the index", documents.size());
-		luceneIndex.addDocuments(documents);
+		indexUpdateService.addDocuments(documents);
 		log.debug("\nIndex updated!");
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LuceneIndex {
+public class IndexUpdateService {
 	private final String idFieldName;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 

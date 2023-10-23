@@ -6,9 +6,9 @@ import ro.go.adrhc.persistence.lucene.index.spi.DocumentsDatasource;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class IndexCreateService {
+public class FSIndexCreateService {
 	private final DocumentsDatasource documentsDatasource;
-	private final FSLuceneIndex fsLuceneIndex;
+	private final FSIndexUpdateService fsLuceneIndex;
 
 	public void createOrReplace() throws IOException {
 		fsLuceneIndex.createOrReplace(documentsDatasource.loadAll());
