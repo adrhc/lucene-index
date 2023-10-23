@@ -20,4 +20,11 @@ public class TokenizerProperties {
 		tokenizerProperties.setMinTokenLength(minTokenLength);
 		return tokenizerProperties;
 	}
+
+	public static TokenizerProperties of(int minTokenLength, List<String[]> charactersToReplaceBeforeIndexing) {
+		TokenizerProperties tokenizerProperties = new TokenizerProperties();
+		tokenizerProperties.setMinTokenLength(minTokenLength);
+		tokenizerProperties.setCharactersToReplaceBeforeIndexing(charactersToReplaceBeforeIndexing);
+		return tokenizerProperties;
+	}
 }
