@@ -14,4 +14,10 @@ public class TokenizerProperties {
 	private List<String> fixedPatternsNotToIndex = List.of();
 	private List<String> regexPatternsNotToIndex = List.of();
 	private List<String[]> charactersToReplaceBeforeIndexing = List.of();
+
+	public static TokenizerProperties of(int minTokenLength) {
+		TokenizerProperties tokenizerProperties = new TokenizerProperties();
+		tokenizerProperties.setMinTokenLength(minTokenLength);
+		return tokenizerProperties;
+	}
 }
