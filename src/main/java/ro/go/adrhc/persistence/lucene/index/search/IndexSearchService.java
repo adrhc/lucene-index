@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.index.search;
 
-import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
@@ -25,7 +24,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class IndexSearchService<S, F> {
 	private final DocumentIndexReaderTemplate documentIndexReaderTemplate;
-	private final SneakyFunction<S, Query, IOException> toQueryConverter;
+	private final SearchedToQueryConverter<S> toQueryConverter;
 	private final IndexSearchResultFactory<S, F> toFoundConverter;
 	private final BestMatchingStrategy<F> bestMatchingStrategy;
 
@@ -58,9 +57,12 @@ public class IndexSearchService<S, F> {
 	protected Stream<F> findAllMatches(
 			DocumentIndexReader indexReader, S searchedItem) throws IOException {
 		// log.debug("\nSearching:\n{}", searchedItem);
-		Query query = toQueryConverter.apply(searchedItem);
+		Optional<Query> optionalQuery = toQueryConverter.convert(searchedItem);
+		if (optionalQuery.isEmpty()) {
+			return Stream.empty();
+		}
 		// log.debug("\nquery used to search:\n{}", query);
-		return indexReader.search(query).stream()
+		return indexReader.search(optionalQuery.get()).stream()
 				.map(scoreAndDocument -> toFoundConverter
 						.create(searchedItem, scoreAndDocument));
 	}
