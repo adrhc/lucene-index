@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.update;
+package ro.go.adrhc.persistence.lucene.index.restore;
 
 import java.util.Collection;
 
