@@ -13,7 +13,7 @@ import static ro.go.adrhc.util.fn.FunctionUtils.toOptionalResult;
 @Slf4j
 @UtilityClass
 public class SearchedToQueryConverterFactory {
-	public static <S, E extends Exception> SearchedToQueryConverter<S> of(SneakyFunction<S, Query, E> converter) {
+	public static <S, E extends Exception> SearchedToQueryConverter<S> ofSneaky(SneakyFunction<S, Query, E> converter) {
 		return s -> {
 			try {
 				return Optional.ofNullable(converter.apply(s));
