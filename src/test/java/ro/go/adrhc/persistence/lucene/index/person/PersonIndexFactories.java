@@ -1,6 +1,8 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
@@ -15,7 +17,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.spi.StringToRawDataIdConverter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
 import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.storedAndAnalyzed;
@@ -23,13 +24,14 @@ import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.sto
 
 public class PersonIndexFactories {
 	public static IndexSearchService<String, Person> createSearchService(
-			Function<String, Query> stringQueryConverter, Path indexPath) {
+			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {
 		return createIndexSearchService(
-				SearchedToQueryConverterFactory.of(stringQueryConverter),
+				SearchedToQueryConverterFactory.ofSneaky(stringQueryConverter),
 				(s, sad) -> Person.of(sad),
 				indexPath
 		);
 	}
+
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> personsDatasource, Path indexPath) throws IOException {

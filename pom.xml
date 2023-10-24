@@ -16,6 +16,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
+
+        <lucene.version>8.11.0</lucene.version>
     </properties>
 
     <dependencyManagement>
@@ -74,22 +76,22 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>8.11.0</version>
+            <version>${lucene.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>${lucene.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
-            <version>8.11.0</version>
+            <version>${lucene.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
-        <!--<dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>2.9.4</version>
-        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>

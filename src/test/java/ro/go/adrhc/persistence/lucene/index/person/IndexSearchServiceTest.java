@@ -1,10 +1,11 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 
 import java.io.IOException;
@@ -16,17 +17,39 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.c
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.createSearchService;
 
 @ExtendWith(MockitoExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IndexSearchServiceTest {
+	@TempDir
+	private static Path tmpDir;
+
+	@BeforeAll
+	void beforeAll() throws IOException {
+		createCreateService(createPeople(), tmpDir).createOrReplace();
+	}
+
 	@Test
-	void findAllMatches(@TempDir Path tmpDir) throws IOException {
-		FSIndexCreateService createService = createCreateService(createPeople(), tmpDir);
-		createService.createOrReplace();
+	void parseNameQuery() throws IOException {
+		IndexSearchService<String, Person> eqSearchService =
+				createSearchService(PersonQueryFactory::nameTextQuery, tmpDir);
 
-		IndexSearchService<String, Person> searchService =
+		List<Person> result = eqSearchService.findAllMatches("pers*2*");
+		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	void nameEquals() throws IOException {
+		IndexSearchService<String, Person> eqSearchService =
 				createSearchService(PersonQueryFactory::nameEquals, tmpDir);
-		List<Person> result = searchService.findAllMatches("cast");
 
-		assertThat(result).hasSize(2);
+		assertThat(eqSearchService.findAllMatches("cast")).hasSize(2);
+	}
+
+	@Test
+	void nameStartsWith() throws IOException {
+		IndexSearchService<String, Person> prefixSearchService =
+				createSearchService(PersonQueryFactory::nameStartsWith, tmpDir);
+
+		assertThat(prefixSearchService.findAllMatches("person2")).hasSize(1);
 	}
 
 	private static List<Person> createPeople() {
