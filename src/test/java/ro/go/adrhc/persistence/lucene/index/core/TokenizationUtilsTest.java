@@ -18,9 +18,9 @@ class TokenizationUtilsTest {
 	@Test
 	void tokenize() throws IOException {
 		Set<String> tokens = TOKENIZATION_UTILS.tokenize(
-				" IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd aAșț ttt.ttt x uuu.jpg vvv.jpg .jpeg ");
+				" IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 aAșț ttt.ttt x uuu.jpg vvv.jpg .jpeg ");
 		assertThat(tokens).containsOnly("img", "20210725", "wa0029",
-				"aaa", "bbb", "ccc", "ddd", "aast", "ttt.ttt", "uuu", "vvv");
+				"aaa", "bbb", "ccc", "ddd", "555", "888", "aast", "ttt.ttt", "uuu", "vvv");
 
 		tokens = TOKENIZATION_UTILS.tokenize(".jpg");
 		assertThat(tokens).isEmpty();

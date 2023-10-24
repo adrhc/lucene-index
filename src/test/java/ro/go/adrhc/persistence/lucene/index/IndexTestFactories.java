@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties.pairWithSpace;
+
 public class IndexTestFactories {
 	public static <T> IndexSearchService<String, T> createIndexSearchService(
 			SearchedToQueryConverter<String> toQueryConverter,
@@ -57,7 +59,7 @@ public class IndexTestFactories {
 
 	public static AnalyzerFactory createAnalyzerFactory() {
 		return new AnalyzerFactory(TokenizerProperties.of(2,
-				List.of(spaceReplacement("_"), spaceReplacement("-")),
+				List.<String[]>of(pairWithSpace("_")),
 				new PatternsAndReplacement("$1", List.of("([^\\s]*)\\.jpe?g"))));
 	}
 
@@ -73,9 +75,5 @@ public class IndexTestFactories {
 				return new ArrayList<>(tCollection);
 			}
 		};
-	}
-
-	private static String[] spaceReplacement(String s1) {
-		return new String[]{s1, " "};
 	}
 }

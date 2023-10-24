@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.index.core.tokenizer;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,5 +31,13 @@ public class TokenizerProperties {
 		tokenizerProperties.setCharactersToReplaceBeforeIndexing(charactersToReplaceBeforeIndexing);
 		tokenizerProperties.setRegexPatternsAndReplacement(regexPatternsAndReplacement);
 		return tokenizerProperties;
+	}
+
+	public static List<String[]> pairAllWithSpace(final String... left) {
+		return Stream.of(left).map(TokenizerProperties::pairWithSpace).toList();
+	}
+
+	public static String[] pairWithSpace(String left) {
+		return new String[]{left, " "};
 	}
 }
