@@ -64,9 +64,9 @@ public class IndexTestFactories {
 	public static TokenizerProperties createTokenizerProperties() {
 		return new TokenizerProperties(2,
 				List.of("Fixed Pattern To Remove"),
-				List.of("(?i)\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
+				List.of("\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
 				Map.of("_", " "),
-				caseInsensitive("$1", "(?i)([^\\s]*)\\.jpe?g"));
+				caseInsensitive("$1", "([^\\s]*)\\.jpe?g"));
 	}
 
 	public static <ID, T> RawDataDatasource<ID, T> createDatasource(Function<T, ID> idAccessor, Collection<T> tCollection) {

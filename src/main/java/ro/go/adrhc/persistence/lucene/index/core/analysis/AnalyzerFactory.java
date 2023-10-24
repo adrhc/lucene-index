@@ -8,7 +8,6 @@ import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
-import org.apache.lucene.analysis.pattern.PatternReplaceCharFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
@@ -49,17 +48,19 @@ public class AnalyzerFactory {
 				properties.getCharactersToReplaceBeforeIndexing());
 
 		for (String text : properties.getFixedPatternsNotToIndex()) {
-			builder.addCharFilter(ro.go.adrhc.persistence.lucene.index.core.analysis.PatternReplaceCharFilterFactory.class,
+			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
 					"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | Pattern.LITERAL));
 		}
 
 		for (String regex : properties.getRegexPatternsNotToIndex()) {
-			builder.addCharFilter(PatternReplaceCharFilterFactory.NAME, "pattern", regex);
+			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
+					"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE));
 		}
 
 		PatternsAndReplacement regexPatternsAndReplacement = properties.getRegexPatternsAndReplacement();
 		for (String regex : regexPatternsAndReplacement.patterns()) {
-			builder.addCharFilter(PatternReplaceCharFilterFactory.NAME, "pattern", regex,
+			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
+					"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE),
 					"replacement", regexPatternsAndReplacement.replacement());
 		}
 	}
