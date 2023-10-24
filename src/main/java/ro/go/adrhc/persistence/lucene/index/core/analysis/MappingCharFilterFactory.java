@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.core.analysis;
 
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
-import org.apache.lucene.analysis.util.ResourceLoader;
+import org.apache.lucene.util.ResourceLoader;
 
 import java.util.Collections;
 import java.util.HashMap;

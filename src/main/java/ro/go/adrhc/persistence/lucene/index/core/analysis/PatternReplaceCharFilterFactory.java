@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.core.analysis;
 
+import org.apache.lucene.analysis.CharFilterFactory;
 import org.apache.lucene.analysis.pattern.PatternReplaceCharFilter;
-import org.apache.lucene.analysis.util.CharFilterFactory;
 
 import java.io.Reader;
 import java.util.Map;
