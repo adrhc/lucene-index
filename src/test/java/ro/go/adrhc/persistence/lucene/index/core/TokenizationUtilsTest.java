@@ -12,17 +12,17 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
+public
 class TokenizationUtilsTest {
+	public static final String TEXT = " IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 " +
+			"aAșțĂÎîă ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
 	private static final TokenizationUtils TOKENIZATION_UTILS = IndexTestFactories.createTokenizationUtils();
 
 	@Test
 	void tokenize() throws IOException {
-		Set<String> tokens = TOKENIZATION_UTILS.tokenize(
-				" IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd " +
-						"555-888 aAșț ttt.ttt x uuu.jPg vvv.jpg .jpEg " +
-						"\"fixed Pattern TO Remove\" (Regex Pattern TO Remove)");
+		Set<String> tokens = TOKENIZATION_UTILS.tokenize(TEXT);
 		assertThat(tokens).containsOnly("img", "20210725", "wa0029",
-				"aaa", "bbb", "ccc", "ddd", "555", "888", "aast", "ttt.ttt", "uuu", "vvv");
+				"aaa", "bbb", "ccc", "ddd", "555", "888", "aastaiia", "ttt.ttt", "uuu", "vvv");
 
 		tokens = TOKENIZATION_UTILS.tokenize(".jPg");
 		assertThat(tokens).isEmpty();

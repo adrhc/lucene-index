@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 
 import java.io.IOException;
@@ -54,7 +55,8 @@ class IndexSearchServiceTest {
 
 	private static List<Person> createPeople() {
 		return List.of(
-				new Person("1", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
-				new Person("2", "(Original)person222 CAșț"));
+				new Person("1", TokenizationUtilsTest.TEXT),
+				new Person("2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
+				new Person("3", "(Original)person222 CAșț"));
 	}
 }

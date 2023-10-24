@@ -2,6 +2,9 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
@@ -19,8 +22,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
-import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.storedAndAnalyzed;
-import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.storedButNotAnalyzed;
 
 public class PersonIndexFactories {
 	public static IndexSearchService<String, Person> createSearchService(
@@ -54,8 +55,8 @@ public class PersonIndexFactories {
 
 	private static Document personToDocument(Person person) {
 		Document document = new Document();
-		document.add(storedButNotAnalyzed(PersonFields.id, person.id()));
-		document.add(storedAndAnalyzed(PersonFields.name, person.name()));
+		document.add(new StringField(PersonFields.id.name(), person.name(), Field.Store.YES));
+		document.add(new TextField(PersonFields.name.name(), person.name(), Field.Store.YES));
 		return document;
 	}
 }
