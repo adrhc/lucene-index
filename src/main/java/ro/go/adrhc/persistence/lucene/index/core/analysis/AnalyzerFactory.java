@@ -2,83 +2,84 @@ package ro.go.adrhc.persistence.lucene.index.core.analysis;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
-import org.apache.lucene.analysis.miscellaneous.LengthFilter;
-import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilter;
-import org.apache.lucene.analysis.miscellaneous.TrimFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
+import org.apache.lucene.analysis.pattern.PatternReplaceCharFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 
-import java.io.Reader;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
+import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
-import static ro.go.adrhc.persistence.lucene.index.core.analysis.CharFilterFactory.*;
 
 @RequiredArgsConstructor
 public class AnalyzerFactory {
 	private final TokenizerProperties properties;
 
-	public Analyzer create() {
-		return new Analyzer() {
-			@Override
-			protected TokenStreamComponents createComponents(String fieldName) {
-				final StandardTokenizer src = new StandardTokenizer();
-				src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
-				TokenStream tok = trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(src);
-				return new TokenStreamComponents(r -> {
-					src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
-					src.setReader(charsSwapRmTextsRmPatternsCharFilter(r));
-				}, tok);
-			}
+	public Analyzer create() throws IOException {
+		CustomAnalyzer.Builder builder = CustomAnalyzer.builder()
+				// tokenizer
+				.withTokenizer(StandardTokenizerFactory.NAME,
+						"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
 
-			/*@Override
-			protected Reader initReaderForNormalization(String fieldName, Reader reader) {
-				return charsSwapRmTextsRmPatternsCharFilter(reader);
-			}
+		trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(builder);
+		rmCharsRmTextsRmPatternsSwapPatternsCharFilter(builder);
 
-			@Override
-			protected TokenStream normalize(String fieldName, TokenStream in) {
-				return trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(in);
-			}*/
-
-			@Override
-			protected TokenStream normalize(String fieldName, TokenStream in) {
-				return new LowerCaseFilter(in);
-			}
-		};
+		return builder.build();
 	}
 
 	/**
 	 * Chained CharFilter(s):
-	 * - MappingCharFilter
-	 * - PatternReplaceCharFilter using fixed test
-	 * - PatternReplaceCharFilter using regex patterns
+	 * - MappingCharFilter to replace case-sensitive fixed texts (e.g. special characters) with provided text correspondents
+	 * - PatternReplaceCharFilter to remove case-insensitive, fixed texts
+	 * - PatternReplaceCharFilter to remove by regex patterns
+	 * - PatternReplaceCharFilter using regex patterns to replace with the provided replacement
 	 */
-	private Reader charsSwapRmTextsRmPatternsCharFilter(Reader reader) {
-		reader = mappingCharFilter(properties.getCharactersToReplaceBeforeIndexing(), reader);
-		reader = textRemoveCharFilter(properties.getFixedPatternsNotToIndex(), reader);
-		reader = patternRemoveCharFilter(properties.getRegexPatternsNotToIndex(), reader);
-		return patternReplaceCharFilter(properties.getRegexPatternsAndReplacement(), reader);
+	private void rmCharsRmTextsRmPatternsSwapPatternsCharFilter(CustomAnalyzer.Builder builder) throws IOException {
+		builder.addCharFilter(MappingCharFilterFactory.class,
+				properties.getCharactersToReplaceBeforeIndexing());
+
+		for (String text : properties.getFixedPatternsNotToIndex()) {
+			builder.addCharFilter(ro.go.adrhc.persistence.lucene.index.core.analysis.PatternReplaceCharFilterFactory.class,
+					"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | Pattern.LITERAL));
+		}
+
+		for (String regex : properties.getRegexPatternsNotToIndex()) {
+			builder.addCharFilter(PatternReplaceCharFilterFactory.NAME, "pattern", regex);
+		}
+
+		PatternsAndReplacement regexPatternsAndReplacement = properties.getRegexPatternsAndReplacement();
+		for (String regex : regexPatternsAndReplacement.patterns()) {
+			builder.addCharFilter(PatternReplaceCharFilterFactory.NAME, "pattern", regex,
+					"replacement", regexPatternsAndReplacement.replacement());
+		}
 	}
 
 	/**
 	 * Chained TokenStream(s):
 	 * - TrimFilter
 	 * - ASCIIFoldingFilter
-	 * - LowerCaseFilter
 	 * - LengthFilter
+	 * - LowerCaseFilter
 	 * - RemoveDuplicatesTokenFilter
 	 */
-	private TokenStream trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(TokenStream tokenStream) {
-		return new RemoveDuplicatesTokenFilter(
-				new LengthFilter(
-						new LowerCaseFilter(
-								new ASCIIFoldingFilter(
-										new TrimFilter(tokenStream))),
-						properties.getMinTokenLength(), MAX_TOKEN_LENGTH_LIMIT
-				)
-		);
+	private void trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(CustomAnalyzer.Builder builder) throws IOException {
+		builder
+				.addTokenFilter(TrimFilterFactory.NAME)
+				.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
+				.addTokenFilter(LengthFilterFactory.NAME,
+						MIN_KEY, String.valueOf(properties.getMinTokenLength()),
+						MAX_KEY, String.valueOf(MAX_TOKEN_LENGTH_LIMIT))
+				.addTokenFilter(LowerCaseFilterFactory.NAME)
+				.addTokenFilter(RemoveDuplicatesTokenFilterFactory.NAME);
 	}
 }

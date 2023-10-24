@@ -5,7 +5,6 @@ import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchResultFactory;
@@ -19,10 +18,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties.pairWithSpace;
+import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement.caseInsensitive;
 
 public class IndexTestFactories {
 	public static <T> IndexSearchService<String, T> createIndexSearchService(
@@ -37,11 +37,11 @@ public class IndexTestFactories {
 	}
 
 	public static FSIndexCreateService createFSIndexCreateService(
-			DocumentsDatasource documentsDatasource, Enum<?> idField, Path indexPath) {
+			DocumentsDatasource documentsDatasource, Enum<?> idField, Path indexPath) throws IOException {
 		return new FSIndexCreateService(documentsDatasource, createFSIndexUpdateService(idField, indexPath));
 	}
 
-	public static FSIndexUpdateService createFSIndexUpdateService(Enum<?> idField, Path indexPath) {
+	public static FSIndexUpdateService createFSIndexUpdateService(Enum<?> idField, Path indexPath) throws IOException {
 		return FSIndexUpdateService.create(idField, createAnalyzer(), indexPath);
 	}
 
@@ -53,14 +53,20 @@ public class IndexTestFactories {
 		return new TokenizationUtils(createAnalyzerFactory());
 	}
 
-	public static Analyzer createAnalyzer() {
+	public static Analyzer createAnalyzer() throws IOException {
 		return createAnalyzerFactory().create();
 	}
 
 	public static AnalyzerFactory createAnalyzerFactory() {
-		return new AnalyzerFactory(TokenizerProperties.of(2,
-				List.<String[]>of(pairWithSpace("_")),
-				new PatternsAndReplacement("$1", List.of("([^\\s]*)\\.jpe?g"))));
+		return new AnalyzerFactory(createTokenizerProperties());
+	}
+
+	public static TokenizerProperties createTokenizerProperties() {
+		return new TokenizerProperties(2,
+				List.of("Fixed Pattern To Remove"),
+				List.of("(?i)\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
+				Map.of("_", " "),
+				caseInsensitive("$1", "(?i)([^\\s]*)\\.jpe?g"));
 	}
 
 	public static <ID, T> RawDataDatasource<ID, T> createDatasource(Function<T, ID> idAccessor, Collection<T> tCollection) {

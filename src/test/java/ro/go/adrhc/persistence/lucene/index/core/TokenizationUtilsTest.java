@@ -18,23 +18,25 @@ class TokenizationUtilsTest {
 	@Test
 	void tokenize() throws IOException {
 		Set<String> tokens = TOKENIZATION_UTILS.tokenize(
-				" IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 aAșț ttt.ttt x uuu.jpg vvv.jpg .jpeg ");
+				" IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd " +
+						"555-888 aAșț ttt.ttt x uuu.jPg vvv.jpg .jpEg " +
+						"\"fixed Pattern TO Remove\" (Regex Pattern TO Remove)");
 		assertThat(tokens).containsOnly("img", "20210725", "wa0029",
 				"aaa", "bbb", "ccc", "ddd", "555", "888", "aast", "ttt.ttt", "uuu", "vvv");
 
-		tokens = TOKENIZATION_UTILS.tokenize(".jpg");
+		tokens = TOKENIZATION_UTILS.tokenize(".jPg");
 		assertThat(tokens).isEmpty();
 
-		tokens = TOKENIZATION_UTILS.tokenize(".jpeg");
+		tokens = TOKENIZATION_UTILS.tokenize(".jpEg");
 		assertThat(tokens).isEmpty();
 
-		tokens = TOKENIZATION_UTILS.tokenize(".jpg ");
+		tokens = TOKENIZATION_UTILS.tokenize(".jPg ");
 		assertThat(tokens).isEmpty();
 
-		tokens = TOKENIZATION_UTILS.tokenize(" .jpeg");
+		tokens = TOKENIZATION_UTILS.tokenize(" .jpEg");
 		assertThat(tokens).isEmpty();
 
-		tokens = TOKENIZATION_UTILS.tokenize(". jpeg");
+		tokens = TOKENIZATION_UTILS.tokenize(". jpEg");
 		assertThat(tokens).containsOnly("jpeg");
 	}
 }

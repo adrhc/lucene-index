@@ -12,6 +12,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.spi.RawDataIdToStringConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.spi.RawDataToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.spi.StringToRawDataIdConverter;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Function;
@@ -31,12 +32,12 @@ public class PersonIndexFactories {
 	}
 
 	public static FSIndexCreateService createCreateService(
-			Collection<Person> personsDatasource, Path indexPath) {
+			Collection<Person> personsDatasource, Path indexPath) throws IOException {
 		return createFSIndexCreateService(
 				createPersonDocumentsDatasource(personsDatasource), PersonFields.id, indexPath);
 	}
 
-	public static FSIndexUpdateService createUpdateService(Path indexPath) {
+	public static FSIndexUpdateService createUpdateService(Path indexPath) throws IOException {
 		return createFSIndexUpdateService(PersonFields.id, indexPath);
 	}
 

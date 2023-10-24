@@ -31,7 +31,7 @@ class IndexSearchServiceTest {
 
 	private static List<Person> createPeople() {
 		return List.of(
-				new Person("1", " IMG-20210725-WA0029 ccc_ddd aAșț .jpeg "),
+				new Person("1", " IMG-20210725-WA0029 ccc_ddd aAșț.jpeg "),
 				new Person("2", "(Original)person222 aAșț"));
 	}
 }
