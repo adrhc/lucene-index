@@ -26,12 +26,22 @@ public class AnalyzerFactory {
 			protected TokenStreamComponents createComponents(String fieldName) {
 				final StandardTokenizer src = new StandardTokenizer();
 				src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
-				TokenStream tok = AnalyzerFactory.this.tokenStream(src);
+				TokenStream tok = AnalyzerFactory.this.trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(src);
 				return new TokenStreamComponents(r -> {
 					src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
-					src.setReader(charFilter(r));
+					src.setReader(charsSwapRmTextsRmPatternsCharFilter(r));
 				}, tok);
 			}
+
+			/*@Override
+			protected Reader initReaderForNormalization(String fieldName, Reader reader) {
+				return charFilter(reader);
+			}
+
+			@Override
+			protected TokenStream normalize(String fieldName, TokenStream in) {
+				return AnalyzerFactory.this.tokenStream(in);
+			}*/
 
 			@Override
 			protected TokenStream normalize(String fieldName, TokenStream in) {
@@ -40,16 +50,32 @@ public class AnalyzerFactory {
 		};
 	}
 
-	private Reader charFilter(Reader reader) {
+	/**
+	 * Chained CharFilter(s):
+	 * - MappingCharFilter
+	 * - PatternReplaceCharFilter using fixed test
+	 * - PatternReplaceCharFilter using regex patterns
+	 */
+	private Reader charsSwapRmTextsRmPatternsCharFilter(Reader reader) {
 		reader = mappingCharFilter(reader, properties.getCharactersToReplaceBeforeIndexing());
 		reader = textRemoveCharFilter(reader, properties.getFixedPatternsNotToIndex());
 		return patternRemoveCharFilter(reader, properties.getRegexPatternsNotToIndex());
 	}
 
-	private TokenStream tokenStream(TokenStream tokenStream) {
+	/**
+	 * Chained TokenStream(s):
+	 * - TrimFilter
+	 * - ASCIIFoldingFilter
+	 * - LowerCaseFilter
+	 * - LengthFilter
+	 * - RemoveDuplicatesTokenFilter
+	 */
+	private TokenStream trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(TokenStream tokenStream) {
 		return new RemoveDuplicatesTokenFilter(
 				new LengthFilter(
-						new LowerCaseFilter(new ASCIIFoldingFilter(new TrimFilter(tokenStream))),
+						new LowerCaseFilter(
+								new ASCIIFoldingFilter(
+										new TrimFilter(tokenStream))),
 						properties.getMinTokenLength(), MAX_TOKEN_LENGTH_LIMIT
 				)
 		);

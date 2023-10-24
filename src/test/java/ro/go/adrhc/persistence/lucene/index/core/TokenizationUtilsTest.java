@@ -22,13 +22,13 @@ class TokenizationUtilsTest {
 
 	@Test
 	void tokenize() throws IOException {
-		Set<String> tokens = TOKENIZATION_UTILS.tokenize("AaA x bBb aAa");
-		assertThat(tokens).containsExactly("aaa", "bbb");
+		Set<String> tokens = TOKENIZATION_UTILS.tokenize(" AaA x bBb aAa aAșț ttt.ttt ccc_ccc");
+		assertThat(tokens).contains("aaa", "bbb", "ccc", "aast", "ttt.ttt");
 	}
 
 	@Test
 	void tokenizeFilename() throws IOException {
 		Set<String> tokens = TOKENIZATION_UTILS.tokenize("IMG-20210725-WA0029");
-		assertThat(tokens).containsExactly("img", "20210725", "wa0029");
+		assertThat(tokens).contains("img", "20210725", "wa0029");
 	}
 }

@@ -18,6 +18,9 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  */
 @UtilityClass
 public class CharFilterFactory {
+	/**
+	 * Replace pairs[*][0] with pairs[*][1].
+	 */
 	public static Reader mappingCharFilter(Reader reader, List<String[]> pairs) {
 		if (pairs.isEmpty()) {
 			return reader;
@@ -27,10 +30,16 @@ public class CharFilterFactory {
 		return new MappingCharFilter(normalizeCharMapBuilder.build(), reader);
 	}
 
+	/**
+	 * Remove from source text the parts matching patterns.
+	 */
 	public static Reader patternRemoveCharFilter(Reader reader, Iterable<String> patterns) {
 		return patternReplaceCharFilter(reader, patterns, CharFilterFactory::patternRemoveCharFilter);
 	}
 
+	/**
+	 * Remove from source text the parts equal to texts.
+	 */
 	public static Reader textRemoveCharFilter(Reader reader, Iterable<String> texts) {
 		return patternReplaceCharFilter(reader, texts, CharFilterFactory::textRemoveCharFilter);
 	}
