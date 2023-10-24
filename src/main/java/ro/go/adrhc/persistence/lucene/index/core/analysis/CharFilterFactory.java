@@ -5,6 +5,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.apache.lucene.analysis.charfilter.MappingCharFilter;
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
 import org.apache.lucene.analysis.pattern.PatternReplaceCharFilter;
+import ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement;
 import ro.go.adrhc.util.value.MutableValue;
 
 import java.io.Reader;
@@ -28,6 +29,13 @@ public class CharFilterFactory {
 		NormalizeCharMap.Builder normalizeCharMapBuilder = new NormalizeCharMap.Builder();
 		pairs.forEach(it -> normalizeCharMapBuilder.add(it[0], it[1]));
 		return new MappingCharFilter(normalizeCharMapBuilder.build(), reader);
+	}
+
+	/**
+	 * Remove from source text the parts matching patterns.
+	 */
+	public static Reader patternReplaceCharFilter(PatternsAndReplacement patternsAndReplacement, Reader reader) {
+		return patternReplaceCharFilter(patternsAndReplacement.replacement(), patternsAndReplacement.patterns(), reader);
 	}
 
 	/**

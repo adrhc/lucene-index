@@ -60,9 +60,7 @@ public class AnalyzerFactory {
 		reader = mappingCharFilter(properties.getCharactersToReplaceBeforeIndexing(), reader);
 		reader = textRemoveCharFilter(properties.getFixedPatternsNotToIndex(), reader);
 		reader = patternRemoveCharFilter(properties.getRegexPatternsNotToIndex(), reader);
-		return patternReplaceCharFilter(
-				properties.getRegexPatternsAndReplacement().replacement(),
-				properties.getRegexPatternsAndReplacement().patterns(), reader);
+		return patternReplaceCharFilter(properties.getRegexPatternsAndReplacement(), reader);
 	}
 
 	/**
