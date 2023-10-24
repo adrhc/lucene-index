@@ -26,7 +26,7 @@ public record DocumentIndexReaderTemplate(int maxResultsPerSearchedSong, Path in
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<DocumentIndexReader, R, E> indexReaderFn)
 			throws IOException, E {
-		try (DocumentIndexReader indexReader = DocumentIndexReader.of(indexPath, maxResultsPerSearchedSong)) {
+		try (DocumentIndexReader indexReader = DocumentIndexReader.of(maxResultsPerSearchedSong, indexPath)) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

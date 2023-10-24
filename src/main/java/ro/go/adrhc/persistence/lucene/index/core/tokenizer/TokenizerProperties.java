@@ -14,6 +14,7 @@ public class TokenizerProperties {
 	private List<String> fixedPatternsNotToIndex = List.of();
 	private List<String> regexPatternsNotToIndex = List.of();
 	private List<String[]> charactersToReplaceBeforeIndexing = List.of();
+	private PatternsAndReplacement regexPatternsAndReplacement;
 
 	public static TokenizerProperties of(int minTokenLength) {
 		TokenizerProperties tokenizerProperties = new TokenizerProperties();
@@ -21,10 +22,13 @@ public class TokenizerProperties {
 		return tokenizerProperties;
 	}
 
-	public static TokenizerProperties of(int minTokenLength, List<String[]> charactersToReplaceBeforeIndexing) {
+	public static TokenizerProperties of(int minTokenLength,
+			List<String[]> charactersToReplaceBeforeIndexing,
+			PatternsAndReplacement regexPatternsAndReplacement) {
 		TokenizerProperties tokenizerProperties = new TokenizerProperties();
 		tokenizerProperties.setMinTokenLength(minTokenLength);
 		tokenizerProperties.setCharactersToReplaceBeforeIndexing(charactersToReplaceBeforeIndexing);
+		tokenizerProperties.setRegexPatternsAndReplacement(regexPatternsAndReplacement);
 		return tokenizerProperties;
 	}
 }

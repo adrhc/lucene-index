@@ -72,9 +72,9 @@ public record LuceneTokenizer(Analyzer analyzer, TokenizerProperties properties)
 
 	private TokenStream tokenStreamOf(String string) {
 		Reader reader = new StringReader(string);
-		reader = mappingCharFilter(reader, properties.getCharactersToReplaceBeforeIndexing());
-		reader = textRemoveCharFilter(reader, properties.getFixedPatternsNotToIndex());
-		reader = patternRemoveCharFilter(reader, properties.getRegexPatternsNotToIndex());
+		reader = mappingCharFilter(properties.getCharactersToReplaceBeforeIndexing(), reader);
+		reader = textRemoveCharFilter(properties.getFixedPatternsNotToIndex(), reader);
+		reader = patternRemoveCharFilter(properties.getRegexPatternsNotToIndex(), reader);
 		TokenStream analyzerTokenStream = analyzer.tokenStream(null, reader);
 		// ASCIIFoldingFilter: șțâăî = staii
 		return new RemoveDuplicatesTokenFilter(

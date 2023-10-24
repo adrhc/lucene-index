@@ -26,7 +26,7 @@ public class AnalyzerFactory {
 			protected TokenStreamComponents createComponents(String fieldName) {
 				final StandardTokenizer src = new StandardTokenizer();
 				src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
-				TokenStream tok = AnalyzerFactory.this.trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(src);
+				TokenStream tok = trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(src);
 				return new TokenStreamComponents(r -> {
 					src.setMaxTokenLength(MAX_TOKEN_LENGTH_LIMIT);
 					src.setReader(charsSwapRmTextsRmPatternsCharFilter(r));
@@ -35,12 +35,12 @@ public class AnalyzerFactory {
 
 			/*@Override
 			protected Reader initReaderForNormalization(String fieldName, Reader reader) {
-				return charFilter(reader);
+				return charsSwapRmTextsRmPatternsCharFilter(reader);
 			}
 
 			@Override
 			protected TokenStream normalize(String fieldName, TokenStream in) {
-				return AnalyzerFactory.this.tokenStream(in);
+				return trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(in);
 			}*/
 
 			@Override
@@ -57,9 +57,12 @@ public class AnalyzerFactory {
 	 * - PatternReplaceCharFilter using regex patterns
 	 */
 	private Reader charsSwapRmTextsRmPatternsCharFilter(Reader reader) {
-		reader = mappingCharFilter(reader, properties.getCharactersToReplaceBeforeIndexing());
-		reader = textRemoveCharFilter(reader, properties.getFixedPatternsNotToIndex());
-		return patternRemoveCharFilter(reader, properties.getRegexPatternsNotToIndex());
+		reader = mappingCharFilter(properties.getCharactersToReplaceBeforeIndexing(), reader);
+		reader = textRemoveCharFilter(properties.getFixedPatternsNotToIndex(), reader);
+		reader = patternRemoveCharFilter(properties.getRegexPatternsNotToIndex(), reader);
+		return patternReplaceCharFilter(
+				properties.getRegexPatternsAndReplacement().replacement(),
+				properties.getRegexPatternsAndReplacement().patterns(), reader);
 	}
 
 	/**
