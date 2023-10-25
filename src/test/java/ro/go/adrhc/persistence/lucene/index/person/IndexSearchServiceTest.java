@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,12 +21,16 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.c
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IndexSearchServiceTest {
+	private static final List<Person> PEOPLE = List.of(
+			new Person("1", "#Person1", TokenizationUtilsTest.TEXT),
+			new Person("2", "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
+			new Person("3", "#Person3", "(Original)person222 CAșț"));
 	@TempDir
 	private static Path tmpDir;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		createCreateService(createPeople(), tmpDir).createOrReplace();
+		createCreateService(PEOPLE, tmpDir).createOrReplace();
 	}
 
 	@Test
@@ -72,18 +75,8 @@ class IndexSearchServiceTest {
 	private List<PersonSearchResult> findAllMatches(
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter,
 			String textToSearch) throws IOException {
-		return createSearchService(stringQueryConverter).findAllMatches(textToSearch);
-	}
-
-	private IndexSearchService<String, PersonSearchResult> createSearchService(
-			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter) {
-		return PersonIndexFactories.createSearchService(stringQueryConverter, tmpDir);
-	}
-
-	private static List<Person> createPeople() {
-		return List.of(
-				new Person("1", "#Person1", TokenizationUtilsTest.TEXT),
-				new Person("2", "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
-				new Person("3", "#Person3", "(Original)person222 CAșț"));
+		return PersonIndexFactories
+				.createSearchService(stringQueryConverter, tmpDir)
+				.findAllMatches(textToSearch);
 	}
 }
