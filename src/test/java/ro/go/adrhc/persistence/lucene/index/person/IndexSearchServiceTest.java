@@ -38,19 +38,19 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void nameEquals() throws IOException {
-		IndexSearchService<String, Person> eqSearchService =
-				createSearchService(PersonQueryFactory::nameEquals, tmpDir);
-
-		assertThat(eqSearchService.findAllMatches("cast")).hasSize(2);
-	}
-
-	@Test
 	void nameStartsWith() throws IOException {
 		IndexSearchService<String, Person> prefixSearchService =
 				createSearchService(PersonQueryFactory::nameStartsWith, tmpDir);
 
 		assertThat(prefixSearchService.findAllMatches("person2")).hasSize(1);
+	}
+
+	@Test
+	void nameEquals() throws IOException {
+		IndexSearchService<String, Person> eqSearchService =
+				createSearchService(PersonQueryFactory::nameEquals, tmpDir);
+
+		assertThat(eqSearchService.findAllMatches("cast")).hasSize(2);
 	}
 
 	@Test
