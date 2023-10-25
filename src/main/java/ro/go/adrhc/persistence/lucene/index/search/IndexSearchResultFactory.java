@@ -2,6 +2,8 @@ package ro.go.adrhc.persistence.lucene.index.search;
 
 import ro.go.adrhc.persistence.lucene.index.core.read.ScoreAndDocument;
 
+import java.util.Optional;
+
 public interface IndexSearchResultFactory<S, F> {
-	F create(S searchedAudio, ScoreAndDocument scoreAndDocument);
+	Optional<F> create(S searchedData, ScoreAndDocument scoreAndDocument);
 }

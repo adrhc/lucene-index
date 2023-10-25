@@ -12,25 +12,24 @@ import ro.go.adrhc.persistence.lucene.index.domain.queries.TermQueryFactory;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
 
 public class PersonQueryFactory {
-
-	public static Query exactCnp(String cnp) {
-		return KeywordField.newExactQuery(PersonFields.cnp.name(), cnp);
+	public static Query cnpEquals(String cnp) {
+		return KeywordField.newExactQuery(PersonFieldType.cnp.name(), cnp);
 	}
 
-	public static TermQuery nameEquals(String name) {
-		return TermQueryFactory.create(PersonFields.name, name);
+	public static TermQuery nameTokenEquals(String name) {
+		return TermQueryFactory.create(PersonFieldType.name, name);
 	}
 
 	public static PrefixQuery nameTokenStartsWith(String name) {
-		return PrefixQueryFactory.create(PersonFields.name, name);
+		return PrefixQueryFactory.create(PersonFieldType.name, name);
 	}
 
 	public static PrefixQuery nameStartsWith(String name) {
-		return PrefixQueryFactory.create(PersonFields.oneTokenName, name);
+		return PrefixQueryFactory.create(PersonFieldType.nameAsWord, name);
 	}
 
 	public static Query nameTextQuery(String nameQuery) throws QueryNodeException {
 		StandardQueryParser parser = new StandardQueryParser(ANALYZER);
-		return parser.parse(nameQuery, PersonFields.name.name());
+		return parser.parse(nameQuery, PersonFieldType.name.name());
 	}
 }

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.domain;
+package ro.go.adrhc.persistence.lucene.typedindex.domain.rawtodoc;
 
 import lombok.NonNull;
 import org.apache.lucene.document.Document;

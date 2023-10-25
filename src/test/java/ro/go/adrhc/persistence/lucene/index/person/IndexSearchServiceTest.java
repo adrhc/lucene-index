@@ -35,22 +35,22 @@ class IndexSearchServiceTest {
 
 	@Test
 	void nameTextQuery() throws IOException {
-		List<PersonSearchResult> result = findAllMatches(
+		List<Person> result = findAllMatches(
 				PersonQueryFactory::nameTextQuery, "pers*2*");
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void nameEquals() throws IOException {
-		List<PersonSearchResult> result = findAllMatches(
-				PersonQueryFactory::nameEquals, "cast");
+	void nameTokenEquals() throws IOException {
+		List<Person> result = findAllMatches(
+				PersonQueryFactory::nameTokenEquals, "cast");
 
 		assertThat(result).hasSize(2);
 	}
 
 	@Test
 	void nameTokenStartsWith() throws IOException {
-		List<PersonSearchResult> result = findAllMatches(
+		List<Person> result = findAllMatches(
 				PersonQueryFactory::nameTokenStartsWith, "person2");
 
 		assertThat(result).hasSize(1);
@@ -58,21 +58,21 @@ class IndexSearchServiceTest {
 
 	@Test
 	void nameStartsWith() throws IOException {
-		List<PersonSearchResult> result = findAllMatches(
+		List<Person> result = findAllMatches(
 				PersonQueryFactory::nameStartsWith, "(original)person");
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void exactCnp() throws IOException {
-		List<PersonSearchResult> result = findAllMatches(
-				PersonQueryFactory::exactCnp, "#Person3");
+	void cnpEquals() throws IOException {
+		List<Person> result = findAllMatches(
+				PersonQueryFactory::cnpEquals, "#Person3");
 
 		assertThat(result).hasSize(1);
 	}
 
-	private List<PersonSearchResult> findAllMatches(
+	private List<Person> findAllMatches(
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter,
 			String textToSearch) throws IOException {
 		return PersonIndexFactories

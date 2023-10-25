@@ -2,6 +2,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- https://github.com/spring-projects/spring-shell/issues/324 -->
+        <version>3.1.0</version>
+        <!--
+            Spring Boot [2.7.0] is not compatible with this Spring Cloud release train',
+            action = 'Change Spring Boot version to one of the following versions [2.4.x, 2.5.x].
+        -->
+        <!--<version>2.7.0</version>-->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <groupId>ro.go.adrhc.persistence</groupId>
     <artifactId>lucene-index</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -17,60 +30,55 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
 
-        <!--        <lucene.version>8.11.2</lucene.version>-->
+        <adrhc-utilities.version>1.0-SNAPSHOT</adrhc-utilities.version>
+        <!--<lucene.version>8.11.2</lucene.version>-->
         <lucene.version>9.8.0</lucene.version>
-    </properties>
+        <commons-io.version>2.11.0</commons-io.version>
+        <commons-text.version>1.10.0</commons-text.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <sneakythrow.version>1.2.0</sneakythrow.version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.10.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+        <!--        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>-->
+        <maven-surefire-failsafe-plugin.version>3.1.2</maven-surefire-failsafe-plugin.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>ro.go.adrhc</groupId>
             <artifactId>utilities</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${adrhc-utilities.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${commons-io.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.10.0</version>
+            <version>${commons-text.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <version>${commons-collections4.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.rainerhahnekamp</groupId>
             <artifactId>sneakythrow</artifactId>
-            <version>1.2.0</version>
+            <version>${sneakythrow.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
@@ -94,13 +102,6 @@
             <version>${lucene.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
-        <!--<dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>8.11.2</version>
-        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analysis-common -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -109,9 +110,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
 
@@ -122,21 +127,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.24.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.3.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -147,7 +139,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <!--                <version>${maven-compiler-plugin.version}</version>-->
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -158,7 +150,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${maven-surefire-failsafe-plugin.version}</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
@@ -166,7 +158,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${maven-surefire-failsafe-plugin.version}</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>

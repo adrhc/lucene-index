@@ -9,7 +9,7 @@ import java.util.Collection;
 @UtilityClass
 public class RawDataSourceFactories {
 	public static <ID, T extends Identifiable<ID>>
-	RawDataSource<ID, T> createRawDs(Collection<T> tCollection) {
+	RawDataSource<ID, T> create(Collection<T> tCollection) {
 		return new RawDataSource<>() {
 			@Override
 			public Collection<ID> loadAllIds() {

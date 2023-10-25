@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.domain.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.RawToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.rawds.RawDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.rawidserde.RawIdSerde;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.rawtodoc.RawToDocumentConverter;
 
 import java.io.IOException;
 import java.util.Collection;

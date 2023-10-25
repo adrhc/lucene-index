@@ -30,7 +30,11 @@ public class TokenizationUtils {
 	}
 
 	public String normalize(Enum<?> field, String text) {
-		return analyzer.normalize(field.name(), text).utf8ToString();
+		return normalize(field.name(), text);
+	}
+
+	public String normalize(String fieldName, String text) {
+		return analyzer.normalize(fieldName, text).utf8ToString();
 	}
 
 	private Set<String> doTokenize(TokenStream tokenStream) throws IOException {

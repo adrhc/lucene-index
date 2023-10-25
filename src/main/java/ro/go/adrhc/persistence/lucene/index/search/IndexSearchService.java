@@ -64,6 +64,7 @@ public class IndexSearchService<S, F> {
 		// log.debug("\nquery used to search:\n{}", query);
 		return indexReader.search(optionalQuery.get()).stream()
 				.map(scoreAndDocument -> toFoundConverter
-						.create(searchedItem, scoreAndDocument));
+						.create(searchedItem, scoreAndDocument))
+				.flatMap(Optional::stream);
 	}
 }
