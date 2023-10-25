@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import ro.go.adrhc.persistence.lucene.typedindex.core.rawtodoc.TypedDataToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.core.TypedToDocumentConverter;
 
 @RequiredArgsConstructor
 public class DocumentToPersonConverter {
@@ -13,7 +13,7 @@ public class DocumentToPersonConverter {
 			Jackson2ObjectMapperBuilder.json().build().readerFor(Person.class);
 
 	public Person convert(Document doc) throws JsonProcessingException {
-		String json = TypedDataToDocumentConverter.getRawData(doc);
+		String json = TypedToDocumentConverter.getRawData(doc);
 		return PERSON_READER.readValue(json);
 	}
 }

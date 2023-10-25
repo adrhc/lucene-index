@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.core.rawidserde.RawIdToStringConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.core.rawtodoc.RawToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.index.core.docds.RawToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdToStringConverter;
 
 import java.io.IOException;
 import java.util.Collection;

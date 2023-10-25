@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.core.rawidserde;
+package ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde;
 
 import java.util.Optional;
 

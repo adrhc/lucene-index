@@ -1,6 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.core.rawds;
-
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
+package ro.go.adrhc.persistence.lucene.index.core.docds.rawds;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -6,7 +6,7 @@ import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
-import ro.go.adrhc.persistence.lucene.index.core.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFactory;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
 import static ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverterFactory.ofSneaky;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.DocumentsDataSourceFactories.createCachedTypedDocsDs;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDocsDs;
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 public class PersonIndexFactories {
