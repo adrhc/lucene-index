@@ -1,9 +1,11 @@
-package ro.go.adrhc.persistence.lucene.typedindex.spi;
+package ro.go.adrhc.persistence.lucene.typedindex.domain.rawds;
+
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 
 import java.io.IOException;
 import java.util.Collection;
 
-public interface RawDataDatasource<ID, T> {
+public interface RawDataSource<ID, T extends Identifiable<ID>> {
 	Collection<ID> loadAllIds() throws IOException;
 
 	Collection<T> loadByIds(Collection<ID> ids) throws IOException;

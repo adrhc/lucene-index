@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public class TokenizationUtils {
-	private final AnalyzerFactory analyzerFactory;
+	private final Analyzer analyzer;
 
 	public Set<String> tokenizeAll(@NonNull Collection<String> words) throws IOException {
 		Set<String> result = new HashSet<>();
@@ -25,11 +24,13 @@ public class TokenizationUtils {
 	}
 
 	public Set<String> tokenize(String text) throws IOException {
-		try (Analyzer analyzer = analyzerFactory.create()) {
-			try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-				return doTokenize(tokenStream);
-			}
+		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
+			return doTokenize(tokenStream);
 		}
+	}
+
+	public String normalize(Enum<?> field, String text) {
+		return analyzer.normalize(field.name(), text).utf8ToString();
 	}
 
 	private Set<String> doTokenize(TokenStream tokenStream) throws IOException {

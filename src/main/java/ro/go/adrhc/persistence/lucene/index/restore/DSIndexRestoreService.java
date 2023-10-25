@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.spi.DocumentsDatasource;
+import ro.go.adrhc.persistence.lucene.index.domain.DocumentsDataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import java.util.stream.Stream;
 @Slf4j
 public class DSIndexRestoreService {
 	private final String idField;
-	private final DocumentsDatasource documentsDatasource;
+	private final DocumentsDataSource documentsDatasource;
 	private final DocumentIndexReaderTemplate indexReaderTemplate;
 	private final IndexUpdateService indexUpdateService;
 
-	public static DSIndexRestoreService create(Enum<?> idField, DocumentsDatasource documentsDatasource,
+	public static DSIndexRestoreService create(Enum<?> idField, DocumentsDataSource documentsDatasource,
 			DocumentIndexReaderTemplate indexReaderTemplate, IndexUpdateService indexUpdateService) {
 		return new DSIndexRestoreService(idField.name(), documentsDatasource, indexReaderTemplate, indexUpdateService);
 	}

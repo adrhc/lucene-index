@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.spi.RawDataIdToStringConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.spi.RawDataToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.RawToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.rawidserde.RawIdToStringConverter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -15,8 +15,8 @@ import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertA
 
 @RequiredArgsConstructor
 public class TypedIndexUpdateService<ID, T> {
-	private final RawDataIdToStringConverter<ID> toStringConverter;
-	private final RawDataToDocumentConverter<T> toDocumentConverter;
+	private final RawIdToStringConverter<ID> toStringConverter;
+	private final RawToDocumentConverter<T> toDocumentConverter;
 	private final IndexUpdateService indexUpdateService;
 
 	public boolean add(T t) throws IOException {

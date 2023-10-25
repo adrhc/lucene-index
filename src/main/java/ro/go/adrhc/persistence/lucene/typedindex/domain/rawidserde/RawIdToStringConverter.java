@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.spi;
+package ro.go.adrhc.persistence.lucene.typedindex.domain.rawidserde;
 
 import lombok.NonNull;
 
@@ -7,8 +7,8 @@ import java.util.function.Function;
 
 import static ro.go.adrhc.util.fn.FunctionUtils.toOptionalResult;
 
-public interface RawDataIdToStringConverter<ID> {
-	static <ID> RawDataIdToStringConverter<ID> of(Function<ID, String> converter) {
+public interface RawIdToStringConverter<ID> {
+	static <ID> RawIdToStringConverter<ID> of(Function<ID, String> converter) {
 		return rawId -> toOptionalResult(converter).apply(rawId);
 	}
 

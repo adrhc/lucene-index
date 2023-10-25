@@ -1,11 +1,11 @@
-package ro.go.adrhc.persistence.lucene.index.spi;
+package ro.go.adrhc.persistence.lucene.index.domain;
 
 import org.apache.lucene.document.Document;
 
 import java.io.IOException;
 import java.util.Collection;
 
-public interface DocumentsDatasource {
+public interface DocumentsDataSource {
 	Collection<String> loadAllIds() throws IOException;
 
 	Collection<Document> loadByIds(Collection<String> ids) throws IOException;

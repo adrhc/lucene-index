@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.spi;
+package ro.go.adrhc.persistence.lucene.typedindex.domain;
 
 import lombok.NonNull;
 import org.apache.lucene.document.Document;
@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 import static ro.go.adrhc.util.fn.FunctionUtils.toOptionalResult;
 
-public interface RawDataToDocumentConverter<T> {
-	static <T> RawDataToDocumentConverter<T> of(Function<T, Document> converter) {
+public interface RawToDocumentConverter<T> {
+	static <T> RawToDocumentConverter<T> of(Function<T, Document> converter) {
 		return t -> toOptionalResult(converter).apply(t);
 	}
 
