@@ -17,6 +17,8 @@ import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.DocumentsDataSourceFactories.createCachedDocsDs;
 
 public class PersonIndexFactories {
+	private static final PersonSearchResultFactory<String> PERSON_SEARCH_RESULT_FACTORY
+			= new PersonSearchResultFactory<>();
 	private static final PersonToDocumentConverter PERSON_TO_DOCUMENT_CONVERTER
 			= new PersonToDocumentConverter(FIELD_FACTORY);
 
@@ -24,7 +26,7 @@ public class PersonIndexFactories {
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {
 		return createIndexSearchService(
 				SearchedToQueryConverterFactory.ofSneaky(stringQueryConverter),
-				(s, sad) -> PersonSearchResult.of(sad), indexPath
+				PERSON_SEARCH_RESULT_FACTORY, indexPath
 		);
 	}
 
