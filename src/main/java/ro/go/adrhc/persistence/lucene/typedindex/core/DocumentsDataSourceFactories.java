@@ -2,17 +2,17 @@ package ro.go.adrhc.persistence.lucene.typedindex.core;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.index.domain.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.typedindex.core.rawds.RawDataSourceFactories;
+import ro.go.adrhc.persistence.lucene.typedindex.core.rawtodoc.TypedDataToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.rawds.RawDataSourceFactories;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.rawtodoc.TypedDataToDocumentConverter;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static ro.go.adrhc.persistence.lucene.typedindex.domain.rawidserde.RawIdSerde.createStringRawIdSerde;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.rawidserde.RawIdSerde.createStringRawIdSerde;
 
 public class DocumentsDataSourceFactories {
 	public static <T extends Identifiable<String>, E extends Enum<E> & TypedFieldEnum<T>>

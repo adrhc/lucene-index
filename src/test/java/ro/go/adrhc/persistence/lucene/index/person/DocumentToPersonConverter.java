@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.rawtodoc.TypedDataToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.core.rawtodoc.TypedDataToDocumentConverter;
 
 @RequiredArgsConstructor
 public class DocumentToPersonConverter {

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.domain.rawidserde;
+package ro.go.adrhc.persistence.lucene.typedindex.core.rawidserde;
 
 import lombok.NonNull;
 

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.domain.rawds;
+package ro.go.adrhc.persistence.lucene.typedindex.core.rawds;
 
 import lombok.experimental.UtilityClass;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;

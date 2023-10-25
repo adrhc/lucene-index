@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.domain;
+package ro.go.adrhc.persistence.lucene.index.core;
 
 import org.apache.lucene.document.Document;
 

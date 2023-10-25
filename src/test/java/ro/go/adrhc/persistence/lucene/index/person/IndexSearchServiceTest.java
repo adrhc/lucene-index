@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -77,6 +78,8 @@ class IndexSearchServiceTest {
 			String textToSearch) throws IOException {
 		return PersonIndexFactories
 				.createSearchService(stringQueryConverter, tmpDir)
-				.findAllMatches(textToSearch);
+				.findAllMatches(textToSearch)
+				.stream().map(TypedSearchResult::getFound)
+				.toList();
 	}
 }
