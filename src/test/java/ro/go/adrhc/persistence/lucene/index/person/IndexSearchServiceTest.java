@@ -53,10 +53,18 @@ class IndexSearchServiceTest {
 		assertThat(prefixSearchService.findAllMatches("person2")).hasSize(1);
 	}
 
+	@Test
+	void exactCnp() throws IOException {
+		IndexSearchService<String, Person> eqSearchService =
+				createSearchService(PersonQueryFactory::exactCnp, tmpDir);
+
+		assertThat(eqSearchService.findAllMatches("#Person3")).hasSize(1);
+	}
+
 	private static List<Person> createPeople() {
 		return List.of(
-				new Person("1", TokenizationUtilsTest.TEXT),
-				new Person("2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
-				new Person("3", "(Original)person222 CAșț"));
+				new Person("1", TokenizationUtilsTest.TEXT, "#Person1"),
+				new Person("2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg", "#Person2"),
+				new Person("3", "(Original)person222 CAșț", "#Person3"));
 	}
 }

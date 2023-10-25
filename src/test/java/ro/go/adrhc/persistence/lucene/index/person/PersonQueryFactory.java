@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.KeywordField;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.PrefixQuery;
@@ -14,6 +15,10 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 
 public class PersonQueryFactory {
 	private static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
+
+	public static Query exactCnp(String cnp) {
+		return KeywordField.newExactQuery(PersonFields.cnp.name(), cnp);
+	}
 
 	public static TermQuery nameEquals(String name) {
 		return TermQueryFactory.create(PersonFields.name, name);

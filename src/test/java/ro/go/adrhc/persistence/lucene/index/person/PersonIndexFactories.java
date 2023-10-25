@@ -1,10 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
@@ -55,8 +52,9 @@ public class PersonIndexFactories {
 
 	private static Document personToDocument(Person person) {
 		Document document = new Document();
-		document.add(new StringField(PersonFields.id.name(), person.name(), Field.Store.YES));
+		document.add(new StringField(PersonFields.id.name(), person.id(), Field.Store.YES));
 		document.add(new TextField(PersonFields.name.name(), person.name(), Field.Store.YES));
+		document.add(new KeywordField(PersonFields.cnp.name(), person.cnp(), Field.Store.YES));
 		return document;
 	}
 }
