@@ -24,8 +24,7 @@ import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 public class PersonIndexFactories {
 	public static IndexSearchService<String, TypedSearchResult<String, Person>> createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {
-		return createIndexSearchService(
-				ofSneaky(stringQueryConverter),
+		return createIndexSearchService(ofSneaky(stringQueryConverter),
 				createIndexSearchResultFactory(), indexPath);
 	}
 
@@ -38,15 +37,15 @@ public class PersonIndexFactories {
 		return createFSIndexUpdateService(PersonFieldType.id, indexPath);
 	}
 
-	private static DocumentsDataSource createPersonDocsDs(Collection<Person> persons) {
-		return createCachedTypedDocsDs(ANALYZER, PersonFieldType.class, persons);
-	}
-
 	private static TypedSearchResultFactory<String, Person> createIndexSearchResultFactory() {
 		return new TypedSearchResultFactory<>(createDocumentToPersonConverter());
 	}
 
 	private static Function<Document, Optional<Person>> createDocumentToPersonConverter() {
 		return sneakyToOptionalResult(new DocumentToPersonConverter()::convert);
+	}
+
+	private static DocumentsDataSource createPersonDocsDs(Collection<Person> persons) {
+		return createCachedTypedDocsDs(ANALYZER, PersonFieldType.class, persons);
 	}
 }
