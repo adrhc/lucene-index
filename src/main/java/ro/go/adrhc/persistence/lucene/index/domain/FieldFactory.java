@@ -11,6 +11,25 @@ public class FieldFactory {
 	private final TokenizationUtils tokenizationUtils;
 
 	/**
+	 * A field that is indexed and tokenized, without term vectors. For example this would be used on a
+	 * 'body' field, that contains the bulk of a document's text.
+	 */
+	public static TextField storedTextField(Enum<?> field, Object value) {
+		return new TextField(field.name(), value.toString(), Field.Store.YES);
+	}
+
+	/**
+	 * A field that is indexed but not tokenized: the entire String value is indexed as a single token.
+	 * For example this might be used for a 'country' field or an 'id' field. If you also need to sort
+	 * on this field, separately add a {@link SortedDocValuesField} to your document.
+	 */
+	public StringField storedStringField(Enum<?> field, Object value) {
+		return new StringField(field.name(),
+				tokenizationUtils.normalize(field, value.toString()),
+				Field.Store.YES);
+	}
+
+	/**
 	 * Field that indexes a per-document String or {@link BytesRef} into an inverted index for fast
 	 * filtering, stores values in a columnar fashion using {@link DocValuesType#SORTED_SET} doc values
 	 * for sorting and faceting, and optionally stores values as stored fields for top-hits retrieval.
@@ -28,24 +47,5 @@ public class FieldFactory {
 	 */
 	public static KeywordField storedKeywordField(Enum<?> field, Object value) {
 		return new KeywordField(field.name(), value.toString(), Field.Store.YES);
-	}
-
-	/**
-	 * A field that is indexed and tokenized, without term vectors. For example this would be used on a
-	 * 'body' field, that contains the bulk of a document's text.
-	 */
-	public static TextField storedTextField(Enum<?> field, Object value) {
-		return new TextField(field.name(), value.toString(), Field.Store.YES);
-	}
-
-	/**
-	 * A field that is indexed but not tokenized: the entire String value is indexed as a single token.
-	 * For example this might be used for a 'country' field or an 'id' field. If you also need to sort
-	 * on this field, separately add a {@link SortedDocValuesField} to your document.
-	 */
-	public StringField storedStringField(Enum<?> field, Object value) {
-		return new StringField(field.name(),
-				tokenizationUtils.normalize(field, value.toString()),
-				Field.Store.YES);
 	}
 }
