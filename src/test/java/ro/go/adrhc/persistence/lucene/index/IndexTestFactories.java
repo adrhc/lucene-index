@@ -8,6 +8,7 @@ import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplat
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.domain.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.domain.FieldFactory;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchResultFactory;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
@@ -24,6 +25,7 @@ import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndRep
 public class IndexTestFactories {
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
+	public static final FieldFactory FIELD_FACTORY = new FieldFactory(TOKENIZATION_UTILS);
 
 	public static <T> IndexSearchService<String, T> createIndexSearchService(
 			SearchedToQueryConverter<String> toQueryConverter,

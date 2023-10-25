@@ -21,11 +21,11 @@ public class PersonQueryFactory {
 		return TermQueryFactory.create(PersonFields.name, name);
 	}
 
-	public static PrefixQuery nameStartsWith(String name) {
+	public static PrefixQuery nameTokenStartsWith(String name) {
 		return PrefixQueryFactory.create(PersonFields.name, name);
 	}
 
-	public static PrefixQuery oneTokenNameStartsWith(String name) {
+	public static PrefixQuery nameStartsWith(String name) {
 		return PrefixQueryFactory.create(PersonFields.oneTokenName, name);
 	}
 

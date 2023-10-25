@@ -18,7 +18,7 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.DocumentsDataSource
 
 public class PersonIndexFactories {
 	private static final PersonToDocumentConverter PERSON_TO_DOCUMENT_CONVERTER
-			= new PersonToDocumentConverter(TOKENIZATION_UTILS);
+			= new PersonToDocumentConverter(FIELD_FACTORY);
 
 	public static IndexSearchService<String, PersonSearchResult> createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {

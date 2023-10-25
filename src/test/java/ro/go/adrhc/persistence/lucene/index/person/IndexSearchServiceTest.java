@@ -31,7 +31,7 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void parseNameQuery() throws IOException {
+	void nameTextQuery() throws IOException {
 		List<PersonSearchResult> result = findAllMatches(
 				PersonQueryFactory::nameTextQuery, "pers*2*");
 		assertThat(result).hasSize(1);
@@ -46,17 +46,17 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void nameStartsWith() throws IOException {
+	void nameTokenStartsWith() throws IOException {
 		List<PersonSearchResult> result = findAllMatches(
-				PersonQueryFactory::nameStartsWith, "person2");
+				PersonQueryFactory::nameTokenStartsWith, "person2");
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void oneTokenNameStartsWith() throws IOException {
+	void nameStartsWith() throws IOException {
 		List<PersonSearchResult> result = findAllMatches(
-				PersonQueryFactory::oneTokenNameStartsWith, "(original)person");
+				PersonQueryFactory::nameStartsWith, "(original)person");
 
 		assertThat(result).hasSize(1);
 	}
