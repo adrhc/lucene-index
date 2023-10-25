@@ -25,6 +25,13 @@ public class FSIndexUpdateService extends IndexUpdateService {
 		this.indexPath = indexPath;
 	}
 
+	/**
+	 * removeByIds won't work when idFieldName is null
+	 */
+	public static FSIndexUpdateService create(Analyzer analyzer, Path indexPath) {
+		return new FSIndexUpdateService(null, fsWriterTemplate(analyzer, indexPath), indexPath);
+	}
+
 	public static FSIndexUpdateService create(Enum<?> idField, Analyzer analyzer, Path indexPath) {
 		return new FSIndexUpdateService(idField.name(),
 				fsWriterTemplate(analyzer, indexPath), indexPath);

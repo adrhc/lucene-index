@@ -37,8 +37,9 @@ public class IndexTestFactories {
 	}
 
 	public static FSIndexCreateService createFSIndexCreateService(
-			DocumentsDataSource documentsDatasource, Enum<?> idField, Path indexPath) {
-		return new FSIndexCreateService(documentsDatasource, createFSIndexUpdateService(idField, indexPath));
+			DocumentsDataSource documentsDatasource, Path indexPath) {
+		return new FSIndexCreateService(documentsDatasource,
+				FSIndexUpdateService.create(ANALYZER, indexPath));
 	}
 
 	public static FSIndexUpdateService createFSIndexUpdateService(Enum<?> idField, Path indexPath) {

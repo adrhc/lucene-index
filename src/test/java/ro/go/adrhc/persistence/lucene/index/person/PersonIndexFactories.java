@@ -31,7 +31,7 @@ public class PersonIndexFactories {
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
-		return createFSIndexCreateService(createPersonDocsDs(people), PersonFieldType.id, indexPath);
+		return createFSIndexCreateService(createPersonDocsDs(people), indexPath);
 	}
 
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
