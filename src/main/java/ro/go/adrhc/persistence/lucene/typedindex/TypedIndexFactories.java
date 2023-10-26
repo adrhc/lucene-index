@@ -13,32 +13,39 @@ import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class TypedIndexFactories<F> {
+public class TypedIndexFactories<T> {
 	private final int maxResultsPerSearchedItem;
-	private final Class<F> foundClass;
+	private final Class<T> tClass;
 	@Getter
 	private final Analyzer analyzer;
 
-	public static <F> TypedIndexFactories<F> of(int maxResultsPerSearchedItem,
-			Class<F> foundClass, TokenizerProperties tokenizerProperties) throws IOException {
+	public static <T> TypedIndexFactories<T> of(int maxResultsPerSearchedItem,
+			Class<T> foundClass, TokenizerProperties tokenizerProperties) throws IOException {
 		AnalyzerFactory analyzerFactory = new AnalyzerFactory(tokenizerProperties);
 		return new TypedIndexFactories<>(maxResultsPerSearchedItem, foundClass, analyzerFactory.create());
 	}
 
-	public <S> IndexSearchService<S, TypedSearchResult<S, F>> createTypedFSIndexSearchService(
+	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
+			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
+		return createTypedFSIndexSearchService(toQueryConverter, Stream::findFirst, indexPath);
+	}
+
+	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
 			SearchedToQueryConverter<S> toQueryConverter,
-			BestMatchingStrategy<TypedSearchResult<S, F>> bestMatchingStrategy,
+			BestMatchingStrategy<TypedSearchResult<S, T>> bestMatchingStrategy,
 			Path indexPath) {
 		return new IndexSearchService<>(
 				createDocumentIndexReaderTemplate(indexPath), toQueryConverter,
-				createTypedSearchResultFactoryFactory(foundClass),
+				createTypedSearchResultFactory(),
 				bestMatchingStrategy
 		);
 	}
@@ -53,12 +60,16 @@ public class TypedIndexFactories<F> {
 		return FSIndexUpdateService.create(idField, analyzer, indexPath);
 	}
 
-	private DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
+	public TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
+		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(tClass),
+				createDocumentIndexReaderTemplate(indexPath));
+	}
+
+	public DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
 		return new DocumentIndexReaderTemplate(maxResultsPerSearchedItem, indexPath);
 	}
 
-	private static <S, F> TypedSearchResultFactory<S, F>
-	createTypedSearchResultFactoryFactory(Class<F> fClass) {
-		return new TypedSearchResultFactory<>(DocumentToTypedConverter.of(fClass)::convert);
+	private <S> TypedSearchResultFactory<S, T> createTypedSearchResultFactory() {
+		return new TypedSearchResultFactory<>(DocumentToTypedConverter.of(tClass)::convert);
 	}
 }

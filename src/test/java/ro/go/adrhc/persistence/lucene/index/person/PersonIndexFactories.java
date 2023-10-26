@@ -59,7 +59,7 @@ public class PersonIndexFactories {
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
 		return createTypedIndexFactories(Person.class)
-				.createFSIndexCreateService(createPersonDocsDs(people), indexPath);
+				.createFSIndexCreateService(createDocsDs(people), indexPath);
 	}
 
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
@@ -67,7 +67,7 @@ public class PersonIndexFactories {
 				.createFSIndexUpdateService(PersonFieldType.id, indexPath);
 	}
 
-	private static DocumentsDataSource createPersonDocsDs(Collection<Person> persons) {
+	private static DocumentsDataSource createDocsDs(Collection<Person> persons) {
 		return createCachedTypedDs(ANALYZER, PersonFieldType.class, persons);
 	}
 }

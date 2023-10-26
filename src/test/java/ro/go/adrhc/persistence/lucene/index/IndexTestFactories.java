@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement.caseInsensitive;
@@ -28,14 +27,14 @@ public class IndexTestFactories {
 	public static <F> IndexSearchService<Query, TypedSearchResult<Query, F>>
 	createTypedFSIndexSearchService(Class<F> foundClass, Path indexPath) {
 		return createTypedIndexFactories(foundClass)
-				.createTypedFSIndexSearchService(Optional::of, Stream::findFirst, indexPath);
+				.createTypedFSIndexSearchService(Optional::of, indexPath);
 	}
 
 	public static <F> IndexSearchService<String, TypedSearchResult<String, F>>
 	createTypedFSIndexSearchService(Class<F> foundClass,
 			SearchedToQueryConverter<String> toQueryConverter, Path indexPath) {
 		return createTypedIndexFactories(foundClass)
-				.createTypedFSIndexSearchService(toQueryConverter, Stream::findFirst, indexPath);
+				.createTypedFSIndexSearchService(toQueryConverter, indexPath);
 	}
 
 	public static <F> TypedIndexFactories<F> createTypedIndexFactories(Class<F> foundClass) {

@@ -33,7 +33,7 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void freeQuery() throws IOException, QueryNodeException {
+	void parse() throws IOException, QueryNodeException {
 		List<Person> result = findAllMatches(NAME_QUERIES.parse("pers*2*"));
 		assertThat(result).hasSize(1);
 	}
@@ -53,14 +53,14 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void startsWith() throws IOException {
+	void wordStartsWith() throws IOException {
 		List<Person> result = findAllMatches(NAME_AS_WORD_QUERIES.wordStartsWith("(original)person"));
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void cnpEquals() throws IOException {
+	void wordEquals() throws IOException {
 		List<Person> result = findAllMatches(CNP_QUERIES.wordEquals("#Person3"));
 
 		assertThat(result).hasSize(1);
