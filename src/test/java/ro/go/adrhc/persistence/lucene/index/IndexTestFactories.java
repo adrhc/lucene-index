@@ -6,6 +6,7 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQuery;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
@@ -45,6 +46,10 @@ public class IndexTestFactories {
 		return INDEX_FACTORIES.createTypedFSIndexSearchService(
 				toQueryConverter, docToTypeConverter, Stream::findFirst, indexPath
 		);
+	}
+
+	public static FieldQuery createFieldQuery(Enum<?> field) {
+		return FieldQuery.create(ANALYZER, field);
 	}
 
 	private static Analyzer createAnalyzer() throws IOException {
