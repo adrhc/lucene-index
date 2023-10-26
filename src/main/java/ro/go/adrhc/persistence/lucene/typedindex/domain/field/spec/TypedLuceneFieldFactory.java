@@ -16,7 +16,7 @@ public class TypedLuceneFieldFactory {
 	public <T> Field create(T t, TypedFieldSpec<T> typedFieldSpec) {
 		Object value = typedFieldSpec.value(t);
 		return switch (typedFieldSpec.type()) {
-			case IDENTIFIER -> LuceneFieldFactory.keywordField(typedFieldSpec.field(), value);
+			case KEYWORD -> LuceneFieldFactory.keywordField(typedFieldSpec.field(), value);
 			case LONG -> LuceneFieldFactory.longField(typedFieldSpec.field(), (Long) value);
 			case PHRASE -> LuceneFieldFactory.textField(typedFieldSpec.field(), value);
 			case WORD -> luceneFieldFactory.stringField(typedFieldSpec.field(), value);

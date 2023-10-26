@@ -14,10 +14,10 @@ import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldType.*;
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedFieldEnum<Person> {
-	id(IDENTIFIER, Person::id),
+	id(KEYWORD, Person::id),
 	name(PHRASE, Person::name),
 	nameAsWord(WORD, Person::name),
-	cnp(IDENTIFIER, Person::cnp),
+	cnp(KEYWORD, Person::cnp),
 	km(LONG, Person::km);
 
 	private final FieldType fieldType;
