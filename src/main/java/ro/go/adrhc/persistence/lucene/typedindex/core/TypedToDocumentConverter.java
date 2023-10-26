@@ -45,6 +45,7 @@ public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
 		Document doc = new Document();
 		typedFields
 				.map(tf -> typedFieldFactory.create(tValue, tf))
+				.flatMap(Optional::stream)
 				.forEach(doc::add);
 
 		Optional<String> rawDataAsJson = tStringifier.apply(tValue);
