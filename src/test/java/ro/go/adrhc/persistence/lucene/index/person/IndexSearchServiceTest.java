@@ -21,9 +21,9 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IndexSearchServiceTest {
 	private static final List<Person> PEOPLE = List.of(
-			new Person("1", "#Person1", TokenizationUtilsTest.TEXT),
-			new Person("2", "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
-			new Person("3", "#Person3", "(Original)person222 CAșț"));
+			new Person("1", 111L, "#Person1", TokenizationUtilsTest.TEXT),
+			new Person("2", 222L, "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
+			new Person("3", 333L, "#Person3", "(Original)person222 CAșț"));
 	@TempDir
 	private static Path tmpDir;
 

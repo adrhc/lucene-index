@@ -5,7 +5,7 @@ import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
-import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
 import static ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverterFactory.ofSneaky;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDocsDs;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDs;
 
 public class PersonIndexFactories {
 	public static final FieldQueries NAME_AS_WORD_QUERIES =
@@ -68,6 +68,6 @@ public class PersonIndexFactories {
 	}
 
 	private static DocumentsDataSource createPersonDocsDs(Collection<Person> persons) {
-		return createCachedTypedDocsDs(ANALYZER, PersonFieldType.class, persons);
+		return createCachedTypedDs(ANALYZER, PersonFieldType.class, persons);
 	}
 }

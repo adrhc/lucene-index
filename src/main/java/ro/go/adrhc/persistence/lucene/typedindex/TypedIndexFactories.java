@@ -1,11 +1,12 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
-import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 public class TypedIndexFactories<F> {
 	private final int maxResultsPerSearchedItem;
 	private final Class<F> foundClass;
+	@Getter
 	private final Analyzer analyzer;
 
 	public static <F> TypedIndexFactories<F> of(int maxResultsPerSearchedItem,

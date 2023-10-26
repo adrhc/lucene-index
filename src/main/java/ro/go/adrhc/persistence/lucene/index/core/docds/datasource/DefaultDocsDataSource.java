@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.docds;
+package ro.go.adrhc.persistence.lucene.index.core.docds.datasource;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.core.docds.rawds.RawDataSourceFactories.createCachedRawDs;
-import static ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdSerde.createStringRawIdSerde;
+import static ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdSerdeFactory.STRING_RAW_ID_SERDE;
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertAll;
 
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class DefaultDocsDataSource<ID, T extends Identifiable<ID>> implements Do
 			Function<T, Optional<Document>> toDocumentConverter, Collection<T> tCollection) {
 		return new DefaultDocsDataSource<>(
 				createCachedRawDs(tCollection),
-				createStringRawIdSerde(),
+				STRING_RAW_ID_SERDE,
 				toDocumentConverter::apply
 		);
 	}

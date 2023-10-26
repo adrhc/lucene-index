@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import ro.go.adrhc.persistence.lucene.index.core.docds.RawToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.RawToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldSpecsCollection;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedLuceneFieldFactory;
@@ -14,7 +14,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedLuceneFi
 import java.util.Optional;
 import java.util.function.Function;
 
-import static ro.go.adrhc.persistence.lucene.index.domain.LuceneFieldFactory.storedField;
+import static ro.go.adrhc.persistence.lucene.index.domain.field.LuceneFieldFactory.storedField;
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec;
 
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.FieldType;
+import ro.go.adrhc.persistence.lucene.index.domain.field.FieldType;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 
 import java.util.function.Function;

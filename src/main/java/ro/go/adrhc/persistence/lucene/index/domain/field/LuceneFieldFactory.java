@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.domain;
+package ro.go.adrhc.persistence.lucene.index.domain.field;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
@@ -13,6 +13,10 @@ public class LuceneFieldFactory {
 
 	public static LuceneFieldFactory create(Analyzer analyzer) {
 		return new LuceneFieldFactory(new TokenizationUtils(analyzer));
+	}
+
+	public static LongField longField(Enum<?> field, Long value) {
+		return new LongField(field.name(), value, Field.Store.NO);
 	}
 
 	/**

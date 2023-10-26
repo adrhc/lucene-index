@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.Function;
 
-import static ro.go.adrhc.persistence.lucene.typedindex.domain.field.FieldType.*;
+import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldType.*;
 
 @RequiredArgsConstructor
 public class TypedFieldSpecFactory {

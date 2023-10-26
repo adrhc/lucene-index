@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexUpdateService;
-import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 
 import java.io.IOException;

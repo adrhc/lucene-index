@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
-import ro.go.adrhc.persistence.lucene.index.domain.LuceneFieldFactory;
+import ro.go.adrhc.persistence.lucene.index.domain.field.LuceneFieldFactory;
 
 @RequiredArgsConstructor
 public class TypedLuceneFieldFactory {
@@ -17,8 +17,9 @@ public class TypedLuceneFieldFactory {
 		Object value = typedFieldSpec.value(t);
 		return switch (typedFieldSpec.type()) {
 			case IDENTIFIER -> LuceneFieldFactory.keywordField(typedFieldSpec.field(), value);
-			case WORD -> luceneFieldFactory.stringField(typedFieldSpec.field(), value);
+			case LONG -> LuceneFieldFactory.longField(typedFieldSpec.field(), (Long) value);
 			case PHRASE -> LuceneFieldFactory.textField(typedFieldSpec.field(), value);
+			case WORD -> luceneFieldFactory.stringField(typedFieldSpec.field(), value);
 		};
 	}
 }

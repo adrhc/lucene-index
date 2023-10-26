@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.docds;
+package ro.go.adrhc.persistence.lucene.index.core.docds.datasource;
 
 import org.apache.lucene.document.Document;
 
