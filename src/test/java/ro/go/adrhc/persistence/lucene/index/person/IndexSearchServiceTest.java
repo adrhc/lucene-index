@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,51 +33,40 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void nameTextQuery() throws IOException {
-		List<Person> result = findAllMatches(
-				PersonQueryFactory::nameTextQuery, "pers*2*");
+	void nameTextQuery() throws IOException, QueryNodeException {
+		List<Person> result = findAllMatches(PersonQueryFactory.nameTextQuery("pers*2*"));
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
 	void nameTokenEquals() throws IOException {
-		List<Person> result = findAllMatches(
-				PersonQueryFactory::nameTokenEquals, "cast");
+		List<Person> result = findAllMatches(PersonQueryFactory.nameTokenEquals("cast"));
 
 		assertThat(result).hasSize(2);
 	}
 
 	@Test
 	void nameTokenStartsWith() throws IOException {
-		List<Person> result = findAllMatches(
-				PersonQueryFactory::nameTokenStartsWith, "person2");
+		List<Person> result = findAllMatches(PersonQueryFactory.nameTokenStartsWith("person2"));
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
 	void nameStartsWith() throws IOException {
-		List<Person> result = findAllMatches(
-				PersonQueryFactory::nameStartsWith, "(original)person");
+		List<Person> result = findAllMatches(PersonQueryFactory.nameStartsWith("(original)person"));
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
 	void cnpEquals() throws IOException {
-		List<Person> result = findAllMatches(
-				PersonQueryFactory::cnpEquals, "#Person3");
+		List<Person> result = findAllMatches(PersonQueryFactory.cnpEquals("#Person3"));
 
 		assertThat(result).hasSize(1);
 	}
 
-	private List<Person> findAllMatches(
-			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter,
-			String textToSearch) throws IOException {
-		return PersonIndexFactories
-				.createSearchService(stringQueryConverter, tmpDir)
-				.findAllMatches(textToSearch)
-				.stream().map(TypedSearchResult::getFound)
-				.toList();
+	private List<Person> findAllMatches(Query query) throws IOException {
+		return PersonIndexFactories.findAllMatches(tmpDir, query);
 	}
 }

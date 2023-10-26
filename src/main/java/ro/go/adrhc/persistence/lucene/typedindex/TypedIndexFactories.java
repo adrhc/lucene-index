@@ -31,10 +31,10 @@ public class TypedIndexFactories {
 		return new TypedIndexFactories(maxResultsPerSearchedItem, analyzerFactory.create());
 	}
 
-	public <T> IndexSearchService<String, TypedSearchResult<String, T>> createTypedFSIndexSearchService(
-			SearchedToQueryConverter<String> toQueryConverter,
+	public <S, T> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
+			SearchedToQueryConverter<S> toQueryConverter,
 			Function<Document, Optional<T>> docToTypeConverter,
-			BestMatchingStrategy<TypedSearchResult<String, T>> bestMatchingStrategy,
+			BestMatchingStrategy<TypedSearchResult<S, T>> bestMatchingStrategy,
 			Path indexPath) {
 		return new IndexSearchService<>(
 				createDocumentIndexReaderTemplate(indexPath), toQueryConverter,
@@ -57,7 +57,7 @@ public class TypedIndexFactories {
 		return new DocumentIndexReaderTemplate(maxResultsPerSearchedItem, indexPath);
 	}
 
-	private static <F> TypedSearchResultFactory<String, F>
+	private static <S, F> TypedSearchResultFactory<S, F>
 	createTypedSearchResultFactoryFactory(Function<Document, Optional<F>> documentToFound) {
 		return new TypedSearchResultFactory<>(documentToFound);
 	}

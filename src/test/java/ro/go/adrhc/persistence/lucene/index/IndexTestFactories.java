@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
@@ -27,7 +28,17 @@ public class IndexTestFactories {
 	public static final TypedIndexFactories INDEX_FACTORIES =
 			new TypedIndexFactories(10, ANALYZER);
 
-	public static <T> IndexSearchService<String, TypedSearchResult<String, T>> createTypedFSIndexSearchService(
+	public static <T> IndexSearchService<Query, TypedSearchResult<Query, T>>
+	createTypedFSIndexSearchService(
+			Function<Document, Optional<T>> docToTypeConverter,
+			Path indexPath) {
+		return INDEX_FACTORIES.createTypedFSIndexSearchService(
+				Optional::of, docToTypeConverter, Stream::findFirst, indexPath
+		);
+	}
+
+	public static <T> IndexSearchService<String, TypedSearchResult<String, T>>
+	createTypedFSIndexSearchService(
 			SearchedToQueryConverter<String> toQueryConverter,
 			Function<Document, Optional<T>> docToTypeConverter,
 			Path indexPath) {

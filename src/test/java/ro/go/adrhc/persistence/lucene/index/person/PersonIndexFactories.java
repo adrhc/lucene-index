@@ -10,8 +10,10 @@ import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -21,9 +23,31 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFacto
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 public class PersonIndexFactories {
+	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
+		return PersonIndexFactories
+				.createSearchService(indexPath)
+				.findAllMatches(query)
+				.stream().map(TypedSearchResult::getFound)
+				.toList();
+	}
+
+	public static List<Person> findAllMatches(Path indexPath,
+			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
+			String textToSearch) throws IOException {
+		return PersonIndexFactories
+				.createSearchService(searchedToQueryConverter, indexPath)
+				.findAllMatches(textToSearch)
+				.stream().map(TypedSearchResult::getFound)
+				.toList();
+	}
+
+	public static IndexSearchService<Query, TypedSearchResult<Query, Person>> createSearchService(Path indexPath) {
+		return createTypedFSIndexSearchService(createDocumentToPersonConverter(), indexPath);
+	}
+
 	public static IndexSearchService<String, TypedSearchResult<String, Person>> createSearchService(
-			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {
-		return createTypedFSIndexSearchService(ofSneaky(stringQueryConverter),
+			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter, Path indexPath) {
+		return createTypedFSIndexSearchService(ofSneaky(searchedToQueryConverter),
 				createDocumentToPersonConverter(), indexPath);
 	}
 
