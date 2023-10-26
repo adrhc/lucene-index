@@ -9,7 +9,6 @@ import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFactory;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -24,8 +23,8 @@ import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 public class PersonIndexFactories {
 	public static IndexSearchService<String, TypedSearchResult<String, Person>> createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> stringQueryConverter, Path indexPath) {
-		return createIndexSearchService(ofSneaky(stringQueryConverter),
-				createIndexSearchResultFactory(), indexPath);
+		return createTypedFSIndexSearchService(ofSneaky(stringQueryConverter),
+				createDocumentToPersonConverter(), indexPath);
 	}
 
 	public static FSIndexCreateService createCreateService(
@@ -35,10 +34,6 @@ public class PersonIndexFactories {
 
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
 		return createFSIndexUpdateService(PersonFieldType.id, indexPath);
-	}
-
-	private static TypedSearchResultFactory<String, Person> createIndexSearchResultFactory() {
-		return new TypedSearchResultFactory<>(createDocumentToPersonConverter());
 	}
 
 	private static Function<Document, Optional<Person>> createDocumentToPersonConverter() {
