@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
@@ -15,13 +14,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
 import static ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverterFactory.ofSneaky;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDocsDs;
-import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 public class PersonIndexFactories {
 	public static final FieldQueries NAME_AS_WORD_QUERIES =
@@ -49,28 +45,26 @@ public class PersonIndexFactories {
 
 	public static IndexSearchService<Query, TypedSearchResult<Query, Person>>
 	createSearchService(Path indexPath) {
-		return createTypedFSIndexSearchService(createDocumentToPersonConverter(), indexPath);
+		return createTypedFSIndexSearchService(Person.class, indexPath);
 	}
 
 	public static IndexSearchService<String, TypedSearchResult<String, Person>>
 	createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
 			Path indexPath) {
-		return createTypedFSIndexSearchService(ofSneaky(searchedToQueryConverter),
-				createDocumentToPersonConverter(), indexPath);
+		return createTypedFSIndexSearchService(Person.class,
+				ofSneaky(searchedToQueryConverter), indexPath);
 	}
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
-		return INDEX_FACTORIES.createFSIndexCreateService(createPersonDocsDs(people), indexPath);
+		return createTypedIndexFactories(Person.class)
+				.createFSIndexCreateService(createPersonDocsDs(people), indexPath);
 	}
 
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
-		return INDEX_FACTORIES.createFSIndexUpdateService(PersonFieldType.id, indexPath);
-	}
-
-	private static Function<Document, Optional<Person>> createDocumentToPersonConverter() {
-		return sneakyToOptionalResult(new DocumentToPersonConverter()::convert);
+		return createTypedIndexFactories(Person.class)
+				.createFSIndexUpdateService(PersonFieldType.id, indexPath);
 	}
 
 	private static DocumentsDataSource createPersonDocsDs(Collection<Person> persons) {

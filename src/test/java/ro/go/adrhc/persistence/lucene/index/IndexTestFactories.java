@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
@@ -26,26 +24,22 @@ import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndRep
 public class IndexTestFactories {
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
-	public static final TypedIndexFactories INDEX_FACTORIES =
-			new TypedIndexFactories(10, ANALYZER);
 
-	public static <T> IndexSearchService<Query, TypedSearchResult<Query, T>>
-	createTypedFSIndexSearchService(
-			Function<Document, Optional<T>> docToTypeConverter,
-			Path indexPath) {
-		return INDEX_FACTORIES.createTypedFSIndexSearchService(
-				Optional::of, docToTypeConverter, Stream::findFirst, indexPath
-		);
+	public static <F> IndexSearchService<Query, TypedSearchResult<Query, F>>
+	createTypedFSIndexSearchService(Class<F> foundClass, Path indexPath) {
+		return createTypedIndexFactories(foundClass)
+				.createTypedFSIndexSearchService(Optional::of, Stream::findFirst, indexPath);
 	}
 
-	public static <T> IndexSearchService<String, TypedSearchResult<String, T>>
-	createTypedFSIndexSearchService(
-			SearchedToQueryConverter<String> toQueryConverter,
-			Function<Document, Optional<T>> docToTypeConverter,
-			Path indexPath) {
-		return INDEX_FACTORIES.createTypedFSIndexSearchService(
-				toQueryConverter, docToTypeConverter, Stream::findFirst, indexPath
-		);
+	public static <F> IndexSearchService<String, TypedSearchResult<String, F>>
+	createTypedFSIndexSearchService(Class<F> foundClass,
+			SearchedToQueryConverter<String> toQueryConverter, Path indexPath) {
+		return createTypedIndexFactories(foundClass)
+				.createTypedFSIndexSearchService(toQueryConverter, Stream::findFirst, indexPath);
+	}
+
+	public static <F> TypedIndexFactories<F> createTypedIndexFactories(Class<F> foundClass) {
+		return new TypedIndexFactories<>(10, foundClass, ANALYZER);
 	}
 
 	public static FieldQueries createFieldQuery(Enum<?> field) {
