@@ -29,11 +29,11 @@ public class PersonIndexFactories {
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
-		return createFSIndexCreateService(createPersonDocsDs(people), indexPath);
+		return INDEX_FACTORIES.createFSIndexCreateService(createPersonDocsDs(people), indexPath);
 	}
 
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
-		return createFSIndexUpdateService(PersonFieldType.id, indexPath);
+		return INDEX_FACTORIES.createFSIndexUpdateService(PersonFieldType.id, indexPath);
 	}
 
 	private static Function<Document, Optional<Person>> createDocumentToPersonConverter() {

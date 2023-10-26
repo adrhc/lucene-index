@@ -2,10 +2,7 @@ package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
-import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
@@ -37,15 +34,6 @@ public class IndexTestFactories {
 		return INDEX_FACTORIES.createTypedFSIndexSearchService(
 				toQueryConverter, docToTypeConverter, Stream::findFirst, indexPath
 		);
-	}
-
-	public static FSIndexCreateService createFSIndexCreateService(
-			DocumentsDataSource documentsDatasource, Path indexPath) {
-		return INDEX_FACTORIES.createFSIndexCreateService(documentsDatasource, indexPath);
-	}
-
-	public static FSIndexUpdateService createFSIndexUpdateService(Enum<?> idField, Path indexPath) {
-		return INDEX_FACTORIES.createFSIndexUpdateService(idField, indexPath);
 	}
 
 	private static Analyzer createAnalyzer() throws IOException {
