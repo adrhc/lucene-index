@@ -16,7 +16,7 @@ public class TypedIndexReaderTemplate<T> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final DocumentIndexReaderTemplate docIndexReaderTemplate;
 
-	public <R> R transformFileMetadata(Function<Stream<T>, R> transformer) throws IOException {
+	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {
 		return docIndexReaderTemplate.transformDocuments(curry(this::doTransform, transformer));
 	}
 
