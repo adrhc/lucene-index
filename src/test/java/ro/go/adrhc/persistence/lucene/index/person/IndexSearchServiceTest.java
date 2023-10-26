@@ -33,8 +33,8 @@ class IndexSearchServiceTest {
 	}
 
 	@Test
-	void nameTextQuery() throws IOException, QueryNodeException {
-		List<Person> result = findAllMatches(PersonQueryFactory.nameTextQuery("pers*2*"));
+	void freeQuery() throws IOException, QueryNodeException {
+		List<Person> result = findAllMatches(PersonQueryFactory.parse("name:pers*2*"));
 		assertThat(result).hasSize(1);
 	}
 

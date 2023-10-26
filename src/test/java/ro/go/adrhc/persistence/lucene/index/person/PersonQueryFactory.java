@@ -28,8 +28,8 @@ public class PersonQueryFactory {
 		return PrefixQueryFactory.create(PersonFieldType.nameAsWord, name);
 	}
 
-	public static Query nameTextQuery(String nameQuery) throws QueryNodeException {
+	public static Query parse(String query) throws QueryNodeException {
 		StandardQueryParser parser = new StandardQueryParser(ANALYZER);
-		return parser.parse(nameQuery, PersonFieldType.name.name());
+		return parser.parse(query, PersonFieldType.id.name());
 	}
 }
