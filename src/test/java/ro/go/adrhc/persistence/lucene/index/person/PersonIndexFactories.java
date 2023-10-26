@@ -7,7 +7,7 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.docds.DocumentsDataSource;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQuery;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
@@ -24,10 +24,10 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFacto
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 public class PersonIndexFactories {
-	public static final FieldQuery NAME_AS_WORD_QUERIES =
+	public static final FieldQueries NAME_AS_WORD_QUERIES =
 			createFieldQuery(PersonFieldType.nameAsWord);
-	public static final FieldQuery NAME_QUERIES = createFieldQuery(PersonFieldType.name);
-	public static final FieldQuery CNP_QUERIES = createFieldQuery(PersonFieldType.cnp);
+	public static final FieldQueries NAME_QUERIES = createFieldQuery(PersonFieldType.name);
+	public static final FieldQueries CNP_QUERIES = createFieldQuery(PersonFieldType.cnp);
 
 	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
 		return PersonIndexFactories

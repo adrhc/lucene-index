@@ -10,12 +10,12 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
 @RequiredArgsConstructor
-public class FieldQuery {
+public class FieldQueries {
 	private final StandardQueryParser standardQueryParser;
 	private final String fieldName;
 
-	public static FieldQuery create(Analyzer analyzer, Enum<?> field) {
-		return new FieldQuery(new StandardQueryParser(analyzer), field.name());
+	public static FieldQueries create(Analyzer analyzer, Enum<?> field) {
+		return new FieldQueries(new StandardQueryParser(analyzer), field.name());
 	}
 
 	public TermQuery tokenEquals(String name) {
