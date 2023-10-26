@@ -8,7 +8,7 @@ import org.apache.lucene.document.Document;
 
 import java.util.Optional;
 
-import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.ObjectMapperFactory.JSON_MAPPER;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -16,7 +16,7 @@ public class DocumentToTypedConverter<T> {
 	private final ObjectReader tReader;
 
 	public static <T> DocumentToTypedConverter<T> of(Class<T> tClass) {
-		return new DocumentToTypedConverter<>(json().build().readerFor(tClass));
+		return new DocumentToTypedConverter<>(JSON_MAPPER.readerFor(tClass));
 	}
 
 	public Optional<T> convert(Document doc) {

@@ -1,11 +1,9 @@
 package ro.go.adrhc.persistence.lucene.typedindex.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.RawToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldSpecsCollection;
@@ -15,11 +13,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.domain.field.LuceneFieldFactory.storedField;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.ObjectMapperFactory.JSON_MAPPER;
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 @RequiredArgsConstructor
 public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
-	private static final ObjectMapper MAPPER = Jackson2ObjectMapperBuilder.json().build();
 	private static final String RAW_DATA_FIELD = "raw";
 	private final TypedLuceneFieldFactory typedFieldFactory;
 	private final Function<T, Optional<String>> tStringifier;
@@ -28,7 +26,7 @@ public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
 	public static <T, E extends Enum<E> & TypedFieldEnum<T>>
 	TypedToDocumentConverter<T> create(Analyzer analyzer, Class<E> typedFieldEnumClass) {
 		TypedFieldSpecsCollection<T> typedFieldSpecsCollection = TypedFieldSpecsCollection.create(typedFieldEnumClass);
-		Function<T, Optional<String>> tStringifier = sneakyToOptionalResult(MAPPER::writeValueAsString);
+		Function<T, Optional<String>> tStringifier = sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
 		TypedLuceneFieldFactory typedLuceneFieldFactory = TypedLuceneFieldFactory.create(analyzer);
 		return new TypedToDocumentConverter<>(typedLuceneFieldFactory, tStringifier, typedFieldSpecsCollection);
 	}
