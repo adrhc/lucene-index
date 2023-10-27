@@ -7,7 +7,6 @@ import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,44 +26,57 @@ public class IndexSearchService<S, F> {
 	private final SearchedToQueryConverter<S> toQueryConverter;
 	private final IndexSearchResultFactory<S, F> toFoundConverter;
 	private final BestMatchingStrategy<F> bestMatchingStrategy;
+	private final SearchResultFilter<F> searchResultFilter;
 
 	public List<F> findAllMatches(S searchedItem) throws IOException {
 		return documentIndexReaderTemplate.useReader(indexReader ->
-				findAllMatches(indexReader, searchedItem).toList());
+				doFindAllMatches(indexReader, searchedItem).toList());
 	}
 
-	public Optional<F> findBestMatch(S searchedItem) throws IOException {
-		return documentIndexReaderTemplate.useReader(indexReader
-				-> bestMatchingStrategy.bestMatch(findAllMatches(indexReader, searchedItem)));
+	public Optional<F> findBestMatch(S searched) throws IOException {
+		return documentIndexReaderTemplate.useReader(
+				indexReader -> doFindBestMatch(indexReader, searched));
 	}
 
 	public List<F> findBestMatches(Collection<S> searchedItems) throws IOException {
 		return documentIndexReaderTemplate.useReader(
-				indexReader -> doFindBestMatches(searchedItems, indexReader));
+				indexReader -> doFindBestMatches(indexReader, searchedItems).toList());
 	}
 
-	protected List<F> doFindBestMatches(Collection<S> searchedItems,
-			DocumentIndexReader indexReader) throws IOException {
-		List<F> result = new ArrayList<>();
-		for (S searched : searchedItems) {
-			Stream<F> findings = findAllMatches(indexReader, searched);
-			Optional<F> bestMatch = bestMatchingStrategy.bestMatch(findings);
-			bestMatch.ifPresent(result::add);
+	protected Stream<F> doFindBestMatches(DocumentIndexReader indexReader, Collection<S> searchedItems) {
+		return searchedItems.stream()
+				.map(searched -> doSafelyFindBestMatch(indexReader, searched))
+				.flatMap(Optional::stream);
+	}
+
+	protected Optional<F> doSafelyFindBestMatch(DocumentIndexReader indexReader, S searched) {
+		try {
+			return doFindBestMatch(indexReader, searched);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			return Optional.empty();
 		}
-		return result;
 	}
 
-	protected Stream<F> findAllMatches(
-			DocumentIndexReader indexReader, S searchedItem) throws IOException {
-		// log.debug("\nSearching:\n{}", searchedItem);
-		Optional<Query> optionalQuery = toQueryConverter.convert(searchedItem);
+	protected Optional<F> doFindBestMatch(DocumentIndexReader indexReader, S searched) throws IOException {
+		return bestMatchingStrategy.bestMatch(doFindAllMatches(indexReader, searched));
+	}
+
+	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searched) throws IOException {
+		// log.debug("\nSearching:\n{}", searched);
+		Optional<Query> optionalQuery = toQueryConverter.convert(searched);
 		if (optionalQuery.isEmpty()) {
 			return Stream.empty();
 		}
-		// log.debug("\nquery used to search:\n{}", query);
-		return indexReader.search(optionalQuery.get()).stream()
-				.map(scoreAndDocument -> toFoundConverter
-						.create(searchedItem, scoreAndDocument))
-				.flatMap(Optional::stream);
+		return doFindAllMatches(indexReader, searched, optionalQuery.get());
+	}
+
+	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searchedItem, Query query) throws IOException {
+		// log.debug("\nQuery used to search:\n{}", query);
+		return indexReader.search(query)
+				.stream()
+				.map(scoreAndDocument -> toFoundConverter.create(searchedItem, scoreAndDocument))
+				.flatMap(Optional::stream)
+				.filter(searchResultFilter::filter);
 	}
 }

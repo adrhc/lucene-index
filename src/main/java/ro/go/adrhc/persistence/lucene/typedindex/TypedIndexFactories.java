@@ -16,6 +16,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.core.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,17 +37,19 @@ public class TypedIndexFactories<T> {
 
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
 			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
-		return createTypedFSIndexSearchService(toQueryConverter, Stream::findFirst, indexPath);
+		return createTypedFSIndexSearchService(
+				toQueryConverter, Stream::findFirst, it -> true, indexPath);
 	}
 
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
 			SearchedToQueryConverter<S> toQueryConverter,
 			BestMatchingStrategy<TypedSearchResult<S, T>> bestMatchingStrategy,
-			Path indexPath) {
+			TypedSearchResultFilter<S, T> searchResultFilter, Path indexPath) {
 		return new IndexSearchService<>(
 				createDocumentIndexReaderTemplate(indexPath), toQueryConverter,
 				createTypedSearchResultFactory(),
-				bestMatchingStrategy
+				bestMatchingStrategy,
+				searchResultFilter
 		);
 	}
 
@@ -69,7 +72,7 @@ public class TypedIndexFactories<T> {
 		return new DocumentIndexReaderTemplate(maxResultsPerSearchedItem, indexPath);
 	}
 
-	private <S> TypedSearchResultFactory<S, T> createTypedSearchResultFactory() {
+	public <S> TypedSearchResultFactory<S, T> createTypedSearchResultFactory() {
 		return new TypedSearchResultFactory<>(DocumentToTypedConverter.of(tClass)::convert);
 	}
 }
