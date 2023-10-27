@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.RawToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.index.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldSpecsCollection;
@@ -17,13 +18,13 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.ObjectMapperFactory
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 @RequiredArgsConstructor
-public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
+public class TypedToDocumentConverter<T extends Identifiable<?>> implements RawToDocumentConverter<T> {
 	private static final String RAW_DATA_FIELD = "raw";
 	private final TypedFieldFactory typedFieldFactory;
 	private final Function<T, Optional<String>> tStringifier;
 	private final TypedFieldSpecsCollection<T> typedFields;
 
-	public static <T, E extends Enum<E> & TypedFieldEnum<T>>
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedFieldEnum<T>>
 	TypedToDocumentConverter<T> create(Analyzer analyzer, Class<E> typedFieldEnumClass) {
 		TypedFieldSpecsCollection<T> typedFieldSpecsCollection = TypedFieldSpecsCollection.create(typedFieldEnumClass);
 		Function<T, Optional<String>> tStringifier = sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
@@ -38,7 +39,7 @@ public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
 	@Override
 	@NonNull
 	public Optional<Document> convert(T tValue) {
-		if (tValue == null) {
+		if (tValue == null || !tValue.hasId()) {
 			return Optional.empty();
 		}
 
