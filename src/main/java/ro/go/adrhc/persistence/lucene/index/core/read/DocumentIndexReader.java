@@ -7,6 +7,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiBits;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -17,8 +18,6 @@ import org.apache.lucene.util.Bits;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -37,6 +36,10 @@ public class DocumentIndexReader implements AutoCloseable {
 		return new DocumentIndexReader(directory, indexReader, maxResultsPerSearchedSong);
 	}
 
+	public Stream<Document> getAll() {
+		return getAll(Set.of());
+	}
+
 	public Stream<String> getAllFieldValues(String fieldName) {
 		return getAll(Set.of(fieldName)).map(doc -> doc.get(fieldName));
 	}
@@ -44,29 +47,73 @@ public class DocumentIndexReader implements AutoCloseable {
 	public Stream<Document> getAll(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
-		return IntStream.range(0, indexReader.maxDoc())
-				.filter(idx -> liveDocs == null || liveDocs.get(idx))
-				.mapToObj(idx -> toDocument(fieldNames, idx))
+		return storedFields()
+				.map(storedFields -> doGetAll(liveDocs, storedFields, fieldNames))
+				.orElseGet(Stream::of);
+	}
+
+	public Stream<ScoreAndDocument> search(Query query) {
+		return topDocsStoredFields(query).map(this::doSearch).orElseGet(Stream::empty);
+	}
+
+	protected Stream<ScoreAndDocument> doSearch(TopDocsStoredFields topDocsStoredFields) {
+		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
-	public Stream<Document> getAll() {
-		// liveDocs can be null if the reader has no deletions
-		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
+	protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(
+			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+		return safelyGetDocument(topDocsStoredFields.storedFields(), scoreDoc.doc)
+				.map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
+	}
+
+	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
+		return safelyGetDocument(storedFields, Set.of(), docIndex);
+	}
+
+	protected Stream<Document> doGetAll(Bits liveDocs, StoredFields storedFields, Set<String> fieldNames) {
 		return IntStream.range(0, indexReader.maxDoc())
-				.filter(idx -> liveDocs == null || liveDocs.get(idx))
-				.mapToObj(this::toDocument)
+				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
+				.mapToObj(docIndex -> this.safelyGetDocument(storedFields, fieldNames, docIndex))
 				.flatMap(Optional::stream);
 	}
 
-	public List<ScoreAndDocument> search(Query query) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		TopDocs topDocs = searcher.search(query, maxResultsPerSearchedSong);
-		List<ScoreAndDocument> result = new ArrayList<>();
-		for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-			result.add(toScoreAndDocument(searcher, scoreDoc));
+	/**
+	 * indexReader.document might fail if the document
+	 * is meanwhile purged (not only marked as removed)
+	 */
+	protected Optional<Document> safelyGetDocument(StoredFields storedFields, Set<String> fieldNames, int docIndex) {
+		try {
+			if (fieldNames.isEmpty()) {
+				return Optional.of(storedFields.document(docIndex));
+			} else {
+				return Optional.of(storedFields.document(docIndex, fieldNames));
+			}
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
 		}
-		return result;
+		return Optional.empty();
+	}
+
+	protected Optional<StoredFields> storedFields() {
+		try {
+			return Optional.of(indexReader.storedFields());
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	protected Optional<TopDocsStoredFields> topDocsStoredFields(Query query) {
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		try {
+			TopDocs topDocs = searcher.search(query, maxResultsPerSearchedSong);
+			return Optional.of(new TopDocsStoredFields(topDocs, searcher.storedFields()));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -75,30 +122,6 @@ public class DocumentIndexReader implements AutoCloseable {
 		IOUtils.closeQuietly(directory);
 	}
 
-	/**
-	 * indexReader.document might fail if the document
-	 * is meanwhile purged (not only marked as removed)
-	 */
-	private Optional<Document> toDocument(Set<String> fieldNames, int docIndex) {
-		try {
-			return Optional.of(indexReader.document(docIndex, fieldNames));
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
-
-	private Optional<Document> toDocument(int docIndex) {
-		try {
-			return Optional.of(indexReader.document(docIndex));
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
-
-	private ScoreAndDocument toScoreAndDocument(
-			IndexSearcher searcher, ScoreDoc scoreDoc) throws IOException {
-		return new ScoreAndDocument(scoreDoc.score, searcher.doc(scoreDoc.doc));
+	private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
 	}
 }
