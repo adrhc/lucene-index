@@ -8,11 +8,11 @@ import org.apache.lucene.util.BytesRef;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 
 @RequiredArgsConstructor
-public class LuceneFieldFactory {
+public class FieldFactory {
 	private final TokenizationUtils tokenizationUtils;
 
-	public static LuceneFieldFactory create(Analyzer analyzer) {
-		return new LuceneFieldFactory(new TokenizationUtils(analyzer));
+	public static FieldFactory create(Analyzer analyzer) {
+		return new FieldFactory(new TokenizationUtils(analyzer));
 	}
 
 	public static LongField longField(Enum<?> field, Long value) {

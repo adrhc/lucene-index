@@ -6,20 +6,20 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.RawToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldSpecsCollection;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedLuceneFieldFactory;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import static ro.go.adrhc.persistence.lucene.index.domain.field.LuceneFieldFactory.storedField;
+import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.storedField;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.ObjectMapperFactory.JSON_MAPPER;
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 @RequiredArgsConstructor
 public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
 	private static final String RAW_DATA_FIELD = "raw";
-	private final TypedLuceneFieldFactory typedFieldFactory;
+	private final TypedFieldFactory typedFieldFactory;
 	private final Function<T, Optional<String>> tStringifier;
 	private final TypedFieldSpecsCollection<T> typedFields;
 
@@ -27,8 +27,8 @@ public class TypedToDocumentConverter<T> implements RawToDocumentConverter<T> {
 	TypedToDocumentConverter<T> create(Analyzer analyzer, Class<E> typedFieldEnumClass) {
 		TypedFieldSpecsCollection<T> typedFieldSpecsCollection = TypedFieldSpecsCollection.create(typedFieldEnumClass);
 		Function<T, Optional<String>> tStringifier = sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
-		TypedLuceneFieldFactory typedLuceneFieldFactory = TypedLuceneFieldFactory.create(analyzer);
-		return new TypedToDocumentConverter<>(typedLuceneFieldFactory, tStringifier, typedFieldSpecsCollection);
+		TypedFieldFactory typedFieldFactory = TypedFieldFactory.create(analyzer);
+		return new TypedToDocumentConverter<>(typedFieldFactory, tStringifier, typedFieldSpecsCollection);
 	}
 
 	public static String getRawData(Document doc) {
