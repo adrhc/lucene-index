@@ -7,6 +7,7 @@ import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
+import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
@@ -23,6 +24,9 @@ public class PersonIndexFactories {
 	public static final FieldQueries NAME_AS_WORD_QUERIES =
 			createFieldQuery(PersonFieldType.nameAsWord);
 	public static final FieldQueries NAME_QUERIES = createFieldQuery(PersonFieldType.name);
+	public static final FieldQueries ALIAS_PHRASE_QUERIES = createFieldQuery(PersonFieldType.aliasPhrase);
+	public static final FieldQueries ALIAS_KEYWORD_QUERIES = createFieldQuery(PersonFieldType.aliasKeyWord);
+	public static final FieldQueries ALIAS_WORD_QUERIES = createFieldQuery(PersonFieldType.aliasWord);
 	public static final FieldQueries CNP_QUERIES = createFieldQuery(PersonFieldType.cnp);
 
 	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
@@ -65,6 +69,12 @@ public class PersonIndexFactories {
 	public static FSIndexUpdateService createUpdateService(Path indexPath) {
 		return createTypedIndexFactories(Person.class)
 				.createFSIndexUpdateService(PersonFieldType.id, indexPath);
+	}
+
+	public static DSIndexRestoreService createRestoreService(
+			Collection<Person> persons, Path indexPath) {
+		return new DSIndexRestoreService(PersonFieldType.id.name(), createDocsDs(persons),
+				createDocumentIndexReaderTemplate(indexPath), createUpdateService(indexPath));
 	}
 
 	private static DocumentsDataSource createDocsDs(Collection<Person> persons) {

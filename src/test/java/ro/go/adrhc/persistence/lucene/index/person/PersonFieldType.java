@@ -18,7 +18,10 @@ public enum PersonFieldType implements TypedFieldEnum<Person> {
 	name(PHRASE, Person::name),
 	nameAsWord(WORD, Person::name),
 	cnp(KEYWORD, Person::cnp),
-	km(LONG, Person::km);
+	km(INT, Person::km),
+	aliasKeyWord(KEYWORD, Person::aliasKeyword),
+	aliasWord(WORD, Person::aliasWord),
+	aliasPhrase(PHRASE, Person::aliasPhrase);
 
 	private final FieldType fieldType;
 	private final Function<Person, Object> accessor;

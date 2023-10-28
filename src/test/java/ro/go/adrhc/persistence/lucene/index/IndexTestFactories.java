@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.index;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
+import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
@@ -21,6 +22,7 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement.caseInsensitive;
 
 public class IndexTestFactories {
+	public static final int MAX_RESULTS_PER_SEARCHED_ITEM = Integer.MAX_VALUE;
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 
@@ -37,8 +39,12 @@ public class IndexTestFactories {
 				.createTypedFSIndexSearchService(toQueryConverter, indexPath);
 	}
 
+	public static DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
+		return new DocumentIndexReaderTemplate(MAX_RESULTS_PER_SEARCHED_ITEM, indexPath);
+	}
+
 	public static <F> TypedIndexFactories<F> createTypedIndexFactories(Class<F> foundClass) {
-		return new TypedIndexFactories<>(10, foundClass, ANALYZER);
+		return new TypedIndexFactories<>(MAX_RESULTS_PER_SEARCHED_ITEM, ANALYZER, foundClass);
 	}
 
 	public static FieldQueries createFieldQuery(Enum<?> field) {

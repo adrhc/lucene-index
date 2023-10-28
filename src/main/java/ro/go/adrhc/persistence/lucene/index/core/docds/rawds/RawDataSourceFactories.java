@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.index.core.docds.rawds;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @UtilityClass
@@ -12,12 +11,17 @@ public class RawDataSourceFactories {
 		return new RawDataSource<>() {
 			@Override
 			public Collection<ID> loadAllIds() {
-				return new ArrayList<>(tCollection.stream().map(Identifiable::getId).toList());
+				return tCollection.stream().map(Identifiable::getId).toList();
 			}
 
 			@Override
-			public Collection<T> loadByIds(Collection<ID> strings) {
-				return new ArrayList<>(tCollection);
+			public Collection<T> loadByIds(Collection<ID> ids) {
+				return tCollection.stream().filter(t -> ids.contains(t.getId())).toList();
+			}
+
+			@Override
+			public Collection<T> loadAll() {
+				return tCollection;
 			}
 		};
 	}

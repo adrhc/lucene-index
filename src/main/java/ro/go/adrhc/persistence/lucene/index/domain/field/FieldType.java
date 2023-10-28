@@ -1,5 +1,5 @@
 package ro.go.adrhc.persistence.lucene.index.domain.field;
 
 public enum FieldType {
-	KEYWORD, WORD, PHRASE, LONG
+	KEYWORD, WORD, PHRASE, LONG, INT
 }

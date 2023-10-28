@@ -15,6 +15,10 @@ public class FieldFactory {
 		return new FieldFactory(new TokenizationUtils(analyzer));
 	}
 
+	public static IntPoint intField(Enum<?> field, Integer value) {
+		return new IntPoint(field.name(), value);
+	}
+
 	public static LongField longField(Enum<?> field, Long value) {
 		return new LongField(field.name(), value, Field.Store.NO);
 	}

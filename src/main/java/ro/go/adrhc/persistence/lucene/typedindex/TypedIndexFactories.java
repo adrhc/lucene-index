@@ -25,14 +25,14 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TypedIndexFactories<T> {
 	private final int maxResultsPerSearchedItem;
-	private final Class<T> tClass;
 	@Getter
 	private final Analyzer analyzer;
+	private final Class<T> tClass;
 
 	public static <T> TypedIndexFactories<T> of(int maxResultsPerSearchedItem,
 			Class<T> foundClass, TokenizerProperties tokenizerProperties) throws IOException {
 		AnalyzerFactory analyzerFactory = new AnalyzerFactory(tokenizerProperties);
-		return new TypedIndexFactories<>(maxResultsPerSearchedItem, foundClass, analyzerFactory.create());
+		return new TypedIndexFactories<>(maxResultsPerSearchedItem, analyzerFactory.create(), foundClass);
 	}
 
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(

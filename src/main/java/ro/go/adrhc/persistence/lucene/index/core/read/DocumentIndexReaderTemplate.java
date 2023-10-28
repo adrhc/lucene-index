@@ -6,12 +6,18 @@ import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public record DocumentIndexReaderTemplate(int maxResultsPerSearchedItem, Path indexPath) {
 	public <R, E extends Exception> R transformFieldValues(String fieldName,
 			SneakyFunction<Stream<String>, R, E> fieldValuesTransformer) throws IOException, E {
 		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllFieldValues(fieldName)));
+	}
+
+	public <R, E extends Exception> R transformDocuments(Set<String> fieldNames,
+			SneakyFunction<Stream<Document>, R, E> documentsTransformer) throws IOException, E {
+		return useReader(indexReader -> documentsTransformer.apply(indexReader.getAll(fieldNames)));
 	}
 
 	public <R, E extends Exception> R transformDocuments(

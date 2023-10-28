@@ -27,6 +27,7 @@ public class TypedFieldFactory {
 		return switch (typedFieldSpec.type()) {
 			case KEYWORD -> FieldFactory.keywordField(typedFieldSpec.field(), value);
 			case LONG -> FieldFactory.longField(typedFieldSpec.field(), (Long) value);
+			case INT -> FieldFactory.intField(typedFieldSpec.field(), (Integer) value);
 			case PHRASE -> FieldFactory.textField(typedFieldSpec.field(), value);
 			case WORD -> fieldFactory.stringField(typedFieldSpec.field(), value);
 		};

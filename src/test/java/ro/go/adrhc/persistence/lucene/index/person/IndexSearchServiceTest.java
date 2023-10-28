@@ -8,22 +8,18 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IndexSearchServiceTest {
-	private static final List<Person> PEOPLE = List.of(
-			new Person("1", 111L, "#Person1", TokenizationUtilsTest.TEXT),
-			new Person("2", 222L, "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg"),
-			new Person("3", 333L, "#Person3", "(Original)person222 CAșț"));
 	@TempDir
 	private static Path tmpDir;
 
@@ -62,6 +58,7 @@ class IndexSearchServiceTest {
 	@Test
 	void wordEquals() throws IOException {
 		List<Person> result = findAllMatches(CNP_QUERIES.wordEquals("#Person3"));
+//		result = findAllMatches(CNP_QUERIES.tokenEquals("#Person3"));
 
 		assertThat(result).hasSize(1);
 	}

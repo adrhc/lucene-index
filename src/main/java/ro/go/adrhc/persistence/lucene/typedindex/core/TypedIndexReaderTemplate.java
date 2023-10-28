@@ -6,6 +6,7 @@ import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplat
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -18,6 +19,14 @@ public class TypedIndexReaderTemplate<T> {
 
 	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {
 		return docIndexReaderTemplate.transformDocuments(curry(this::doTransform, transformer));
+	}
+
+	public <R> R transform(Set<String> fieldNames, Function<Stream<T>, R> transformer) throws IOException {
+		return docIndexReaderTemplate.transformDocuments(fieldNames, curry(this::doTransform, transformer));
+	}
+
+	public <R> R transformFieldValues(String fieldName, Function<Stream<String>, R> transformer) throws IOException {
+		return docIndexReaderTemplate.transformFieldValues(fieldName, transformer::apply);
 	}
 
 	private <R> R doTransform(

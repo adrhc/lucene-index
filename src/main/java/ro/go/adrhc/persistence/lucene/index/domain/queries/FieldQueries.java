@@ -2,7 +2,9 @@ package ro.go.adrhc.persistence.lucene.index.domain.queries;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.KeywordField;
+import org.apache.lucene.document.LongField;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.PrefixQuery;
@@ -28,6 +30,14 @@ public class FieldQueries {
 
 	public Query wordEquals(String cnp) {
 		return KeywordField.newExactQuery(fieldName, cnp);
+	}
+
+	public Query intEquals(int km) {
+		return IntPoint.newExactQuery(fieldName, km);
+	}
+
+	public Query longEquals(long km) {
+		return LongField.newExactQuery(fieldName, km);
 	}
 
 	public PrefixQuery wordStartsWith(String prefix) {
