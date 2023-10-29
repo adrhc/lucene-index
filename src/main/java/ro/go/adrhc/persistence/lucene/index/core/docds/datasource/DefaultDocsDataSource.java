@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.index.core.docds.rawds.RawDataSourceFactories.createCachedRawDs;
 import static ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdSerdeFactory.STRING_RAW_ID_SERDE;
-import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertAll;
+import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertCollection;
 
 @RequiredArgsConstructor
 public class DefaultDocsDataSource<ID, T extends Identifiable<ID>> implements DocumentsDataSource {
@@ -41,7 +41,7 @@ public class DefaultDocsDataSource<ID, T extends Identifiable<ID>> implements Do
 
 	@Override
 	public List<Document> loadByIds(Collection<String> ids) throws IOException {
-		Collection<ID> rawIds = convertAll(rawIdSerde::toId, ids);
+		Collection<ID> rawIds = convertCollection(rawIdSerde::toId, ids);
 		return rawDataSource.loadByIds(rawIds).stream()
 				.map(rawToDocumentConverter::convert)
 				.flatMap(Optional::stream)

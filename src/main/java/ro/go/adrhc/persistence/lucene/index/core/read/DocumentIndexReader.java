@@ -52,19 +52,16 @@ public class DocumentIndexReader implements AutoCloseable {
 				.orElseGet(Stream::of);
 	}
 
-	public Stream<ScoreAndDocument> search(Query query) {
-		return topDocsStoredFields(query).map(this::doSearch).orElseGet(Stream::empty);
+	public Stream<ScoreAndDocument> search(Query query) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
+		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+				.flatMap(Optional::stream);
 	}
 
 	public int count(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);
-	}
-
-	protected Stream<ScoreAndDocument> doSearch(TopDocsStoredFields topDocsStoredFields) {
-		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
-				.flatMap(Optional::stream);
 	}
 
 	protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(
@@ -110,15 +107,10 @@ public class DocumentIndexReader implements AutoCloseable {
 		return Optional.empty();
 	}
 
-	protected Optional<TopDocsStoredFields> topDocsStoredFields(Query query) {
+	protected TopDocsStoredFields topDocsStoredFields(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
-		try {
-			TopDocs topDocs = searcher.search(query, maxResultsPerSearchedItem);
-			return Optional.of(new TopDocsStoredFields(topDocs, searcher.storedFields()));
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
+		TopDocs topDocs = searcher.search(query, maxResultsPerSearchedItem);
+		return new TopDocsStoredFields(topDocs, searcher.storedFields());
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class IndexSearchService<S, F> {
 		return doFindAllMatches(indexReader, searched, optionalQuery.get());
 	}
 
-	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searchedItem, Query query) {
+	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searchedItem, Query query) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return indexReader.search(query)
 				.map(scoreAndDocument -> toFoundConverter.create(searchedItem, scoreAndDocument))

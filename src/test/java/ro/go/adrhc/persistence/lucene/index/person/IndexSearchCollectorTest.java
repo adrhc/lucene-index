@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generatePeopleStream;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
 
 @Disabled
@@ -30,7 +29,7 @@ public class IndexSearchCollectorTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 //		createCreateService(generatePeopleList(1), TMP).createOrReplace();
-		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
+//		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
 	}
 
 	@RepeatedTest(3)
