@@ -37,8 +37,12 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		stopWatch = StopWatchUtils.start();
+		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
+		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
+		log.info("\npeople count: {}", people.size());
 		assertThat(count).isGreaterThan(1000);
 	}
 
@@ -47,8 +51,12 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		stopWatch = StopWatchUtils.start();
+		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
+		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
+		log.info("\npeople count: {}", people.size());
 		assertThat(count).isGreaterThan(1000);
 	}
 
@@ -57,8 +65,12 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		stopWatch = StopWatchUtils.start();
+		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
+		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
+		log.info("\npeople count: {}", people.size());
 		assertThat(count).isGreaterThan(1000);
 	}
 
