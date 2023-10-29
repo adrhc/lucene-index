@@ -1,12 +1,12 @@
 package ro.go.adrhc.persistence.lucene.index.restore;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * @param notIndexedIds      contains not indexed data identifiers
  * @param obsoleteIndexedIds contains indexed ids for which the indexed data no longer exist
  */
-public record IndexChanges(Collection<String> notIndexedIds, Collection<String> obsoleteIndexedIds) {
+public record IndexChanges(Set<String> notIndexedIds, Set<String> obsoleteIndexedIds) {
 	public boolean hasChanges() {
 		return !notIndexedIds.isEmpty() || !obsoleteIndexedIds.isEmpty();
 	}

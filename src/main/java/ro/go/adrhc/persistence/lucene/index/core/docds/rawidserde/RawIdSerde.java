@@ -7,11 +7,11 @@ public interface RawIdSerde<ID> {
 
 	StringToRawIdConverter<ID> stringToRawIdConverter();
 
-	default Optional<ID> toId(String id) {
+	default Optional<ID> stringToRawId(String id) {
 		return stringToRawIdConverter().convert(id);
 	}
 
-	default Optional<String> toString(ID id) {
+	default Optional<String> rawIdToString(ID id) {
 		return rawIdToStringConverter().convert(id);
 	}
 }

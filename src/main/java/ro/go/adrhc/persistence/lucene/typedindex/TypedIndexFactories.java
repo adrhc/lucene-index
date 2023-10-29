@@ -6,18 +6,15 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.IndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
-import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdToStringConverter;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchCountService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.DocumentToTypedConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
@@ -46,12 +43,6 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 				analyzerFactory.create(), foundClass, typedFieldEnumClass);
 	}
 
-	public <S> IndexSearchCountService<S> createFSIndexSearchCountService(
-			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
-		return new IndexSearchCountService<>(
-				createDocumentIndexReaderTemplate(indexPath), toQueryConverter);
-	}
-
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
 			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
 		return createTypedFSIndexSearchService(
@@ -75,10 +66,9 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 				createTypedToDocumentConverter(), analyzer, indexPath);
 	}
 
-	public DSIndexRestoreService createDSIndexRestoreService(
-			DocumentsDataSource documentsDatasource, Path indexPath) {
+	public DSIndexRestoreService createDSIndexRestoreService(Path indexPath) {
 		return new DSIndexRestoreService(getIdField(typedFieldEnumClass).name(),
-				documentsDatasource, createDocumentIndexReaderTemplate(indexPath),
+				createDocumentIndexReaderTemplate(indexPath),
 				createFSIndexUpdateService(indexPath));
 	}
 
@@ -92,10 +82,10 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		return FSIndexUpdateService.create(getIdField(typedFieldEnumClass), analyzer, indexPath);
 	}
 
-	private TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
+	/*public TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
 		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(tClass),
 				createDocumentIndexReaderTemplate(indexPath));
-	}
+	}*/
 
 	private DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
 		return new DocumentIndexReaderTemplate(maxResultsPerSearchedItem, indexPath);

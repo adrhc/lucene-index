@@ -8,51 +8,39 @@ import ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdSerde;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static ro.go.adrhc.persistence.lucene.index.core.docds.rawds.RawDataSourceFactories.createCachedRawDs;
 import static ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdSerdeFactory.STRING_RAW_ID_SERDE;
-import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertCollection;
+import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
-public class DefaultDocsDataSource<ID, T extends Identifiable<ID>> implements DocumentsDataSource {
-	private final RawDataSource<ID, T> rawDataSource;
+public class DefaultDocsDataSource<ID, T extends Identifiable<ID>> implements IndexDataSource<String, Document> {
 	private final RawIdSerde<ID> rawIdSerde;
 	private final RawToDocumentConverter<T> rawToDocumentConverter;
+	private final RawDataSource<ID, T> rawDataSource;
 
-	public static <T extends Identifiable<String>> DocumentsDataSource createCachedDocsDs(
+	public static <T extends Identifiable<String>>
+	IndexDataSource<String, Document> createCachedDocsDs(
 			Function<T, Optional<Document>> toDocumentConverter, Collection<T> tCollection) {
-		return new DefaultDocsDataSource<>(
-				createCachedRawDs(tCollection),
-				STRING_RAW_ID_SERDE,
-				toDocumentConverter::apply
-		);
+		return new DefaultDocsDataSource<>(STRING_RAW_ID_SERDE,
+				toDocumentConverter::apply, createCachedRawDs(tCollection));
 	}
 
 	@Override
-	public List<String> loadAllIds() throws IOException {
-		return rawDataSource.loadAllIds().stream()
-				.map(rawIdSerde::toString)
-				.flatMap(Optional::stream)
-				.toList();
+	public Stream<String> loadAllIds() throws IOException {
+		return rawDataSource.loadAllIds()
+				.map(rawIdSerde::rawIdToString)
+				.flatMap(Optional::stream);
 	}
 
 	@Override
-	public List<Document> loadByIds(Collection<String> ids) throws IOException {
-		Collection<ID> rawIds = convertCollection(rawIdSerde::toId, ids);
-		return rawDataSource.loadByIds(rawIds).stream()
+	public Stream<Document> loadByIds(Stream<String> ids) throws IOException {
+		Stream<ID> rawIds = convertStream(rawIdSerde::stringToRawId, ids);
+		return rawDataSource.loadByIds(rawIds)
 				.map(rawToDocumentConverter::convert)
-				.flatMap(Optional::stream)
-				.toList();
-	}
-
-	@Override
-	public List<Document> loadAll() throws IOException {
-		return rawDataSource.loadAll().stream()
-				.map(rawToDocumentConverter::convert)
-				.flatMap(Optional::stream)
-				.toList();
+				.flatMap(Optional::stream);
 	}
 }

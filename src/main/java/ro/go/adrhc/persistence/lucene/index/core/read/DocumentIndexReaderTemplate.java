@@ -10,6 +10,10 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public record DocumentIndexReaderTemplate(int maxResultsPerSearchedItem, Path indexPath) {
+	public static DocumentIndexReaderTemplate create(Path indexPath) {
+		return new DocumentIndexReaderTemplate(Integer.MAX_VALUE, indexPath);
+	}
+
 	public <R, E extends Exception> R transformFieldValues(String fieldName,
 			SneakyFunction<Stream<String>, R, E> fieldValuesTransformer) throws IOException, E {
 		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllFieldValues(fieldName)));

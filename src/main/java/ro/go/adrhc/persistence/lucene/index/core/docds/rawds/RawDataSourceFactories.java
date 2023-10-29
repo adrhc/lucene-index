@@ -3,6 +3,9 @@ package ro.go.adrhc.persistence.lucene.index.core.docds.rawds;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class RawDataSourceFactories {
@@ -10,18 +13,19 @@ public class RawDataSourceFactories {
 	RawDataSource<ID, T> createCachedRawDs(Collection<T> tCollection) {
 		return new RawDataSource<>() {
 			@Override
-			public Collection<ID> loadAllIds() {
-				return tCollection.stream().map(Identifiable::getId).toList();
+			public Stream<ID> loadAllIds() {
+				return tCollection.stream().map(Identifiable::getId);
 			}
 
 			@Override
-			public Collection<T> loadByIds(Collection<ID> ids) {
-				return tCollection.stream().filter(t -> ids.contains(t.getId())).toList();
+			public Stream<T> loadByIds(Stream<ID> idStream) {
+				Set<ID> ids = idStream.collect(Collectors.toSet());
+				return loadAll().filter(t -> ids.contains(t.getId()));
 			}
 
 			@Override
-			public Collection<T> loadAll() {
-				return tCollection;
+			public Stream<T> loadAll() {
+				return tCollection.stream();
 			}
 		};
 	}

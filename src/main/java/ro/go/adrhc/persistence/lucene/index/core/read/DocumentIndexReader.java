@@ -8,10 +8,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiBits;
 import org.apache.lucene.index.StoredFields;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Bits;
@@ -62,6 +59,11 @@ public class DocumentIndexReader implements AutoCloseable {
 	public int count(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);
+	}
+
+	public int countAll() throws IOException {
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		return searcher.count(new MatchAllDocsQuery());
 	}
 
 	protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(

@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.index.person;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.IndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
-import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchCountService;
@@ -14,13 +13,10 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createFieldQuery;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDs;
 
 public class PersonIndexFactories {
 	public static final FieldQueries NAME_AS_WORD_QUERIES =
@@ -37,7 +33,7 @@ public class PersonIndexFactories {
 
 	public static IndexSearchCountService<Query>
 	createSearchCountService(Path indexPath) {
-		return createTypedIndexFactories().createFSIndexSearchCountService(Optional::of, indexPath);
+		return IndexSearchCountService.create(Optional::of, indexPath);
 	}
 
 	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
@@ -78,16 +74,11 @@ public class PersonIndexFactories {
 		return createTypedIndexFactories().createTypedIndexUpdateService(indexPath);
 	}
 
-	public static DSIndexRestoreService createRestoreService(
-			Collection<Person> persons, Path indexPath) {
-		return createTypedIndexFactories().createDSIndexRestoreService(createDocsDs(persons), indexPath);
+	public static DSIndexRestoreService createRestoreService(Path indexPath) {
+		return createTypedIndexFactories().createDSIndexRestoreService(indexPath);
 	}
 
 	private static TypedIndexFactories<String, Person, PersonFieldType> createTypedIndexFactories() {
 		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
-	}
-
-	private static DocumentsDataSource createDocsDs(Collection<Person> persons) {
-		return createCachedTypedDs(ANALYZER, PersonFieldType.class, persons);
 	}
 }
