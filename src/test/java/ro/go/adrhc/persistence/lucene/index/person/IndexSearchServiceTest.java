@@ -25,7 +25,7 @@ class IndexSearchServiceTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		createCreateService(PEOPLE, tmpDir).createOrReplace();
+		createCreateService(tmpDir).createOrReplace(PEOPLE);
 	}
 
 	@Test

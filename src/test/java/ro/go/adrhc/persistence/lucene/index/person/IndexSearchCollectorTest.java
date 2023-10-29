@@ -28,7 +28,7 @@ public class IndexSearchCollectorTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-//		createCreateService(generatePeopleList(1), TMP).createOrReplace();
+//		createCreateService(TMP).createOrReplace(generatePeopleList(1));
 //		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
 	}
 

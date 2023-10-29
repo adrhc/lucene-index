@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.index.IndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.core.docds.rawds.Identifiable;
@@ -70,9 +70,9 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		);
 	}
 
-	public FSIndexCreateService createFSIndexCreateService(
-			DocumentsDataSource documentsDatasource, Path indexPath) {
-		return FSIndexCreateService.create(documentsDatasource, analyzer, indexPath);
+	public IndexCreateService<T> createFSTypedIndexCreateService(Path indexPath) {
+		return FSTypedIndexCreateService.create(
+				createTypedToDocumentConverter(), analyzer, indexPath);
 	}
 
 	public DSIndexRestoreService createDSIndexRestoreService(

@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
+import ro.go.adrhc.persistence.lucene.index.IndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
@@ -70,9 +70,8 @@ public class PersonIndexFactories {
 				.createTypedFSIndexSearchService(ofSneaky(searchedToQueryConverter), indexPath);
 	}*/
 
-	public static FSIndexCreateService createCreateService(
-			Collection<Person> people, Path indexPath) {
-		return createTypedIndexFactories().createFSIndexCreateService(createDocsDs(people), indexPath);
+	public static IndexCreateService<Person> createCreateService(Path indexPath) {
+		return createTypedIndexFactories().createFSTypedIndexCreateService(indexPath);
 	}
 
 	public static TypedIndexUpdateService<String, Person> createUpdateService(Path indexPath) {
