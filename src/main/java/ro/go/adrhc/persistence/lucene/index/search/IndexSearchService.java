@@ -28,14 +28,6 @@ public class IndexSearchService<S, F> {
 	private final BestMatchingStrategy<F> bestMatchingStrategy;
 	private final SearchResultFilter<F> searchResultFilter;
 
-	public int count(S searched) throws IOException {
-		Optional<Query> query = toQueryConverter.convert(searched);
-		if (query.isEmpty()) {
-			throw new IOException("Failed to create the lucene query!");
-		}
-		return documentIndexReaderTemplate.useReader(indexReader -> indexReader.count(query.get()));
-	}
-
 	public List<F> findAllMatches(S searched) throws IOException {
 		return documentIndexReaderTemplate.useReader(indexReader ->
 				doFindAllMatches(indexReader, searched).toList());

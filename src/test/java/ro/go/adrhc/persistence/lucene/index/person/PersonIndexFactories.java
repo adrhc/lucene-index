@@ -1,13 +1,12 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
-import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
+import ro.go.adrhc.persistence.lucene.index.search.IndexSearchCountService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
@@ -21,11 +20,9 @@ import java.util.Optional;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createFieldQuery;
-import static ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverterFactory.ofSneaky;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDs;
 
 public class PersonIndexFactories {
-	public static final int MAX_RESULTS_PER_SEARCHED_ITEM = 10;
 	public static final FieldQueries NAME_AS_WORD_QUERIES =
 			createFieldQuery(PersonFieldType.nameAsWord);
 	public static final FieldQueries NAME_QUERIES = createFieldQuery(PersonFieldType.name);
@@ -38,26 +35,16 @@ public class PersonIndexFactories {
 		return createSearchCountService(indexPath).count(query);
 	}
 
+	public static IndexSearchCountService<Query>
+	createSearchCountService(Path indexPath) {
+		return createTypedIndexFactories().createFSIndexSearchCountService(Optional::of, indexPath);
+	}
+
 	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
 		return createSearchService(indexPath)
 				.findAllMatches(query)
 				.stream().map(TypedSearchResult::getFound)
 				.toList();
-	}
-
-	public static List<Person> findAllMatches(Path indexPath,
-			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
-			String textToSearch) throws IOException {
-		return createSearchService(searchedToQueryConverter, indexPath)
-				.findAllMatches(textToSearch)
-				.stream().map(TypedSearchResult::getFound)
-				.toList();
-	}
-
-	public static IndexSearchService<Query, TypedSearchResult<Query, Person>>
-	createSearchCountService(Path indexPath) {
-		return createCountTypedIndexFactories()
-				.createTypedFSIndexSearchService(Optional::of, indexPath);
 	}
 
 	public static IndexSearchService<Query, TypedSearchResult<Query, Person>>
@@ -66,13 +53,22 @@ public class PersonIndexFactories {
 				.createTypedFSIndexSearchService(Optional::of, indexPath);
 	}
 
-	public static IndexSearchService<String, TypedSearchResult<String, Person>>
+	/*public static List<Person> findAllMatches(Path indexPath,
+			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
+			String textToSearch) throws IOException {
+		return createSearchService(searchedToQueryConverter, indexPath)
+				.findAllMatches(textToSearch)
+				.stream().map(TypedSearchResult::getFound)
+				.toList();
+	}*/
+
+	/*public static IndexSearchService<String, TypedSearchResult<String, Person>>
 	createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
 			Path indexPath) {
 		return createTypedIndexFactories()
 				.createTypedFSIndexSearchService(ofSneaky(searchedToQueryConverter), indexPath);
-	}
+	}*/
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
@@ -88,13 +84,8 @@ public class PersonIndexFactories {
 		return createTypedIndexFactories().createDSIndexRestoreService(createDocsDs(persons), indexPath);
 	}
 
-	private static TypedIndexFactories<String, Person, PersonFieldType> createCountTypedIndexFactories() {
-		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
-	}
-
 	private static TypedIndexFactories<String, Person, PersonFieldType> createTypedIndexFactories() {
-		return IndexTestFactories.createTypedIndexFactories(
-				MAX_RESULTS_PER_SEARCHED_ITEM, Person.class, PersonFieldType.class);
+		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
 	}
 
 	private static DocumentsDataSource createDocsDs(Collection<Person> persons) {

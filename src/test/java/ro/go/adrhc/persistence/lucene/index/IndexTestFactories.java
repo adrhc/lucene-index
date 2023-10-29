@@ -17,18 +17,13 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement.caseInsensitive;
 
 public class IndexTestFactories {
+	public static final int MAX_RESULTS_PER_SEARCHED_ITEM = 10;
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
 	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {
-		return createTypedIndexFactories(Integer.MAX_VALUE, tClass, typedFieldEnumClass);
-	}
-
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
-	TypedIndexFactories<ID, T, E> createTypedIndexFactories(
-			int maxResultsPerSearchedItem, Class<T> tClass, Class<E> typedFieldEnumClass) {
-		return new TypedIndexFactories<>(maxResultsPerSearchedItem, ANALYZER, tClass, typedFieldEnumClass);
+		return new TypedIndexFactories<>(MAX_RESULTS_PER_SEARCHED_ITEM, ANALYZER, tClass, typedFieldEnumClass);
 	}
 
 	public static FieldQueries createFieldQuery(Enum<?> field) {

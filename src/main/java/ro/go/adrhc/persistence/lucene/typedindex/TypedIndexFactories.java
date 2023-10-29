@@ -13,6 +13,7 @@ import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplat
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.index.search.IndexSearchCountService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.DocumentToTypedConverter;
@@ -43,6 +44,12 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		AnalyzerFactory analyzerFactory = new AnalyzerFactory(tokenizerProperties);
 		return new TypedIndexFactories<>(maxResultsPerSearchedItem,
 				analyzerFactory.create(), foundClass, typedFieldEnumClass);
+	}
+
+	public <S> IndexSearchCountService<S> createFSIndexSearchCountService(
+			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
+		return new IndexSearchCountService<>(
+				createDocumentIndexReaderTemplate(indexPath), toQueryConverter);
 	}
 
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
