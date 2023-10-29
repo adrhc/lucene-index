@@ -18,8 +18,8 @@ public class PeopleGenerator {
 				.toList();
 	}
 
-	public static Stream<Person> generatePeopleStream(int size) {
-		return IntStream.range(0, size)
+	public static Stream<Person> generatePeopleStream(int start, int end) {
+		return IntStream.range(start, end)
 				.mapToObj(PeopleGenerator::generatePerson);
 	}
 

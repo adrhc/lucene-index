@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class DocumentIndexReader implements AutoCloseable {
 	private final Directory directory;
 	private final IndexReader indexReader;
-	private final int maxResultsPerSearchedSong;
+	private final int maxResultsPerSearchedItem;
 
 	public static DocumentIndexReader of(int maxResultsPerSearchedSong, Path indexPath) throws IOException {
 		Directory directory = FSDirectory.open(indexPath);
@@ -54,6 +54,11 @@ public class DocumentIndexReader implements AutoCloseable {
 
 	public Stream<ScoreAndDocument> search(Query query) {
 		return topDocsStoredFields(query).map(this::doSearch).orElseGet(Stream::empty);
+	}
+
+	public int count(Query query) throws IOException {
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		return searcher.count(query);
 	}
 
 	protected Stream<ScoreAndDocument> doSearch(TopDocsStoredFields topDocsStoredFields) {
@@ -108,7 +113,7 @@ public class DocumentIndexReader implements AutoCloseable {
 	protected Optional<TopDocsStoredFields> topDocsStoredFields(Query query) {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		try {
-			TopDocs topDocs = searcher.search(query, maxResultsPerSearchedSong);
+			TopDocs topDocs = searcher.search(query, maxResultsPerSearchedItem);
 			return Optional.of(new TopDocsStoredFields(topDocs, searcher.storedFields()));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);

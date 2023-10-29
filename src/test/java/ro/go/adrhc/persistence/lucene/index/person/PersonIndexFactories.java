@@ -33,6 +33,12 @@ public class PersonIndexFactories {
 	public static final FieldQueries ALIAS_WORD_QUERIES = createFieldQuery(PersonFieldType.aliasWord);
 	public static final FieldQueries CNP_QUERIES = createFieldQuery(PersonFieldType.cnp);
 
+	public static int count(Path indexPath, Query query) throws IOException {
+		return PersonIndexFactories
+				.createSearchService(indexPath)
+				.count(query);
+	}
+
 	public static List<Person> findAllMatches(Path indexPath, Query query) throws IOException {
 		return PersonIndexFactories
 				.createSearchService(indexPath)

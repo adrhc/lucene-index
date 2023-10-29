@@ -29,38 +29,42 @@ public class IndexSearchCollectorTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-//		createCreateService(generatePeopleList(2_500_001), TMP).createOrReplace();
-		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001));
+//		createCreateService(generatePeopleList(1), TMP).createOrReplace();
+		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
 	}
 
 	@RepeatedTest(3)
 	void keywordStartsWith() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		List<Person> result = findAllMatches(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\nresults size: {}", result.size());
-		assertThat(result).hasSizeGreaterThan(1000);
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
 	}
 
 	@RepeatedTest(3)
 	void wordStartsWith() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		List<Person> result = findAllMatches(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\nresults size: {}", result.size());
-		assertThat(result).hasSizeGreaterThan(1000);
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
 	}
 
 	@RepeatedTest(3)
 	void phraseStartsWith() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		List<Person> result = findAllMatches(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\nresults size: {}", result.size());
-		assertThat(result).hasSizeGreaterThan(1000);
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
+	}
+
+	private int count(Query query) throws IOException {
+		return PersonIndexFactories.count(TMP, query);
 	}
 
 	private List<Person> findAllMatches(Query query) throws IOException {

@@ -28,9 +28,17 @@ public class IndexSearchService<S, F> {
 	private final BestMatchingStrategy<F> bestMatchingStrategy;
 	private final SearchResultFilter<F> searchResultFilter;
 
-	public List<F> findAllMatches(S searchedItem) throws IOException {
+	public int count(S searched) throws IOException {
+		Optional<Query> query = toQueryConverter.convert(searched);
+		if (query.isEmpty()) {
+			throw new IOException("Failed to create the lucene query!");
+		}
+		return documentIndexReaderTemplate.useReader(indexReader -> indexReader.count(query.get()));
+	}
+
+	public List<F> findAllMatches(S searched) throws IOException {
 		return documentIndexReaderTemplate.useReader(indexReader ->
-				doFindAllMatches(indexReader, searchedItem).toList());
+				doFindAllMatches(indexReader, searched).toList());
 	}
 
 	public Optional<F> findBestMatch(S searched) throws IOException {
@@ -66,12 +74,12 @@ public class IndexSearchService<S, F> {
 		// log.debug("\nSearching:\n{}", searched);
 		Optional<Query> optionalQuery = toQueryConverter.convert(searched);
 		if (optionalQuery.isEmpty()) {
-			return Stream.empty();
+			throw new IOException("Failed to create the lucene query!");
 		}
 		return doFindAllMatches(indexReader, searched, optionalQuery.get());
 	}
 
-	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searchedItem, Query query) throws IOException {
+	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, S searchedItem, Query query) {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return indexReader.search(query)
 				.map(scoreAndDocument -> toFoundConverter.create(searchedItem, scoreAndDocument))
