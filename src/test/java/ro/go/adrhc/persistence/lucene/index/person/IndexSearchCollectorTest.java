@@ -33,45 +33,45 @@ public class IndexSearchCollectorTest {
 	}
 
 	@RepeatedTest(3)
-	void keywordStartsWith() throws IOException {
+	void keywordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_KEYWORD_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\ncount time: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
+		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
 	}
 
 	@RepeatedTest(3)
-	void wordStartsWith() throws IOException {
+	void wordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_WORD_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
+		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
 	}
 
 	@RepeatedTest(3)
-	void phraseStartsWith() throws IOException {
+	void phraseTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
+		int count = count(ALIAS_PHRASE_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
+		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.wordEquals("alias0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());

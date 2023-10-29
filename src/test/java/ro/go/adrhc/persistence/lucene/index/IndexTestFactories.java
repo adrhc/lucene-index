@@ -23,7 +23,13 @@ public class IndexTestFactories {
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
 	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {
-		return new TypedIndexFactories<>(MAX_RESULTS_PER_SEARCHED_ITEM, ANALYZER, tClass, typedFieldEnumClass);
+		return createTypedIndexFactories(MAX_RESULTS_PER_SEARCHED_ITEM, tClass, typedFieldEnumClass);
+	}
+
+	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
+	TypedIndexFactories<ID, T, E> createTypedIndexFactories(
+			int maxResultsPerSearchedItem, Class<T> tClass, Class<E> typedFieldEnumClass) {
+		return new TypedIndexFactories<>(maxResultsPerSearchedItem, ANALYZER, tClass, typedFieldEnumClass);
 	}
 
 	public static FieldQueries createFieldQuery(Enum<?> field) {
