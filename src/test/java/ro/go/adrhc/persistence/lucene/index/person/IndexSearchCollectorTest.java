@@ -37,13 +37,14 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		log.info("\ncount time: {}", stopWatch.formatTime());
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
-		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\ncount: {}", count);
+		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
-		assertThat(count).isGreaterThan(1000);
 	}
 
 	@RepeatedTest(3)
@@ -51,13 +52,14 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		log.info("\ntime: {}", stopWatch.formatTime());
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
-		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\ncount: {}", count);
+		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
-		assertThat(count).isGreaterThan(1000);
 	}
 
 	@RepeatedTest(3)
@@ -65,13 +67,14 @@ public class IndexSearchCollectorTest {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = count(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
+		log.info("\ntime: {}", stopWatch.formatTime());
+		log.info("\ncount: {}", count);
+		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.wordStartsWith("alias0"));
 		stopWatch.stop();
-		log.info("\ntime: {}", stopWatch.formatTime());
-		log.info("\ncount: {}", count);
+		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
-		assertThat(count).isGreaterThan(1000);
 	}
 
 	private int count(Query query) throws IOException {
