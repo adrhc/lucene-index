@@ -15,6 +15,8 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 import static ro.go.adrhc.persistence.lucene.index.core.write.IndexWriterConfigFactories.createOrAppend;
 
@@ -62,6 +64,13 @@ public class DocumentIndexWriter implements AutoCloseable {
 	public void addDocuments(Iterable<Document> documents) throws IOException {
 		for (Document doc : documents) {
 			addDocument(doc);
+		}
+	}
+
+	public void addDocuments(Stream<Document> documents) throws IOException {
+		Iterator<Document> it = documents.iterator();
+		while (it.hasNext()) {
+			addDocument(it.next());
 		}
 	}
 

@@ -4,19 +4,23 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
-import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.*;
+import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
+import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createFieldQuery;
 import static ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverterFactory.ofSneaky;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.DocsDataSourceFactory.createCachedTypedDs;
 
@@ -49,32 +53,34 @@ public class PersonIndexFactories {
 
 	public static IndexSearchService<Query, TypedSearchResult<Query, Person>>
 	createSearchService(Path indexPath) {
-		return createTypedFSIndexSearchService(Person.class, indexPath);
+		return createTypedIndexFactories()
+				.createTypedFSIndexSearchService(Optional::of, indexPath);
 	}
 
 	public static IndexSearchService<String, TypedSearchResult<String, Person>>
 	createSearchService(
 			SneakyFunction<String, Query, QueryNodeException> searchedToQueryConverter,
 			Path indexPath) {
-		return createTypedFSIndexSearchService(Person.class,
-				ofSneaky(searchedToQueryConverter), indexPath);
+		return createTypedIndexFactories()
+				.createTypedFSIndexSearchService(ofSneaky(searchedToQueryConverter), indexPath);
 	}
 
 	public static FSIndexCreateService createCreateService(
 			Collection<Person> people, Path indexPath) {
-		return createTypedIndexFactories(Person.class)
-				.createFSIndexCreateService(createDocsDs(people), indexPath);
+		return createTypedIndexFactories().createFSIndexCreateService(createDocsDs(people), indexPath);
 	}
 
-	public static FSIndexUpdateService createUpdateService(Path indexPath) {
-		return createTypedIndexFactories(Person.class)
-				.createFSIndexUpdateService(PersonFieldType.id, indexPath);
+	public static TypedIndexUpdateService<String, Person> createUpdateService(Path indexPath) {
+		return createTypedIndexFactories().createTypedIndexUpdateService(indexPath);
 	}
 
 	public static DSIndexRestoreService createRestoreService(
 			Collection<Person> persons, Path indexPath) {
-		return new DSIndexRestoreService(PersonFieldType.id.name(), createDocsDs(persons),
-				createDocumentIndexReaderTemplate(indexPath), createUpdateService(indexPath));
+		return createTypedIndexFactories().createDSIndexRestoreService(createDocsDs(persons), indexPath);
+	}
+
+	private static TypedIndexFactories<String, Person, PersonFieldType> createTypedIndexFactories() {
+		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
 	}
 
 	private static DocumentsDataSource createDocsDs(Collection<Person> persons) {

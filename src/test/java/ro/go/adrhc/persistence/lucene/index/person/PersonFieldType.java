@@ -14,7 +14,7 @@ import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldType.*;
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedFieldEnum<Person> {
-	id(KEYWORD, Person::id),
+	id(KEYWORD, Person::id, true),
 	name(PHRASE, Person::name),
 	nameAsWord(WORD, Person::name),
 	cnp(KEYWORD, Person::cnp),
@@ -25,4 +25,11 @@ public enum PersonFieldType implements TypedFieldEnum<Person> {
 
 	private final FieldType fieldType;
 	private final Function<Person, Object> accessor;
+	private final boolean isIdField;
+
+	PersonFieldType(FieldType fieldType, Function<Person, Object> accessor) {
+		this.fieldType = fieldType;
+		this.accessor = accessor;
+		this.isIdField = false;
+	}
 }

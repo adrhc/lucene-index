@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertAll;
+import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertCollection;
+import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
 public class TypedIndexUpdateService<ID, T> {
@@ -29,13 +31,18 @@ public class TypedIndexUpdateService<ID, T> {
 	}
 
 	public int addAll(Collection<T> tCollection) throws IOException {
-		List<Document> documents = convertAll(toDocumentConverter::convert, tCollection);
+		List<Document> documents = convertCollection(toDocumentConverter::convert, tCollection);
 		indexUpdateService.addDocuments(documents);
 		return documents.size();
 	}
 
+	public void addAll(Stream<T> tCollection) throws IOException {
+		Stream<Document> documents = convertStream(toDocumentConverter::convert, tCollection);
+		indexUpdateService.addDocuments(documents);
+	}
+
 	public int removeByIds(Collection<ID> ids) throws IOException {
-		List<String> docIds = convertAll(toStringConverter::convert, ids);
+		List<String> docIds = convertCollection(toStringConverter::convert, ids);
 		indexUpdateService.removeByIds(docIds);
 		return docIds.size();
 	}

@@ -7,6 +7,7 @@ import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTempla
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +20,10 @@ public class IndexUpdateService {
 	}
 
 	public void addDocuments(Collection<Document> documents) throws IOException {
+		indexWriterTemplate.useWriter(writer -> writer.addDocuments(documents));
+	}
+
+	public void addDocuments(Stream<Document> documents) throws IOException {
 		indexWriterTemplate.useWriter(writer -> writer.addDocuments(documents));
 	}
 

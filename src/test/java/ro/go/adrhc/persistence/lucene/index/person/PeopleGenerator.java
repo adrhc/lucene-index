@@ -4,6 +4,7 @@ import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class PeopleGenerator {
 	public static final List<Person> PEOPLE = List.of(
@@ -11,10 +12,15 @@ public class PeopleGenerator {
 			new Person("2", 222, "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg", "pers2", "pers2", "pers2"),
 			new Person("3", 333, "#Person3", "(Original)person222 CAșț", "pers3", "pers3", "pers3"));
 
-	public static List<Person> generatePeople(int size) {
+	public static List<Person> generatePeopleList(int size) {
 		return IntStream.range(0, size)
 				.mapToObj(PeopleGenerator::generatePerson)
 				.toList();
+	}
+
+	public static Stream<Person> generatePeopleStream(int size) {
+		return IntStream.range(0, size)
+				.mapToObj(PeopleGenerator::generatePerson);
 	}
 
 	public static Person generatePerson(int i) {

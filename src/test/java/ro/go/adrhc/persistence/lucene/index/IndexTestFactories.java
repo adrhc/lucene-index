@@ -1,22 +1,17 @@
 package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
-import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static ro.go.adrhc.persistence.lucene.index.core.tokenizer.PatternsAndReplacement.caseInsensitive;
@@ -26,25 +21,9 @@ public class IndexTestFactories {
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 
-	public static <F> IndexSearchService<Query, TypedSearchResult<Query, F>>
-	createTypedFSIndexSearchService(Class<F> foundClass, Path indexPath) {
-		return createTypedIndexFactories(foundClass)
-				.createTypedFSIndexSearchService(Optional::of, indexPath);
-	}
-
-	public static <F> IndexSearchService<String, TypedSearchResult<String, F>>
-	createTypedFSIndexSearchService(Class<F> foundClass,
-			SearchedToQueryConverter<String> toQueryConverter, Path indexPath) {
-		return createTypedIndexFactories(foundClass)
-				.createTypedFSIndexSearchService(toQueryConverter, indexPath);
-	}
-
-	public static DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
-		return new DocumentIndexReaderTemplate(MAX_RESULTS_PER_SEARCHED_ITEM, indexPath);
-	}
-
-	public static <F> TypedIndexFactories<F> createTypedIndexFactories(Class<F> foundClass) {
-		return new TypedIndexFactories<>(MAX_RESULTS_PER_SEARCHED_ITEM, ANALYZER, foundClass);
+	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
+	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {
+		return new TypedIndexFactories<>(MAX_RESULTS_PER_SEARCHED_ITEM, ANALYZER, tClass, typedFieldEnumClass);
 	}
 
 	public static FieldQueries createFieldQuery(Enum<?> field) {

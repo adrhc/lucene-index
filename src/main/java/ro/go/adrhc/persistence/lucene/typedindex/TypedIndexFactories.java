@@ -7,13 +7,18 @@ import ro.go.adrhc.persistence.lucene.fsindex.FSIndexCreateService;
 import ro.go.adrhc.persistence.lucene.fsindex.FSIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.docds.datasource.DocumentsDataSource;
+import ro.go.adrhc.persistence.lucene.index.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.index.core.docds.rawidserde.RawIdToStringConverter;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.index.restore.DSIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchedToQueryConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.core.TypedToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResultFilter;
@@ -22,17 +27,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import static ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum.getIdField;
+
 @RequiredArgsConstructor
-public class TypedIndexFactories<T> {
+public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>> {
 	private final int maxResultsPerSearchedItem;
 	@Getter
 	private final Analyzer analyzer;
 	private final Class<T> tClass;
+	private final Class<E> typedFieldEnumClass;
 
-	public static <T> TypedIndexFactories<T> of(int maxResultsPerSearchedItem,
-			Class<T> foundClass, TokenizerProperties tokenizerProperties) throws IOException {
+	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedFieldEnum<T>>
+	TypedIndexFactories<ID, T, E> of(int maxResultsPerSearchedItem, Class<T> foundClass,
+			Class<E> typedFieldEnumClass, TokenizerProperties tokenizerProperties) throws IOException {
 		AnalyzerFactory analyzerFactory = new AnalyzerFactory(tokenizerProperties);
-		return new TypedIndexFactories<>(maxResultsPerSearchedItem, analyzerFactory.create(), foundClass);
+		return new TypedIndexFactories<>(maxResultsPerSearchedItem,
+				analyzerFactory.create(), foundClass, typedFieldEnumClass);
 	}
 
 	public <S> IndexSearchService<S, TypedSearchResult<S, T>> createTypedFSIndexSearchService(
@@ -55,12 +65,24 @@ public class TypedIndexFactories<T> {
 
 	public FSIndexCreateService createFSIndexCreateService(
 			DocumentsDataSource documentsDatasource, Path indexPath) {
-		return new FSIndexCreateService(documentsDatasource,
-				FSIndexUpdateService.create(analyzer, indexPath));
+		return FSIndexCreateService.create(documentsDatasource, analyzer, indexPath);
 	}
 
-	public FSIndexUpdateService createFSIndexUpdateService(Enum<?> idField, Path indexPath) {
-		return FSIndexUpdateService.create(idField, analyzer, indexPath);
+	public DSIndexRestoreService createDSIndexRestoreService(
+			DocumentsDataSource documentsDatasource, Path indexPath) {
+		return new DSIndexRestoreService(getIdField(typedFieldEnumClass).name(),
+				documentsDatasource, createDocumentIndexReaderTemplate(indexPath),
+				createFSIndexUpdateService(indexPath));
+	}
+
+	public TypedIndexUpdateService<ID, T> createTypedIndexUpdateService(Path indexPath) {
+		RawIdToStringConverter<ID> rawIdToStringConverter = RawIdToStringConverter.of(Object::toString);
+		return new TypedIndexUpdateService<>(rawIdToStringConverter,
+				createTypedToDocumentConverter(), createFSIndexUpdateService(indexPath));
+	}
+
+	public FSIndexUpdateService createFSIndexUpdateService(Path indexPath) {
+		return FSIndexUpdateService.create(getIdField(typedFieldEnumClass), analyzer, indexPath);
 	}
 
 	public TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
@@ -68,11 +90,15 @@ public class TypedIndexFactories<T> {
 				createDocumentIndexReaderTemplate(indexPath));
 	}
 
-	public DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
+	private DocumentIndexReaderTemplate createDocumentIndexReaderTemplate(Path indexPath) {
 		return new DocumentIndexReaderTemplate(maxResultsPerSearchedItem, indexPath);
 	}
 
-	public <S> TypedSearchResultFactory<S, T> createTypedSearchResultFactory() {
+	private <S> TypedSearchResultFactory<S, T> createTypedSearchResultFactory() {
 		return new TypedSearchResultFactory<>(DocumentToTypedConverter.of(tClass)::convert);
+	}
+
+	private TypedToDocumentConverter<T> createTypedToDocumentConverter() {
+		return TypedToDocumentConverter.create(analyzer, typedFieldEnumClass);
 	}
 }
