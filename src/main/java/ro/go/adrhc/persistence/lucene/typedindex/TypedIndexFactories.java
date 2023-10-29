@@ -81,11 +81,11 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 				createTypedToDocumentConverter(), createFSIndexUpdateService(indexPath));
 	}
 
-	public FSIndexUpdateService createFSIndexUpdateService(Path indexPath) {
+	private FSIndexUpdateService createFSIndexUpdateService(Path indexPath) {
 		return FSIndexUpdateService.create(getIdField(typedFieldEnumClass), analyzer, indexPath);
 	}
 
-	public TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
+	private TypedIndexReaderTemplate<T> createTypedIndexReaderTemplate(Path indexPath) {
 		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(tClass),
 				createDocumentIndexReaderTemplate(indexPath));
 	}
