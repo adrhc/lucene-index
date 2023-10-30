@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.SearchedToQueryConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchedToQueryConverter;
 
 import java.io.IOException;
 import java.nio.file.Path;

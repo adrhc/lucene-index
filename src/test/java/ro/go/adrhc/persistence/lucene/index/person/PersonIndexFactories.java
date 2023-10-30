@@ -9,7 +9,8 @@ import ro.go.adrhc.persistence.lucene.index.restore.DocumentsIndexRestoreService
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.TypedSearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,11 +35,11 @@ public class PersonIndexFactories {
 		return createSearchService(indexPath)
 				.findAllMatches(query)
 				.stream()
-				.map(TypedSearchResult::getFound)
+				.map(SearchResult::getFound)
 				.toList();
 	}
 
-	public static IndexSearchService<Query, TypedSearchResult<Query, Person>>
+	public static IndexSearchService<QuerySearchResult<Person>>
 	createSearchService(Path indexPath) {
 		return createTypedIndexFactories().createTypedIndexSearchService(indexPath);
 	}

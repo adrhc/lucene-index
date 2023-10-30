@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.domain.queries;
+package ro.go.adrhc.persistence.lucene.typedindex.domain.seach;
 
 import lombok.NonNull;
 import org.apache.lucene.search.Query;
