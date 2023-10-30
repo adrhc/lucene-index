@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.SearchedToQueryConverter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -40,22 +42,15 @@ public class IndexSearchService<S, F> {
 
 	public List<F> findBestMatches(Collection<S> searchedItems) throws IOException {
 		return documentIndexReaderTemplate.useReader(
-				indexReader -> doFindBestMatches(indexReader, searchedItems).toList());
+				indexReader -> doFindBestMatches(indexReader, searchedItems));
 	}
 
-	protected Stream<F> doFindBestMatches(DocumentIndexReader indexReader, Collection<S> searchedItems) {
-		return searchedItems.stream()
-				.map(searched -> doSafelyFindBestMatch(indexReader, searched))
-				.flatMap(Optional::stream);
-	}
-
-	protected Optional<F> doSafelyFindBestMatch(DocumentIndexReader indexReader, S searched) {
-		try {
-			return doFindBestMatch(indexReader, searched);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-			return Optional.empty();
+	protected List<F> doFindBestMatches(DocumentIndexReader indexReader, Collection<S> searchedItems) throws IOException {
+		List<F> fList = new ArrayList<>();
+		for (S searched : searchedItems) {
+			doFindBestMatch(indexReader, searched).ifPresent(fList::add);
 		}
+		return fList;
 	}
 
 	protected Optional<F> doFindBestMatch(DocumentIndexReader indexReader, S searched) throws IOException {

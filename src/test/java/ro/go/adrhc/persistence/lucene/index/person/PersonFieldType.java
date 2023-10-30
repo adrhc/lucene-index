@@ -16,7 +16,7 @@ import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldType.*;
 public enum PersonFieldType implements TypedFieldEnum<Person> {
 	id(KEYWORD, Person::id, true),
 	name(PHRASE, Person::name),
-	nameAsWord(WORD, Person::name),
+	nameWord(WORD, Person::name),
 	cnp(KEYWORD, Person::cnp),
 	km(INT, Person::km),
 	aliasKeyWord(KEYWORD, Person::aliasKeyword),

@@ -9,7 +9,10 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public record DocumentIndexReaderTemplate(int maxResultsPerSearchedItem, Path indexPath) {
+public record DocumentIndexReaderTemplate(int numHits, Path indexPath) {
+	/**
+	 * numHits = Integer.MAX_VALUE
+	 */
 	public static DocumentIndexReaderTemplate create(Path indexPath) {
 		return new DocumentIndexReaderTemplate(Integer.MAX_VALUE, indexPath);
 	}
@@ -36,7 +39,7 @@ public record DocumentIndexReaderTemplate(int maxResultsPerSearchedItem, Path in
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<DocumentIndexReader, R, E> indexReaderFn)
 			throws IOException, E {
-		try (DocumentIndexReader indexReader = DocumentIndexReader.of(maxResultsPerSearchedItem, indexPath)) {
+		try (DocumentIndexReader indexReader = DocumentIndexReader.of(numHits, indexPath)) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

@@ -50,7 +50,7 @@ class IndexSearchServiceTest {
 
 	@Test
 	void wordStartsWith() throws IOException {
-		List<Person> result = findAllMatches(NAME_AS_WORD_QUERIES.wordStartsWith("(original)person"));
+		List<Person> result = findAllMatches(NAME_WORD_QUERIES.wordStartsWith("(original)person"));
 
 		assertThat(result).hasSize(1);
 	}
