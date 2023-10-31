@@ -9,9 +9,9 @@ import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedSearchByIdService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
 import java.nio.file.Path;

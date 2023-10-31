@@ -6,7 +6,7 @@ import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedSearchByIdService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 import ro.go.adrhc.util.StopWatchUtils;
 
 import java.io.IOException;

@@ -13,6 +13,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
 import java.nio.file.Path;

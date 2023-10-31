@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex;
+package ro.go.adrhc.persistence.lucene.typedindex.search;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.SearchByIdService;
