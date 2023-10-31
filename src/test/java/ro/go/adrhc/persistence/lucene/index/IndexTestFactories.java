@@ -4,7 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.QueryParser;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -21,15 +21,12 @@ public class IndexTestFactories {
 	public static final int NUM_HITS = 10;
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
+	public static final QueryParser QUERY_PARSER = QueryParser.create(ANALYZER);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {
 		return new TypedIndexFactories<>(NUM_HITS, ANALYZER, tClass,
 				typedFieldEnumClass, getIdField(typedFieldEnumClass));
-	}
-
-	public static FieldQueries createFieldQuery(Enum<?> field) {
-		return FieldQueries.create(ANALYZER, field);
 	}
 
 	private static Analyzer createAnalyzer() throws IOException {

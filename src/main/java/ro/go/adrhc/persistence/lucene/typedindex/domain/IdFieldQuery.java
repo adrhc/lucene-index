@@ -1,23 +1,24 @@
 package ro.go.adrhc.persistence.lucene.typedindex.domain;
 
-import org.apache.lucene.analysis.Analyzer;
+import lombok.RequiredArgsConstructor;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
-public class IdFieldQueries extends FieldQueries {
+@RequiredArgsConstructor
+public class IdFieldQuery {
 	private final TypedField<?> idField;
+	private final FieldQueries fieldQueries;
 
-	public IdFieldQueries(StandardQueryParser standardQueryParser, TypedField<?> idField) {
-		super(standardQueryParser, idField.name());
-		this.idField = idField;
+	public static IdFieldQuery
+	createIdFieldQueries(TypedField<?> idField) {
+		return new IdFieldQuery(idField, new FieldQueries(idField.name()));
 	}
 
-	public static IdFieldQueries
-	createIdFieldQueries(Analyzer analyzer, TypedField<?> idField) {
-		return new IdFieldQueries(new StandardQueryParser(analyzer), idField);
+	public Query newExactQuery(Document document) {
+		return newExactQuery(document.getField(idField.name()));
 	}
 
 	public Query newExactQuery(IndexableField field) {
@@ -33,9 +34,9 @@ public class IdFieldQueries extends FieldQueries {
 
 	public Query newExactQuery(Object idValue) {
 		return switch (idField.fieldType()) {
-			case KEYWORD -> wordEquals((String) idValue);
-			case LONG -> longEquals((Long) idValue);
-			case INT -> intEquals((Integer) idValue);
+			case KEYWORD -> fieldQueries.wordEquals((String) idValue);
+			case LONG -> fieldQueries.longEquals((Long) idValue);
+			case INT -> fieldQueries.intEquals((Integer) idValue);
 			default -> throw new IllegalStateException(
 					"Unexpected type %s for %s! "
 							.formatted(idField.fieldType(), idField));

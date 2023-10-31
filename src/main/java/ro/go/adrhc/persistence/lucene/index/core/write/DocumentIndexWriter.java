@@ -68,6 +68,10 @@ public class DocumentIndexWriter implements AutoCloseable {
 		}
 	}
 
+	/*public void update(Term idTerm, Document document) throws IOException {
+		indexWriter.updateDocValues(idTerm, document.getFields().toArray(Field[]::new));
+	}*/
+
 	public void update(Query idQuery, Document document) throws IOException {
 		indexWriter.updateDocuments(idQuery, List.of(document));
 	}

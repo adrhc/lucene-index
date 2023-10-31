@@ -16,7 +16,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultF
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
 @Getter
 @RequiredArgsConstructor
@@ -38,15 +37,6 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 				tClass, typedFieldEnumClass, TypedField.getIdField(typedFieldEnumClass));
 	}
 
-	/**
-	 * BestMatchingStrategy: Stream::findFirst
-	 * QuerySearchResultFilter: it -> true (aka no filter)
-	 */
-	public IndexSearchService<QuerySearchResult<T>>
-	createTypedIndexSearchService(Path indexPath) {
-		return createTypedIndexSearchService(Stream::findFirst, it -> true, indexPath);
-	}
-
 	public IndexSearchService<QuerySearchResult<T>>
 	createTypedIndexSearchService(
 			BestMatchingStrategy<QuerySearchResult<T>> bestMatchingStrategy,
@@ -60,7 +50,7 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 	}
 
 	public TypedSearchByIdService<ID, T> createSearchByIdService(Path indexPath) {
-		return TypedSearchByIdService.create(analyzer, tClass, idField, indexPath);
+		return TypedSearchByIdService.create(tClass, idField, indexPath);
 	}
 
 	public TypedIndexCreateService<T> createTypedIndexCreateService(Path indexPath) {

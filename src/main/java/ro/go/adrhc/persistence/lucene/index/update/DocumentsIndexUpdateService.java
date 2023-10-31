@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.IdFieldQueries;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.IdFieldQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWrite
 @Slf4j
 public class DocumentsIndexUpdateService implements IndexUpdateService<String, Document> {
 	private final String idFieldName;
-	private final Function<IndexableField, Query> idQueryProvider;
+	private final Function<Document, Query> idQueryProvider;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 
 	/**
@@ -30,10 +29,10 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<String, D
 	 */
 	public static <E extends Enum<E> & TypedField<?>>
 	DocumentsIndexUpdateService create(Enum<E> idField, Analyzer analyzer, Path indexPath) {
-		IdFieldQueries idFieldQueries = IdFieldQueries
-				.createIdFieldQueries(analyzer, (TypedField<?>) idField);
+		IdFieldQuery idFieldQuery = IdFieldQuery
+				.createIdFieldQueries((TypedField<?>) idField);
 		return new DocumentsIndexUpdateService(idField.name(),
-				idFieldQueries::newExactQuery, fsWriterTemplate(analyzer, indexPath));
+				idFieldQuery::newExactQuery, fsWriterTemplate(analyzer, indexPath));
 	}
 
 	@Override
@@ -51,9 +50,15 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<String, D
 		indexWriterTemplate.useWriter(writer -> writer.addDocuments(documents));
 	}
 
+	/*@Override
+	public void update(Document document) throws IOException {
+		Term idTerm = new Term(idFieldName, document.getBinaryValue(idFieldName));
+		indexWriterTemplate.useWriter(writer -> writer.update(idTerm, document));
+	}*/
+
 	@Override
 	public void update(Document document) throws IOException {
-		Query idQuery = idQueryProvider.apply(document.getField(idFieldName));
+		Query idQuery = idQueryProvider.apply(document);
 		indexWriterTemplate.useWriter(writer -> writer.update(idQuery, document));
 	}
 
