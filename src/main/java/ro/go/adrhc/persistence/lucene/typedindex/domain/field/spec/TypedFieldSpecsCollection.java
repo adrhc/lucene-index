@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -14,10 +14,11 @@ import java.util.stream.Stream;
 public class TypedFieldSpecsCollection<T> {
 	private final List<TypedFieldSpec<T>> fieldSpecs;
 
-	public static <T, E extends Enum<E> & TypedFieldEnum<T>>
+	public static <T, E extends Enum<E> & TypedField<T>>
 	TypedFieldSpecsCollection<T> create(Class<E> typedFieldEnumClass) {
 		TypedFieldSpecsCollection<T> specCollection = create();
-		EnumSet.allOf(typedFieldEnumClass).forEach(e -> specCollection.add(TypedFieldSpec.of(e)));
+		EnumSet.allOf(typedFieldEnumClass)
+				.forEach(e -> specCollection.add(TypedFieldSpec.of(e)));
 		return specCollection;
 	}
 

@@ -20,24 +20,24 @@ public class FieldQueries {
 		return new FieldQueries(new StandardQueryParser(analyzer), field.name());
 	}
 
-	public TermQuery tokenEquals(String name) {
-		return TermQueryFactory.create(fieldName, name);
+	public TermQuery tokenEquals(String value) {
+		return TermQueryFactory.create(fieldName, value);
 	}
 
-	public PrefixQuery tokenStartsWith(String name) {
-		return PrefixQueryFactory.create(fieldName, name);
+	public PrefixQuery tokenStartsWith(String value) {
+		return PrefixQueryFactory.create(fieldName, value);
 	}
 
-	public Query wordEquals(String cnp) {
-		return KeywordField.newExactQuery(fieldName, cnp);
+	public Query wordEquals(String value) {
+		return KeywordField.newExactQuery(fieldName, value);
 	}
 
-	public Query intEquals(int km) {
-		return IntPoint.newExactQuery(fieldName, km);
+	public Query intEquals(int value) {
+		return IntPoint.newExactQuery(fieldName, value);
 	}
 
-	public Query longEquals(long km) {
-		return LongField.newExactQuery(fieldName, km);
+	public Query longEquals(long value) {
+		return LongField.newExactQuery(fieldName, value);
 	}
 
 	public PrefixQuery wordStartsWith(String prefix) {

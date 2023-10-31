@@ -8,6 +8,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static ro.go.adrhc.persistence.lucene.index.core.write.IndexWriterConfigFactories.createOrAppend;
@@ -48,14 +50,6 @@ public class DocumentIndexWriter implements AutoCloseable {
 		}
 	}
 
-	public void removeByFieldValues(String fieldName, Collection<String> fieldValues) throws IOException {
-		Term[] terms = fieldValues.stream()
-//				.peek(it -> log.debug("\nremoving \"{}\" from index", it))
-				.map(value -> new Term(fieldName, value))
-				.toArray(Term[]::new);
-		indexWriter.deleteDocuments(terms);
-	}
-
 	public void addDocument(Document document) throws IOException {
 //		log.debug("\nAdding to index:\n{}", doc);
 		indexWriter.addDocument(document);
@@ -72,6 +66,18 @@ public class DocumentIndexWriter implements AutoCloseable {
 		while (it.hasNext()) {
 			addDocument(it.next());
 		}
+	}
+
+	public void update(Query idQuery, Document document) throws IOException {
+		indexWriter.updateDocuments(idQuery, List.of(document));
+	}
+
+	public void removeByFieldValues(String fieldName, Collection<String> fieldValues) throws IOException {
+		Term[] terms = fieldValues.stream()
+//				.peek(it -> log.debug("\nremoving \"{}\" from index", it))
+				.map(value -> new Term(fieldName, value))
+				.toArray(Term[]::new);
+		indexWriter.deleteDocuments(terms);
 	}
 
 	public void flush() throws IOException {

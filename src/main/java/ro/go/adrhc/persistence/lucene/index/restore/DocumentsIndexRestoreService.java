@@ -7,6 +7,7 @@ import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,8 +27,8 @@ public class DocumentsIndexRestoreService implements IndexRestoreService<String,
 	/**
 	 * constructor parameters union
 	 */
-	public static DocumentsIndexRestoreService create(
-			Enum<?> idField, Analyzer analyzer, Path indexPath) {
+	public static <E extends Enum<E> & TypedField<?>>
+	DocumentsIndexRestoreService create(Enum<E> idField, Analyzer analyzer, Path indexPath) {
 		return new DocumentsIndexRestoreService(idField.name(),
 				DocumentIndexReaderTemplate.create(indexPath),
 				DocumentsIndexUpdateService.create(idField, analyzer, indexPath));

@@ -2,10 +2,12 @@ package ro.go.adrhc.persistence.lucene.index.core.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.Query;
 import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -30,6 +32,10 @@ public record DocumentIndexReaderTemplate(int numHits, Path indexPath) {
 	public <R, E extends Exception> R transformDocuments(
 			SneakyFunction<Stream<Document>, R, E> documentsTransformer) throws IOException, E {
 		return useReader(indexReader -> documentsTransformer.apply(indexReader.getAll()));
+	}
+
+	public Optional<Document> findById(Query idQuery) throws IOException {
+		return useReader(indexReader -> indexReader.findById(idQuery));
 	}
 
 	/**

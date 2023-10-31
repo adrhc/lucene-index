@@ -56,6 +56,16 @@ public class DocumentIndexReader implements AutoCloseable {
 				.flatMap(Optional::stream);
 	}
 
+	public Optional<Document> findById(Query idQuery) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(idQuery);
+		if (topDocsStoredFields.topDocs().totalHits.value > 0) {
+			return Optional.of(topDocsStoredFields.storedFields()
+					.document(topDocsStoredFields.topDocs().scoreDocs[0].doc));
+		} else {
+			return Optional.empty();
+		}
+	}
+
 	public int count(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);

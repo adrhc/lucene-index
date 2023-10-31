@@ -11,5 +11,7 @@ public interface IndexUpdateService<ID, T> {
 
 	void addAll(Stream<T> documents) throws IOException;
 
+	void update(T document) throws IOException;
+
 	void removeByIds(Collection<ID> ids) throws IOException;
 }

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.spec.TypedFieldSpecsCollection;
 
@@ -23,10 +23,12 @@ public class TypedToDocumentConverter<T extends Identifiable<?>> {
 	private final Function<T, Optional<String>> tStringifier;
 	private final TypedFieldSpecsCollection<T> typedFieldSpecsCollection;
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedFieldEnum<T>>
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
 	TypedToDocumentConverter<T> create(Analyzer analyzer, Class<E> typedFieldEnumClass) {
-		TypedFieldSpecsCollection<T> typedFieldSpecsCollection = TypedFieldSpecsCollection.create(typedFieldEnumClass);
-		Function<T, Optional<String>> tStringifier = sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
+		TypedFieldSpecsCollection<T> typedFieldSpecsCollection =
+				TypedFieldSpecsCollection.create(typedFieldEnumClass);
+		Function<T, Optional<String>> tStringifier =
+				sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
 		TypedFieldFactory typedFieldFactory = TypedFieldFactory.create(analyzer);
 		return new TypedToDocumentConverter<>(typedFieldFactory, tStringifier, typedFieldSpecsCollection);
 	}

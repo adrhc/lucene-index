@@ -24,12 +24,6 @@ public class TypedFieldFactory {
 	}
 
 	private Field doCreate(TypedFieldSpec<?> typedFieldSpec, Object value) {
-		return switch (typedFieldSpec.type()) {
-			case KEYWORD -> FieldFactory.keywordField(typedFieldSpec.field(), value);
-			case LONG -> FieldFactory.longField(typedFieldSpec.field(), (Long) value);
-			case INT -> FieldFactory.intField(typedFieldSpec.field(), (Integer) value);
-			case PHRASE -> FieldFactory.textField(typedFieldSpec.field(), value);
-			case WORD -> fieldFactory.stringField(typedFieldSpec.field(), value);
-		};
+		return fieldFactory.create(typedFieldSpec.type(), typedFieldSpec.field(), value);
 	}
 }

@@ -9,6 +9,7 @@ import ro.go.adrhc.persistence.lucene.index.restore.DocumentsIndexRestoreService
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedSearchByIdService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
 
@@ -19,13 +20,13 @@ import java.util.List;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createFieldQuery;
 
 public class PersonIndexFactories {
-	public static final FieldQueries NAME_WORD_QUERIES =
-			createFieldQuery(PersonFieldType.nameWord);
+	public static final FieldQueries NAME_WORD_QUERIES = createFieldQuery(PersonFieldType.nameWord);
 	public static final FieldQueries NAME_QUERIES = createFieldQuery(PersonFieldType.name);
 	public static final FieldQueries ALIAS_PHRASE_QUERIES = createFieldQuery(PersonFieldType.aliasPhrase);
 	public static final FieldQueries ALIAS_KEYWORD_QUERIES = createFieldQuery(PersonFieldType.aliasKeyWord);
 	public static final FieldQueries ALIAS_WORD_QUERIES = createFieldQuery(PersonFieldType.aliasWord);
 	public static final FieldQueries CNP_QUERIES = createFieldQuery(PersonFieldType.cnp);
+	public static final FieldQueries ID_QUERIES = createFieldQuery(PersonFieldType.id);
 
 	public static int count(Path indexPath, Query query) throws IOException {
 		return DocumentsCountService.create(indexPath).count(query);
@@ -44,11 +45,15 @@ public class PersonIndexFactories {
 		return createTypedIndexFactories().createTypedIndexSearchService(indexPath);
 	}
 
+	public static TypedSearchByIdService<Integer, Person> createSearchByIdService(Path indexPath) {
+		return createTypedIndexFactories().createSearchByIdService(indexPath);
+	}
+
 	public static IndexCreateService<Person> createCreateService(Path indexPath) {
 		return createTypedIndexFactories().createTypedIndexCreateService(indexPath);
 	}
 
-	public static IndexUpdateService<String, Person> createUpdateService(Path indexPath) {
+	public static IndexUpdateService<Integer, Person> createUpdateService(Path indexPath) {
 		return createTypedIndexFactories().createTypedIndexUpdateService(indexPath);
 	}
 
@@ -56,7 +61,7 @@ public class PersonIndexFactories {
 		return createTypedIndexFactories().createDocumentsIndexRestoreService(indexPath);
 	}
 
-	private static TypedIndexFactories<String, Person, PersonFieldType> createTypedIndexFactories() {
+	private static TypedIndexFactories<Integer, Person, PersonFieldType> createTypedIndexFactories() {
 		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
 	}
 }

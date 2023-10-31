@@ -5,14 +5,13 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.util.BytesRef;
-import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 
 @RequiredArgsConstructor
 public class FieldFactory {
-	private final TokenizationUtils tokenizationUtils;
+	private final StringFieldFactory stringFieldFactory;
 
 	public static FieldFactory create(Analyzer analyzer) {
-		return new FieldFactory(new TokenizationUtils(analyzer));
+		return new FieldFactory(StringFieldFactory.create(analyzer));
 	}
 
 	public static IntPoint intField(Enum<?> field, Integer value) {
@@ -59,24 +58,22 @@ public class FieldFactory {
 		return new KeywordField(field.name(), value.toString(), Field.Store.YES);
 	}
 
+	public static StoredField storedField(Enum<?> field, Object value) {
+		return storedField(field.name(), value);
+	}
+
 	public static StoredField storedField(String fieldName, Object value) {
 		return new StoredField(fieldName, value.toString());
 	}
 
-	/**
-	 * A field that is indexed but not tokenized: the entire String value is indexed as a single token.
-	 * For example this might be used for a 'country' field or an 'id' field. If you also need to sort
-	 * on this field, separately add a {@link SortedDocValuesField} to your document.
-	 */
-	public StringField stringField(Enum<?> field, Object value) {
-		return new StringField(field.name(),
-				tokenizationUtils.normalize(field.name(), value.toString()),
-				Field.Store.NO);
-	}
-
-	public StringField storedStringField(Enum<?> field, Object value) {
-		return new StringField(field.name(),
-				tokenizationUtils.normalize(field.name(), value.toString()),
-				Field.Store.YES);
+	public Field create(FieldType fieldType, Enum<?> field, Object value) {
+		return switch (fieldType) {
+			case KEYWORD -> FieldFactory.keywordField(field, value);
+			case LONG -> FieldFactory.longField(field, (Long) value);
+			case INT -> FieldFactory.intField(field, (Integer) value);
+			case PHRASE -> FieldFactory.textField(field, value);
+			case STORED -> FieldFactory.storedField(field, value);
+			case WORD -> stringFieldFactory.stringField(field, value);
+		};
 	}
 }

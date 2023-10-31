@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.index.create.DocumentsIndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.create.IndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedFieldEnum;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,7 +25,7 @@ public class TypedIndexCreateService<T extends Identifiable<?>> implements Index
 	/**
 	 * constructor parameters union
 	 */
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedFieldEnum<T>>
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
 	TypedIndexCreateService<T> create(Analyzer analyzer,
 			Class<E> typedFieldEnumClass, Path indexPath) {
 		return new TypedIndexCreateService<>(
