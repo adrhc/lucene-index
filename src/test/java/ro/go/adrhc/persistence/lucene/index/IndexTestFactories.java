@@ -4,7 +4,8 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.QueryParser;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.DefaultAwareQueryParser;
+import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -21,7 +22,8 @@ public class IndexTestFactories {
 	public static final int NUM_HITS = 10;
 	public static final Analyzer ANALYZER = sneak(IndexTestFactories::createAnalyzer);
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
-	public static final QueryParser QUERY_PARSER = QueryParser.create(ANALYZER);
+	public static final DefaultAwareQueryParser NAME_QUERY_PARSER =
+			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {

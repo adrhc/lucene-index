@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.QUERY_PARSER;
+import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
 
@@ -31,7 +31,7 @@ class IndexSearchServiceTest {
 
 	@Test
 	void parse() throws IOException, QueryNodeException {
-		List<Person> result = findAllMatches(QUERY_PARSER.parse(PersonFieldType.name, "pers*2*"));
+		List<Person> result = findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
 		assertThat(result).hasSize(1);
 	}
 

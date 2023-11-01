@@ -15,6 +15,10 @@ public class QueryParser {
 	}
 
 	public Query parse(Enum<?> defaultField, String query) throws QueryNodeException {
-		return standardQueryParser.parse(query, defaultField.name());
+		return parse(defaultField.name(), query);
+	}
+
+	public Query parse(String defaultField, String query) throws QueryNodeException {
+		return standardQueryParser.parse(query, defaultField);
 	}
 }
