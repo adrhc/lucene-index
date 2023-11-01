@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.IdFieldQuery;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
@@ -21,8 +21,8 @@ public class SearchByIdService<ID> {
 
 	public static <ID, E extends TypedField<?>>
 	SearchByIdService<ID> create(E idField, Path indexPath) {
-		IdFieldQuery idFieldQuery = IdFieldQuery.createIdFieldQueries(idField);
-		return new SearchByIdService<>(idFieldQuery::newExactQuery,
+		ExactQuery exactQuery = ExactQuery.createIdFieldQueries(idField);
+		return new SearchByIdService<>(exactQuery::newExactQuery,
 				new DocumentIndexReaderTemplate(1, indexPath));
 	}
 

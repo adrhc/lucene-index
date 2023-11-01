@@ -6,7 +6,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.IdFieldQuery;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
@@ -29,10 +29,10 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<String, D
 	 */
 	public static <E extends Enum<E> & TypedField<?>>
 	DocumentsIndexUpdateService create(Enum<E> idField, Analyzer analyzer, Path indexPath) {
-		IdFieldQuery idFieldQuery = IdFieldQuery
+		ExactQuery exactQuery = ExactQuery
 				.createIdFieldQueries((TypedField<?>) idField);
 		return new DocumentsIndexUpdateService(idField.name(),
-				idFieldQuery::newExactQuery, fsWriterTemplate(analyzer, indexPath));
+				exactQuery::newExactQuery, fsWriterTemplate(analyzer, indexPath));
 	}
 
 	@Override

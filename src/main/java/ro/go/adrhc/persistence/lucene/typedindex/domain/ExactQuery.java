@@ -8,13 +8,13 @@ import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 @RequiredArgsConstructor
-public class IdFieldQuery {
+public class ExactQuery {
 	private final TypedField<?> idField;
 	private final FieldQueries fieldQueries;
 
-	public static IdFieldQuery
+	public static ExactQuery
 	createIdFieldQueries(TypedField<?> idField) {
-		return new IdFieldQuery(idField, new FieldQueries(idField.name()));
+		return new ExactQuery(idField, new FieldQueries(idField.name()));
 	}
 
 	public Query newExactQuery(Document document) {
