@@ -18,13 +18,13 @@ import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.TOKENIZATI
 public
 class TokenizationUtilsTest {
 	public static final String TEXT = " IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 " +
-			"aAșțĂÎîă ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
+			"ăĂîÎșȘțȚ ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
 
 	@Test
 	void tokenize() throws IOException {
 		Set<String> tokens = TOKENIZATION_UTILS.tokenize(TEXT);
 		assertThat(tokens).containsOnly("img", "20210725", "wa0029",
-				"aaa", "bbb", "ccc", "ddd", "555", "888", "aastaiia", "ttt.ttt", "uuu", "vvv");
+				"aaa", "bbb", "ccc", "ddd", "555", "888", "aaiisstt", "ttt.ttt", "uuu", "vvv");
 
 		assertTrue(Stream.of(".jPg", ".jpEg", ".jPg ", " .jpEg", " .jpEg ", " .jPg ")
 				.map(sneaked(TOKENIZATION_UTILS::tokenize))

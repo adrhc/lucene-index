@@ -60,7 +60,7 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 	}
 
 	public DocumentsIndexRestoreService createDocumentsIndexRestoreService(Path indexPath) {
-		return DocumentsIndexRestoreService.create(idField, analyzer, indexPath);
+		return DocumentsIndexRestoreService.create(analyzer, idField, indexPath);
 	}
 
 	public TypedIndexUpdateService<ID, T> createTypedIndexUpdateService(Path indexPath) {

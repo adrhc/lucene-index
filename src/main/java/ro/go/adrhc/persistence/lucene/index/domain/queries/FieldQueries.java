@@ -16,15 +16,15 @@ public class FieldQueries {
 		return new FieldQueries(field.name());
 	}
 
+	public PrefixQuery startsWith(String prefix) {
+		return PrefixQueryFactory.create(fieldName, prefix);
+	}
+
 	public TermQuery tokenEquals(String value) {
 		return TermQueryFactory.create(fieldName, value);
 	}
 
-	public PrefixQuery tokenStartsWith(String value) {
-		return PrefixQueryFactory.create(fieldName, value);
-	}
-
-	public Query wordEquals(String value) {
+	public Query keywordEquals(String value) {
 		return KeywordField.newExactQuery(fieldName, value);
 	}
 
@@ -34,9 +34,5 @@ public class FieldQueries {
 
 	public Query longEquals(long value) {
 		return LongField.newExactQuery(fieldName, value);
-	}
-
-	public PrefixQuery wordStartsWith(String prefix) {
-		return PrefixQueryFactory.create(fieldName, prefix);
 	}
 }

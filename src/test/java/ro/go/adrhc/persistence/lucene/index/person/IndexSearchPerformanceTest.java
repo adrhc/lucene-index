@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,13 +21,11 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-public class IndexSearchPerformanceTest {
-	//	@TempDir
-	private static final Path TMP = Path.of("C:/Users/adpetre/Temp/test-index/people");
-
+public class IndexSearchPerformanceTest extends AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
-//		createCreateService(TMP).createOrReplace(generatePeopleStream(0, 50000));
+		tmpDir = Path.of("C:/Users/adpetre/Temp/test-index/people");
+//		createCreateService().createOrReplace(generatePeopleStream(0, 10000));
 //		createUpdateService(TMP).addAll(generatePeopleStream(5000, 10_000_001));
 //		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
 	}
@@ -36,13 +33,13 @@ public class IndexSearchPerformanceTest {
 	@RepeatedTest(2)
 	void keywordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_KEYWORD_QUERIES.wordEquals("alias0"));
+		int count = count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\ncount time: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.wordEquals("alias0"));
+		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -51,13 +48,13 @@ public class IndexSearchPerformanceTest {
 	@RepeatedTest(2)
 	void wordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_WORD_QUERIES.wordEquals("alias0"));
+		int count = count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.wordEquals("alias0"));
+		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -66,13 +63,13 @@ public class IndexSearchPerformanceTest {
 	@RepeatedTest(2)
 	void phraseTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_PHRASE_QUERIES.wordEquals("alias0"));
+		int count = count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.wordEquals("alias0"));
+		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -97,25 +94,17 @@ public class IndexSearchPerformanceTest {
 	void updateTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
 
-		TypedSearchByIdService<Integer, Person> searchByIdService = createSearchByIdService(TMP);
+		TypedSearchByIdService<Integer, Person> searchByIdService = createSearchByIdService();
 		Optional<Person> optionalPerson = searchByIdService.findById(2222);
 		assertThat(optionalPerson).isPresent();
 
 		String newMisc = Instant.now().toString();
 		Person person = optionalPerson.get().misc(newMisc);
-		createUpdateService(TMP).update(person);
+		createUpdateService().update(person);
 
 		optionalPerson = searchByIdService.findById(2222);
 		assertThat(optionalPerson).isPresent();
 		assertThat(optionalPerson.get().misc()).isEqualTo(newMisc);
 		stopWatch.stop();
-	}
-
-	private int count(Query query) throws IOException {
-		return PersonIndexFactories.count(TMP, query);
-	}
-
-	private List<Person> findAllMatches(Query query) throws IOException {
-		return PersonIndexFactories.findAllMatches(TMP, query);
 	}
 }

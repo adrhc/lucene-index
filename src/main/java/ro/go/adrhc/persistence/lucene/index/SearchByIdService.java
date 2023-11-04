@@ -19,9 +19,9 @@ public class SearchByIdService<ID> {
 	private final Function<ID, Query> idQueryProvider;
 	private final DocumentIndexReaderTemplate documentIndexReaderTemplate;
 
-	public static <ID, E extends TypedField<?>>
-	SearchByIdService<ID> create(E idField, Path indexPath) {
-		ExactQuery exactQuery = ExactQuery.createIdFieldQueries(idField);
+	public static <ID> SearchByIdService<ID>
+	create(TypedField<?> idField, Path indexPath) {
+		ExactQuery exactQuery = ExactQuery.create(idField);
 		return new SearchByIdService<>(exactQuery::newExactQuery,
 				new DocumentIndexReaderTemplate(1, indexPath));
 	}

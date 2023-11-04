@@ -5,16 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchedToQueryConverter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentsCountService<S> implements IndexCountService<S> {
-	private final SearchedToQueryConverter<S> toQueryConverter;
+public class DocumentsCountService implements IndexCountService {
 	private final DocumentIndexReaderTemplate documentIndexReaderTemplate;
 
 	/**
@@ -24,17 +21,8 @@ public class DocumentsCountService<S> implements IndexCountService<S> {
 	 * <p>
 	 * SearchedToQueryConverter = Optional::of
 	 */
-	public static DocumentsCountService<Query> create(Path indexPath) {
-		return create(Optional::of, indexPath);
-	}
-
-	/**
-	 * constructor parameters union
-	 */
-	public static <S> DocumentsCountService<S> create(
-			SearchedToQueryConverter<S> toQueryConverter, Path indexPath) {
-		return new DocumentsCountService<>(toQueryConverter,
-				DocumentIndexReaderTemplate.create(indexPath));
+	public static DocumentsCountService create(Path indexPath) {
+		return new DocumentsCountService(DocumentIndexReaderTemplate.create(indexPath));
 	}
 
 	@Override
@@ -43,11 +31,7 @@ public class DocumentsCountService<S> implements IndexCountService<S> {
 	}
 
 	@Override
-	public int count(S searched) throws IOException {
-		Optional<Query> query = toQueryConverter.convert(searched);
-		if (query.isEmpty()) {
-			throw new IOException("Failed to create the lucene query!");
-		}
-		return documentIndexReaderTemplate.useReader(indexReader -> indexReader.count(query.get()));
+	public int count(Query query) throws IOException {
+		return documentIndexReaderTemplate.useReader(indexReader -> indexReader.count(query));
 	}
 }

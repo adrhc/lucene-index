@@ -1,9 +1,11 @@
 package ro.go.adrhc.persistence.lucene.index.count;
 
+import org.apache.lucene.search.Query;
+
 import java.io.IOException;
 
-public interface IndexCountService<S> {
+public interface IndexCountService {
 	int count() throws IOException;
 
-	int count(S searched) throws IOException;
+	int count(Query query) throws IOException;
 }

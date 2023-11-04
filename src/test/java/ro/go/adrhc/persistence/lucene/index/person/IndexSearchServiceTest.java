@@ -1,70 +1,97 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
-import org.apache.lucene.search.Query;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class IndexSearchServiceTest {
-	@TempDir
-	private static Path tmpDir;
-
-	@BeforeAll
-	void beforeAll() throws IOException {
-		createCreateService(tmpDir).createOrReplace(PEOPLE);
-	}
+@Slf4j
+class IndexSearchServiceTest extends AbstractPersonsIndexTest {
+	private static final Person PERSON3 = PEOPLE.get(2);
 
 	@Test
 	void parse() throws IOException, QueryNodeException {
+		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
 		assertThat(result).hasSize(1);
+		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
 	void tokenEquals() throws IOException {
-		List<Person> result = findAllMatches(NAME_QUERIES.tokenEquals("cast"));
+		// tokens (i.e. other than KeywordField) must be normalized!
+		List<Person> result = findAllMatches(ALIAS_PHRASE_QUERIES.tokenEquals("phraseaaiisstt123"));
 
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+	}
+
+	@Test
+	void wordEquals() throws IOException {
+		String aliasWord = PERSON3.aliasWord();
+		String normalized = ANALYZER.normalize(null, aliasWord).utf8ToString();
+		log.info("\naliasWord is:\t\t{}\nnormalized is:\t{}", aliasWord, normalized);
+		// tokens (i.e. other than KeywordField) must be normalized!
+		List<Person> result = findAllMatches(ALIAS_WORD_QUERIES.tokenEquals(normalized));
+
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+	}
+
+	@Test
+	void keywordEquals() throws IOException {
+		String aliasKeyword = PERSON3.aliasKeyword();
+		log.info("\naliasKeyword is: {}", aliasKeyword);
+		// KeywordField shouldn't be normalized!
+		List<Person> result = findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
+
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
 	void tokenStartsWith() throws IOException {
-		List<Person> result = findAllMatches(NAME_QUERIES.tokenStartsWith("person2"));
+		String token = PERSON3.aliasPhrase();
+		String prefix = ANALYZER.normalize(null, token).utf8ToString();
+		prefix = prefix.substring(0, prefix.length() - 1);
+		log.info("\ntoken is:\t{}\nprefix is:\t{}", token, prefix);
+		// tokens (i.e. other than KeywordField) must be normalized!
+		List<Person> result = findAllMatches(NAME_QUERIES.startsWith("person2"));
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
 	void wordStartsWith() throws IOException {
-		List<Person> result = findAllMatches(NAME_WORD_QUERIES.wordStartsWith("(original)person"));
+		String name = PERSON3.name();
+		String prefix = ANALYZER.normalize(null, name).utf8ToString();
+		prefix = prefix.substring(0, prefix.length() - 1);
+		log.info("\nname is:\t\t{}\nprefix is:\t{}", name, prefix);
+		// tokens (i.e. other than KeywordField) must be normalized!
+		List<Person> result = findAllMatches(NAME_WORD_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void wordEquals() throws IOException {
-		List<Person> result = findAllMatches(CNP_QUERIES.wordEquals("#Person3"));
-//		result = findAllMatches(CNP_QUERIES.tokenEquals("#Person3"));
+	void keywordStartsWith() throws IOException {
+		String cnp = PERSON3.cnp();
+		String prefix = cnp.substring(0, cnp.length() - 1);
+		log.info("\ncnp is:\t\t{}\nprefix is:\t{}", cnp, prefix);
+		// KeywordField shouldn't be normalized!
+		List<Person> result = findAllMatches(CNP_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
-	}
-
-	private List<Person> findAllMatches(Query query) throws IOException {
-		return PersonIndexFactories.findAllMatches(tmpDir, query);
 	}
 }

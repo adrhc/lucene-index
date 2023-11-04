@@ -27,8 +27,8 @@ public class DocumentsIndexRestoreService implements IndexRestoreService<String,
 	/**
 	 * constructor parameters union
 	 */
-	public static <E extends Enum<E> & TypedField<?>>
-	DocumentsIndexRestoreService create(Enum<E> idField, Analyzer analyzer, Path indexPath) {
+	public static DocumentsIndexRestoreService
+	create(Analyzer analyzer, TypedField<?> idField, Path indexPath) {
 		return new DocumentsIndexRestoreService(idField.name(),
 				DocumentIndexReaderTemplate.create(indexPath),
 				DocumentsIndexUpdateService.create(idField, analyzer, indexPath));
