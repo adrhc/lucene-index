@@ -19,7 +19,7 @@ public class ExactQuery {
 		return new ExactQuery(idField, new FieldQueries(idField.name()));
 	}
 
-	public List<Query> newExactQueries(Collection<String> ids) {
+	public List<Query> newExactQueries(Collection<?> ids) {
 		return ids.stream().map(this::newExactQuery).toList();
 	}
 
