@@ -21,7 +21,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-public class IndexSearchPerformanceTest extends AbstractPersonsIndexTest {
+public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		tmpDir = Path.of("C:/Users/adpetre/Temp/test-index/people");

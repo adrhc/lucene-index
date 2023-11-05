@@ -17,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-class IndexSearchServiceTest extends AbstractPersonsIndexTest {
+class IndexQueriesTest extends AbstractPersonsIndexTest {
 	private static final Person PERSON3 = PEOPLE.get(2);
 
 	@Test
