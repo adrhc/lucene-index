@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.index.core.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.util.Assert;
 
@@ -11,12 +12,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public record DocumentIndexReaderTemplate(int numHits, Path indexPath) {
+public record DocumentsIndexReaderTemplate(int numHits, Path indexPath) {
 	/**
 	 * numHits = Integer.MAX_VALUE
 	 */
-	public static DocumentIndexReaderTemplate create(Path indexPath) {
-		return new DocumentIndexReaderTemplate(Integer.MAX_VALUE, indexPath);
+	public static DocumentsIndexReaderTemplate create(Path indexPath) {
+		return new DocumentsIndexReaderTemplate(Integer.MAX_VALUE, indexPath);
+	}
+
+	public <R, E extends Exception> R transformFields(String fieldName,
+			SneakyFunction<Stream<IndexableField>, R, E> fieldValuesTransformer) throws IOException, E {
+		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllField(fieldName)));
 	}
 
 	public <R, E extends Exception> R transformFieldValues(String fieldName,

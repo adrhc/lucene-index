@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,23 +22,23 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class IndexSearchService<F> {
-	private final DocumentIndexReaderTemplate documentIndexReaderTemplate;
+	private final DocumentsIndexReaderTemplate documentsIndexReaderTemplate;
 	private final IndexSearchResultFactory<F> toFoundConverter;
 	private final BestMatchingStrategy<F> bestMatchingStrategy;
 	private final SearchResultFilter<F> searchResultFilter;
 
 	public List<F> findAllMatches(Query query) throws IOException {
-		return documentIndexReaderTemplate.useReader(indexReader ->
+		return documentsIndexReaderTemplate.useReader(indexReader ->
 				doFindAllMatches(indexReader, query).toList());
 	}
 
 	public Optional<F> findBestMatch(Query query) throws IOException {
-		return documentIndexReaderTemplate.useReader(
+		return documentsIndexReaderTemplate.useReader(
 				indexReader -> doFindBestMatch(indexReader, query));
 	}
 
 	public List<F> findBestMatches(Collection<? extends Query> queries) throws IOException {
-		return documentIndexReaderTemplate.useReader(
+		return documentsIndexReaderTemplate.useReader(
 				indexReader -> doFindBestMatches(indexReader, queries));
 	}
 

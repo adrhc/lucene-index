@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.MultiBits;
-import org.apache.lucene.index.StoredFields;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -35,6 +32,10 @@ public class DocumentIndexReader implements AutoCloseable {
 
 	public Stream<Document> getAll() {
 		return getAll(Set.of());
+	}
+
+	public Stream<IndexableField> getAllField(String fieldName) {
+		return getAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
 	public Stream<String> getAllFieldValues(String fieldName) {

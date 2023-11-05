@@ -14,20 +14,35 @@ public class FieldFactory {
 		return new FieldFactory(StringFieldFactory.create(analyzer));
 	}
 
+	/**
+	 * Can't be stored!
+	 */
 	public static IntPoint intField(Enum<?> field, Integer value) {
-		return new IntPoint(field.name(), value);
+		return intField(field.name(), value);
 	}
 
-	public static LongField longField(Enum<?> field, Long value) {
-		return new LongField(field.name(), value, Field.Store.NO);
+	public static IntPoint intField(String fieldName, Integer value) {
+		return new IntPoint(fieldName, value);
+	}
+
+	public static LongField longField(boolean stored, Enum<?> field, Long value) {
+		return longField(stored, field.name(), value);
+	}
+
+	public static LongField longField(boolean stored, String fieldName, Long value) {
+		return new LongField(fieldName, value, stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	/**
 	 * A field that is indexed and tokenized, without term vectors. For example this would be used on a
 	 * 'body' field, that contains the bulk of a document's text.
 	 */
-	public static TextField textField(Enum<?> field, Object value) {
-		return new TextField(field.name(), value.toString(), Field.Store.NO);
+	public static TextField textField(boolean stored, Enum<?> field, Object value) {
+		return textField(stored, field.name(), value.toString());
+	}
+
+	public static TextField textField(boolean stored, String fieldName, Object value) {
+		return new TextField(fieldName, value.toString(), stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	/**
@@ -46,16 +61,12 @@ public class FieldFactory {
 	 *   <li>{@link KeywordField#newSortField} for matching a value.
 	 * </ul>
 	 */
-	public static KeywordField keywordField(Enum<?> field, Object value) {
-		return new KeywordField(field.name(), value.toString(), Field.Store.NO);
+	public static KeywordField keywordField(boolean stored, Enum<?> field, Object value) {
+		return keywordField(stored, field.name(), value.toString());
 	}
 
-	public static TextField storedTextField(Enum<?> field, Object value) {
-		return new TextField(field.name(), value.toString(), Field.Store.YES);
-	}
-
-	public static KeywordField storedKeywordField(Enum<?> field, Object value) {
-		return new KeywordField(field.name(), value.toString(), Field.Store.YES);
+	public static KeywordField keywordField(boolean stored, String fieldName, Object value) {
+		return new KeywordField(fieldName, value.toString(), stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	public static StoredField storedField(Enum<?> field, Object value) {
@@ -66,14 +77,18 @@ public class FieldFactory {
 		return new StoredField(fieldName, value.toString());
 	}
 
-	public Field create(FieldType fieldType, Enum<?> field, Object value) {
+	public Field create(boolean stored, FieldType fieldType, Enum<?> field, Object value) {
+		return create(stored, fieldType, field.name(), value);
+	}
+
+	public Field create(boolean stored, FieldType fieldType, String fieldName, Object value) {
 		return switch (fieldType) {
-			case KEYWORD -> FieldFactory.keywordField(field, value);
-			case LONG -> FieldFactory.longField(field, (Long) value);
-			case INT -> FieldFactory.intField(field, (Integer) value);
-			case PHRASE -> FieldFactory.textField(field, value);
-			case STORED -> FieldFactory.storedField(field, value);
-			case WORD -> stringFieldFactory.stringField(field, value);
+			case KEYWORD -> keywordField(stored, fieldName, value);
+			case WORD -> stringFieldFactory.stringField(stored, fieldName, value);
+			case PHRASE -> textField(stored, fieldName, value);
+			case INT -> intField(fieldName, (Integer) value);
+			case LONG -> longField(stored, fieldName, (Long) value);
+			case STORED -> storedField(fieldName, value);
 		};
 	}
 }

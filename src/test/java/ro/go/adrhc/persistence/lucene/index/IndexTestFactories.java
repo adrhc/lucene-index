@@ -26,7 +26,8 @@ public class IndexTestFactories {
 			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexFactories<ID, T, E> createTypedIndexFactories(Class<T> tClass, Class<E> typedFieldEnumClass) {
+	TypedIndexFactories<ID, T, E> createTypedIndexFactories(
+			Class<T> tClass, Class<E> typedFieldEnumClass) {
 		return new TypedIndexFactories<>(NUM_HITS, ANALYZER, tClass,
 				typedFieldEnumClass, getIdField(typedFieldEnumClass));
 	}

@@ -2,12 +2,13 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
-import ro.go.adrhc.persistence.lucene.index.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.nio.file.Path;
@@ -32,7 +33,7 @@ public class PersonIndexFactories {
 				.createTypedIndexSearchService(Stream::findFirst, it -> true, indexPath);
 	}
 
-	public static TypedSearchByIdService<Integer, Person> createSearchByIdService(Path indexPath) {
+	public static TypedSearchByIdService<Long, Person> createSearchByIdService(Path indexPath) {
 		return createTypedIndexFactories().createSearchByIdService(indexPath);
 	}
 
@@ -40,15 +41,19 @@ public class PersonIndexFactories {
 		return createTypedIndexFactories().createTypedIndexCreateService(indexPath);
 	}
 
-	public static TypedIndexUpdateService<Integer, Person> createUpdateService(Path indexPath) {
+	public static TypedIndexUpdateService<Person> createUpdateService(Path indexPath) {
 		return createTypedIndexFactories().createTypedIndexUpdateService(indexPath);
 	}
 
-	public static DocumentsIndexRestoreService createRestoreService(Path indexPath) {
+	public static TypedIndexRemoveService<Long> createIndexRemoveService(Path indexPath) {
+		return createTypedIndexFactories().createIndexRemoveService(indexPath);
+	}
+
+	public static DocumentsIndexRestoreService<Long, Person> createIndexRestoreService(Path indexPath) {
 		return createTypedIndexFactories().createDocumentsIndexRestoreService(indexPath);
 	}
 
-	private static TypedIndexFactories<Integer, Person, PersonFieldType> createTypedIndexFactories() {
+	private static TypedIndexFactories<Long, Person, PersonFieldType> createTypedIndexFactories() {
 		return IndexTestFactories.createTypedIndexFactories(Person.class, PersonFieldType.class);
 	}
 }

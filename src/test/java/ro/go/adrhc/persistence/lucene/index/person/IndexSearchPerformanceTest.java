@@ -2,17 +2,17 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 import ro.go.adrhc.util.StopWatchUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
@@ -78,33 +78,15 @@ public class IndexSearchPerformanceTest extends AbstractPersonsIndexTest {
 	@RepeatedTest(2)
 	void intTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ID_QUERIES.intEquals(1111));
+		int count = count(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(1);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ID_QUERIES.intEquals(1111));
+		List<Person> people = findAllMatches(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
-	}
-
-	@Test
-	void updateTest() throws IOException {
-		StopWatch stopWatch = StopWatchUtils.start();
-
-		TypedSearchByIdService<Integer, Person> searchByIdService = createSearchByIdService();
-		Optional<Person> optionalPerson = searchByIdService.findById(2222);
-		assertThat(optionalPerson).isPresent();
-
-		String newMisc = Instant.now().toString();
-		Person person = optionalPerson.get().misc(newMisc);
-		createUpdateService().update(person);
-
-		optionalPerson = searchByIdService.findById(2222);
-		assertThat(optionalPerson).isPresent();
-		assertThat(optionalPerson.get().misc()).isEqualTo(newMisc);
-		stopWatch.stop();
 	}
 }

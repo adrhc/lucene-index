@@ -4,15 +4,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
@@ -44,7 +44,7 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 			BestMatchingStrategy<QuerySearchResult<T>> bestMatchingStrategy,
 			QuerySearchResultFilter<T> searchResultFilter, Path indexPath) {
 		return new IndexSearchService<>(
-				new DocumentIndexReaderTemplate(numHits, indexPath),
+				new DocumentsIndexReaderTemplate(numHits, indexPath),
 				QuerySearchResultFactory.create(tClass),
 				bestMatchingStrategy,
 				searchResultFilter
@@ -55,15 +55,19 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		return TypedSearchByIdService.create(tClass, idField, indexPath);
 	}
 
+	public DocumentsIndexRestoreService<ID, T> createDocumentsIndexRestoreService(Path indexPath) {
+		return DocumentsIndexRestoreService.create(analyzer, tClass, idField, indexPath);
+	}
+
 	public TypedIndexCreateService<T> createTypedIndexCreateService(Path indexPath) {
 		return TypedIndexCreateService.create(analyzer, tFieldEnumClass, indexPath);
 	}
 
-	public DocumentsIndexRestoreService createDocumentsIndexRestoreService(Path indexPath) {
-		return DocumentsIndexRestoreService.create(analyzer, idField, indexPath);
+	public TypedIndexUpdateService<T> createTypedIndexUpdateService(Path indexPath) {
+		return TypedIndexUpdateService.create(analyzer, tFieldEnumClass, indexPath);
 	}
 
-	public TypedIndexUpdateService<ID, T> createTypedIndexUpdateService(Path indexPath) {
-		return TypedIndexUpdateService.create(analyzer, tFieldEnumClass, indexPath);
+	public TypedIndexRemoveService<ID> createIndexRemoveService(Path indexPath) {
+		return TypedIndexRemoveService.create(analyzer, idField, indexPath);
 	}
 }

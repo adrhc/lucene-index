@@ -2,14 +2,16 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 
-public record Person(int id, Long km, String cnp, String name, String aliasKeyword,
-		String aliasWord, String aliasPhrase, String misc) implements Identifiable<Integer> {
+public record Person(Long id, String cnp, String name, String aliasKeyword,
+		String aliasWord, String aliasPhrase, Integer intField, Long longField,
+		String storedOnlyField) implements Identifiable<Long> {
 	@Override
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public Person misc(String misc) {
-		return new Person(id, km, cnp, name, aliasKeyword, aliasWord, aliasPhrase, misc);
+	public Person storedOnlyField(String storedOnlyField) {
+		return new Person(id, cnp, name, aliasKeyword, aliasWord,
+				aliasPhrase, intField, longField, storedOnlyField);
 	}
 }

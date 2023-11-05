@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.restore;
+package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
 import java.io.IOException;
 import java.util.Collection;

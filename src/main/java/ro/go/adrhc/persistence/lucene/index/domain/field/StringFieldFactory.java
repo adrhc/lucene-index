@@ -20,15 +20,13 @@ public class StringFieldFactory {
 	 * For example this might be used for a 'country' field or an 'id' field. If you also need to sort
 	 * on this field, separately add a {@link SortedDocValuesField} to your document.
 	 */
-	public StringField stringField(Enum<?> field, Object value) {
-		return new StringField(field.name(),
-				tokenizationUtils.normalize(field.name(), value.toString()),
-				Field.Store.NO);
+	public StringField stringField(boolean stored, Enum<?> field, Object value) {
+		return stringField(stored, field.name(), value);
 	}
 
-	public StringField storedStringField(Enum<?> field, Object value) {
-		return new StringField(field.name(),
-				tokenizationUtils.normalize(field.name(), value.toString()),
-				Field.Store.YES);
+	public StringField stringField(boolean stored, String fieldName, Object value) {
+		return new StringField(fieldName,
+				tokenizationUtils.normalize(fieldName, value.toString()),
+				stored ? Field.Store.YES : Field.Store.NO);
 	}
 }
