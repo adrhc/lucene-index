@@ -17,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWrite
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentsIndexUpdateService implements IndexUpdateService<String, Document> {
+public class DocumentsIndexUpdateService implements IndexUpdateService<Document> {
 	private final ExactQuery exactQuery;
 	private final DocumentIndexWriterTemplate indexWriterTemplate;
 
@@ -55,11 +55,5 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<String, D
 	public void update(Document document) throws IOException {
 		indexWriterTemplate.useWriter(writer -> writer
 				.update(exactQuery.newExactQuery(document), document));
-	}
-
-	@Override
-	public void removeByIds(Collection<String> ids) throws IOException {
-		indexWriterTemplate.useWriter(writer -> writer
-				.deleteDocuments(exactQuery.newExactQueries(ids)));
 	}
 }
