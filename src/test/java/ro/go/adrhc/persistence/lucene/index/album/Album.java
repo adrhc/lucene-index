@@ -19,4 +19,8 @@ public record Album(Path path, String name, String storedOnlyField) implements I
 	public Album storedOnlyField(String storedOnlyField) {
 		return new Album(path, name, storedOnlyField);
 	}
+
+	public Album path(String path) {
+		return new Album(Path.of(path), name, storedOnlyField);
+	}
 }
