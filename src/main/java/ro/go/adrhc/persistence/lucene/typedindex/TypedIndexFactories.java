@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
+ * see also ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService
+ *
  * @param <ID> is the index id, String and Long are permitted
  * @param <T>  a JSON (ser/deser)ializable
  * @param <E>  is the TypedField that describes the lucene Document in relation with T
