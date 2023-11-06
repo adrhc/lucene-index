@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.field.RawDataFieldProvider;
 
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class DocumentToTypedConverter<T> {
 	}
 
 	public Optional<T> convert(Document doc) {
-		String json = TypedToDocumentConverter.getRawData(doc);
+		String json = RawDataFieldProvider.getRawData(doc);
 		try {
 			return Optional.of(tReader.readValue(json));
 		} catch (JsonProcessingException e) {

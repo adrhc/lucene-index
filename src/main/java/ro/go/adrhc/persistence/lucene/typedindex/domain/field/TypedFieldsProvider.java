@@ -2,13 +2,13 @@ package ro.go.adrhc.persistence.lucene.typedindex.domain.field;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory;
 
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class TypedFieldsProvider<T> {
@@ -22,14 +22,13 @@ public class TypedFieldsProvider<T> {
 				EnumSet.allOf(typedFieldEnumClass));
 	}
 
-	public void populate(T tValue, Document doc) {
-		typedFields.stream()
-				.map(typedField -> create(tValue, typedField))
-				.flatMap(Optional::stream)
-				.forEach(doc::add);
+	public Stream<Field> createFields(T tValue) {
+		return typedFields.stream()
+				.map(typedField -> createField(tValue, typedField))
+				.flatMap(Optional::stream);
 	}
 
-	public Optional<Field> create(T t, TypedField<T> typedField) {
+	public Optional<Field> createField(T t, TypedField<T> typedField) {
 		Object fieldValue = typedField.accessor().apply(t);
 		if (fieldValue == null) {
 			return Optional.empty();
