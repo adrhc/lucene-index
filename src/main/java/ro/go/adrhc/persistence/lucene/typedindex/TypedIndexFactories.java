@@ -19,6 +19,11 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * @param <ID> is the index id, String and Long are permitted
+ * @param <T>  a JSON (ser/deser)ializable
+ * @param <E>  is the TypedField that describes the lucene Document in relation with T
+ */
 @Getter
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> {
