@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.index.person;
 import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -31,7 +30,7 @@ public class PeopleGenerator {
 	}
 
 	public static Stream<Person> generatePeopleStream(int start, int end) {
-		return IntStream.range(start, end)
+		return LongStream.range(start, end)
 				.mapToObj(PeopleGenerator::generatePerson);
 	}
 

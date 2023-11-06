@@ -1,14 +1,12 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
-import ro.go.adrhc.util.StopWatchUtils;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -21,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.A
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class IndexCrudOperationsTest extends AbstractPersonsIndexTest {
+public class PeopleCrudOperationsTest extends AbstractPersonsIndexTest {
 	@Test
 	void crudTest() throws IOException {
 		int count = count(ALIAS_KEYWORD_QUERIES.startsWith("alias_Keyword"));
@@ -41,8 +39,6 @@ public class IndexCrudOperationsTest extends AbstractPersonsIndexTest {
 
 	@Test
 	void updateTest() throws IOException {
-		StopWatch stopWatch = StopWatchUtils.start();
-
 		TypedSearchByIdService<Long, Person> searchByIdService = createSearchByIdService();
 		Optional<Person> optionalPerson = searchByIdService.findById(1L);
 		assertThat(optionalPerson).isPresent();
@@ -51,9 +47,8 @@ public class IndexCrudOperationsTest extends AbstractPersonsIndexTest {
 		Person person = optionalPerson.get().storedOnlyField(newStoredOnlyField);
 		createUpdateService().update(person);
 
-		optionalPerson = searchByIdService.findById(1L);
+		optionalPerson = searchByIdService.findById(person.getId());
 		assertThat(optionalPerson).isPresent();
 		assertThat(optionalPerson.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
-		stopWatch.stop();
 	}
 }
