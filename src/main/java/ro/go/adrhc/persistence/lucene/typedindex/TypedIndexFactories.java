@@ -6,7 +6,6 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -48,12 +47,10 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 
 	public IndexSearchService<QuerySearchResult<T>>
 	createTypedIndexSearchService(
-			BestMatchingStrategy<QuerySearchResult<T>> bestMatchingStrategy,
 			QuerySearchResultFilter<T> searchResultFilter, Path indexPath) {
 		return new IndexSearchService<>(
 				new DocumentsIndexReaderTemplate(numHits, indexPath),
 				QuerySearchResultFactory.create(tClass),
-				bestMatchingStrategy,
 				searchResultFilter
 		);
 	}

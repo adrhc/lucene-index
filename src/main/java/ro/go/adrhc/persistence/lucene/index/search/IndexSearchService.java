@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 public class IndexSearchService<F> {
 	private final DocumentsIndexReaderTemplate documentsIndexReaderTemplate;
 	private final IndexSearchResultFactory<F> toFoundConverter;
-	private final BestMatchingStrategy<F> bestMatchingStrategy;
 	private final SearchResultFilter<F> searchResultFilter;
 
 	public List<F> findAllMatches(Query query) throws IOException {
@@ -33,25 +32,32 @@ public class IndexSearchService<F> {
 	}
 
 	public Optional<F> findBestMatch(Query query) throws IOException {
-		return documentsIndexReaderTemplate.useReader(
-				indexReader -> doFindBestMatch(indexReader, query));
+		return findBestMatch(Stream::findFirst, query);
 	}
 
 	public List<F> findBestMatches(Collection<? extends Query> queries) throws IOException {
-		return documentsIndexReaderTemplate.useReader(
-				indexReader -> doFindBestMatches(indexReader, queries));
+		return documentsIndexReaderTemplate.useReader(indexReader ->
+				doFindBestMatches(Stream::findFirst, queries, indexReader));
 	}
 
-	protected List<F> doFindBestMatches(DocumentIndexReader indexReader, Collection<? extends Query> queries) throws IOException {
+	public Optional<F> findBestMatch(BestMatchingStrategy<F> bestMatchingStrategy, Query query) throws IOException {
+		return documentsIndexReaderTemplate.useReader(indexReader ->
+				bestMatchingStrategy.bestMatch(doFindAllMatches(indexReader, query)));
+	}
+
+	public List<F> findBestMatches(BestMatchingStrategy<F> bestMatchingStrategy,
+			Collection<? extends Query> queries) throws IOException {
+		return documentsIndexReaderTemplate.useReader(indexReader ->
+				doFindBestMatches(bestMatchingStrategy, queries, indexReader));
+	}
+
+	protected List<F> doFindBestMatches(BestMatchingStrategy<F> bestMatchingStrategy,
+			Collection<? extends Query> queries, DocumentIndexReader indexReader) throws IOException {
 		List<F> fList = new ArrayList<>();
 		for (Query query : queries) {
-			doFindBestMatch(indexReader, query).ifPresent(fList::add);
+			bestMatchingStrategy.bestMatch(doFindAllMatches(indexReader, query)).ifPresent(fList::add);
 		}
 		return fList;
-	}
-
-	protected Optional<F> doFindBestMatch(DocumentIndexReader indexReader, Query query) throws IOException {
-		return bestMatchingStrategy.bestMatch(doFindAllMatches(indexReader, query));
 	}
 
 	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, Query query) throws IOException {

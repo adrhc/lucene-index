@@ -12,7 +12,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreSe
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
 public class AlbumIndexFactories {
 	public static final FieldQueries NAME_QUERIES = FieldQueries.create(AlbumFieldType.name);
@@ -25,7 +24,7 @@ public class AlbumIndexFactories {
 	public static IndexSearchService<QuerySearchResult<Album>>
 	createSearchService(Path indexPath) {
 		return createTypedIndexFactories()
-				.createTypedIndexSearchService(Stream::findFirst, it -> true, indexPath);
+				.createTypedIndexSearchService(it -> true, indexPath);
 	}
 
 	public static TypedSearchByIdService<String, Album> createSearchByIdService(Path indexPath) {

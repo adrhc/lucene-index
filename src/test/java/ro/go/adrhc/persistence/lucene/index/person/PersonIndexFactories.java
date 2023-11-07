@@ -12,7 +12,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreSe
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
 public class PersonIndexFactories {
 	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
@@ -30,7 +29,7 @@ public class PersonIndexFactories {
 	public static IndexSearchService<QuerySearchResult<Person>>
 	createSearchService(Path indexPath) {
 		return createTypedIndexFactories()
-				.createTypedIndexSearchService(Stream::findFirst, it -> true, indexPath);
+				.createTypedIndexSearchService(it -> true, indexPath);
 	}
 
 	public static TypedSearchByIdService<Long, Person> createSearchByIdService(Path indexPath) {
