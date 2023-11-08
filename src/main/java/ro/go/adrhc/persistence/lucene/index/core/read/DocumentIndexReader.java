@@ -26,7 +26,7 @@ public class DocumentIndexReader implements AutoCloseable {
 
 	public static DocumentIndexReader of(int maxResultsPerSearchedSong, Path indexPath) throws IOException {
 		Directory directory = FSDirectory.open(indexPath);
-		IndexReader indexReader = DirectoryReader.open(directory);
+		DirectoryReader indexReader = DirectoryReader.open(directory);
 		return new DocumentIndexReader(directory, indexReader, maxResultsPerSearchedSong);
 	}
 
