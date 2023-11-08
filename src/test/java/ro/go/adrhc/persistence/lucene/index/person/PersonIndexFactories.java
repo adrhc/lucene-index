@@ -2,13 +2,13 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import ro.go.adrhc.persistence.lucene.index.IndexTestFactories;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.nio.file.Path;
@@ -26,7 +26,7 @@ public class PersonIndexFactories {
 	 * BestMatchingStrategy: Stream::findFirst
 	 * QuerySearchResultFilter: it -> true (aka no filter)
 	 */
-	public static IndexSearchService<QuerySearchResult<Person>>
+	public static TypedIndexSearchService<QuerySearchResult<Person>>
 	createSearchService(Path indexPath) {
 		return createTypedIndexFactories()
 				.createTypedIndexSearchService(it -> true, indexPath);

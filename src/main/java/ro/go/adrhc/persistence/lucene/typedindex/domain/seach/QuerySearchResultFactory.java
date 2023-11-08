@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.ScoreAndDocument;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchResultFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchResultFactory;
 
 import java.util.Optional;
 import java.util.function.Function;

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
@@ -15,6 +14,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 
-	public static IndexSearchService<QuerySearchResult<Person>> createIndexSearchService() {
+	public static TypedIndexSearchService<QuerySearchResult<Person>> createIndexSearchService() {
 		return PersonIndexFactories.createSearchService(tmpDir);
 	}
 

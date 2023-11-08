@@ -6,13 +6,13 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
@@ -45,10 +45,10 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 				tClass, typedFieldEnumClass, TypedField.getIdField(typedFieldEnumClass));
 	}
 
-	public IndexSearchService<QuerySearchResult<T>>
+	public TypedIndexSearchService<QuerySearchResult<T>>
 	createTypedIndexSearchService(
 			QuerySearchResultFilter<T> searchResultFilter, Path indexPath) {
-		return new IndexSearchService<>(
+		return new TypedIndexSearchService<>(
 				new DocumentsIndexReaderTemplate(numHits, indexPath),
 				QuerySearchResultFactory.create(tClass),
 				searchResultFilter

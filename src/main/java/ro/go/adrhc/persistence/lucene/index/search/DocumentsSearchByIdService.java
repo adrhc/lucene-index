@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index;
+package ro.go.adrhc.persistence.lucene.index.search;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +15,18 @@ import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SearchByIdService<ID> {
+public class DocumentsSearchByIdService<ID> implements SearchByIdService<ID, Document> {
 	private final Function<ID, Query> idQueryProvider;
 	private final DocumentsIndexReaderTemplate documentsIndexReaderTemplate;
 
-	public static <ID> SearchByIdService<ID>
+	public static <ID> DocumentsSearchByIdService<ID>
 	create(TypedField<?> idField, Path indexPath) {
 		ExactQuery exactQuery = ExactQuery.create(idField);
-		return new SearchByIdService<>(exactQuery::newExactQuery,
+		return new DocumentsSearchByIdService<>(exactQuery::newExactQuery,
 				new DocumentsIndexReaderTemplate(1, indexPath));
 	}
 
+	@Override
 	public Optional<Document> findById(ID id) throws IOException {
 		Query idQuery = idQueryProvider.apply(id);
 		return documentsIndexReaderTemplate.findById(idQuery);
