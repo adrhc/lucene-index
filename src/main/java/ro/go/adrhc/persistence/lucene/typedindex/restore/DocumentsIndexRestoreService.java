@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
-import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate.fsWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
 import static ro.go.adrhc.util.fn.SneakyBiFunctionUtils.curry;
 
@@ -36,7 +36,7 @@ public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<
 	public static <ID, T> DocumentsIndexRestoreService<ID, T>
 	create(Analyzer analyzer, Class<T> tClass, TypedField<T> idField, Path indexPath) {
 		ExactQuery exactQuery = ExactQuery.create(idField);
-		DocumentIndexWriterTemplate writerTemplate = fsWriterTemplate(analyzer, indexPath);
+		DocumentsIndexWriterTemplate writerTemplate = fsWriterTemplate(analyzer, indexPath);
 		return new DocumentsIndexRestoreService<>(idField,
 				TypedIndexReaderTemplate.create(tClass, indexPath),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),

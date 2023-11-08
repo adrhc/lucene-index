@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentIndexReader;
+import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
@@ -59,7 +59,7 @@ public class TypedIndexSearchService<F> implements IndexSearchService<F> {
 	}
 
 	protected List<F> doFindBestMatches(BestMatchingStrategy<F> bestMatchingStrategy,
-			Collection<? extends Query> queries, DocumentIndexReader indexReader) throws IOException {
+			Collection<? extends Query> queries, DocumentsIndexReader indexReader) throws IOException {
 		List<F> fList = new ArrayList<>();
 		for (Query query : queries) {
 			bestMatchingStrategy.bestMatch(doFindAllMatches(indexReader, query)).ifPresent(fList::add);
@@ -67,7 +67,7 @@ public class TypedIndexSearchService<F> implements IndexSearchService<F> {
 		return fList;
 	}
 
-	protected Stream<F> doFindAllMatches(DocumentIndexReader indexReader, Query query) throws IOException {
+	protected Stream<F> doFindAllMatches(DocumentsIndexReader indexReader, Query query) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return indexReader.search(query)
 				.map(scoreAndDocument -> toFoundConverter.create(query, scoreAndDocument))

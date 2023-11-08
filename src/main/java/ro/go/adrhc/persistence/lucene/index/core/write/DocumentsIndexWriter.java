@@ -24,21 +24,21 @@ import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentIndexWriter implements AutoCloseable {
+public class DocumentsIndexWriter implements AutoCloseable {
 	private final IndexWriter indexWriter;
 
-	public static DocumentIndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
+	public static DocumentsIndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
 		return of(analyzer, FSDirectory.open(indexPath));
 	}
 
-	public static DocumentIndexWriter ramWriter(Analyzer analyzer) throws IOException {
+	public static DocumentsIndexWriter ramWriter(Analyzer analyzer) throws IOException {
 		return of(analyzer, new ByteBuffersDirectory());
 	}
 
-	public static DocumentIndexWriter of(Analyzer analyzer, Directory directory) throws IOException {
+	public static DocumentsIndexWriter of(Analyzer analyzer, Directory directory) throws IOException {
 		IndexWriterConfig config = createOrAppend(analyzer);
 		IndexWriter writer = new IndexWriter(directory, config);
-		return new DocumentIndexWriter(writer);
+		return new DocumentsIndexWriter(writer);
 	}
 
 	public void copyTo(Path destination) throws IOException {

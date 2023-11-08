@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
@@ -13,13 +13,13 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate.fsWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 
 @RequiredArgsConstructor
 @Slf4j
 public class DocumentsIndexUpdateService implements IndexUpdateService<Document> {
 	private final ExactQuery exactQuery;
-	private final DocumentIndexWriterTemplate indexWriterTemplate;
+	private final DocumentsIndexWriterTemplate indexWriterTemplate;
 
 	/**
 	 * constructor parameters union

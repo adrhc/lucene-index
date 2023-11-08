@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
-import ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentIndexWriterTemplate.fsWriterTemplate;
+import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 
 @RequiredArgsConstructor
 public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
 	private final ExactQuery exactQuery;
-	private final DocumentIndexWriterTemplate indexWriterTemplate;
+	private final DocumentsIndexWriterTemplate indexWriterTemplate;
 
 	/**
 	 * constructor parameters union

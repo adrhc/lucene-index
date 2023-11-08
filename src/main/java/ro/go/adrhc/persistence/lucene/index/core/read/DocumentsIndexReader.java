@@ -19,15 +19,15 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DocumentIndexReader implements AutoCloseable {
+public class DocumentsIndexReader implements AutoCloseable {
 	private final Directory directory;
 	private final IndexReader indexReader;
 	private final int numHits;
 
-	public static DocumentIndexReader of(int maxResultsPerSearchedSong, Path indexPath) throws IOException {
+	public static DocumentsIndexReader of(int maxResultsPerSearchedSong, Path indexPath) throws IOException {
 		Directory directory = FSDirectory.open(indexPath);
 		DirectoryReader indexReader = DirectoryReader.open(directory);
-		return new DocumentIndexReader(directory, indexReader, maxResultsPerSearchedSong);
+		return new DocumentsIndexReader(directory, indexReader, maxResultsPerSearchedSong);
 	}
 
 	public Stream<Document> getAll() {
