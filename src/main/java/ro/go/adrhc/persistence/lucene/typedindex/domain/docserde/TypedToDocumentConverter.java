@@ -2,9 +2,9 @@ package ro.go.adrhc.persistence.lucene.typedindex.domain.docserde;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.RawDataFieldProvider;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -18,9 +18,8 @@ public class TypedToDocumentConverter<T extends Identifiable<?>> {
 	private final RawDataFieldProvider<T> rawDataFieldProvider;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedToDocumentConverter<T> create(Analyzer analyzer, Class<E> typedFieldEnumClass) {
-		TypedFieldsProvider<T> typedFieldsProvider =
-				TypedFieldsProvider.create(analyzer, typedFieldEnumClass);
+	TypedToDocumentConverter<T> create(TypedIndexSpec<?, T, E> typedIndexSpec) {
+		TypedFieldsProvider<T> typedFieldsProvider = TypedFieldsProvider.create(typedIndexSpec);
 		return new TypedToDocumentConverter<>(typedFieldsProvider, RawDataFieldProvider.create());
 	}
 

@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
+import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 
 @Disabled
 @ExtendWith(MockitoExtension.class)

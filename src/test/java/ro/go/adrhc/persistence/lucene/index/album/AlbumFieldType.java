@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.lucene.index.IndexableField;
 import ro.go.adrhc.persistence.lucene.index.domain.field.FieldType;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
@@ -19,6 +20,9 @@ public enum AlbumFieldType implements TypedField<Album> {
 	id(KEYWORD, Identifiable::getId, STRING_FIELD_ACCESSOR, true),
 	name(PHRASE, Album::name),
 	storedOnlyField(STORED, Album::storedOnlyField);
+
+	public static final FieldQueries NAME_QUERIES = FieldQueries.create(AlbumFieldType.name);
+	public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumFieldType.id);
 
 	private final FieldType fieldType;
 	private final Function<Album, ?> accessor;

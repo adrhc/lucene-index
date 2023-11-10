@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.ID_QUERIES;
+import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ID_QUERIES;
 
 public class PersonDocumentsIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 	@Test

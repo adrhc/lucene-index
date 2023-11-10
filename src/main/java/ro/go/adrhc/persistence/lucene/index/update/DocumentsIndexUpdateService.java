@@ -2,18 +2,14 @@ package ro.go.adrhc.persistence.lucene.index.update;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.stream.Stream;
-
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,10 +20,10 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<Document>
 	/**
 	 * constructor parameters union
 	 */
-	public static DocumentsIndexUpdateService
-	create(TypedField<?> idField, Analyzer analyzer, Path indexPath) {
-		ExactQuery exactQuery = ExactQuery.create(idField);
-		return new DocumentsIndexUpdateService(exactQuery, fsWriterTemplate(analyzer, indexPath));
+	public static DocumentsIndexUpdateService create(TypedIndexSpec<?, ?, ?> typedIndexSpec) {
+		return new DocumentsIndexUpdateService(
+				ExactQuery.create(typedIndexSpec.getIdField()),
+				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter()));
 	}
 
 	@Override

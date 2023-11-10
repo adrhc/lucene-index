@@ -1,11 +1,8 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.analysis.Analyzer;
-import ro.go.adrhc.persistence.lucene.index.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
@@ -15,8 +12,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * see also ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService
@@ -25,53 +22,45 @@ import java.nio.file.Path;
  * @param <T>  a JSON (ser/deser)ializable
  * @param <E>  is the TypedField that describes the lucene Document in relation with T
  */
-@Getter
 @RequiredArgsConstructor
-public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> {
-	private final int numHits;
-	private final Analyzer analyzer;
-	private final Class<T> tClass;
-	private final Class<E> tFieldEnumClass;
-	private final E idField;
+public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> implements Closeable {
+	private final TypedIndexSpec<ID, T, E> typedIndexSpec;
+	private final QuerySearchResultFilter<T> searchResultFilter;
 
-	/**
-	 * constructor parameters union
-	 */
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexFactories<ID, T, E> create(int numHits, Class<T> tClass,
-			Class<E> typedFieldEnumClass, TokenizerProperties tokenizerProperties) throws IOException {
-		AnalyzerFactory analyzerFactory = new AnalyzerFactory(tokenizerProperties);
-		return new TypedIndexFactories<>(numHits, analyzerFactory.create(),
-				tClass, typedFieldEnumClass, TypedField.getIdField(typedFieldEnumClass));
-	}
-
-	public TypedIndexSearchService<QuerySearchResult<T>>
-	createTypedIndexSearchService(
-			QuerySearchResultFilter<T> searchResultFilter, Path indexPath) {
+	public TypedIndexSearchService<QuerySearchResult<T>> createSearchService() {
 		return new TypedIndexSearchService<>(
-				new DocumentsIndexReaderTemplate(numHits, indexPath),
-				QuerySearchResultFactory.create(tClass),
+				DocumentsIndexReaderTemplate.create(typedIndexSpec),
+				QuerySearchResultFactory.create(typedIndexSpec.getType()),
 				searchResultFilter
 		);
 	}
 
-	public TypedSearchByIdService<ID, T> createSearchByIdService(Path indexPath) {
-		return TypedSearchByIdService.create(tClass, idField, indexPath);
+	public TypedSearchByIdService<ID, T> createSearchByIdService() {
+		return TypedSearchByIdService.create(typedIndexSpec);
 	}
 
-	public DocumentsIndexRestoreService<ID, T> createDocumentsIndexRestoreService(Path indexPath) {
-		return DocumentsIndexRestoreService.create(analyzer, tClass, idField, indexPath);
+	public DocumentsCountService createCountService() {
+		return DocumentsCountService.create(typedIndexSpec);
 	}
 
-	public TypedIndexCreateService<T> createTypedIndexCreateService(Path indexPath) {
-		return TypedIndexCreateService.create(analyzer, tFieldEnumClass, indexPath);
+	public DocumentsIndexRestoreService<ID, T> createRestoreService() {
+		return DocumentsIndexRestoreService.create(typedIndexSpec);
 	}
 
-	public TypedIndexUpdateService<T> createTypedIndexUpdateService(Path indexPath) {
-		return TypedIndexUpdateService.create(analyzer, tFieldEnumClass, indexPath);
+	public TypedIndexCreateService<T> createCreateService() {
+		return TypedIndexCreateService.create(typedIndexSpec);
 	}
 
-	public TypedIndexRemoveService<ID> createIndexRemoveService(Path indexPath) {
-		return TypedIndexRemoveService.create(analyzer, idField, indexPath);
+	public TypedIndexUpdateService<T> createUpdateService() {
+		return TypedIndexUpdateService.create(typedIndexSpec);
+	}
+
+	public TypedIndexRemoveService<ID> createRemoveService() {
+		return TypedIndexRemoveService.create(typedIndexSpec);
+	}
+
+	@Override
+	public void close() throws IOException {
+		typedIndexSpec.close();
 	}
 }

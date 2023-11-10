@@ -4,20 +4,20 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public record DocumentsIndexReaderTemplate(int numHits, Path indexPath) {
+public record DocumentsIndexReaderTemplate(int numHits, IndexReaderPool indexReaderPool) {
 	/**
 	 * numHits = Integer.MAX_VALUE
 	 */
-	public static DocumentsIndexReaderTemplate create(Path indexPath) {
-		return new DocumentsIndexReaderTemplate(Integer.MAX_VALUE, indexPath);
+	public static DocumentsIndexReaderTemplate create(TypedIndexSpec<?, ?, ?> typedIndexSpec) {
+		return new DocumentsIndexReaderTemplate(typedIndexSpec.getNumHits(), typedIndexSpec.getIndexReaderPool());
 	}
 
 	public <R, E extends Exception> R transformFields(String fieldName,
@@ -51,7 +51,7 @@ public record DocumentsIndexReaderTemplate(int numHits, Path indexPath) {
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<DocumentsIndexReader, R, E> indexReaderFn)
 			throws IOException, E {
-		try (DocumentsIndexReader indexReader = DocumentsIndexReader.of(numHits, indexPath)) {
+		try (DocumentsIndexReader indexReader = DocumentsIndexReader.create(numHits, indexReaderPool)) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

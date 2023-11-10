@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.*;
+import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

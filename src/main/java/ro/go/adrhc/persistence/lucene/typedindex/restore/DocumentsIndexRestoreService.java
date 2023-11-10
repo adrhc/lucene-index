@@ -2,23 +2,22 @@ package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
 import static ro.go.adrhc.util.fn.SneakyBiFunctionUtils.curry;
 
@@ -33,12 +32,13 @@ public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID, T> DocumentsIndexRestoreService<ID, T>
-	create(Analyzer analyzer, Class<T> tClass, TypedField<T> idField, Path indexPath) {
-		ExactQuery exactQuery = ExactQuery.create(idField);
-		DocumentsIndexWriterTemplate writerTemplate = fsWriterTemplate(analyzer, indexPath);
-		return new DocumentsIndexRestoreService<>(idField,
-				TypedIndexReaderTemplate.create(tClass, indexPath),
+	public static <ID, T extends Identifiable<ID>> DocumentsIndexRestoreService<ID, T>
+	create(TypedIndexSpec<ID, T, ?> typedIndexSpec) {
+		ExactQuery exactQuery = ExactQuery.create(typedIndexSpec.getIdField());
+		DocumentsIndexWriterTemplate writerTemplate =
+				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter());
+		return new DocumentsIndexRestoreService<>(typedIndexSpec.getIdField(),
+				TypedIndexReaderTemplate.create(typedIndexSpec),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),
 				new TypedIndexRemoveService<>(exactQuery, writerTemplate));
 	}

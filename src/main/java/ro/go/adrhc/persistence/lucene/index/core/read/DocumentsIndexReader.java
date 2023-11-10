@@ -2,16 +2,16 @@ package ro.go.adrhc.persistence.lucene.index.core.read;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.MultiBits;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.search.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Bits;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -19,15 +19,14 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DocumentsIndexReader implements AutoCloseable {
-	private final Directory directory;
+public class DocumentsIndexReader implements Closeable {
+	private final IndexReaderPool indexReaderPool;
 	private final IndexReader indexReader;
 	private final int numHits;
 
-	public static DocumentsIndexReader of(int maxResultsPerSearchedSong, Path indexPath) throws IOException {
-		Directory directory = FSDirectory.open(indexPath);
-		DirectoryReader indexReader = DirectoryReader.open(directory);
-		return new DocumentsIndexReader(directory, indexReader, maxResultsPerSearchedSong);
+	public static DocumentsIndexReader create(int maxResultsPerSearchedSong,
+			IndexReaderPool indexReaderPool) throws IOException {
+		return new DocumentsIndexReader(indexReaderPool, indexReaderPool.get(), maxResultsPerSearchedSong);
 	}
 
 	public Stream<Document> getAll() {
@@ -127,9 +126,8 @@ public class DocumentsIndexReader implements AutoCloseable {
 	}
 
 	@Override
-	public void close() {
-		IOUtils.closeQuietly(indexReader);
-		IOUtils.closeQuietly(directory);
+	public void close() throws IOException {
+		indexReaderPool.restore(indexReader);
 	}
 
 	private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {

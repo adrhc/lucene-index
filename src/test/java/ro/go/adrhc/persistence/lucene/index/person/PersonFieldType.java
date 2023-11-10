@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.lucene.index.IndexableField;
 import ro.go.adrhc.persistence.lucene.index.domain.field.FieldType;
+import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.util.function.Function;
@@ -25,6 +26,14 @@ public enum PersonFieldType implements TypedField<Person> {
 	intField(INT, Person::intField), // int can't be stored but only indexed!
 	longField(LONG, Person::longField, LONG_FIELD_ACCESSOR),
 	storedOnlyField(STORED, Person::storedOnlyField);
+
+	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
+	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonFieldType.name);
+	public static final FieldQueries ALIAS_KEYWORD_QUERIES = FieldQueries.create(PersonFieldType.aliasKeyWord);
+	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(PersonFieldType.aliasWord);
+	public static final FieldQueries ALIAS_PHRASE_QUERIES = FieldQueries.create(PersonFieldType.aliasPhrase);
+	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonFieldType.cnp);
+	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 
 	private final FieldType fieldType;
 	private final Function<Person, ?> accessor;

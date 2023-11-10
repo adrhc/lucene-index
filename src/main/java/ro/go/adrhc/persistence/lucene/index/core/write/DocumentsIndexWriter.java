@@ -2,44 +2,26 @@ package ro.go.adrhc.persistence.lucene.index.core.write;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.index.core.write.IndexWriterConfigFactories.createOrAppend;
 import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentsIndexWriter implements AutoCloseable {
+public class DocumentsIndexWriter implements Closeable {
 	private final IndexWriter indexWriter;
-
-	public static DocumentsIndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
-		return of(analyzer, FSDirectory.open(indexPath));
-	}
-
-	public static DocumentsIndexWriter ramWriter(Analyzer analyzer) throws IOException {
-		return of(analyzer, new ByteBuffersDirectory());
-	}
-
-	public static DocumentsIndexWriter of(Analyzer analyzer, Directory directory) throws IOException {
-		IndexWriterConfig config = createOrAppend(analyzer);
-		IndexWriter writer = new IndexWriter(directory, config);
-		return new DocumentsIndexWriter(writer);
-	}
 
 	public void copyTo(Path destination) throws IOException {
 		Directory sourceDir = indexWriter.getDirectory();
@@ -79,14 +61,12 @@ public class DocumentsIndexWriter implements AutoCloseable {
 		indexWriter.deleteDocuments(queries.toArray(Query[]::new));
 	}
 
-	public void flush() throws IOException {
+	@Override
+	public void close() throws IOException {
 		indexWriter.flush();
-		indexWriter.commit();
 	}
 
-	@Override
-	public void close() {
-		IOUtils.closeQuietly(indexWriter);
-		IOUtils.closeQuietly(indexWriter.getDirectory());
+	public void deleteAll() throws IOException {
+		indexWriter.deleteAll();
 	}
 }

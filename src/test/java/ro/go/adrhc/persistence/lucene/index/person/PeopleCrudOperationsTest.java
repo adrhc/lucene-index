@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generatePerson;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonIndexFactories.ALIAS_KEYWORD_QUERIES;
+import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ALIAS_KEYWORD_QUERIES;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -21,8 +21,8 @@ public class DocumentsCountService implements IndexCountService {
 	 * <p>
 	 * SearchedToQueryConverter = Optional::of
 	 */
-	public static DocumentsCountService create(Path indexPath) {
-		return new DocumentsCountService(DocumentsIndexReaderTemplate.create(indexPath));
+	public static DocumentsCountService create(TypedIndexSpec<?, ?, ?> typedIndexSpec) {
+		return new DocumentsCountService(DocumentsIndexReaderTemplate.create(typedIndexSpec));
 	}
 
 	@Override

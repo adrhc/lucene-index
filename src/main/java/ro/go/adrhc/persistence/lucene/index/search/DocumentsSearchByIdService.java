@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.index.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -20,10 +20,10 @@ public class DocumentsSearchByIdService<ID> implements SearchByIdService<ID, Doc
 	private final DocumentsIndexReaderTemplate documentsIndexReaderTemplate;
 
 	public static <ID> DocumentsSearchByIdService<ID>
-	create(TypedField<?> idField, Path indexPath) {
+	create(TypedField<?> idField, IndexReaderPool indexReaderPool) {
 		ExactQuery exactQuery = ExactQuery.create(idField);
 		return new DocumentsSearchByIdService<>(exactQuery::newExactQuery,
-				new DocumentsIndexReaderTemplate(1, indexPath));
+				new DocumentsIndexReaderTemplate(1, indexReaderPool));
 	}
 
 	@Override

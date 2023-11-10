@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.album.Album.toId;
-import static ro.go.adrhc.persistence.lucene.index.album.AlbumIndexFactories.ID_QUERIES;
+import static ro.go.adrhc.persistence.lucene.index.album.AlbumFieldType.ID_QUERIES;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.generateAlbum;
 

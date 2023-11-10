@@ -1,17 +1,12 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
-
-import static ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate.fsWriterTemplate;
 
 @RequiredArgsConstructor
 public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
@@ -22,9 +17,10 @@ public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
 	 * constructor parameters union
 	 */
 	public static <ID> TypedIndexRemoveService<ID>
-	create(Analyzer analyzer, TypedField<?> idField, Path indexPath) {
-		ExactQuery exactQuery = ExactQuery.create(idField);
-		return new TypedIndexRemoveService<>(exactQuery, fsWriterTemplate(analyzer, indexPath));
+	create(TypedIndexSpec<ID, ?, ?> typedIndexSpec) {
+		ExactQuery exactQuery = ExactQuery.create(typedIndexSpec.getIdField());
+		return new TypedIndexRemoveService<>(exactQuery,
+				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter()));
 	}
 
 	@Override

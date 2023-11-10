@@ -4,11 +4,12 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -24,23 +25,12 @@ public class TypedIndexReaderTemplate<T> {
 
 	/**
 	 * constructor parameters union
-	 * <p>
-	 * numHits = Integer.MAX_VALUE
 	 */
-	public static <T> TypedIndexReaderTemplate<T> create(Class<T> tClass, Path indexPath) {
-		return new TypedIndexReaderTemplate<>(
-				DocumentToTypedConverter.of(tClass),
-				DocumentsIndexReaderTemplate.create(indexPath));
-	}
-
-	/**
-	 * constructor parameters union
-	 */
-	public static <T> TypedIndexReaderTemplate<T> create(
-			Class<T> tClass, int numHits, Path indexPath) {
-		return new TypedIndexReaderTemplate<>(
-				DocumentToTypedConverter.of(tClass),
-				new DocumentsIndexReaderTemplate(numHits, indexPath));
+	public static <T extends Identifiable<?>> TypedIndexReaderTemplate<T>
+	create(TypedIndexSpec<?, T, ?> typedIndexSpec) {
+		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(typedIndexSpec.getType()),
+				new DocumentsIndexReaderTemplate(
+						typedIndexSpec.getNumHits(), typedIndexSpec.getIndexReaderPool()));
 	}
 
 	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {

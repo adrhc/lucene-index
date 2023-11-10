@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.core.docds;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.RawDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
@@ -14,18 +14,17 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.RawData
 
 public class DocumentsDataSourceFactory {
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	IndexDataSource<ID, Document> create(Analyzer analyzer,
-			Class<E> typedFieldEnumClass, RawDataSource<ID, T> rawDataSource) {
+	IndexDataSource<ID, Document> create(
+			TypedIndexSpec<ID, T, E> typedIndexSpec, RawDataSource<ID, T> rawDataSource) {
 		return new DocumentsDataSource<>(
-				TypedToDocumentConverter.create(analyzer, typedFieldEnumClass),
-				rawDataSource);
+				TypedToDocumentConverter.create(typedIndexSpec), rawDataSource);
 	}
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	IndexDataSource<ID, Document> createCached(Analyzer analyzer,
-			Class<E> typedFieldEnumClass, Collection<T> tCollection) {
+	IndexDataSource<ID, Document> createCached(
+			TypedIndexSpec<ID, T, E> typedIndexSpec, Collection<T> tCollection) {
 		TypedToDocumentConverter<T> toDocumentConverter =
-				TypedToDocumentConverter.create(analyzer, typedFieldEnumClass);
+				TypedToDocumentConverter.create(typedIndexSpec);
 		return new DocumentsDataSource<>(toDocumentConverter, createCachedRawDs(tCollection));
 	}
 }

@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
@@ -10,13 +9,11 @@ import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocument
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField.getIdField;
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertCollection;
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
@@ -31,13 +28,10 @@ public class TypedIndexUpdateService<T extends Identifiable<?>> implements Index
 	 * rawIdToStringConverter: Object::toString
 	 */
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexUpdateService<T> create(
-			Analyzer analyzer, Class<E> tFieldEnumClass, Path indexPath) {
+	TypedIndexUpdateService<T> create(TypedIndexSpec<?, T, E> typedIndexSpec) {
 		return new TypedIndexUpdateService<>(
-//				RawIdToStringConverter.of(Object::toString),
-				TypedToDocumentConverter.create(analyzer, tFieldEnumClass),
-				DocumentsIndexUpdateService.create(
-						getIdField(tFieldEnumClass), analyzer, indexPath));
+				TypedToDocumentConverter.create(typedIndexSpec),
+				DocumentsIndexUpdateService.create(typedIndexSpec));
 	}
 
 	public void add(T t) throws IOException {
