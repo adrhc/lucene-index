@@ -1,10 +1,10 @@
-package ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds;
+package ro.go.adrhc.persistence.lucene.typedindex.core.indexds;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public interface RawDataSource<ID, T extends Identifiable<ID>> {
+public interface IndexDataSource<ID, T> {
 	Stream<ID> loadAllIds() throws IOException;
 
 	Stream<T> loadByIds(Stream<ID> ids) throws IOException;

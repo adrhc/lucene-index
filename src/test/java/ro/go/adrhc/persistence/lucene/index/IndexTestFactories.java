@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.index.core.write.FSIndexWriterHolder;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
-import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;

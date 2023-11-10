@@ -33,7 +33,7 @@ public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
 		TypedSearchByIdService<String, Album> searchByIdService = createSearchByIdService();
 		assertThat(searchByIdService.findById(toId("/albums/album4"))).isPresent();
 
-		TypedIndexRemoveService<String> indexRemoveService = createIndexRemoveService();
+		TypedIndexRemoveService<String> indexRemoveService = createRemoveService();
 		indexRemoveService.removeById(toId("/albums/album4"));
 		assertThat(searchByIdService.findById(toId("/albums/album4"))).isEmpty();
 	}

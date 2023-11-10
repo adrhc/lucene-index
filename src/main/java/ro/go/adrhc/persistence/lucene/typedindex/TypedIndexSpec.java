@@ -6,7 +6,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.index.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.index.core.write.FSIndexWriterHolder;
-import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.Closeable;

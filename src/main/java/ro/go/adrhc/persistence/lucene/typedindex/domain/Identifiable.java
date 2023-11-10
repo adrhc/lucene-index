@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds;
+package ro.go.adrhc.persistence.lucene.typedindex.domain;
 
 public interface Identifiable<ID> {
 	ID getId();

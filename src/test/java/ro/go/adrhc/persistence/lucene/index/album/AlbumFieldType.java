@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import org.apache.lucene.index.IndexableField;
 import ro.go.adrhc.persistence.lucene.index.domain.field.FieldType;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
-import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.util.function.Function;

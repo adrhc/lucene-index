@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.index.album;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,10 +8,10 @@ import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.*;
+import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
@@ -22,7 +21,7 @@ import java.util.List;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.docds.DocumentsDataSourceFactory.createCached;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSourceFactory.createCachedDataSource;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractAlbumsIndexTest {
@@ -44,7 +43,7 @@ public abstract class AbstractAlbumsIndexTest {
 	}
 
 	protected int count(Query query) throws IOException {
-		return createDocumentsCountService().count(query);
+		return createCountService().count(query);
 	}
 
 	protected List<Album> findAllMatches(Query query) throws IOException {
@@ -59,7 +58,7 @@ public abstract class AbstractAlbumsIndexTest {
 		return albumsIndexFactories.createSearchService();
 	}
 
-	protected DocumentsCountService createDocumentsCountService() {
+	protected DocumentsCountService createCountService() {
 		return albumsIndexFactories.createCountService();
 	}
 
@@ -67,11 +66,11 @@ public abstract class AbstractAlbumsIndexTest {
 		return albumsIndexFactories.createUpdateService();
 	}
 
-	protected TypedIndexRemoveService<String> createIndexRemoveService() {
+	protected TypedIndexRemoveService<String> createRemoveService() {
 		return albumsIndexFactories.createRemoveService();
 	}
 
-	protected DocumentsIndexRestoreService<String, Album> createIndexRestoreService() {
+	protected TypedIndexRestoreService<String, Album> createRestoreService() {
 		return albumsIndexFactories.createRestoreService();
 	}
 
@@ -87,7 +86,7 @@ public abstract class AbstractAlbumsIndexTest {
 		return DocumentsIndexReaderTemplate.create(albumsIndexSpec);
 	}
 
-	protected IndexDataSource<String, Document> createIndexDataSource() {
-		return createCached(albumsIndexSpec, ALBUMS);
+	protected IndexDataSource<String, Album> createAlbumsDataSource() {
+		return createCachedDataSource(ALBUMS);
 	}
 }

@@ -1,6 +1,7 @@
-package ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds;
+package ro.go.adrhc.persistence.lucene.typedindex.core.indexds;
 
 import lombok.experimental.UtilityClass;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 
 import java.util.Collection;
 import java.util.Set;
@@ -8,10 +9,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @UtilityClass
-public class RawDataSourceFactories {
+public class IndexDataSourceFactory {
 	public static <ID, T extends Identifiable<ID>>
-	RawDataSource<ID, T> createCachedRawDs(Collection<T> tCollection) {
-		return new RawDataSource<>() {
+	IndexDataSource<ID, T> createCachedDataSource(Collection<T> tCollection) {
+		return new IndexDataSource<>() {
 			@Override
 			public Stream<ID> loadAllIds() {
 				return tCollection.stream().map(Identifiable::getId);

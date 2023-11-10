@@ -10,8 +10,10 @@ import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.io.IOException;
@@ -19,12 +21,14 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
+import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 import static ro.go.adrhc.util.fn.SneakyBiFunctionUtils.curry;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<ID, Document> {
+public class TypedIndexRestoreService<ID, T extends Identifiable<ID>> implements IndexRestoreService<ID, T> {
 	private final TypedField<T> idField;
+	private final TypedToDocumentConverter<T> typedToDocumentConverter;
 	private final TypedIndexReaderTemplate<T> typedIndexReaderTemplate;
 	private final IndexUpdateService<Document> indexUpdateService;
 	private final IndexRemoveService<ID> indexRemoveService;
@@ -32,18 +36,20 @@ public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID, T extends Identifiable<ID>> DocumentsIndexRestoreService<ID, T>
+	public static <ID, T extends Identifiable<ID>> TypedIndexRestoreService<ID, T>
 	create(TypedIndexSpec<ID, T, ?> typedIndexSpec) {
 		ExactQuery exactQuery = ExactQuery.create(typedIndexSpec.getIdField());
 		DocumentsIndexWriterTemplate writerTemplate =
 				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter());
-		return new DocumentsIndexRestoreService<>(typedIndexSpec.getIdField(),
+		return new TypedIndexRestoreService<>(typedIndexSpec.getIdField(),
+				TypedToDocumentConverter.create(typedIndexSpec),
 				TypedIndexReaderTemplate.create(typedIndexSpec),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),
 				new TypedIndexRemoveService<>(exactQuery, writerTemplate));
 	}
 
-	public void restore(IndexDataSource<ID, Document> dataSource) throws IOException {
+	@Override
+	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		IndexChanges<ID> changes = getIndexChanges(dataSource);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
@@ -52,12 +58,12 @@ public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<
 		}
 	}
 
-	private IndexChanges<ID> getIndexChanges(IndexDataSource<ID, Document> dataSource) throws IOException {
+	private IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
 		return typedIndexReaderTemplate.transformFieldValues(idField, curry(this::toIndexChanges, dataSource));
 	}
 
 	private IndexChanges<ID> toIndexChanges(
-			IndexDataSource<ID, Document> dataSource,
+			IndexDataSource<ID, ?> dataSource,
 			Stream<ID> indexedIds) throws IOException {
 		Set<ID> ids = collectToHashSet(dataSource.loadAllIds());
 		Set<ID> docsToRemove = collectToHashSet(indexedIds.filter(id -> !ids.remove(id)));
@@ -65,12 +71,13 @@ public class DocumentsIndexRestoreService<ID, T> implements IndexRestoreService<
 	}
 
 	private void applyIndexChanges(
-			IndexDataSource<ID, Document> dataSource,
+			IndexDataSource<ID, T> dataSource,
 			IndexChanges<ID> changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
 		indexRemoveService.removeByIds(changes.obsoleteIndexedIds());
 		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
-		Stream<Document> documents = dataSource.loadByIds(changes.notIndexedIds());
+		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
+		Stream<Document> documents = convertStream(typedToDocumentConverter::convert, items);
 		log.debug("\nadding documents to the index");
 		indexUpdateService.addAll(documents);
 		log.debug("\nIndex updated!");

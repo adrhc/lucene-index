@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
@@ -29,8 +29,8 @@ public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
 		assertThat(searchByIdService.findById(3L)).isEmpty();
 		assertThat(searchByIdService.findById(4L)).isPresent();
 
-		DocumentsIndexRestoreService<Long, Person> restoreService = createIndexRestoreService();
-		restoreService.restore(createIndexDataSource());
+		TypedIndexRestoreService<Long, Person> restoreService = createIndexRestoreService();
+		restoreService.restore(createPeopleDataSource());
 
 		assertThat(searchByIdService.findById(3L)).isPresent();
 		assertThat(searchByIdService.findById(4L)).isEmpty();

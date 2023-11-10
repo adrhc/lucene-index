@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,10 +8,10 @@ import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.*;
+import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.SearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.DocumentsIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
@@ -22,7 +21,7 @@ import java.util.List;
 
 import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.docds.DocumentsDataSourceFactory.createCached;
+import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSourceFactory.createCachedDataSource;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractPersonsIndexTest {
@@ -71,7 +70,7 @@ public abstract class AbstractPersonsIndexTest {
 		return peopleIndexFactories.createRemoveService();
 	}
 
-	protected DocumentsIndexRestoreService<Long, Person> createIndexRestoreService() {
+	protected TypedIndexRestoreService<Long, Person> createIndexRestoreService() {
 		return peopleIndexFactories.createRestoreService();
 	}
 
@@ -87,7 +86,7 @@ public abstract class AbstractPersonsIndexTest {
 		return DocumentsIndexReaderTemplate.create(peopleIndexSpec);
 	}
 
-	protected IndexDataSource<Long, Document> createIndexDataSource() {
-		return createCached(peopleIndexSpec, PEOPLE);
+	protected IndexDataSource<Long, Person> createPeopleDataSource() {
+		return createCachedDataSource(PEOPLE);
 	}
 }

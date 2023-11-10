@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
-import ro.go.adrhc.persistence.lucene.typedindex.core.docds.rawds.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
