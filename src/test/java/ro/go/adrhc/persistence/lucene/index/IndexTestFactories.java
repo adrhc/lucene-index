@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.core.write.FSIndexWriterHolder;
 import ro.go.adrhc.persistence.lucene.index.domain.queries.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
@@ -26,10 +26,10 @@ public class IndexTestFactories {
 			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexSpec<ID, T, E> createTypedIndexSpec(
+	TypedIndexResources<ID, T, E> createTypedIndexSpec(
 			Class<T> tClass, Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		FSIndexWriterHolder fsWriterHolder = FSIndexWriterHolder.create(ANALYZER, indexPath);
-		return TypedIndexSpec.create(tClass, typedFieldEnumClass, fsWriterHolder);
+		return TypedIndexResources.create(tClass, typedFieldEnumClass, fsWriterHolder);
 	}
 
 	private static Analyzer createAnalyzer() throws IOException {

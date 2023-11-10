@@ -17,10 +17,10 @@ public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
 	 * constructor parameters union
 	 */
 	public static <ID> TypedIndexRemoveService<ID>
-	create(TypedIndexSpec<ID, ?, ?> typedIndexSpec) {
-		ExactQuery exactQuery = ExactQuery.create(typedIndexSpec.getIdField());
+	create(TypedIndexResources<ID, ?, ?> typedIndexResources) {
+		ExactQuery exactQuery = ExactQuery.create(typedIndexResources.getIdField());
 		return new TypedIndexRemoveService<>(exactQuery,
-				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter()));
+				new DocumentsIndexWriterTemplate(typedIndexResources.getIndexWriter()));
 	}
 
 	@Override

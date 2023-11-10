@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.RawDataFieldProvider;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -18,8 +18,8 @@ public class TypedToDocumentConverter<T extends Identifiable<?>> {
 	private final RawDataFieldProvider<T> rawDataFieldProvider;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedToDocumentConverter<T> create(TypedIndexSpec<?, T, E> typedIndexSpec) {
-		TypedFieldsProvider<T> typedFieldsProvider = TypedFieldsProvider.create(typedIndexSpec);
+	TypedToDocumentConverter<T> create(TypedIndexResources<?, T, E> typedIndexResources) {
+		TypedFieldsProvider<T> typedFieldsProvider = TypedFieldsProvider.create(typedIndexResources);
 		return new TypedToDocumentConverter<>(typedFieldsProvider, RawDataFieldProvider.create());
 	}
 

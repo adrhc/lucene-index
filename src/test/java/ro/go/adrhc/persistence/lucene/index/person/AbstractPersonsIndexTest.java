@@ -27,7 +27,7 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSo
 public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexSpec<Long, Person, PersonFieldType> peopleIndexSpec;
+	protected TypedIndexResources<Long, Person, PersonFieldType> peopleIndexSpec;
 	protected TypedIndexFactories<Long, Person, PersonFieldType> peopleIndexFactories;
 
 	@BeforeAll

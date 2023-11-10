@@ -27,7 +27,7 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSo
 public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexSpec<String, Album, AlbumFieldType> albumsIndexSpec;
+	protected TypedIndexResources<String, Album, AlbumFieldType> albumsIndexSpec;
 	protected TypedIndexFactories<String, Album, AlbumFieldType> albumsIndexFactories;
 
 	@BeforeAll

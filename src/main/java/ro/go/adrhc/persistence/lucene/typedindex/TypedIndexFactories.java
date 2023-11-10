@@ -24,43 +24,43 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> implements Closeable {
-	private final TypedIndexSpec<ID, T, E> typedIndexSpec;
+	private final TypedIndexResources<ID, T, E> typedIndexResources;
 	private final QuerySearchResultFilter<T> searchResultFilter;
 
 	public TypedIndexSearchService<QuerySearchResult<T>> createSearchService() {
 		return new TypedIndexSearchService<>(
-				DocumentsIndexReaderTemplate.create(typedIndexSpec),
-				QuerySearchResultFactory.create(typedIndexSpec.getType()),
+				DocumentsIndexReaderTemplate.create(typedIndexResources),
+				QuerySearchResultFactory.create(typedIndexResources.getType()),
 				searchResultFilter
 		);
 	}
 
 	public TypedSearchByIdService<ID, T> createSearchByIdService() {
-		return TypedSearchByIdService.create(typedIndexSpec);
+		return TypedSearchByIdService.create(typedIndexResources);
 	}
 
 	public DocumentsCountService createCountService() {
-		return DocumentsCountService.create(typedIndexSpec);
+		return DocumentsCountService.create(typedIndexResources);
 	}
 
 	public TypedIndexRestoreService<ID, T> createRestoreService() {
-		return TypedIndexRestoreService.create(typedIndexSpec);
+		return TypedIndexRestoreService.create(typedIndexResources);
 	}
 
 	public TypedIndexCreateService<T> createCreateService() {
-		return TypedIndexCreateService.create(typedIndexSpec);
+		return TypedIndexCreateService.create(typedIndexResources);
 	}
 
 	public TypedIndexUpdateService<T> createUpdateService() {
-		return TypedIndexUpdateService.create(typedIndexSpec);
+		return TypedIndexUpdateService.create(typedIndexResources);
 	}
 
 	public TypedIndexRemoveService<ID> createRemoveService() {
-		return TypedIndexRemoveService.create(typedIndexSpec);
+		return TypedIndexRemoveService.create(typedIndexResources);
 	}
 
 	@Override
 	public void close() throws IOException {
-		typedIndexSpec.close();
+		typedIndexResources.close();
 	}
 }

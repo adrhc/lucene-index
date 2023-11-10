@@ -15,7 +15,7 @@ import java.nio.file.Path;
 
 @Getter
 @RequiredArgsConstructor
-public class TypedIndexSpec<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
+public class TypedIndexResources<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 		implements Closeable {
 	public static final int NUM_HITS = 10;
 	private final int numHits;
@@ -26,11 +26,11 @@ public class TypedIndexSpec<ID, T extends Identifiable<ID>, E extends Enum<E> & 
 	private final IndexReaderPool indexReaderPool;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexSpec<ID, T, E> create(Class<T> tClass, Class<E> tFieldEnumClass,
+	TypedIndexResources<ID, T, E> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			FSIndexWriterHolder fsWriterHolder) throws IOException {
 		IndexReaderPool indexReaderPool = IndexReaderPool.create(fsWriterHolder);
 		E idField = TypedField.getIdField(tFieldEnumClass);
-		return new TypedIndexSpec<>(NUM_HITS, tClass,
+		return new TypedIndexResources<>(NUM_HITS, tClass,
 				tFieldEnumClass, idField, fsWriterHolder, indexReaderPool);
 	}
 

@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTempl
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
@@ -37,13 +37,13 @@ public class TypedIndexRestoreService<ID, T extends Identifiable<ID>> implements
 	 * constructor parameters union
 	 */
 	public static <ID, T extends Identifiable<ID>> TypedIndexRestoreService<ID, T>
-	create(TypedIndexSpec<ID, T, ?> typedIndexSpec) {
-		ExactQuery exactQuery = ExactQuery.create(typedIndexSpec.getIdField());
+	create(TypedIndexResources<ID, T, ?> typedIndexResources) {
+		ExactQuery exactQuery = ExactQuery.create(typedIndexResources.getIdField());
 		DocumentsIndexWriterTemplate writerTemplate =
-				new DocumentsIndexWriterTemplate(typedIndexSpec.getIndexWriter());
-		return new TypedIndexRestoreService<>(typedIndexSpec.getIdField(),
-				TypedToDocumentConverter.create(typedIndexSpec),
-				TypedIndexReaderTemplate.create(typedIndexSpec),
+				new DocumentsIndexWriterTemplate(typedIndexResources.getIndexWriter());
+		return new TypedIndexRestoreService<>(typedIndexResources.getIdField(),
+				TypedToDocumentConverter.create(typedIndexResources),
+				TypedIndexReaderTemplate.create(typedIndexResources),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),
 				new TypedIndexRemoveService<>(exactQuery, writerTemplate));
 	}

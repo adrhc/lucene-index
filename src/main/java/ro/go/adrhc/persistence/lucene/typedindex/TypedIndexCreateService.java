@@ -24,10 +24,10 @@ public class TypedIndexCreateService<T extends Identifiable<?>> implements Index
 	 * constructor parameters union
 	 */
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexCreateService<T> create(TypedIndexSpec<?, T, E> typedIndexSpec) {
+	TypedIndexCreateService<T> create(TypedIndexResources<?, T, E> typedIndexResources) {
 		return new TypedIndexCreateService<>(
-				TypedToDocumentConverter.create(typedIndexSpec),
-				DocumentsIndexCreateService.create(typedIndexSpec.getFsWriterHolder()));
+				TypedToDocumentConverter.create(typedIndexResources),
+				DocumentsIndexCreateService.create(typedIndexResources.getFsWriterHolder()));
 	}
 
 	public void createOrReplace(Stream<T> tStream) throws IOException {

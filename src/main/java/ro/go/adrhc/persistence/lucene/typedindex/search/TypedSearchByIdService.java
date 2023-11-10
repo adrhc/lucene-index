@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.search.DocumentsSearchByIdService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
 
@@ -17,11 +17,11 @@ public class TypedSearchByIdService<ID, T extends Identifiable<ID>> implements S
 	private final SearchByIdService<ID, Document> searchByIdService;
 
 	public static <ID, T extends Identifiable<ID>>
-	TypedSearchByIdService<ID, T> create(TypedIndexSpec<ID, T, ?> typedIndexSpec) {
+	TypedSearchByIdService<ID, T> create(TypedIndexResources<ID, T, ?> typedIndexResources) {
 		return new TypedSearchByIdService<>(
-				DocumentToTypedConverter.of(typedIndexSpec.getType()),
+				DocumentToTypedConverter.of(typedIndexResources.getType()),
 				DocumentsSearchByIdService.create(
-						typedIndexSpec.getIdField(), typedIndexSpec.getIndexReaderPool()));
+						typedIndexResources.getIdField(), typedIndexResources.getIndexReaderPool()));
 	}
 
 	public Optional<T> findById(ID id) throws IOException {

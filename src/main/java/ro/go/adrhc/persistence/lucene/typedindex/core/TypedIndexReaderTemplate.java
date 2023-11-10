@@ -4,7 +4,7 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexSpec;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -27,10 +27,10 @@ public class TypedIndexReaderTemplate<T> {
 	 * constructor parameters union
 	 */
 	public static <T extends Identifiable<?>> TypedIndexReaderTemplate<T>
-	create(TypedIndexSpec<?, T, ?> typedIndexSpec) {
-		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(typedIndexSpec.getType()),
+	create(TypedIndexResources<?, T, ?> typedIndexResources) {
+		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(typedIndexResources.getType()),
 				new DocumentsIndexReaderTemplate(
-						typedIndexSpec.getNumHits(), typedIndexSpec.getIndexReaderPool()));
+						typedIndexResources.getNumHits(), typedIndexResources.getIndexReaderPool()));
 	}
 
 	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {
