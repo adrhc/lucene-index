@@ -25,6 +25,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		tmpDir = Path.of("C:/Users/adpetre/Temp/test-index/people");
+		initPeopleIndexFactories();
 //		createCreateService().createOrReplace(generatePeopleStream(0, 1_000_000));
 //		createUpdateService(TMP).addAll(generatePeopleStream(5000, 10_000_001));
 //		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));

@@ -32,8 +32,7 @@ public abstract class AbstractPersonsIndexTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		peopleIndexFactories = new TypedIndexFactories<>(peopleIndexSpec, it -> true);
+		initPeopleIndexFactories();
 		createCreateService().createOrReplace(PEOPLE);
 	}
 
@@ -88,5 +87,10 @@ public abstract class AbstractPersonsIndexTest {
 
 	protected IndexDataSource<Long, Person> createPeopleDataSource() {
 		return createCachedDataSource(PEOPLE);
+	}
+
+	protected void initPeopleIndexFactories() throws IOException {
+		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
+		peopleIndexFactories = new TypedIndexFactories<>(peopleIndexSpec, it -> true);
 	}
 }
