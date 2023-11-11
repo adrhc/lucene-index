@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.result.filter.QuerySearchResultFilter;
 
 import java.io.Closeable;
 import java.io.IOException;

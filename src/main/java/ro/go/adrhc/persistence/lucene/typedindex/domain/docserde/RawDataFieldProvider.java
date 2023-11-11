@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.domain.field;
+package ro.go.adrhc.persistence.lucene.typedindex.domain.docserde;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
@@ -7,7 +7,7 @@ import org.apache.lucene.document.Field;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory.storedField;
+import static ro.go.adrhc.persistence.lucene.core.field.FieldFactory.storedField;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.ObjectMapperFactory.JSON_MAPPER;
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 

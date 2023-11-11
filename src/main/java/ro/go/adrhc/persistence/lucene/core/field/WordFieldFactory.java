@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.domain.field;
+package ro.go.adrhc.persistence.lucene.core.field;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;

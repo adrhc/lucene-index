@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.domain.field;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Field;
-import ro.go.adrhc.persistence.lucene.index.domain.field.FieldFactory;
+import ro.go.adrhc.persistence.lucene.core.field.FieldFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 
@@ -16,8 +16,8 @@ public class TypedFieldsProvider<T> {
 	private final FieldFactory fieldFactory;
 	private final Collection<? extends TypedField<T>> typedFields;
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>> TypedFieldsProvider<T>
-	create(TypedIndexContext<?, T, E> typedIndexContext) {
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	TypedFieldsProvider<T> create(TypedIndexContext<?, T, E> typedIndexContext) {
 		return new TypedFieldsProvider<>(
 				FieldFactory.create(typedIndexContext.getAnalyzer()),
 				EnumSet.allOf(typedIndexContext.getTFieldEnumClass()));

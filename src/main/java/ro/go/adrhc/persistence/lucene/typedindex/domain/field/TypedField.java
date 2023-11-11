@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.domain.field;
 
 import org.apache.lucene.index.IndexableField;
-import ro.go.adrhc.persistence.lucene.index.domain.field.FieldType;
+import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.util.Assert;
 
 import java.util.EnumSet;

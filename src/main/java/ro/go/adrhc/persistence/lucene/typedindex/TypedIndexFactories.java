@@ -5,11 +5,11 @@ import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResultFactory;
 
 import java.io.Closeable;
 import java.io.IOException;

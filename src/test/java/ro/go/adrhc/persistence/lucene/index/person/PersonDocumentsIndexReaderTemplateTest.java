@@ -1,8 +1,8 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
 import org.junit.jupiter.api.Test;
+import ro.go.adrhc.persistence.lucene.core.field.FieldAccessors;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.domain.field.FieldAccessors;
 
 import java.io.IOException;
 import java.util.Optional;

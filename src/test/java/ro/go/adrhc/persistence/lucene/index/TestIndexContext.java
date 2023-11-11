@@ -2,9 +2,9 @@ package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.analysis.AnalyzerFactory;
+import ro.go.adrhc.persistence.lucene.core.queries.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.tokenizer.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.core.tokenizer.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;

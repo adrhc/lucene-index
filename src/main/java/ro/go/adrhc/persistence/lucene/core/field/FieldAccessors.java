@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.domain.field;
+package ro.go.adrhc.persistence.lucene.core.field;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.document.Document;

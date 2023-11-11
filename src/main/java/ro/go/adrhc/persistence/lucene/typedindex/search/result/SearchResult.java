@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.domain.seach;
+package ro.go.adrhc.persistence.lucene.typedindex.search.result;
 
 public interface SearchResult<S, F> {
 	S getSearched();

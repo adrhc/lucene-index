@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.index.domain.queries.FieldQueries;
+import ro.go.adrhc.persistence.lucene.core.queries.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 
 import java.util.Collection;
