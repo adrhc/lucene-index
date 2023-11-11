@@ -8,10 +8,10 @@ import org.apache.lucene.util.BytesRef;
 
 @RequiredArgsConstructor
 public class FieldFactory {
-	private final StringFieldFactory stringFieldFactory;
+	private final WordFieldFactory wordFieldFactory;
 
 	public static FieldFactory create(Analyzer analyzer) {
-		return new FieldFactory(StringFieldFactory.create(analyzer));
+		return new FieldFactory(WordFieldFactory.create(analyzer));
 	}
 
 	/**
@@ -21,6 +21,9 @@ public class FieldFactory {
 		return intField(field.name(), value);
 	}
 
+	/**
+	 * Can't be stored!
+	 */
 	public static IntPoint intField(String fieldName, Integer value) {
 		return new IntPoint(fieldName, value);
 	}
@@ -84,7 +87,7 @@ public class FieldFactory {
 	public Field create(boolean stored, FieldType fieldType, String fieldName, Object value) {
 		return switch (fieldType) {
 			case KEYWORD -> keywordField(stored, fieldName, value);
-			case WORD -> stringFieldFactory.stringField(stored, fieldName, value);
+			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
 			case PHRASE -> textField(stored, fieldName, value);
 			case INT -> intField(fieldName, (Integer) value);
 			case LONG -> longField(stored, fieldName, (Long) value);
