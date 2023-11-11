@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.tokenizer;
+package ro.go.adrhc.persistence.lucene.core.tokenizer;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.SetUtils;

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.core.read.IndexReaderPool;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 

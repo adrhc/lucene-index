@@ -5,7 +5,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StringField;
-import ro.go.adrhc.persistence.lucene.index.core.tokenizer.TokenizationUtils;
+import ro.go.adrhc.persistence.lucene.core.tokenizer.TokenizationUtils;
 
 @RequiredArgsConstructor
 public class StringFieldFactory {

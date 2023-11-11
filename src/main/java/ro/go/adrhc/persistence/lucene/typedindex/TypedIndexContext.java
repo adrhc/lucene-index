@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
-import ro.go.adrhc.persistence.lucene.index.core.read.IndexReaderPool;
-import ro.go.adrhc.persistence.lucene.index.core.write.FSIndexWriterHolder;
+import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
+import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,41 +16,36 @@ import java.nio.file.Path;
 
 @Getter
 @RequiredArgsConstructor
-public class TypedIndexResources<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
+public class TypedIndexContext<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 		implements Closeable {
 	public static final int NUM_HITS = 10;
-	private final int numHits;
 	private final Class<T> type;
 	private final Class<E> tFieldEnumClass;
 	private final E idField;
-	private final FSIndexWriterHolder fsWriterHolder;
+	private final IndexWriter indexWriter;
 	private final IndexReaderPool indexReaderPool;
+	private final QuerySearchResultFilter<T> searchResultFilter;
+	private final int numHits;
+	private final Path indexPath;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexResources<ID, T, E> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			FSIndexWriterHolder fsWriterHolder) throws IOException {
-		IndexReaderPool indexReaderPool = IndexReaderPool.create(fsWriterHolder);
+	TypedIndexContext<ID, T, E> create(Class<T> tClass, Class<E> tFieldEnumClass,
+			Analyzer analyzer, QuerySearchResultFilter<T> searchResultFilter, Path indexPath) throws IOException {
+		IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
+		IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);
 		E idField = TypedField.getIdField(tFieldEnumClass);
-		return new TypedIndexResources<>(NUM_HITS, tClass,
-				tFieldEnumClass, idField, fsWriterHolder, indexReaderPool);
+		return new TypedIndexContext<>(tClass, tFieldEnumClass, idField,
+				indexWriter, indexReaderPool, searchResultFilter, NUM_HITS, indexPath);
 	}
 
 	public Analyzer getAnalyzer() {
-		return getFsWriterHolder().getAnalyzer();
-	}
-
-	public Path getIndexPath() {
-		return getFsWriterHolder().getIndexPath();
-	}
-
-	public IndexWriter getIndexWriter() {
-		return getFsWriterHolder().getIndexWriter();
+		return indexWriter.getAnalyzer();
 	}
 
 	public void close() throws IOException {
 		IOException exc = null;
 		try {
-			fsWriterHolder.close();
+			indexWriter.close();
 		} catch (IOException e) {
 			exc = e;
 		}

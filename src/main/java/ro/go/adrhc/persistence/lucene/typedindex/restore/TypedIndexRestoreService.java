@@ -3,12 +3,12 @@ package ro.go.adrhc.persistence.lucene.typedindex.restore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
+import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
-import ro.go.adrhc.persistence.lucene.index.core.write.DocumentsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
 import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
@@ -37,13 +37,13 @@ public class TypedIndexRestoreService<ID, T extends Identifiable<ID>> implements
 	 * constructor parameters union
 	 */
 	public static <ID, T extends Identifiable<ID>> TypedIndexRestoreService<ID, T>
-	create(TypedIndexResources<ID, T, ?> typedIndexResources) {
-		ExactQuery exactQuery = ExactQuery.create(typedIndexResources.getIdField());
-		DocumentsIndexWriterTemplate writerTemplate =
-				new DocumentsIndexWriterTemplate(typedIndexResources.getIndexWriter());
-		return new TypedIndexRestoreService<>(typedIndexResources.getIdField(),
-				TypedToDocumentConverter.create(typedIndexResources),
-				TypedIndexReaderTemplate.create(typedIndexResources),
+	create(TypedIndexContext<ID, T, ?> typedIndexContext) {
+		ExactQuery exactQuery = ExactQuery.create(typedIndexContext.getIdField());
+		DocsIndexWriterTemplate writerTemplate =
+				new DocsIndexWriterTemplate(typedIndexContext.getIndexWriter());
+		return new TypedIndexRestoreService<>(typedIndexContext.getIdField(),
+				TypedToDocumentConverter.create(typedIndexContext),
+				TypedIndexReaderTemplate.create(typedIndexContext),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),
 				new TypedIndexRemoveService<>(exactQuery, writerTemplate));
 	}

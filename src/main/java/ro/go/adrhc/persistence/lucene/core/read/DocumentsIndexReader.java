@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.read;
+package ro.go.adrhc.persistence.lucene.core.read;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -127,7 +127,7 @@ public class DocumentsIndexReader implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		indexReaderPool.restore(indexReader);
+		indexReaderPool.returnReader(indexReader);
 	}
 
 	private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {

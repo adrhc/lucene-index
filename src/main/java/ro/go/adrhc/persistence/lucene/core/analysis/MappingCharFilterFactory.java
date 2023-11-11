@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.analysis;
+package ro.go.adrhc.persistence.lucene.core.analysis;
 
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
 import org.apache.lucene.util.ResourceLoader;

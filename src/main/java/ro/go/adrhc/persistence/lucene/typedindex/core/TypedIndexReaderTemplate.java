@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex.core;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexResources;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
@@ -27,10 +27,10 @@ public class TypedIndexReaderTemplate<T> {
 	 * constructor parameters union
 	 */
 	public static <T extends Identifiable<?>> TypedIndexReaderTemplate<T>
-	create(TypedIndexResources<?, T, ?> typedIndexResources) {
-		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(typedIndexResources.getType()),
+	create(TypedIndexContext<?, T, ?> typedIndexContext) {
+		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(typedIndexContext.getType()),
 				new DocumentsIndexReaderTemplate(
-						typedIndexResources.getNumHits(), typedIndexResources.getIndexReaderPool()));
+						typedIndexContext.getNumHits(), typedIndexContext.getIndexReaderPool()));
 	}
 
 	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {

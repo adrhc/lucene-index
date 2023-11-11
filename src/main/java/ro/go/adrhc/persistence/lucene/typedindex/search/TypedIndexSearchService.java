@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReader;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
 

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.*;
 import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSourceFactory.createCachedDataSource;
 
@@ -27,7 +27,7 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSo
 public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexResources<Long, Person, PersonFieldType> peopleIndexSpec;
+	protected TypedIndexContext<Long, Person, PersonFieldType> peopleIndexSpec;
 	protected TypedIndexFactories<Long, Person, PersonFieldType> peopleIndexFactories;
 
 	@BeforeAll
@@ -91,6 +91,6 @@ public abstract class AbstractPersonsIndexTest {
 
 	protected void initPeopleIndexFactories() throws IOException {
 		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		peopleIndexFactories = new TypedIndexFactories<>(peopleIndexSpec, it -> true);
+		peopleIndexFactories = new TypedIndexFactories<>(peopleIndexSpec);
 	}
 }

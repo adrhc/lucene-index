@@ -1,14 +1,13 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.domain.seach.QuerySearchResultFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.QuerySearchResultFilter;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
@@ -24,43 +23,42 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> implements Closeable {
-	private final TypedIndexResources<ID, T, E> typedIndexResources;
-	private final QuerySearchResultFilter<T> searchResultFilter;
+	private final TypedIndexContext<ID, T, E> typedIndexContext;
 
 	public TypedIndexSearchService<QuerySearchResult<T>> createSearchService() {
 		return new TypedIndexSearchService<>(
-				DocumentsIndexReaderTemplate.create(typedIndexResources),
-				QuerySearchResultFactory.create(typedIndexResources.getType()),
-				searchResultFilter
+				DocumentsIndexReaderTemplate.create(typedIndexContext),
+				QuerySearchResultFactory.create(typedIndexContext.getType()),
+				typedIndexContext.getSearchResultFilter()
 		);
 	}
 
 	public TypedSearchByIdService<ID, T> createSearchByIdService() {
-		return TypedSearchByIdService.create(typedIndexResources);
+		return TypedSearchByIdService.create(typedIndexContext);
 	}
 
 	public DocumentsCountService createCountService() {
-		return DocumentsCountService.create(typedIndexResources);
+		return DocumentsCountService.create(typedIndexContext);
 	}
 
 	public TypedIndexRestoreService<ID, T> createRestoreService() {
-		return TypedIndexRestoreService.create(typedIndexResources);
+		return TypedIndexRestoreService.create(typedIndexContext);
 	}
 
 	public TypedIndexCreateService<T> createCreateService() {
-		return TypedIndexCreateService.create(typedIndexResources);
+		return TypedIndexCreateService.create(typedIndexContext);
 	}
 
 	public TypedIndexUpdateService<T> createUpdateService() {
-		return TypedIndexUpdateService.create(typedIndexResources);
+		return TypedIndexUpdateService.create(typedIndexContext);
 	}
 
 	public TypedIndexRemoveService<ID> createRemoveService() {
-		return TypedIndexRemoveService.create(typedIndexResources);
+		return TypedIndexRemoveService.create(typedIndexContext);
 	}
 
 	@Override
 	public void close() throws IOException {
-		typedIndexResources.close();
+		typedIndexContext.close();
 	}
 }

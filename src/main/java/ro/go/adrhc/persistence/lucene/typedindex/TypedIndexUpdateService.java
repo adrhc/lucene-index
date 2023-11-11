@@ -28,10 +28,10 @@ public class TypedIndexUpdateService<T extends Identifiable<?>> implements Index
 	 * rawIdToStringConverter: Object::toString
 	 */
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexUpdateService<T> create(TypedIndexResources<?, T, E> typedIndexResources) {
+	TypedIndexUpdateService<T> create(TypedIndexContext<?, T, E> typedIndexContext) {
 		return new TypedIndexUpdateService<>(
-				TypedToDocumentConverter.create(typedIndexResources),
-				DocumentsIndexUpdateService.create(typedIndexResources));
+				TypedToDocumentConverter.create(typedIndexContext),
+				DocumentsIndexUpdateService.create(typedIndexContext));
 	}
 
 	public void add(T t) throws IOException {

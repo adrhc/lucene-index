@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.index.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.*;
 import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static ro.go.adrhc.persistence.lucene.index.IndexTestFactories.createTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
 import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSourceFactory.createCachedDataSource;
 
@@ -27,13 +27,13 @@ import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSo
 public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexResources<String, Album, AlbumFieldType> albumsIndexSpec;
+	protected TypedIndexContext<String, Album, AlbumFieldType> albumsIndexSpec;
 	protected TypedIndexFactories<String, Album, AlbumFieldType> albumsIndexFactories;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
 		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
-		albumsIndexFactories = new TypedIndexFactories<>(albumsIndexSpec, it -> true);
+		albumsIndexFactories = new TypedIndexFactories<>(albumsIndexSpec);
 		createCreateService().createOrReplace(ALBUMS);
 	}
 

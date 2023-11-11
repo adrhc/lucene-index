@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.index.core.read;
+package ro.go.adrhc.persistence.lucene.core.read;
 
 import org.apache.lucene.document.Document;
 
