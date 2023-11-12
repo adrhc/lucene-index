@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.TypedToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -28,10 +29,10 @@ public class TypedIndexUpdateService<T extends Identifiable<?>> implements Index
 	 * rawIdToStringConverter: Object::toString
 	 */
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexUpdateService<T> create(TypedIndexContext<?, T, E> typedIndexContext) {
+	TypedIndexUpdateService<T> create(TypedIndexFactoriesParams<?, T, E> factoriesParams) {
 		return new TypedIndexUpdateService<>(
-				TypedToDocumentConverter.create(typedIndexContext),
-				DocumentsIndexUpdateService.create(typedIndexContext));
+				TypedToDocumentConverter.create(factoriesParams),
+				DocumentsIndexUpdateService.create(factoriesParams));
 	}
 
 	public void add(T t) throws IOException {

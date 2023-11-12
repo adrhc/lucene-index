@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriterTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -20,10 +20,10 @@ public class DocumentsIndexUpdateService implements IndexUpdateService<Document>
 	/**
 	 * constructor parameters union
 	 */
-	public static DocumentsIndexUpdateService create(TypedIndexContext<?, ?, ?> typedIndexContext) {
+	public static DocumentsIndexUpdateService create(TypedIndexFactoriesParams<?, ?, ?> factoriesParams) {
 		return new DocumentsIndexUpdateService(
-				ExactQuery.create(typedIndexContext.getIdField()),
-				new DocsIndexWriterTemplate(typedIndexContext.getIndexWriter()));
+				ExactQuery.create(factoriesParams.getIdField()),
+				new DocsIndexWriterTemplate(factoriesParams.getIndexWriter()));
 	}
 
 	@Override

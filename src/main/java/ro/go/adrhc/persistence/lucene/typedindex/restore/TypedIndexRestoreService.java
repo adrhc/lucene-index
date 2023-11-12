@@ -7,14 +7,13 @@ import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriterTemplate;
 import ro.go.adrhc.persistence.lucene.index.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.TypedToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.reader.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.core.TypedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 import java.util.Set;
@@ -37,13 +36,13 @@ public class TypedIndexRestoreService<ID, T extends Identifiable<ID>> implements
 	 * constructor parameters union
 	 */
 	public static <ID, T extends Identifiable<ID>> TypedIndexRestoreService<ID, T>
-	create(TypedIndexContext<ID, T, ?> typedIndexContext) {
-		ExactQuery exactQuery = ExactQuery.create(typedIndexContext.getIdField());
+	create(TypedIndexFactoriesParams<ID, T, ?> factoriesParams) {
+		ExactQuery exactQuery = ExactQuery.create(factoriesParams.getIdField());
 		DocsIndexWriterTemplate writerTemplate =
-				new DocsIndexWriterTemplate(typedIndexContext.getIndexWriter());
-		return new TypedIndexRestoreService<>(typedIndexContext.getIdField(),
-				TypedToDocumentConverter.create(typedIndexContext),
-				TypedIndexReaderTemplate.create(typedIndexContext),
+				new DocsIndexWriterTemplate(factoriesParams.getIndexWriter());
+		return new TypedIndexRestoreService<>(factoriesParams.getIdField(),
+				TypedToDocumentConverter.create(factoriesParams),
+				TypedIndexReaderTemplate.create(factoriesParams),
 				new DocumentsIndexUpdateService(exactQuery, writerTemplate),
 				new TypedIndexRemoveService<>(exactQuery, writerTemplate));
 	}

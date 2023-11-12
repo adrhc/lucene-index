@@ -7,8 +7,12 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
-import ro.go.adrhc.persistence.lucene.typedindex.*;
-import ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
@@ -21,13 +25,13 @@ import java.util.List;
 
 import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
-import static ro.go.adrhc.persistence.lucene.typedindex.core.indexds.IndexDataSourceFactory.createCachedDataSource;
+import static ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSourceFactory.createCachedDataSource;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexContext<String, Album, AlbumFieldType> albumsIndexSpec;
+	protected TypedIndexFactoriesParams<String, Album, AlbumFieldType> albumsIndexSpec;
 	protected TypedIndexFactories<String, Album, AlbumFieldType> albumsIndexFactories;
 
 	@BeforeAll

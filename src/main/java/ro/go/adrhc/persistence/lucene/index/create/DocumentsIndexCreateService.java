@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriterTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 import ro.go.adrhc.util.collection.StreamCounter;
 
 import java.io.IOException;
@@ -21,10 +21,10 @@ public class DocumentsIndexCreateService implements IndexCreateService<Document>
 	/**
 	 * constructor parameters union
 	 */
-	public static DocumentsIndexCreateService create(TypedIndexContext<?, ?, ?> typedIndexContext) {
+	public static DocumentsIndexCreateService create(TypedIndexFactoriesParams<?, ?, ?> factoriesParams) {
 		return new DocumentsIndexCreateService(
-				new DocsIndexWriterTemplate(typedIndexContext.getIndexWriter()),
-				typedIndexContext.getIndexPath());
+				new DocsIndexWriterTemplate(factoriesParams.getIndexWriter()),
+				factoriesParams.getIndexPath());
 	}
 
 	public void createOrReplace(Stream<Document> documents) throws IOException {

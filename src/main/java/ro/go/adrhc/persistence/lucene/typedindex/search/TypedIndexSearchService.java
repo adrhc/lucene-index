@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.index.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.index.search.IndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.filter.SearchResultFilter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.filter.SearchResultFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;

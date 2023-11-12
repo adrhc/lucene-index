@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.create.DocumentsIndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.create.IndexCreateService;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.TypedToDocumentConverter;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.TypedToDocumentConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -24,10 +25,10 @@ public class TypedIndexCreateService<T extends Identifiable<?>> implements Index
 	 * constructor parameters union
 	 */
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexCreateService<T> create(TypedIndexContext<?, T, E> typedIndexContext) {
+	TypedIndexCreateService<T> create(TypedIndexFactoriesParams<?, T, E> factoriesParams) {
 		return new TypedIndexCreateService<>(
-				TypedToDocumentConverter.create(typedIndexContext),
-				DocumentsIndexCreateService.create(typedIndexContext));
+				TypedToDocumentConverter.create(factoriesParams),
+				DocumentsIndexCreateService.create(factoriesParams));
 	}
 
 	public void createOrReplace(Stream<T> tStream) throws IOException {

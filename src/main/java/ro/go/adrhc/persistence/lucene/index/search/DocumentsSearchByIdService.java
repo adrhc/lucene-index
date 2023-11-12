@@ -6,8 +6,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 
 import java.io.IOException;
 import java.util.Optional;

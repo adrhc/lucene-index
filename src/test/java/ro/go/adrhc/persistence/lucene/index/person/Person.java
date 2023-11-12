@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
 
 public record Person(Long id, String cnp, String name, String aliasKeyword,
 		String aliasWord, String aliasPhrase, Integer intField, Long longField,

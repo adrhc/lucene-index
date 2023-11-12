@@ -4,7 +4,7 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
@@ -16,8 +16,8 @@ public record DocumentsIndexReaderTemplate(int numHits, IndexReaderPool indexRea
 	/**
 	 * numHits = Integer.MAX_VALUE
 	 */
-	public static DocumentsIndexReaderTemplate create(TypedIndexContext<?, ?, ?> typedIndexContext) {
-		return new DocumentsIndexReaderTemplate(typedIndexContext.getNumHits(), typedIndexContext.getIndexReaderPool());
+	public static DocumentsIndexReaderTemplate create(TypedIndexFactoriesParams<?, ?, ?> factoriesParams) {
+		return new DocumentsIndexReaderTemplate(factoriesParams.getNumHits(), factoriesParams.getIndexReaderPool());
 	}
 
 	public <R, E extends Exception> R transformFields(String fieldName,

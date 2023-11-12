@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 
@@ -21,8 +21,8 @@ public class DocumentsCountService implements IndexCountService {
 	 * <p>
 	 * SearchedToQueryConverter = Optional::of
 	 */
-	public static DocumentsCountService create(TypedIndexContext<?, ?, ?> typedIndexContext) {
-		return new DocumentsCountService(DocumentsIndexReaderTemplate.create(typedIndexContext));
+	public static DocumentsCountService create(TypedIndexFactoriesParams<?, ?, ?> factoriesParams) {
+		return new DocumentsCountService(DocumentsIndexReaderTemplate.create(factoriesParams));
 	}
 
 	@Override

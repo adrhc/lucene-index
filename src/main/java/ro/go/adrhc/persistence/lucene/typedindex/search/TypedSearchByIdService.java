@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.search.DocumentsSearchByIdService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.domain.docserde.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,11 +17,11 @@ public class TypedSearchByIdService<ID, T extends Identifiable<ID>> implements S
 	private final SearchByIdService<ID, Document> searchByIdService;
 
 	public static <ID, T extends Identifiable<ID>>
-	TypedSearchByIdService<ID, T> create(TypedIndexContext<ID, T, ?> typedIndexContext) {
+	TypedSearchByIdService<ID, T> create(TypedIndexFactoriesParams<ID, T, ?> factoriesParams) {
 		return new TypedSearchByIdService<>(
-				DocumentToTypedConverter.of(typedIndexContext.getType()),
+				DocumentToTypedConverter.of(factoriesParams.getType()),
 				DocumentsSearchByIdService.create(
-						typedIndexContext.getIdField(), typedIndexContext.getIndexReaderPool()));
+						factoriesParams.getIdField(), factoriesParams.getIndexReaderPool()));
 	}
 
 	public Optional<T> findById(ID id) throws IOException {
