@@ -9,7 +9,7 @@ import ro.go.adrhc.persistence.lucene.index.update.DocumentsIndexUpdateService;
 import ro.go.adrhc.persistence.lucene.index.update.IndexUpdateService;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.reader.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;

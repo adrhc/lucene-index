@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedcore.reader;
+package ro.go.adrhc.persistence.lucene.typedcore.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
