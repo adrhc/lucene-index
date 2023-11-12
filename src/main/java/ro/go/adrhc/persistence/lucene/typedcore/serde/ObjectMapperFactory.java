@@ -18,6 +18,10 @@ public class ObjectMapperFactory {
 				.build();
 	}
 
+	/**
+	 * Path is badly (JSON) serialized, see:
+	 * <a href="https://stackoverflow.com/questions/40557821/jackson-2-incorrectly-serializing-java-java-nio-file-path">...</a>
+	 */
 	private static SimpleModule createPathToStringModule() {
 		SimpleModule simpleModule = new SimpleModule("PathToString");
 		simpleModule.addSerializer(Path.class, new ToStringSerializer());

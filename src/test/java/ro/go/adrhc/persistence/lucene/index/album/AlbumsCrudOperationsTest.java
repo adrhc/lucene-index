@@ -44,14 +44,8 @@ public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
 		Optional<Album> optionalAlbum = searchByIdService.findById(toId("/albums/album1"));
 		assertThat(optionalAlbum).isPresent();
 
-		// restoring (Path) id
-		// Path is badly (JSON) serialized, see:
-		// https://stackoverflow.com/questions/40557821/jackson-2-incorrectly-serializing-java-java-nio-file-path
-		Album originalAlbum = optionalAlbum.get();
-		originalAlbum = originalAlbum.path("/albums/album1");
-
 		String newStoredOnlyField = Instant.now().toString();
-		Album album = originalAlbum.storedOnlyField(newStoredOnlyField);
+		Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
 		createUpdateService().update(album);
 
 		optionalAlbum = searchByIdService.findById(album.getId());
