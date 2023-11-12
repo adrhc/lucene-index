@@ -4,7 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.core.query.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
-import ro.go.adrhc.persistence.lucene.core.token.tokenizer.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
-import static ro.go.adrhc.persistence.lucene.core.token.tokenizer.PatternsAndReplacement.caseInsensitive;
+import static ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplacement.caseInsensitive;
 
 public class TestIndexContext {
 	public static final Analyzer ANALYZER = sneak(TestIndexContext::createAnalyzer);

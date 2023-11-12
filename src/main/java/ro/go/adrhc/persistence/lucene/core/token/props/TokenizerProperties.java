@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.token.tokenizer;
+package ro.go.adrhc.persistence.lucene.core.token.props;
 
 import lombok.*;
 

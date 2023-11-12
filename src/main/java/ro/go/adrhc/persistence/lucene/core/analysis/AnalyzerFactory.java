@@ -9,8 +9,8 @@ import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
-import ro.go.adrhc.persistence.lucene.core.token.tokenizer.PatternsAndReplacement;
-import ro.go.adrhc.persistence.lucene.core.token.tokenizer.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplacement;
+import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
