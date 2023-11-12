@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedcore.docserde;
+package ro.go.adrhc.persistence.lucene.typedcore.serde;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

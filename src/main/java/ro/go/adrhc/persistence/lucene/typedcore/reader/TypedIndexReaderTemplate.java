@@ -4,8 +4,8 @@ import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
 
 import java.io.IOException;
 import java.util.Optional;

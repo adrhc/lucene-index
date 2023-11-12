@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.search.DocumentsSearchByIdService;
 import ro.go.adrhc.persistence.lucene.index.search.SearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.DocumentToTypedConverter;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;

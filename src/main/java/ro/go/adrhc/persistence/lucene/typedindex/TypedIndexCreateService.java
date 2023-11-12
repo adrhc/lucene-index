@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.index.create.DocumentsIndexCreateService;
 import ro.go.adrhc.persistence.lucene.index.create.IndexCreateService;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.TypedToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
 import lombok.experimental.UtilityClass;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 
 import java.util.Collection;
 import java.util.Set;

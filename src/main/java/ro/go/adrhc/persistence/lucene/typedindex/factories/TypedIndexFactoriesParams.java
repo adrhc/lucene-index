@@ -6,10 +6,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
-import ro.go.adrhc.persistence.lucene.typedcore.docserde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldsProviderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.reader.TypedIndexReaderTemplateParams;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.search.filter.QuerySearchResultFilter;
 
 import java.io.Closeable;

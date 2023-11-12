@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedcore.docserde;
+package ro.go.adrhc.persistence.lucene.typedcore.serde;
 
 public interface Identifiable<ID> {
 	ID getId();
