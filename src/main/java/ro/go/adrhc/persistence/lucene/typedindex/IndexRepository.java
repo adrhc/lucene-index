@@ -51,6 +51,10 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 				adderService, updateService, removeService, initService, restoreService);
 	}
 
+	public List<T> getAll() throws IOException {
+		return searchService.getAll();
+	}
+
 	public List<T> findAllMatches(Query query) throws IOException {
 		return searchService.findAllMatches(query);
 	}
