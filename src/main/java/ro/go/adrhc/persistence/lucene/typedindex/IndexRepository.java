@@ -13,9 +13,9 @@ import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesPa
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.CriterionScoreAndTyped;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIdSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
@@ -23,12 +23,13 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class IndexRepository<ID, T extends Identifiable<?>> {
 	private final TypedIndexSearchService<T> searchService;
-	private final TypedIdSearchService<ID, T> idSearchService;
+	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocumentsCountService countService;
 	private final TypedIndexAdderService<T> adderService;
 	private final TypedIndexUpdateService<T> updateService;
@@ -40,23 +41,35 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	create(TypedIndexFactoriesParams<ID, T, E> params) {
 		TypedIndexFactories<ID, T, E> factories = new TypedIndexFactories<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
-		TypedIdSearchService<ID, T> idSearchService = factories.createIdSearchService();
+		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
 		DocumentsCountService countService = factories.createCountService();
 		TypedIndexAdderService<T> adderService = factories.createAdderService();
 		TypedIndexUpdateService<T> updateService = factories.createUpdateService();
 		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
 		TypedIndexInitService<ID, T> initService = factories.createInitService();
 		TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();
-		return new IndexRepository<>(searchService, idSearchService, countService,
+		return new IndexRepository<>(searchService, retrieveService, countService,
 				adderService, updateService, removeService, initService, restoreService);
 	}
 
-	public List<ID> getAllIds() throws IOException {
-		return idSearchService.getAllIds();
+	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
+		return retrieveService.reduce(reducer);
+	}
+
+	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
+		return retrieveService.reduceIds(idsReducer);
 	}
 
 	public List<T> getAll() throws IOException {
-		return searchService.getAll();
+		return retrieveService.getAll();
+	}
+
+	public List<ID> getAllIds() throws IOException {
+		return retrieveService.getAllIds();
+	}
+
+	public Optional<T> findById(ID id) throws IOException {
+		return retrieveService.findById(id);
 	}
 
 	public List<T> findAllMatches(Query query) throws IOException {
@@ -82,10 +95,6 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);
-	}
-
-	public Optional<T> findById(ID id) throws IOException {
-		return idSearchService.findById(id);
 	}
 
 	public int count() throws IOException {
