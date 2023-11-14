@@ -21,7 +21,6 @@ public class DocsIndexWriter implements Closeable {
 	private final IndexWriter indexWriter;
 
 	public void addOne(Iterable<? extends IndexableField> document) throws IOException {
-//		log.debug("\nAdding to index:\n{}", doc);
 		indexWriter.addDocument(document);
 	}
 
@@ -33,19 +32,15 @@ public class DocsIndexWriter implements Closeable {
 		addMany(iterable(documents));
 	}
 
-	/*public void update(Term idTerm, Document document) throws IOException {
-		indexWriter.updateDocValues(idTerm, document.getFields().toArray(Field[]::new));
-	}*/
-
 	public void update(Query idQuery, Document document) throws IOException {
 		indexWriter.updateDocuments(idQuery, List.of(document));
 	}
 
-	public void deleteOne(Query query) throws IOException {
+	public void deleteByQuery(Query query) throws IOException {
 		indexWriter.deleteDocuments(query);
 	}
 
-	public void deleteMany(Collection<? extends Query> queries) throws IOException {
+	public void deleteByQueries(Collection<? extends Query> queries) throws IOException {
 		indexWriter.deleteDocuments(queries.toArray(Query[]::new));
 	}
 

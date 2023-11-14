@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
@@ -27,8 +26,7 @@ public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(ALBUMS.size());
 
-		TypedIndexUpdateService<Album> indexUpdateService = createUpdateService();
-		indexUpdateService.add(generateAlbum(4));
+		createAdderService().addOne(generateAlbum(4));
 
 		TypedSearchByIdService<String, Album> searchByIdService = createSearchByIdService();
 		assertThat(searchByIdService.findById(toId("/albums/album4"))).isPresent();

@@ -1,31 +1,26 @@
 package ro.go.adrhc.persistence.lucene.typedindex.search;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.index.search.DocumentsSearchByIdService;
-import ro.go.adrhc.persistence.lucene.index.search.SearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class TypedSearchByIdService<ID, T extends Identifiable<ID>> implements SearchByIdService<ID, T> {
-	private final DocumentToTypedConverter<T> documentToTypedConverter;
-	private final SearchByIdService<ID, Document> searchByIdService;
+public class TypedSearchByIdService<ID, T> implements SearchByIdService<ID, T> {
+	private final ExactQuery exactQuery;
+	private final TypedIndexReaderTemplate<T> indexReaderTemplate;
 
-	public static <ID, T extends Identifiable<ID>>
-	TypedSearchByIdService<ID, T> create(TypedIndexFactoriesParams<ID, T, ?> factoriesParams) {
+	public static <ID, T> TypedSearchByIdService<ID, T>
+	create(TypedSearchByIdServiceParams<T> params) {
 		return new TypedSearchByIdService<>(
-				DocumentToTypedConverter.of(factoriesParams.getType()),
-				DocumentsSearchByIdService.create(
-						factoriesParams.getIdField(), factoriesParams.getIndexReaderPool()));
+				ExactQuery.create(params.getIdField()),
+				TypedIndexReaderTemplate.create(params));
 	}
 
 	public Optional<T> findById(ID id) throws IOException {
-		return searchByIdService.findById(id)
-				.flatMap(documentToTypedConverter::convert);
+		return indexReaderTemplate.useReader(reader ->
+				reader.findFirst(exactQuery.newExactQuery(id)));
 	}
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 public class DocumentToTypedConverter<T> {
 	private final ObjectReader tReader;
 
-	public static <T> DocumentToTypedConverter<T> of(Class<T> tClass) {
+	public static <T> DocumentToTypedConverter<T> create(Class<T> tClass) {
 		return new DocumentToTypedConverter<>(ObjectMapperFactory.JSON_MAPPER.readerFor(tClass));
 	}
 

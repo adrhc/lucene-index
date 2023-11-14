@@ -1,18 +1,16 @@
 package ro.go.adrhc.persistence.lucene.typedindex.factories;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
+import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
+import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexCreateService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResultFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -30,12 +28,8 @@ public class TypedIndexFactories
 		implements Closeable {
 	private final TypedIndexFactoriesParams<ID, T, E> factoriesParams;
 
-	public TypedIndexSearchService<QuerySearchResult<T>> createSearchService() {
-		return new TypedIndexSearchService<>(
-				DocumentsIndexReaderTemplate.create(factoriesParams),
-				QuerySearchResultFactory.create(factoriesParams.getType()),
-				factoriesParams.getSearchResultFilter()
-		);
+	public TypedIndexSearchService<T> createSearchService() {
+		return TypedIndexSearchService.create(factoriesParams);
 	}
 
 	public TypedSearchByIdService<ID, T> createSearchByIdService() {
@@ -43,15 +37,19 @@ public class TypedIndexFactories
 	}
 
 	public DocumentsCountService createCountService() {
-		return DocumentsCountService.create(factoriesParams);
+		return DocumentsCountService.create(factoriesParams.getIndexReaderPool());
 	}
 
 	public TypedIndexRestoreService<ID, T> createRestoreService() {
 		return TypedIndexRestoreService.create(factoriesParams);
 	}
 
-	public TypedIndexCreateService<T> createCreateService() {
+	public TypedIndexCreateService<ID, T> createCreateService() {
 		return TypedIndexCreateService.create(factoriesParams);
+	}
+
+	public TypedIndexAdderService<T> createAdderService() {
+		return TypedIndexAdderService.create(factoriesParams);
 	}
 
 	public TypedIndexUpdateService<T> createUpdateService() {

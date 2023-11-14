@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
@@ -26,8 +25,7 @@ public class PeopleCrudOperationsTest extends AbstractPersonsIndexTest {
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(PEOPLE.size());
 
-		TypedIndexUpdateService<Person> indexUpdateService = createUpdateService();
-		indexUpdateService.add(generatePerson(4));
+		createAdderService().addOne(generatePerson(4));
 
 		TypedSearchByIdService<Long, Person> searchByIdService = createSearchByIdService();
 		assertThat(searchByIdService.findById(4L)).isPresent();

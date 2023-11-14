@@ -6,18 +6,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
+import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.SearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,19 +50,19 @@ public abstract class AbstractAlbumsIndexTest {
 	}
 
 	protected List<Album> findAllMatches(Query query) throws IOException {
-		return createSearchService()
-				.findAllMatches(query)
-				.stream()
-				.map(SearchResult::getFound)
-				.toList();
+		return createSearchService().findAllMatches(query);
 	}
 
-	protected TypedIndexSearchService<QuerySearchResult<Album>> createSearchService() {
+	protected TypedIndexSearchService<Album> createSearchService() {
 		return albumsIndexFactories.createSearchService();
 	}
 
 	protected DocumentsCountService createCountService() {
 		return albumsIndexFactories.createCountService();
+	}
+
+	protected TypedIndexAdderService<Album> createAdderService() {
+		return albumsIndexFactories.createAdderService();
 	}
 
 	protected TypedIndexUpdateService<Album> createUpdateService() {
@@ -82,7 +81,7 @@ public abstract class AbstractAlbumsIndexTest {
 		return albumsIndexFactories.createSearchByIdService();
 	}
 
-	protected TypedIndexCreateService<Album> createCreateService() {
+	protected TypedIndexCreateService<String, Album> createCreateService() {
 		return albumsIndexFactories.createCreateService();
 	}
 

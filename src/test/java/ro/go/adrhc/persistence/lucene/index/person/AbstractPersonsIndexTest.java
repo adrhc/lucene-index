@@ -5,19 +5,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.index.count.DocumentsCountService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexCreateService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
+import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexCreateService;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.QuerySearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.search.result.SearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -50,19 +50,19 @@ public abstract class AbstractPersonsIndexTest {
 	}
 
 	protected List<Person> findAllMatches(Query query) throws IOException {
-		return createSearchService()
-				.findAllMatches(query)
-				.stream()
-				.map(SearchResult::getFound)
-				.toList();
+		return createSearchService().findAllMatches(query);
 	}
 
-	protected TypedIndexSearchService<QuerySearchResult<Person>> createSearchService() {
+	protected TypedIndexSearchService<Person> createSearchService() {
 		return peopleIndexFactories.createSearchService();
 	}
 
 	protected DocumentsCountService createDocumentsCountService() {
 		return peopleIndexFactories.createCountService();
+	}
+
+	protected TypedIndexAdderService<Person> createAdderService() {
+		return peopleIndexFactories.createAdderService();
 	}
 
 	protected TypedIndexUpdateService<Person> createUpdateService() {
@@ -81,12 +81,16 @@ public abstract class AbstractPersonsIndexTest {
 		return peopleIndexFactories.createSearchByIdService();
 	}
 
-	protected TypedIndexCreateService<Person> createCreateService() {
+	protected TypedIndexCreateService<Long, Person> createCreateService() {
 		return peopleIndexFactories.createCreateService();
 	}
 
-	protected DocumentsIndexReaderTemplate createDocumentsIndexReaderTemplate() {
-		return DocumentsIndexReaderTemplate.create(peopleIndexSpec);
+	protected TypedIndexReaderTemplate<Person> createPersonIndexReaderTemplate() {
+		return TypedIndexReaderTemplate.create(peopleIndexSpec);
+	}
+
+	protected TypedIdIndexReaderTemplate<Long> createPersonIdIndexReaderTemplate() {
+		return TypedIdIndexReaderTemplate.create(peopleIndexSpec);
 	}
 
 	protected IndexDataSource<Long, Person> createPeopleDataSource() {

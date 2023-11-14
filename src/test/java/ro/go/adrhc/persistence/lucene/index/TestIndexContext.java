@@ -27,7 +27,8 @@ public class TestIndexContext {
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactoriesParams<ID, T, E> createTypedIndexSpec(Class<T> tClass,
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
-		return TypedIndexFactoriesParams.create(tClass, typedFieldEnumClass, ANALYZER, it -> true, indexPath);
+		return TypedIndexFactoriesParams.create(tClass,
+				typedFieldEnumClass, ANALYZER, it -> true, indexPath);
 	}
 
 	private static Analyzer createAnalyzer() throws IOException {

@@ -5,7 +5,6 @@ import org.apache.lucene.document.Field;
 import ro.go.adrhc.persistence.lucene.core.field.FieldFactory;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,11 +13,11 @@ public class TypedFieldsProvider<T> {
 	private final FieldFactory fieldFactory;
 	private final Collection<? extends TypedField<T>> typedFields;
 
-	public static <T, E extends Enum<E> & TypedField<T>>
-	TypedFieldsProvider<T> create(TypedFieldsProviderParams<T, E> providerParams) {
+	public static <T> TypedFieldsProvider<T>
+	create(TypedFieldsProviderParams<T> providerParams) {
 		return new TypedFieldsProvider<>(
 				FieldFactory.create(providerParams.getAnalyzer()),
-				EnumSet.allOf(providerParams.getTFieldEnumClass()));
+				providerParams.getTypedFields());
 	}
 
 	public Stream<Field> createFields(T tValue) {

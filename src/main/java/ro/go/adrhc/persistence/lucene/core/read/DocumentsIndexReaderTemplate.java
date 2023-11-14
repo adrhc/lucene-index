@@ -1,38 +1,38 @@
 package ro.go.adrhc.persistence.lucene.core.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
+import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
-public record DocumentsIndexReaderTemplate(int numHits, IndexReaderPool indexReaderPool) {
-	/**
-	 * numHits = Integer.MAX_VALUE
-	 */
-	public static DocumentsIndexReaderTemplate create(TypedIndexFactoriesParams<?, ?, ?> factoriesParams) {
-		return new DocumentsIndexReaderTemplate(factoriesParams.getNumHits(), factoriesParams.getIndexReaderPool());
+@RequiredArgsConstructor
+public class DocumentsIndexReaderTemplate {
+	private final SneakySupplier<DocumentsIndexReader, IOException> indexReaderFactory;
+
+	public static DocumentsIndexReaderTemplate create(DocumentsIndexReaderParams params) {
+		return new DocumentsIndexReaderTemplate(() -> DocumentsIndexReader.create(params));
 	}
 
-	public <R, E extends Exception> R transformFields(String fieldName,
+	public static DocumentsIndexReaderTemplate create(int numHits, IndexReaderPool indexReaderPool) {
+		return new DocumentsIndexReaderTemplate(() -> DocumentsIndexReader.create(numHits, indexReaderPool));
+	}
+
+	/*public <R, E extends Exception> R transformFields(String fieldName,
 			SneakyFunction<Stream<IndexableField>, R, E> fieldValuesTransformer) throws IOException, E {
-		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllField(fieldName)));
+		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getFieldOfAll(fieldName)));
 	}
 
 	public <R, E extends Exception> R transformFieldValues(String fieldName,
 			SneakyFunction<Stream<String>, R, E> fieldValuesTransformer) throws IOException, E {
-		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getAllFieldValues(fieldName)));
+		return useReader(indexReader -> fieldValuesTransformer.apply(indexReader.getFieldValueOfAll(fieldName)));
 	}
 
 	public <R, E extends Exception> R transformDocuments(Set<String> fieldNames,
 			SneakyFunction<Stream<Document>, R, E> documentsTransformer) throws IOException, E {
-		return useReader(indexReader -> documentsTransformer.apply(indexReader.getAll(fieldNames)));
+		return useReader(indexReader -> documentsTransformer.apply(indexReader.getFieldsOfAll(fieldNames)));
 	}
 
 	public <R, E extends Exception> R transformDocuments(
@@ -40,9 +40,9 @@ public record DocumentsIndexReaderTemplate(int numHits, IndexReaderPool indexRea
 		return useReader(indexReader -> documentsTransformer.apply(indexReader.getAll()));
 	}
 
-	public Optional<Document> findById(Query idQuery) throws IOException {
-		return useReader(indexReader -> indexReader.findById(idQuery));
-	}
+	public Optional<Document> findFirst(Query idQuery) throws IOException {
+		return useReader(indexReader -> indexReader.findFirst(idQuery));
+	}*/
 
 	/**
 	 * Make sure that songsIndexReaderFn does not return a Stream! at the moment
@@ -51,7 +51,7 @@ public record DocumentsIndexReaderTemplate(int numHits, IndexReaderPool indexRea
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<DocumentsIndexReader, R, E> indexReaderFn)
 			throws IOException, E {
-		try (DocumentsIndexReader indexReader = DocumentsIndexReader.create(numHits, indexReaderPool)) {
+		try (DocumentsIndexReader indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

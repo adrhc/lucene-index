@@ -1,37 +1,32 @@
 package ro.go.adrhc.persistence.lucene.typedcore.read;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
+import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
+import ro.go.adrhc.util.Assert;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static ro.go.adrhc.util.ObjectUtils.cast;
-import static ro.go.adrhc.util.fn.SneakyBiFunctionUtils.curry;
 
 @RequiredArgsConstructor
 public class TypedIndexReaderTemplate<T> {
-	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final DocumentsIndexReaderTemplate docIndexReaderTemplate;
+	private final SneakySupplier<TypedIndexReader<T>, IOException> indexReaderFactory;
 
-	/**
-	 * constructor parameters union
-	 */
-	public static <T> TypedIndexReaderTemplate<T>
-	create(TypedIndexReaderTemplateParams<T> readerParams) {
-		return new TypedIndexReaderTemplate<>(DocumentToTypedConverter.of(readerParams.getType()),
-				new DocumentsIndexReaderTemplate(
-						readerParams.getNumHits(), readerParams.getIndexReaderPool()));
+	public static <T> TypedIndexReaderTemplate<T> create(TypedIndexReaderParams<T> params) {
+		return new TypedIndexReaderTemplate<>(() -> TypedIndexReader.create(params));
 	}
 
-	public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {
+	public <R, E extends Exception> R useReader(
+			SneakyFunction<TypedIndexReader<T>, R, E> indexReaderFn)
+			throws IOException, E {
+		try (TypedIndexReader<T> indexReader = indexReaderFactory.get()) {
+			R result = indexReaderFn.apply(indexReader);
+			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
+			return result;
+		}
+	}
+
+	/*public <R> R transform(Function<Stream<T>, R> transformer) throws IOException {
 		return docIndexReaderTemplate.transformDocuments(curry(this::doTransform, transformer));
 	}
 
@@ -53,5 +48,5 @@ public class TypedIndexReaderTemplate<T> {
 	private <R> R doTransform(
 			Function<Stream<T>, R> transformer, Stream<Document> documents) {
 		return transformer.apply(documents.map(docToTypedConverter::convert).flatMap(Optional::stream));
-	}
+	}*/
 }

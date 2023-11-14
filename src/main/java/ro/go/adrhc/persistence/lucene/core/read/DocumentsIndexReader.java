@@ -24,24 +24,28 @@ public class DocumentsIndexReader implements Closeable {
 	private final IndexReader indexReader;
 	private final int numHits;
 
-	public static DocumentsIndexReader create(int maxResultsPerSearchedSong,
-			IndexReaderPool indexReaderPool) throws IOException {
-		return new DocumentsIndexReader(indexReaderPool, indexReaderPool.get(), maxResultsPerSearchedSong);
+	public static DocumentsIndexReader create(DocumentsIndexReaderParams params) throws IOException {
+		return new DocumentsIndexReader(params.getIndexReaderPool(),
+				params.getIndexReaderPool().get(), params.getNumHits());
+	}
+
+	public static DocumentsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
+		return new DocumentsIndexReader(indexReaderPool, indexReaderPool.get(), numHits);
 	}
 
 	public Stream<Document> getAll() {
-		return getAll(Set.of());
+		return getFieldsOfAll(Set.of());
 	}
 
-	public Stream<IndexableField> getAllField(String fieldName) {
-		return getAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
+	public Stream<IndexableField> getFieldOfAll(String fieldName) {
+		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
-	public Stream<String> getAllFieldValues(String fieldName) {
-		return getAll(Set.of(fieldName)).map(doc -> doc.get(fieldName));
+	public Stream<String> getFieldValueOfAll(String fieldName) {
+		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.get(fieldName));
 	}
 
-	public Stream<Document> getAll(Set<String> fieldNames) {
+	public Stream<Document> getFieldsOfAll(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
 		return storedFields()
@@ -49,15 +53,15 @@ public class DocumentsIndexReader implements Closeable {
 				.orElseGet(Stream::of);
 	}
 
-	public Stream<ScoreAndDocument> search(Query query) throws IOException {
+	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
 		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
 		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
 				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
-	public Optional<Document> findById(Query idQuery) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(idQuery);
+	public Optional<Document> findFirst(Query query) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
 		if (topDocsStoredFields.topDocs().totalHits.value > 0) {
 			return Optional.of(topDocsStoredFields.storedFields()
 					.document(topDocsStoredFields.topDocs().scoreDocs[0].doc));
