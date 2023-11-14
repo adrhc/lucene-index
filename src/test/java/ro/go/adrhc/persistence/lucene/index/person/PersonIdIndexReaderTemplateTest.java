@@ -13,7 +13,7 @@ public class PersonIdIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 	@Test
 	void readTest() throws IOException {
 		TypedIdIndexReaderTemplate<Long> readerTemplate = createPersonIdIndexReaderTemplate();
-		List<Long> ids = readerTemplate.useIdsReader(idsReader -> idsReader.getAll().toList());
+		List<Long> ids = readerTemplate.useIdsReader(idsReader -> idsReader.getAllIds().toList());
 		assertThat(ids).isNotEmpty();
 		assertThat(ids).containsAll(PEOPLE.stream().map(Person::getId).toList());
 	}

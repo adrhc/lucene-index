@@ -19,7 +19,7 @@ public class TypedIdIndexReader<ID> implements Closeable {
 				DocumentsIndexReader.create(Integer.MAX_VALUE, params.getIndexReaderPool()));
 	}
 
-	public Stream<ID> getAll() {
+	public Stream<ID> getAllIds() {
 		return indexReader.getFieldOfAll(idField.name())
 				.map(idField::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);

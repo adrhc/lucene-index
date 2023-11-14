@@ -12,8 +12,8 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIdSearchServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdServiceParams;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
-		TypedIndexInitServiceParams<T>, TypedSearchByIdServiceParams<T>, TypedIndexUpdaterParams<T> {
+		TypedIndexInitServiceParams<T>, TypedIdSearchServiceParams<T>, TypedIndexUpdaterParams<T> {
 	private final Class<T> type;
 	private final Class<E> tFieldEnumClass;
 	private final Collection<? extends TypedField<T>> typedFields;

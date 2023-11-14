@@ -16,7 +16,7 @@ public class TypedIdSearchService<ID, T> implements IdSearchService<ID, T> {
 	private final TypedIdIndexReaderTemplate<ID> typedIdIndexReaderTemplate;
 
 	public static <ID, T> TypedIdSearchService<ID, T>
-	create(TypedSearchByIdServiceParams<T> params) {
+	create(TypedIdSearchServiceParams<T> params) {
 		return new TypedIdSearchService<>(
 				ExactQuery.create(params.getIdField()),
 				TypedIndexReaderTemplate.create(params),
@@ -24,7 +24,7 @@ public class TypedIdSearchService<ID, T> implements IdSearchService<ID, T> {
 	}
 
 	public List<ID> getAllIds() throws IOException {
-		return typedIdIndexReaderTemplate.useIdsReader(idsReader -> idsReader.getAll().toList());
+		return typedIdIndexReaderTemplate.useIdsReader(idsReader -> idsReader.getAllIds().toList());
 	}
 
 	public Optional<T> findById(ID id) throws IOException {

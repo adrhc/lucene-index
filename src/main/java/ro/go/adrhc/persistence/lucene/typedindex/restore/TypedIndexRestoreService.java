@@ -63,6 +63,6 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	}
 
 	private Set<ID> docsToRemove(Set<ID> ids, TypedIdIndexReader<ID> idsReader) {
-		return collectToHashSet(idsReader.getAll().filter(id -> !ids.remove(id)));
+		return collectToHashSet(idsReader.getAllIds().filter(id -> !ids.remove(id)));
 	}
 }

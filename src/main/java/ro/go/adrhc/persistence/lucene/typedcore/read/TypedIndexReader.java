@@ -22,15 +22,6 @@ public class TypedIndexReader<T> implements Closeable {
 		return new TypedIndexReader<>(docToTypedConverter, indexReader);
 	}
 
-	/*public static <ID, T, E extends Enum<E> & TypedField<?>> TypedIndexReader<ID, T>
-	create(Class<T> tClass, Class<E> tFieldEnumClass, int maxResultsPerSearchedSong,
-			IndexReaderPool indexReaderPool) throws IOException {
-		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(tClass);
-		TypedField<?> idField = getIdField(tFieldEnumClass);
-		return new TypedIndexReader<>(docToTypedConverter, idField,
-				DocumentsIndexReader.create(maxResultsPerSearchedSong, indexReaderPool));
-	}*/
-
 	public Stream<T> getAll() {
 		return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
 	}
