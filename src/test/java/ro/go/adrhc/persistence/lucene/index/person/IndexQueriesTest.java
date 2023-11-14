@@ -56,8 +56,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		String aliasKeyword = PERSON3.aliasKeyword();
 		log.info("\naliasKeyword is: {}", aliasKeyword);
 		// KeywordField shouldn't be normalized!
-		List<Person> result = indexRepository
-				.findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
+		List<Person> result = indexRepository.findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
