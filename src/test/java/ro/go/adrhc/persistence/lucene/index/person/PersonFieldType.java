@@ -17,15 +17,15 @@ import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.*;
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedField<Person> {
-	id(LONG, true, longFieldSerde(Person::id)),
+	id(LONG, true, longIndexableField(Person::id)),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
 	aliasKeyWord(KEYWORD, Person::aliasKeyword),
 	aliasWord(WORD, Person::aliasWord),
 	aliasPhrase(PHRASE, Person::aliasPhrase),
-	intField(INT, false, intFieldSerde(Person::intField)),
-	longField(LONG, false, longFieldSerde(Person::longField)),
+	intField(INT, false, intIndexableField(Person::intField)),
+	longField(LONG, false, longIndexableField(Person::longField)),
 	storedOnlyField(STORED, Person::storedOnlyField);
 
 	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
@@ -44,6 +44,6 @@ public enum PersonFieldType implements TypedField<Person> {
 	PersonFieldType(FieldType fieldType, Function<Person, String> typedAccessor) {
 		this.fieldType = fieldType;
 		this.isIdField = false;
-		this.fieldSerde = stringFieldSerde(typedAccessor);
+		this.fieldSerde = stringIndexableField(typedAccessor);
 	}
 }

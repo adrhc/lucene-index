@@ -12,26 +12,26 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor, Function<Object, 
 	private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR
 			= field -> field.storedValue().getLongValue();
 
-	public static <T> TypedFieldSerde<T> stringFieldSerde(
+	public static <T> TypedFieldSerde<T> stringIndexableField(
 			Function<T, ?> typedAccessor, Function<Object, ?> toTypedValue) {
 		return new TypedFieldSerde<>(typedAccessor, Object::toString,
 				IndexableField::stringValue, toTypedValue);
 	}
 
-	public static <T> TypedFieldSerde<T> stringFieldSerde(Function<T, String> typedAccessor) {
+	public static <T> TypedFieldSerde<T> stringIndexableField(Function<T, String> typedAccessor) {
 		return new TypedFieldSerde<>(typedAccessor,
 				it -> it, IndexableField::stringValue, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> intFieldSerde(Function<T, Integer> typedAccessor) {
+	public static <T> TypedFieldSerde<T> intIndexableField(Function<T, Integer> typedAccessor) {
 		return new TypedFieldSerde<>(typedAccessor, it -> it, INT_FIELD_ACCESSOR, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> longFieldSerde(Function<T, Long> typedAccessor) {
+	public static <T> TypedFieldSerde<T> longIndexableField(Function<T, Long> typedAccessor) {
 		return new TypedFieldSerde<>(typedAccessor, it -> it, LONG_FIELD_ACCESSOR, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> pathFieldSerde(Function<T, Path> typedAccessor) {
-		return stringFieldSerde(typedAccessor, it -> Path.of((String) it));
+	public static <T> TypedFieldSerde<T> pathToStringIndexableField(Function<T, Path> typedAccessor) {
+		return stringIndexableField(typedAccessor, it -> Path.of((String) it));
 	}
 }

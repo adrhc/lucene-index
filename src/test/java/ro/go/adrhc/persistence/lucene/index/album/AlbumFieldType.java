@@ -11,14 +11,14 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.field.FieldType.*;
-import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.pathFieldSerde;
-import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.stringFieldSerde;
+import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.pathToStringIndexableField;
+import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.stringIndexableField;
 
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum AlbumFieldType implements TypedField<Album> {
-	id(KEYWORD, true, pathFieldSerde(Album::id)),
+	id(KEYWORD, true, pathToStringIndexableField(Album::id)),
 	name(PHRASE, Album::name),
 	storedOnlyField(STORED, Album::storedOnlyField);
 
@@ -32,6 +32,6 @@ public enum AlbumFieldType implements TypedField<Album> {
 	AlbumFieldType(FieldType fieldType, Function<Album, String> typedAccessor) {
 		this.fieldType = fieldType;
 		this.isIdField = false;
-		this.fieldSerde = stringFieldSerde(typedAccessor);
+		this.fieldSerde = stringIndexableField(typedAccessor);
 	}
 }
