@@ -2,21 +2,29 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class TypedSearchByIdService<ID, T> implements SearchByIdService<ID, T> {
+public class TypedIdSearchService<ID, T> implements IdSearchService<ID, T> {
 	private final ExactQuery exactQuery;
 	private final TypedIndexReaderTemplate<T> indexReaderTemplate;
+	private final TypedIdIndexReaderTemplate<ID> typedIdIndexReaderTemplate;
 
-	public static <ID, T> TypedSearchByIdService<ID, T>
+	public static <ID, T> TypedIdSearchService<ID, T>
 	create(TypedSearchByIdServiceParams<T> params) {
-		return new TypedSearchByIdService<>(
+		return new TypedIdSearchService<>(
 				ExactQuery.create(params.getIdField()),
-				TypedIndexReaderTemplate.create(params));
+				TypedIndexReaderTemplate.create(params),
+				TypedIdIndexReaderTemplate.create(params));
+	}
+
+	public List<ID> getAllIds() throws IOException {
+		return typedIdIndexReaderTemplate.useIdsReader(idsReader -> idsReader.getAll().toList());
 	}
 
 	public Optional<T> findById(ID id) throws IOException {

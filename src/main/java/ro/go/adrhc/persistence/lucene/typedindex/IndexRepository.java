@@ -15,8 +15,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.CriterionScoreAndTyped;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIdSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class IndexRepository<ID, T extends Identifiable<?>> {
 	private final TypedIndexSearchService<T> searchService;
-	private final TypedSearchByIdService<ID, T> searchByIdService;
+	private final TypedIdSearchService<ID, T> idSearchService;
 	private final DocumentsCountService countService;
 	private final TypedIndexAdderService<T> adderService;
 	private final TypedIndexUpdateService<T> updateService;
@@ -40,15 +40,19 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	create(TypedIndexFactoriesParams<ID, T, E> params) {
 		TypedIndexFactories<ID, T, E> factories = new TypedIndexFactories<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
-		TypedSearchByIdService<ID, T> searchByIdService = factories.createSearchByIdService();
+		TypedIdSearchService<ID, T> idSearchService = factories.createIdSearchService();
 		DocumentsCountService countService = factories.createCountService();
 		TypedIndexAdderService<T> adderService = factories.createAdderService();
 		TypedIndexUpdateService<T> updateService = factories.createUpdateService();
 		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
 		TypedIndexInitService<ID, T> initService = factories.createInitService();
 		TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();
-		return new IndexRepository<>(searchService, searchByIdService, countService,
+		return new IndexRepository<>(searchService, idSearchService, countService,
 				adderService, updateService, removeService, initService, restoreService);
+	}
+
+	public List<ID> getAllIds() throws IOException {
+		return idSearchService.getAllIds();
 	}
 
 	public List<T> getAll() throws IOException {
@@ -81,7 +85,7 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	}
 
 	public Optional<T> findById(ID id) throws IOException {
-		return searchByIdService.findById(id);
+		return idSearchService.findById(id);
 	}
 
 	public int count() throws IOException {

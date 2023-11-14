@@ -8,8 +8,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIdSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		return TypedIndexSearchService.create(factoriesParams);
 	}
 
-	public TypedSearchByIdService<ID, T> createSearchByIdService() {
-		return TypedSearchByIdService.create(factoriesParams);
+	public TypedIdSearchService<ID, T> createIdSearchService() {
+		return ro.go.adrhc.persistence.lucene.typedindex.search.TypedIdSearchService.create(factoriesParams);
 	}
 
 	public DocumentsCountService createCountService() {
