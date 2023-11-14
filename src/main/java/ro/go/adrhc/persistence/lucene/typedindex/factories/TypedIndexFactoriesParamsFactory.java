@@ -37,9 +37,21 @@ public class TypedIndexFactoriesParamsFactory {
 			TokenizerProperties tokenizerProperties,
 			SearchResultFilter<ScoreAndTyped<T>> searchResultFilter,
 			Path indexPath) throws IOException {
+		return create(tClass, tFieldEnumClass, tokenizerProperties,
+				searchResultFilter, NUM_HITS, indexPath);
+	}
+
+	/**
+	 * defaults: analyzer(TokenizerProperties)
+	 */
+	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
+	TypedIndexFactoriesParams<ID, T, E> create(Class<T> tClass, Class<E> tFieldEnumClass,
+			TokenizerProperties tokenizerProperties,
+			SearchResultFilter<ScoreAndTyped<T>> searchResultFilter,
+			int numHits, Path indexPath) throws IOException {
 		return create(tClass, tFieldEnumClass,
 				defaultAnalyzer(tokenizerProperties),
-				searchResultFilter, NUM_HITS, indexPath);
+				searchResultFilter, numHits, indexPath);
 	}
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
