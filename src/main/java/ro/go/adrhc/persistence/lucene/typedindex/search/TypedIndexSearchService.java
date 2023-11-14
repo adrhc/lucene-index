@@ -35,6 +35,11 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
+	public List<T> getAll() throws IOException {
+		return indexReaderTemplate.useReader(reader -> reader.getAll().toList());
+	}
+
+	@Override
 	public List<T> findAllMatches(Query query) throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindAllMatches(query, reader)
