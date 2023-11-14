@@ -21,7 +21,7 @@ public class TypedIdIndexReader<ID> implements Closeable {
 
 	public Stream<ID> getAll() {
 		return indexReader.getFieldOfAll(idField.name())
-				.map(field -> idField.fieldValueAccessor().apply(field))
+				.map(idField::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
 	}
 

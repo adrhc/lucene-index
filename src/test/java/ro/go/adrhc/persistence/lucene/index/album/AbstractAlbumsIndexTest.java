@@ -30,8 +30,8 @@ import static ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSourceF
 public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexFactoriesParams<String, Album, AlbumFieldType> albumsIndexSpec;
-	protected TypedIndexFactories<String, Album, AlbumFieldType> albumsIndexFactories;
+	protected TypedIndexFactoriesParams<Path, Album, AlbumFieldType> albumsIndexSpec;
+	protected TypedIndexFactories<Path, Album, AlbumFieldType> albumsIndexFactories;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
@@ -69,19 +69,19 @@ public abstract class AbstractAlbumsIndexTest {
 		return albumsIndexFactories.createUpdateService();
 	}
 
-	protected TypedIndexRemoveService<String> createRemoveService() {
+	protected TypedIndexRemoveService<Path> createRemoveService() {
 		return albumsIndexFactories.createRemoveService();
 	}
 
-	protected TypedIndexRestoreService<String, Album> createRestoreService() {
+	protected TypedIndexRestoreService<Path, Album> createRestoreService() {
 		return albumsIndexFactories.createRestoreService();
 	}
 
-	protected TypedSearchByIdService<String, Album> createSearchByIdService() {
+	protected TypedSearchByIdService<Path, Album> createSearchByIdService() {
 		return albumsIndexFactories.createSearchByIdService();
 	}
 
-	protected TypedIndexCreateService<String, Album> createCreateService() {
+	protected TypedIndexCreateService<Path, Album> createCreateService() {
 		return albumsIndexFactories.createCreateService();
 	}
 
@@ -89,7 +89,7 @@ public abstract class AbstractAlbumsIndexTest {
 		return DocumentsIndexReaderTemplate.create(albumsIndexSpec);
 	}
 
-	protected IndexDataSource<String, Album> createAlbumsDataSource() {
+	protected IndexDataSource<Path, Album> createAlbumsDataSource() {
 		return createCachedDataSource(ALBUMS);
 	}
 }

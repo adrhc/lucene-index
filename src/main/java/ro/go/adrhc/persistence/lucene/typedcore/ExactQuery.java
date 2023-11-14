@@ -38,11 +38,12 @@ public class ExactQuery {
 		};
 	}
 
-	public Query newExactQuery(Object idValue) {
+	public Query newExactQuery(Object typedValue) {
+		Object idFieldValue = idField.toIndexableFieldValue(typedValue);
 		return switch (idField.fieldType()) {
-			case KEYWORD -> fieldQueries.keywordEquals((String) idValue);
-			case LONG -> fieldQueries.longEquals((Long) idValue);
-			case INT -> fieldQueries.intEquals((Integer) idValue);
+			case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
+			case LONG -> fieldQueries.longEquals((Long) idFieldValue);
+			case INT -> fieldQueries.intEquals((Integer) idFieldValue);
 			default -> throw new IllegalStateException(
 					"Unexpected type %s for %s! "
 							.formatted(idField.fieldType(), idField));

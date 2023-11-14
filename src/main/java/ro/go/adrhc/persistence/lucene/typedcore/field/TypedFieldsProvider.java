@@ -27,7 +27,7 @@ public class TypedFieldsProvider<T> {
 	}
 
 	public Optional<Field> createField(T t, TypedField<T> typedField) {
-		Object fieldValue = typedField.accessor().apply(t);
+		Object fieldValue = typedField.typedToIndexableFieldValue(t);
 		if (fieldValue == null) {
 			return Optional.empty();
 		}

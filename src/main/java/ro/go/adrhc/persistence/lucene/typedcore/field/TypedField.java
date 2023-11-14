@@ -6,25 +6,33 @@ import ro.go.adrhc.util.Assert;
 
 import java.util.EnumSet;
 import java.util.Optional;
-import java.util.function.Function;
 
 public interface TypedField<T> {
-	Function<IndexableField, Object> STRING_FIELD_ACCESSOR = IndexableField::stringValue;
-	Function<IndexableField, Object> LONG_FIELD_ACCESSOR = field -> field.storedValue().getLongValue();
-
 	static <E extends Enum<E> & TypedField<?>> E getIdField(Class<E> enumClass) {
 		Optional<E> id = EnumSet.allOf(enumClass).stream().filter(TypedField::isIdField).findAny();
 		Assert.isTrue(id.isPresent(), enumClass + " must have an id field!");
 		return id.get();
 	}
 
-	Function<T, ?> accessor();
-
-	Function<IndexableField, Object> fieldValueAccessor();
+	TypedFieldSerde<T> fieldSerde();
 
 	String name();
 
 	boolean isIdField();
 
 	FieldType fieldType();
+
+	default Object toIndexableFieldValue(Object typedValue) {
+		return fieldSerde().toFieldValue().apply(typedValue);
+	}
+
+	default Object typedToIndexableFieldValue(T t) {
+		Object typedValue = fieldSerde().typedAccessor().apply(t);
+		return fieldSerde().toFieldValue().apply(typedValue);
+	}
+
+	default Object indexableFieldToTypedValue(IndexableField field) {
+		Object indexableFieldValue = fieldSerde().indexableFieldAccessor().apply(field);
+		return fieldSerde().toTypedValue().apply(indexableFieldValue);
+	}
 }

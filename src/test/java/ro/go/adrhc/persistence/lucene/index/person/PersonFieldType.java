@@ -3,28 +3,29 @@ package ro.go.adrhc.persistence.lucene.index.person;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.lucene.index.IndexableField;
 import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
 
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.field.FieldType.*;
+import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.*;
 
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedField<Person> {
-	id(LONG, Person::id, LONG_FIELD_ACCESSOR, true),
+	id(LONG, true, longFieldSerde(Person::id)),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
 	aliasKeyWord(KEYWORD, Person::aliasKeyword),
 	aliasWord(WORD, Person::aliasWord),
 	aliasPhrase(PHRASE, Person::aliasPhrase),
-	intField(INT, Person::intField), // int can't be stored but only indexed!
-	longField(LONG, Person::longField, LONG_FIELD_ACCESSOR),
+	intField(INT, false, intFieldSerde(Person::intField)),
+	longField(LONG, false, longFieldSerde(Person::longField)),
 	storedOnlyField(STORED, Person::storedOnlyField);
 
 	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
@@ -36,22 +37,13 @@ public enum PersonFieldType implements TypedField<Person> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 
 	private final FieldType fieldType;
-	private final Function<Person, ?> accessor;
-	private final Function<IndexableField, Object> fieldValueAccessor;
 	private final boolean isIdField;
+	private final TypedFieldSerde<Person> fieldSerde;
 
-	PersonFieldType(FieldType fieldType, Function<Person, ?> accessor) {
-		this.fieldType = fieldType;
-		this.accessor = accessor;
-		this.fieldValueAccessor = STRING_FIELD_ACCESSOR;
-		this.isIdField = false;
-	}
 
-	PersonFieldType(FieldType fieldType, Function<Person, ?> accessor,
-			Function<IndexableField, Object> fieldValueAccessor) {
+	PersonFieldType(FieldType fieldType, Function<Person, String> typedAccessor) {
 		this.fieldType = fieldType;
-		this.accessor = accessor;
-		this.fieldValueAccessor = fieldValueAccessor;
 		this.isIdField = false;
+		this.fieldSerde = stringFieldSerde(typedAccessor);
 	}
 }
