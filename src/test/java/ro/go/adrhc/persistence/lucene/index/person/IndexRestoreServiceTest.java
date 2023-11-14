@@ -4,33 +4,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generatePerson;
+import static ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSourceFactory.createCachedDataSource;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
 	@Test
 	void restoreTest() throws IOException {
-		createAdderService().addOne(generatePerson(4));
+		indexRepository.addOne(generatePerson(4));
 
-		TypedIndexRemoveService<Long> indexRemoveService = createIndexRemoveService();
-		indexRemoveService.removeById(3L);
+		indexRepository.removeById(3L);
 
-		TypedSearchByIdService<Long, Person> searchByIdService = createSearchByIdService();
-		assertThat(searchByIdService.findById(3L)).isEmpty();
-		assertThat(searchByIdService.findById(4L)).isPresent();
+		assertThat(indexRepository.findById(3L)).isEmpty();
+		assertThat(indexRepository.findById(4L)).isPresent();
 
-		TypedIndexRestoreService<Long, Person> restoreService = createIndexRestoreService();
-		restoreService.restore(createPeopleDataSource());
+		indexRepository.restore(createCachedDataSource(PEOPLE));
 
-		assertThat(searchByIdService.findById(3L)).isPresent();
-		assertThat(searchByIdService.findById(4L)).isEmpty();
+		assertThat(indexRepository.findById(3L)).isPresent();
+		assertThat(indexRepository.findById(4L)).isEmpty();
 	}
 }

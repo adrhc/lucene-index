@@ -25,7 +25,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		tmpDir = Path.of("C:/Users/adpetre/Temp/test-index/people");
-		initPeopleIndexFactories();
+		initObjects();
 //		createCreateService().createOrReplace(generatePeopleStream(0, 1_000_000));
 //		createUpdateService(TMP).addAll(generatePeopleStream(5000, 10_000_001));
 //		createUpdateService(TMP).addAll(generatePeopleStream(2_500_001, 10_000_001));
@@ -34,13 +34,15 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@RepeatedTest(2)
 	void keywordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
+		int count = indexRepository
+				.count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\ncount time: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
+		List<Person> people = indexRepository
+				.findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -49,13 +51,15 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@RepeatedTest(2)
 	void wordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
+		int count = indexRepository
+				.count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
+		List<Person> people = indexRepository
+				.findAllMatches(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -64,13 +68,15 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@RepeatedTest(2)
 	void phraseTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
+		int count = indexRepository
+				.count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
+		List<Person> people = indexRepository
+				.findAllMatches(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -79,13 +85,13 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	@RepeatedTest(2)
 	void intTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = count(ID_QUERIES.longEquals(1111));
+		int count = indexRepository.count(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(1);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = findAllMatches(ID_QUERIES.longEquals(1111));
+		List<Person> people = indexRepository.findAllMatches(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());

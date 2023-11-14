@@ -10,7 +10,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
-import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexCreateServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
@@ -26,7 +26,7 @@ import java.util.EnumSet;
 @RequiredArgsConstructor
 public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
-		TypedIndexCreateServiceParams<T>, TypedSearchByIdServiceParams<T>, TypedIndexUpdaterParams<T> {
+		TypedIndexInitServiceParams<T>, TypedSearchByIdServiceParams<T>, TypedIndexUpdaterParams<T> {
 	public static final int NUM_HITS = 10;
 	private final Class<T> type;
 	private final Class<E> tFieldEnumClass;

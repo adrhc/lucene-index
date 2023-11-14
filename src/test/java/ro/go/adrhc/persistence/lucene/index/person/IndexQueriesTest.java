@@ -23,7 +23,8 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 	@Test
 	void parse() throws IOException, QueryNodeException {
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
+		List<Person> result = indexRepository
+				.findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
 	}
@@ -31,7 +32,8 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 	@Test
 	void tokenEquals() throws IOException {
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = findAllMatches(ALIAS_PHRASE_QUERIES.tokenEquals("phraseaaiisstt123"));
+		List<Person> result = indexRepository
+				.findAllMatches(ALIAS_PHRASE_QUERIES.tokenEquals("phraseaaiisstt123"));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
@@ -43,7 +45,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		String normalized = ANALYZER.normalize(null, aliasWord).utf8ToString();
 		log.info("\naliasWord is:\t\t{}\nnormalized is:\t{}", aliasWord, normalized);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = findAllMatches(ALIAS_WORD_QUERIES.tokenEquals(normalized));
+		List<Person> result = indexRepository.findAllMatches(ALIAS_WORD_QUERIES.tokenEquals(normalized));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
@@ -54,7 +56,8 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		String aliasKeyword = PERSON3.aliasKeyword();
 		log.info("\naliasKeyword is: {}", aliasKeyword);
 		// KeywordField shouldn't be normalized!
-		List<Person> result = findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
+		List<Person> result = indexRepository
+				.findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
@@ -67,7 +70,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		prefix = prefix.substring(0, prefix.length() - 1);
 		log.info("\ntoken is:\t{}\nprefix is:\t{}", token, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = findAllMatches(NAME_QUERIES.startsWith("person2"));
+		List<Person> result = indexRepository.findAllMatches(NAME_QUERIES.startsWith("person2"));
 
 		assertThat(result).hasSize(1);
 	}
@@ -79,7 +82,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		prefix = prefix.substring(0, prefix.length() - 1);
 		log.info("\nname is:\t\t{}\nprefix is:\t{}", name, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = findAllMatches(NAME_WORD_QUERIES.startsWith(prefix));
+		List<Person> result = indexRepository.findAllMatches(NAME_WORD_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}
@@ -90,7 +93,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		String prefix = cnp.substring(0, cnp.length() - 1);
 		log.info("\ncnp is:\t\t{}\nprefix is:\t{}", cnp, prefix);
 		// KeywordField shouldn't be normalized!
-		List<Person> result = findAllMatches(CNP_QUERIES.startsWith(prefix));
+		List<Person> result = indexRepository.findAllMatches(CNP_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}

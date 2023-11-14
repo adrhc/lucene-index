@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchByIdService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,31 +20,28 @@ import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.generat
 public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
 	@Test
 	void crudTest() throws IOException {
-		int count = count(ID_QUERIES.startsWith(Path.of("/albums/album").toString()));
+		int count = indexRepository.count(ID_QUERIES
+				.startsWith(Path.of("/albums/album").toString()));
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(ALBUMS.size());
 
-		createAdderService().addOne(generateAlbum(4));
+		indexRepository.addOne(generateAlbum(4));
+		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
 
-		TypedSearchByIdService<Path, Album> searchByIdService = createSearchByIdService();
-		assertThat(searchByIdService.findById(Path.of("/albums/album4"))).isPresent();
-
-		TypedIndexRemoveService<Path> indexRemoveService = createRemoveService();
-		indexRemoveService.removeById(Path.of("/albums/album4"));
-		assertThat(searchByIdService.findById(Path.of("/albums/album4"))).isEmpty();
+		indexRepository.removeById(Path.of("/albums/album4"));
+		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isEmpty();
 	}
 
 	@Test
 	void updateTest() throws IOException {
-		TypedSearchByIdService<Path, Album> searchByIdService = createSearchByIdService();
-		Optional<Album> optionalAlbum = searchByIdService.findById(Path.of("/albums/album1"));
+		Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album1"));
 		assertThat(optionalAlbum).isPresent();
 
 		String newStoredOnlyField = Instant.now().toString();
 		Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
-		createUpdateService().update(album);
+		indexRepository.update(album);
 
-		optionalAlbum = searchByIdService.findById(album.getId());
+		optionalAlbum = indexRepository.findById(album.getId());
 		assertThat(optionalAlbum).isPresent();
 		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
 	}

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReader;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexAdderTemplate;
-import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemover;
 
 import java.io.IOException;
 import java.util.Set;
@@ -17,8 +17,8 @@ import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
 @Slf4j
 public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, T> {
 	private final TypedIdIndexReaderTemplate<ID> typedIdIndexReaderTemplate;
+	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
-	private final TypedIndexRemoverTemplate<ID> indexRemoverTemplate;
 
 	/**
 	 * constructor parameters union
@@ -27,8 +27,8 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	create(TypedIndexRestoreServiceParams<T> params) {
 		return new TypedIndexRestoreService<>(
 				TypedIdIndexReaderTemplate.create(params),
-				TypedIndexAdderTemplate.create(params),
-				TypedIndexRemoverTemplate.create(params));
+				TypedIndexRemover.create(params),
+				TypedIndexAdderTemplate.create(params));
 	}
 
 	@Override
@@ -52,10 +52,12 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 			IndexDataSource<ID, T> dataSource,
 			IndexChanges<ID> changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
-		indexRemoverTemplate.useRemover(remover -> remover.removeMany(changes.obsoleteIndexedIds()));
+		// no IndexWriter flush
+		indexRemover.removeMany(changes.obsoleteIndexedIds());
 		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
 		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
 		log.debug("\nadding documents to the index");
+		// with IndexWriter flush
 		typedIndexAdderTemplate.useAdder(writer -> writer.addMany(items));
 		log.debug("\nIndex updated!");
 	}
