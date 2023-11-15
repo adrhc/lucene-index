@@ -22,13 +22,12 @@ import java.util.Collection;
 
 @Getter
 @RequiredArgsConstructor
-public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
+public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
 		TypedIndexInitServiceParams<T>, TypedIndexRetrieveServiceParams<T>, TypedIndexUpdaterParams<T> {
 	private final Class<T> type;
-	private final Class<E> tFieldEnumClass;
 	private final Collection<? extends TypedField<T>> typedFields;
-	private final E idField;
+	private final TypedField<?> idField;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 	private final IndexReaderPool indexReaderPool;

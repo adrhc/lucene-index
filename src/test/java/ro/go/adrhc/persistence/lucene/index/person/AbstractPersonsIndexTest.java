@@ -19,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE
 public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexFactoriesParams<Long, Person, PersonFieldType> peopleIndexSpec;
+	protected TypedIndexFactoriesParams<Long, Person> peopleIndexSpec;
 	protected IndexRepository<Long, Person> indexRepository;
 
 	@BeforeAll

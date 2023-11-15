@@ -25,7 +25,7 @@ public class TestIndexContext {
 			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexFactoriesParams<ID, T, E> createTypedIndexSpec(Class<T> tClass,
+	TypedIndexFactoriesParams<ID, T> createTypedIndexSpec(Class<T> tClass,
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		return TypedIndexFactoriesParamsFactory.create(tClass,
 				typedFieldEnumClass, createTokenizerProperties(), indexPath);

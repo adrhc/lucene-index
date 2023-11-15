@@ -38,7 +38,7 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	private final TypedIndexRestoreService<ID, T> restoreService;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> IndexRepository<ID, T>
-	create(TypedIndexFactoriesParams<ID, T, E> params) {
+	create(TypedIndexFactoriesParams<ID, T> params) {
 		TypedIndexFactories<ID, T, E> factories = new TypedIndexFactories<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
