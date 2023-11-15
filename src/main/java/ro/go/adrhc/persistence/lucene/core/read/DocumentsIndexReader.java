@@ -56,16 +56,6 @@ public class DocumentsIndexReader implements Closeable {
 				.flatMap(Optional::stream);
 	}
 
-	public Optional<Document> findFirst(Query query) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
-		if (topDocsStoredFields.topDocs().totalHits.value > 0) {
-			return Optional.of(topDocsStoredFields.storedFields()
-					.document(topDocsStoredFields.topDocs().scoreDocs[0].doc));
-		} else {
-			return Optional.empty();
-		}
-	}
-
 	public int count(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);

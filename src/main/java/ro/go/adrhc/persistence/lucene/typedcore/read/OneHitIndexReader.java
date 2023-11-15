@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedcore.read;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
 
 import java.io.Closeable;
@@ -21,7 +22,10 @@ public class OneHitIndexReader<T> implements Closeable {
 	}
 
 	public Optional<T> findFirst(Query query) throws IOException {
-		return indexReader.findFirst(query).flatMap(docToTypedConverter::convert);
+		return indexReader.findMany(query)
+				.map(ScoreAndDocument::document)
+				.findAny() // DocumentsIndexReader is created with numHits = 1
+				.flatMap(docToTypedConverter::convert);
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class DocumentsCountService implements IndexCountService {
-	private final DocumentsIndexReaderTemplate documentsIndexReaderTemplate;
+	private final DocumentsIndexReaderTemplate docsReaderTemplate;
 
 	/**
 	 * Query base DocumentsCountService
@@ -28,11 +28,11 @@ public class DocumentsCountService implements IndexCountService {
 
 	@Override
 	public int count() throws IOException {
-		return documentsIndexReaderTemplate.useReader(DocumentsIndexReader::count);
+		return docsReaderTemplate.useReader(DocumentsIndexReader::count);
 	}
 
 	@Override
 	public int count(Query query) throws IOException {
-		return documentsIndexReaderTemplate.useReader(indexReader -> indexReader.count(query));
+		return docsReaderTemplate.useReader(indexReader -> indexReader.count(query));
 	}
 }
