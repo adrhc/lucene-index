@@ -6,5 +6,5 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 public interface TypedIndexReaderParams<T> extends DocumentsIndexReaderParams {
 	Class<T> getType();
 
-	TypedField<?> getIdField();
+	TypedField<T> getIdField();
 }

@@ -41,10 +41,6 @@ public class DocumentsIndexReader implements Closeable {
 		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
-	public Stream<String> getFieldValueOfAll(String fieldName) {
-		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.get(fieldName));
-	}
-
 	public Stream<Document> getFieldsOfAll(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);

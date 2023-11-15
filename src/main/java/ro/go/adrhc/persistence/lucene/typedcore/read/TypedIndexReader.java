@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class TypedIndexReader<ID, T> implements Closeable {
-	private final TypedField<?> idField;
+	private final TypedField<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final DocumentsIndexReader indexReader;
 
@@ -23,6 +23,12 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
 		DocumentsIndexReader indexReader = DocumentsIndexReader.create(params);
 		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
+	}
+
+	public Stream<ID> getAllValues(TypedField<T> field) {
+		return indexReader.getFieldOfAll(field.name())
+				.map(field::indexableFieldToTypedValue)
+				.map(ObjectUtils::cast);
 	}
 
 	public Stream<ID> getAllIds() {
