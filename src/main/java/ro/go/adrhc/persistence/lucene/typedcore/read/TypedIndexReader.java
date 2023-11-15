@@ -47,13 +47,13 @@ public class TypedIndexReader<ID, T> implements Closeable {
 				.map(ObjectUtils::cast);
 	}
 
-	public Stream<ScoreAndTyped<T>> findMany(Query query) throws IOException {
+	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
 		return indexReader.findMany(query).map(this::toScoreAndType).flatMap(Optional::stream);
 	}
 
-	protected Optional<ScoreAndTyped<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {
+	protected Optional<ScoreAndValue<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {
 		return docToTypedConverter.convert(scoreAndDocument.document())
-				.map(t -> new ScoreAndTyped<>(scoreAndDocument.score(), t));
+				.map(t -> new ScoreAndValue<>(scoreAndDocument.score(), t));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
 package ro.go.adrhc.persistence.lucene.typedcore.read;
 
-public record ScoreAndTyped<T>(float score, T tValue) {
+public record ScoreAndValue<T>(float score, T value) {
 }

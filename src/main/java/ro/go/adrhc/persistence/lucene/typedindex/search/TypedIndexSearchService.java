@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
+import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReader;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
@@ -38,7 +38,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	public List<T> findAllMatches(Query query) throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindAllMatches(query, reader)
-						.map(ScoreAndTyped::tValue).toList());
+						.map(ScoreAndValue::value).toList());
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 		return bestMatchingStrategy.bestMatch(allMatches);
 	}
 
-	protected Stream<ScoreAndTyped<T>> doFindAllMatches(
+	protected Stream<ScoreAndValue<T>> doFindAllMatches(
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return reader.findMany(query).filter(searchResultFilter::filter);
