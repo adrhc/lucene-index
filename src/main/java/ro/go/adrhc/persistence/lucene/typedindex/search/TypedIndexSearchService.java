@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
-	private final SearchResultFilter<ScoreAndTyped<T>> searchResultFilter;
+	private final SearchResultFilter<T> searchResultFilter;
 
 	public static <T> TypedIndexSearchService<T>
 	create(TypedIndexSearchServiceParams<T> params) {

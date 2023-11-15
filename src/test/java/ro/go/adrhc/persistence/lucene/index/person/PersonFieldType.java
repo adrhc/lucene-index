@@ -7,6 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 
 import java.util.function.Function;
 
@@ -17,15 +18,15 @@ import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.*;
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedField<Person> {
-	id(LONG, true, longField(Person::id)),
+	id(LONG, longField(Identifiable::id), true),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
 	aliasKeyWord(KEYWORD, Person::aliasKeyword),
 	aliasWord(WORD, Person::aliasWord),
 	aliasPhrase(PHRASE, Person::aliasPhrase),
-	intField(INT, false, intField(Person::intField)),
-	longField(LONG, false, longField(Person::longField)),
+	intField(INT, intField(Person::intField), false),
+	longField(LONG, longField(Person::longField), false),
 	storedOnlyField(STORED, Person::storedOnlyField);
 
 	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
@@ -37,9 +38,8 @@ public enum PersonFieldType implements TypedField<Person> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 
 	private final FieldType fieldType;
-	private final boolean isIdField;
 	private final TypedFieldSerde<Person> fieldSerde;
-
+	private final boolean isIdField;
 
 	PersonFieldType(FieldType fieldType, Function<Person, String> typedAccessor) {
 		this.fieldType = fieldType;

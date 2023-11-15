@@ -7,7 +7,6 @@ import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
@@ -35,7 +34,7 @@ public class TypedIndexFactoriesParamsFactory {
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactoriesParams<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			TokenizerProperties tokenizerProperties,
-			SearchResultFilter<ScoreAndTyped<T>> searchResultFilter,
+			SearchResultFilter<T> searchResultFilter,
 			Path indexPath) throws IOException {
 		return create(tClass, tFieldEnumClass, tokenizerProperties,
 				searchResultFilter, NUM_HITS, indexPath);
@@ -47,7 +46,7 @@ public class TypedIndexFactoriesParamsFactory {
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactoriesParams<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			TokenizerProperties tokenizerProperties,
-			SearchResultFilter<ScoreAndTyped<T>> searchResultFilter,
+			SearchResultFilter<T> searchResultFilter,
 			int numHits, Path indexPath) throws IOException {
 		return create(tClass, tFieldEnumClass,
 				defaultAnalyzer(tokenizerProperties),
@@ -56,7 +55,7 @@ public class TypedIndexFactoriesParamsFactory {
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexFactoriesParams<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			Analyzer analyzer, SearchResultFilter<ScoreAndTyped<T>> searchResultFilter,
+			Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
 			int numHits, Path indexPath) throws IOException {
 		IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);

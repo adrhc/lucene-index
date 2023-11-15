@@ -6,7 +6,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitServiceParams;
@@ -32,7 +31,7 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 	private final IndexWriter indexWriter;
 	private final IndexReaderPool indexReaderPool;
 	private final int numHits;
-	private final SearchResultFilter<ScoreAndTyped<T>> searchResultFilter;
+	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
 
 	@Override
