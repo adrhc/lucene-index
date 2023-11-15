@@ -50,8 +50,10 @@ public class IndexReaderPool implements Closeable {
 	}
 
 	@Override
-	public void close() throws IOException {
-		assert directoryReader.getRefCount() == 1 : "directoryReader refCount should be 1!";
+	public synchronized void close() throws IOException {
+		if (directoryReader.getRefCount() != 1) {
+			log.warn("\ndirectoryReader refCount should be 1 but is {}!", directoryReader.getRefCount());
+		}
 		try {
 			directoryReader.close();
 		} catch (AlreadyClosedException ac) {
