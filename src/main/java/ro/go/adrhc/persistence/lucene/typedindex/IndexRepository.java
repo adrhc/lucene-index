@@ -8,8 +8,8 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
@@ -39,7 +39,7 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	private final IndexWriter indexWriter;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> IndexRepository<ID, T>
-	create(TypedIndexFactoriesParams<ID, T> params) {
+	create(TypedIndexContext<ID, T> params) {
 		TypedIndexFactories<ID, T, E> factories = new TypedIndexFactories<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();

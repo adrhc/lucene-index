@@ -23,7 +23,7 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
+public class TypedIndexContext<ID, T extends Identifiable<ID>>
 		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
 		TypedIndexInitServiceParams<T>, TypedIndexRetrieveServiceParams<T>, TypedIndexUpdaterParams<T> {
 	private final Class<T> type;

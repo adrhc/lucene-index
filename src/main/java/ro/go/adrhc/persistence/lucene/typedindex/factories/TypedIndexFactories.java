@@ -14,7 +14,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> {
-	private final TypedIndexFactoriesParams<ID, T> factoriesParams;
+	private final TypedIndexContext<ID, T> factoriesParams;
 
 	public TypedIndexSearchService<T> createSearchService() {
 		return TypedIndexSearchService.create(factoriesParams);
