@@ -25,7 +25,10 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
 	}
 
-	public Stream<ID> getAllValues(TypedField<T> field) {
+	/**
+	 * The caller must use the proper type!
+	 */
+	public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
 		return indexReader.getFieldOfAll(field.name())
 				.map(field::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
