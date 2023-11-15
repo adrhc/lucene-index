@@ -11,18 +11,18 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentsCountService implements IndexCountService {
+public class DocsCountService implements IndexCountService {
 	private final DocsIndexReaderTemplate docsReaderTemplate;
 
 	/**
-	 * Query base DocumentsCountService
+	 * Query base DocsCountService
 	 * <p>
 	 * constructor parameters union
 	 * <p>
 	 * SearchedToQueryConverter = Optional::of
 	 */
-	public static DocumentsCountService create(IndexReaderPool indexReaderPool) {
-		return new DocumentsCountService(
+	public static DocsCountService create(IndexReaderPool indexReaderPool) {
+		return new DocsCountService(
 				DocsIndexReaderTemplate.create(Integer.MAX_VALUE, indexReaderPool));
 	}
 

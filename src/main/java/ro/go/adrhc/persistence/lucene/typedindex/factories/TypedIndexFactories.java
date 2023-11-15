@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.factories;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
+import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
@@ -24,8 +24,8 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<
 		return TypedIndexRetrieveService.create(factoriesParams);
 	}
 
-	public DocumentsCountService createCountService() {
-		return DocumentsCountService.create(factoriesParams.getIndexReaderPool());
+	public DocsCountService createCountService() {
+		return DocsCountService.create(factoriesParams.getIndexReaderPool());
 	}
 
 	public TypedIndexRestoreService<ID, T> createRestoreService() {

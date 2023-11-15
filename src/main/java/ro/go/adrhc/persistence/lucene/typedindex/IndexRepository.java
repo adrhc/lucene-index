@@ -1,8 +1,9 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
+import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
@@ -29,26 +30,28 @@ import java.util.stream.Stream;
 public class IndexRepository<ID, T extends Identifiable<?>> {
 	private final TypedIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
-	private final DocumentsCountService countService;
+	private final DocsCountService countService;
 	private final TypedIndexAdderService<T> adderService;
 	private final TypedIndexUpdateService<T> updateService;
 	private final TypedIndexRemoveService<ID> removeService;
 	private final TypedIndexInitService<ID, T> initService;
 	private final TypedIndexRestoreService<ID, T> restoreService;
+	private final IndexWriter indexWriter;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> IndexRepository<ID, T>
 	create(TypedIndexFactoriesParams<ID, T> params) {
 		TypedIndexFactories<ID, T, E> factories = new TypedIndexFactories<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
-		DocumentsCountService countService = factories.createCountService();
+		DocsCountService countService = factories.createCountService();
 		TypedIndexAdderService<T> adderService = factories.createAdderService();
 		TypedIndexUpdateService<T> updateService = factories.createUpdateService();
 		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
 		TypedIndexInitService<ID, T> initService = factories.createInitService();
 		TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();
 		return new IndexRepository<>(searchService, retrieveService, countService,
-				adderService, updateService, removeService, initService, restoreService);
+				adderService, updateService, removeService, initService, restoreService,
+				params.getIndexWriter());
 	}
 
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -106,37 +109,46 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 
 	public void addOne(T t) throws IOException {
 		adderService.addOne(t);
+		indexWriter.commit();
 	}
 
 	public void addMany(Collection<T> tCollection) throws IOException {
 		adderService.addMany(tCollection);
+		indexWriter.commit();
 	}
 
 	public void addMany(Stream<T> tStream) throws IOException {
 		adderService.addMany(tStream);
+		indexWriter.commit();
 	}
 
 	public void update(T t) throws IOException {
 		updateService.update(t);
+		indexWriter.commit();
 	}
 
 	public void removeByIds(Collection<ID> ids) throws IOException {
 		removeService.removeByIds(ids);
+		indexWriter.commit();
 	}
 
 	public void removeById(ID id) throws IOException {
 		removeService.removeById(id);
+		indexWriter.commit();
 	}
 
 	public void initialize(Iterable<T> tIterable) throws IOException {
 		initService.initialize(tIterable);
+		indexWriter.commit();
 	}
 
 	public void initialize(Stream<T> tStream) throws IOException {
 		initService.initialize(tStream);
+		indexWriter.commit();
 	}
 
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		restoreService.restore(dataSource);
+		indexWriter.commit();
 	}
 }
