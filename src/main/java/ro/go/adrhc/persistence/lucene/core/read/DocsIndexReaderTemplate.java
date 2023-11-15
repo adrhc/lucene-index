@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class DocumentsIndexReaderTemplate {
-	private final SneakySupplier<DocumentsIndexReader, IOException> indexReaderFactory;
+public class DocsIndexReaderTemplate {
+	private final SneakySupplier<DocsIndexReader, IOException> indexReaderFactory;
 
-	public static DocumentsIndexReaderTemplate create(DocumentsIndexReaderParams params) {
-		return new DocumentsIndexReaderTemplate(() -> DocumentsIndexReader.create(params));
+	public static DocsIndexReaderTemplate create(DocsIndexReaderParams params) {
+		return new DocsIndexReaderTemplate(() -> DocsIndexReader.create(params));
 	}
 
-	public static DocumentsIndexReaderTemplate create(int numHits, IndexReaderPool indexReaderPool) {
-		return new DocumentsIndexReaderTemplate(() -> DocumentsIndexReader.create(numHits, indexReaderPool));
+	public static DocsIndexReaderTemplate create(int numHits, IndexReaderPool indexReaderPool) {
+		return new DocsIndexReaderTemplate(() -> DocsIndexReader.create(numHits, indexReaderPool));
 	}
 
 	/*public <R, E extends Exception> R transformFields(String fieldName,
@@ -46,12 +46,12 @@ public class DocumentsIndexReaderTemplate {
 
 	/**
 	 * Make sure that songsIndexReaderFn does not return a Stream! at the moment
-	 * the Stream will actually run the DocumentsIndexReader shall already be closed.
+	 * the Stream will actually run the DocsIndexReader shall already be closed.
 	 */
 	public <R, E extends Exception> R useReader(
-			SneakyFunction<DocumentsIndexReader, R, E> indexReaderFn)
+			SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
 			throws IOException, E {
-		try (DocumentsIndexReader indexReader = indexReaderFactory.get()) {
+		try (DocsIndexReader indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

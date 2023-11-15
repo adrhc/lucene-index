@@ -19,18 +19,18 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DocumentsIndexReader implements Closeable {
+public class DocsIndexReader implements Closeable {
 	private final IndexReaderPool indexReaderPool;
 	private final IndexReader indexReader;
 	private final int numHits;
 
-	public static DocumentsIndexReader create(DocumentsIndexReaderParams params) throws IOException {
-		return new DocumentsIndexReader(params.getIndexReaderPool(),
+	public static DocsIndexReader create(DocsIndexReaderParams params) throws IOException {
+		return new DocsIndexReader(params.getIndexReaderPool(),
 				params.getIndexReaderPool().get(), params.getNumHits());
 	}
 
-	public static DocumentsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
-		return new DocumentsIndexReader(indexReaderPool, indexReaderPool.get(), numHits);
+	public static DocsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
+		return new DocsIndexReader(indexReaderPool, indexReaderPool.get(), numHits);
 	}
 
 	public Stream<Document> getAll() {

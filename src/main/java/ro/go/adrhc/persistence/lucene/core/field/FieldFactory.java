@@ -5,6 +5,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.util.BytesRef;
+import ro.go.adrhc.util.Assert;
+
+import static ro.go.adrhc.persistence.lucene.core.field.FieldType.INT;
+import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 
 @RequiredArgsConstructor
 public class FieldFactory {
@@ -85,6 +89,10 @@ public class FieldFactory {
 	}
 
 	public Field create(boolean stored, FieldType fieldType, String fieldName, Object value) {
+		Assert.isTrue(fieldType != STORED || stored,
+				"STORED fields must demand to be stored!");
+		Assert.isTrue(fieldType != INT || !stored,
+				"INT fields must not demand to be stored!");
 		return switch (fieldType) {
 			case KEYWORD -> keywordField(stored, fieldName, value);
 			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);

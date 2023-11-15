@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.index;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.read.DocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.DocsIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class DocumentsCountService implements IndexCountService {
-	private final DocumentsIndexReaderTemplate docsReaderTemplate;
+	private final DocsIndexReaderTemplate docsReaderTemplate;
 
 	/**
 	 * Query base DocumentsCountService
@@ -23,12 +23,12 @@ public class DocumentsCountService implements IndexCountService {
 	 */
 	public static DocumentsCountService create(IndexReaderPool indexReaderPool) {
 		return new DocumentsCountService(
-				DocumentsIndexReaderTemplate.create(Integer.MAX_VALUE, indexReaderPool));
+				DocsIndexReaderTemplate.create(Integer.MAX_VALUE, indexReaderPool));
 	}
 
 	@Override
 	public int count() throws IOException {
-		return docsReaderTemplate.useReader(DocumentsIndexReader::count);
+		return docsReaderTemplate.useReader(DocsIndexReader::count);
 	}
 
 	@Override

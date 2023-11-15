@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedcore.read;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.DocsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
@@ -20,11 +20,11 @@ import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 public class TypedIndexReader<ID, T> implements Closeable {
 	private final TypedField<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final DocumentsIndexReader indexReader;
+	private final DocsIndexReader indexReader;
 
 	public static <ID, T> TypedIndexReader<ID, T> create(TypedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
-		DocumentsIndexReader indexReader = DocumentsIndexReader.create(params);
+		DocsIndexReader indexReader = DocsIndexReader.create(params);
 		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
 	}
 
