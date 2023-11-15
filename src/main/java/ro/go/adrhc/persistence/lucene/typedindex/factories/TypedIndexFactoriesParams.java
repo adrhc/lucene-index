@@ -48,9 +48,9 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 			exc = e;
 		}
 		try {
-			log.debug("\nclosing index ...");
+			log.info("\nclosing index ...");
 			indexWriter.close();
-			log.debug("\n{} closed", indexPath);
+			log.info("\n{} closed", indexPath);
 		} catch (IOException e) {
 			exc = e;
 		}
