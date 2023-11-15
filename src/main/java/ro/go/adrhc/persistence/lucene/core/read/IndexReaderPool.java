@@ -17,13 +17,20 @@ public class IndexReaderPool implements Closeable {
 	private final IndexWriter indexWriter;
 	private DirectoryReader directoryReader;
 
-	public IndexReader get() throws IOException {
-		getReader();
+	public synchronized IndexReader getReader() throws IOException {
+		updateReader();
 		directoryReader.incRef();
 		return directoryReader;
 	}
 
-	protected void getReader() throws IOException {
+	public synchronized void returnReader(IndexReader indexReader) throws IOException {
+		indexReader.decRef();
+		if (directoryReader != indexReader) {
+			closeIfUnused(indexReader);
+		}
+	}
+
+	protected void updateReader() throws IOException {
 		if (directoryReader == null) {
 			directoryReader = DirectoryReader.open(indexWriter);
 		} else {
@@ -33,13 +40,6 @@ public class IndexReaderPool implements Closeable {
 			}
 			directoryReader = DirectoryReader.openIfChanged(directoryReader);
 			closeIfUnused(previousIndexReader);
-		}
-	}
-
-	public void returnReader(IndexReader indexReader) throws IOException {
-		indexReader.decRef();
-		if (directoryReader != indexReader) {
-			closeIfUnused(indexReader);
 		}
 	}
 

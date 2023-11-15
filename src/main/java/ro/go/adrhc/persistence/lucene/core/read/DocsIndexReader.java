@@ -26,11 +26,11 @@ public class DocsIndexReader implements Closeable {
 
 	public static DocsIndexReader create(DocsIndexReaderParams params) throws IOException {
 		return new DocsIndexReader(params.getIndexReaderPool(),
-				params.getIndexReaderPool().get(), params.getNumHits());
+				params.getIndexReaderPool().getReader(), params.getNumHits());
 	}
 
 	public static DocsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
-		return new DocsIndexReader(indexReaderPool, indexReaderPool.get(), numHits);
+		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader(), numHits);
 	}
 
 	public Stream<Document> getAll() {
