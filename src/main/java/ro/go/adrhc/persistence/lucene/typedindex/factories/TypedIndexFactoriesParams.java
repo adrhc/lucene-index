@@ -41,16 +41,16 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 		log.debug("closing {} ...", indexPath);
 		IOException exc = null;
 		try {
-			log.debug("closing IndexReaderPool ...");
+			log.debug("\nclosing IndexReaderPool ...");
 			indexReaderPool.close();
-			log.debug("IndexReaderPool closed");
+			log.debug("\nIndexReaderPool closed");
 		} catch (IOException e) {
 			exc = e;
 		}
 		try {
-			log.debug("closing index ...");
+			log.debug("\nclosing index ...");
 			indexWriter.close();
-			log.debug("{} closed", indexPath);
+			log.debug("\n{} closed", indexPath);
 		} catch (IOException e) {
 			exc = e;
 		}
