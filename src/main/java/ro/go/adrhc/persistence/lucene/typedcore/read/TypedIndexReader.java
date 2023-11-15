@@ -28,6 +28,14 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
 	}
 
+	public Stream<T> getAll() {
+		return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
+	}
+
+	public Stream<ID> getAllIds() {
+		return getFieldOfAll(idField);
+	}
+
 	/**
 	 * The caller must use the proper type!
 	 */
@@ -37,16 +45,6 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		return indexReader.getFieldOfAll(field.name())
 				.map(field::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
-	}
-
-	public Stream<ID> getAllIds() {
-		return indexReader.getFieldOfAll(idField.name())
-				.map(idField::indexableFieldToTypedValue)
-				.map(ObjectUtils::cast);
-	}
-
-	public Stream<T> getAll() {
-		return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
 	public Stream<ScoreAndTyped<T>> findMany(Query query) throws IOException {
