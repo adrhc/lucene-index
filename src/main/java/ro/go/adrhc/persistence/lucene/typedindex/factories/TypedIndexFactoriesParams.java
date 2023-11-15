@@ -30,18 +30,11 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final TypedField<T> idField;
 	private final Analyzer analyzer;
-
 	private final IndexWriter indexWriter;
 	private final IndexReaderPool indexReaderPool;
 	private final int numHits;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
-
-	public void commit() throws IOException {
-		log.debug("\ncommitting index changes ...");
-		indexWriter.commit();
-		log.debug("\n{} changes committed", indexPath);
-	}
 
 	@Override
 	public void close() throws IOException {
