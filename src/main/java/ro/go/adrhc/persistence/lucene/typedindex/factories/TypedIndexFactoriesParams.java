@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.factories;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
@@ -21,6 +22,7 @@ import java.util.Collection;
 
 @Getter
 @RequiredArgsConstructor
+@Slf4j
 public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
 		TypedIndexInitServiceParams<T>, TypedIndexRetrieveServiceParams<T>, TypedIndexUpdaterParams<T> {
@@ -36,16 +38,21 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 
 	@Override
 	public void close() throws IOException {
+		log.debug("closing {} ...", indexPath);
 		IOException exc = null;
 		try {
-			indexWriter.close();
+			log.debug("closing IndexReaderPool ...");
+			indexReaderPool.close();
+			log.debug("IndexReaderPool closed");
 		} catch (IOException e) {
 			exc = e;
 		}
 		try {
-			indexReaderPool.close();
+			log.debug("closing index ...");
+			indexWriter.close();
+			log.debug("{} closed", indexPath);
 		} catch (IOException e) {
-			exc = exc == null ? e : exc;
+			exc = e;
 		}
 		if (exc != null) {
 			throw exc;
