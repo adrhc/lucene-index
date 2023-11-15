@@ -8,7 +8,7 @@ public record TypedSearchResult<T>(Query query, ScoreAndValue<T> scoreAndValue) 
 		return scoreAndValue.score();
 	}
 
-	public T tValue() {
+	public T value() {
 		return scoreAndValue.value();
 	}
 }

@@ -50,7 +50,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
-				.map(TypedSearchResult::tValue);
+				.map(TypedSearchResult::value);
 	}
 
 	@Override
