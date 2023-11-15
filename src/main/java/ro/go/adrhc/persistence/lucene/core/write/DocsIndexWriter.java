@@ -48,6 +48,10 @@ public class DocsIndexWriter implements Closeable {
 		indexWriter.deleteAll();
 	}
 
+	public void commit() throws IOException {
+		indexWriter.commit();
+	}
+
 	@Override
 	public void close() throws IOException {
 		indexWriter.flush();
