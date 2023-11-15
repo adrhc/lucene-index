@@ -80,9 +80,9 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	protected Optional<CriterionScoreAndTyped<Query, T>> doFindBestMatch(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
-		Stream<ScoreAndTyped<T>> allMatches = doFindAllMatches(query, reader);
-		return bestMatchingStrategy.bestMatch(allMatches)
+		Stream<CriterionScoreAndTyped<Query, T>> allMatches = doFindAllMatches(query, reader)
 				.map(sat -> new CriterionScoreAndTyped<>(query, sat));
+		return bestMatchingStrategy.bestMatch(allMatches);
 	}
 
 	protected Stream<ScoreAndTyped<T>> doFindAllMatches(
