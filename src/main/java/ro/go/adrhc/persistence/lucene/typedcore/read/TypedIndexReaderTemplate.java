@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class TypedIndexReaderTemplate<T> {
-	private final SneakySupplier<TypedIndexReader<T>, IOException> indexReaderFactory;
+public class TypedIndexReaderTemplate<ID, T> {
+	private final SneakySupplier<TypedIndexReader<ID, T>, IOException> indexReaderFactory;
 
-	public static <T> TypedIndexReaderTemplate<T> create(TypedIndexReaderParams<T> params) {
+	public static <ID, T> TypedIndexReaderTemplate<ID, T> create(TypedIndexReaderParams<T> params) {
 		return new TypedIndexReaderTemplate<>(() -> TypedIndexReader.create(params));
 	}
 
 	public <R, E extends Exception> R useReader(
-			SneakyFunction<TypedIndexReader<T>, R, E> indexReaderFn)
+			SneakyFunction<TypedIndexReader<ID, T>, R, E> indexReaderFn)
 			throws IOException, E {
-		try (TypedIndexReader<T> indexReader = indexReaderFactory.get()) {
+		try (TypedIndexReader<ID, T> indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.retrieve;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
@@ -14,15 +14,15 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID, T> {
 	private final ExactQuery exactQuery;
-	private final TypedIndexReaderTemplate<T> indexReaderTemplate;
-	private final TypedIdIndexReaderTemplate<ID> typedIdIndexReaderTemplate;
+	private final TypedIndexReaderTemplate<ID, T> indexReaderTemplate;
+	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
 
 	public static <ID, T> TypedIndexRetrieveService<ID, T>
 	create(TypedIndexRetrieveServiceParams<T> params) {
 		return new TypedIndexRetrieveService<>(
 				ExactQuery.create(params.getIdField()),
 				TypedIndexReaderTemplate.create(params),
-				TypedIdIndexReaderTemplate.create(params));
+				OneHitIndexReaderTemplate.create(params));
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
 
 	@Override
 	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
-		return typedIdIndexReaderTemplate.useIdsReader(idsReader -> idsReducer.apply(idsReader.getAllIds()));
+		return indexReaderTemplate.useReader(reader -> idsReducer.apply(reader.getAllIds()));
 	}
 
 	@Override
@@ -42,12 +42,12 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
 
 	@Override
 	public List<ID> getAllIds() throws IOException {
-		return typedIdIndexReaderTemplate.useIdsReader(idsReader -> idsReader.getAllIds().toList());
+		return indexReaderTemplate.useReader(reader -> reader.getAllIds().toList());
 	}
 
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
-		return indexReaderTemplate.useReader(reader ->
+		return oneHitIndexReaderTemplate.useOneHitReader(reader ->
 				reader.findFirst(exactQuery.newExactQuery(id)));
 	}
 }

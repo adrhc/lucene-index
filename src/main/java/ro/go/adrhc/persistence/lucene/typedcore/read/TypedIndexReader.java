@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
+import ro.go.adrhc.util.ObjectUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -12,14 +14,21 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class TypedIndexReader<T> implements Closeable {
+public class TypedIndexReader<ID, T> implements Closeable {
+	private final TypedField<?> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final DocumentsIndexReader indexReader;
 
-	public static <T> TypedIndexReader<T> create(TypedIndexReaderParams<T> params) throws IOException {
+	public static <ID, T> TypedIndexReader<ID, T> create(TypedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
 		DocumentsIndexReader indexReader = DocumentsIndexReader.create(params);
-		return new TypedIndexReader<>(docToTypedConverter, indexReader);
+		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
+	}
+
+	public Stream<ID> getAllIds() {
+		return indexReader.getFieldOfAll(idField.name())
+				.map(idField::indexableFieldToTypedValue)
+				.map(ObjectUtils::cast);
 	}
 
 	public Stream<T> getAll() {
@@ -28,10 +37,6 @@ public class TypedIndexReader<T> implements Closeable {
 
 	public Stream<ScoreAndTyped<T>> findMany(Query query) throws IOException {
 		return indexReader.findMany(query).map(this::toScoreAndType).flatMap(Optional::stream);
-	}
-
-	public Optional<T> findFirst(Query query) throws IOException {
-		return indexReader.findFirst(query).flatMap(docToTypedConverter::convert);
 	}
 
 	protected Optional<ScoreAndTyped<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {

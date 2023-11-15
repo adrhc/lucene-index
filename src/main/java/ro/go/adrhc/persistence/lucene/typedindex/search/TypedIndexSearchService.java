@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class TypedIndexSearchService<T> implements IndexSearchService<T> {
-	private final TypedIndexReaderTemplate<T> indexReaderTemplate;
+	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
 	private final SearchResultFilter<ScoreAndTyped<T>> searchResultFilter;
 
 	public static <T> TypedIndexSearchService<T>
@@ -69,7 +69,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 
 	protected List<CriterionScoreAndTyped<Query, T>>
 	doFindBestMatches(BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
-			Collection<? extends Query> queries, TypedIndexReader<T> reader) throws IOException {
+			Collection<? extends Query> queries, TypedIndexReader<?, T> reader) throws IOException {
 		List<CriterionScoreAndTyped<Query, T>> result = new ArrayList<>();
 		for (Query query : queries) {
 			doFindBestMatch(bestMatchingStrategy, query, reader).ifPresent(result::add);
@@ -79,14 +79,14 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 
 	protected Optional<CriterionScoreAndTyped<Query, T>> doFindBestMatch(
 			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
-			Query query, TypedIndexReader<T> reader) throws IOException {
+			Query query, TypedIndexReader<?, T> reader) throws IOException {
 		Stream<ScoreAndTyped<T>> allMatches = doFindAllMatches(query, reader);
 		return bestMatchingStrategy.bestMatch(allMatches)
 				.map(sat -> new CriterionScoreAndTyped<>(query, sat));
 	}
 
 	protected Stream<ScoreAndTyped<T>> doFindAllMatches(
-			Query query, TypedIndexReader<T> reader) throws IOException {
+			Query query, TypedIndexReader<?, T> reader) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return reader.findMany(query).filter(searchResultFilter::filter);
 	}

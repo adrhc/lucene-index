@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
@@ -38,11 +38,11 @@ public abstract class AbstractPersonsIndexTest {
 		indexRepository = IndexRepository.create(peopleIndexSpec);
 	}
 
-	protected TypedIndexReaderTemplate<Person> createPersonIndexReaderTemplate() {
+	protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
 		return TypedIndexReaderTemplate.create(peopleIndexSpec);
 	}
 
-	protected TypedIdIndexReaderTemplate<Long> createPersonIdIndexReaderTemplate() {
-		return TypedIdIndexReaderTemplate.create(peopleIndexSpec);
+	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
+		return OneHitIndexReaderTemplate.create(peopleIndexSpec);
 	}
 }

@@ -2,8 +2,8 @@ package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReader;
-import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIdIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReader;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexAdderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemover;
 
@@ -16,7 +16,7 @@ import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
 @RequiredArgsConstructor
 @Slf4j
 public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, T> {
-	private final TypedIdIndexReaderTemplate<ID> typedIdIndexReaderTemplate;
+	private final TypedIndexReaderTemplate<ID, ?> indexReaderTemplate;
 	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
 
@@ -26,7 +26,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	public static <ID, T> TypedIndexRestoreService<ID, T>
 	create(TypedIndexRestoreServiceParams<T> params) {
 		return new TypedIndexRestoreService<>(
-				TypedIdIndexReaderTemplate.create(params),
+				TypedIndexReaderTemplate.create(params),
 				TypedIndexRemover.create(params),
 				TypedIndexAdderTemplate.create(params));
 	}
@@ -43,8 +43,8 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 
 	private IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
 		Set<ID> allDsIds = collectToHashSet(dataSource.loadAllIds());
-		Set<ID> docsToRemove = typedIdIndexReaderTemplate
-				.useIdsReader(idsReader -> docsToRemove(allDsIds, idsReader));
+		Set<ID> docsToRemove = indexReaderTemplate
+				.useReader(reader -> docsToRemove(allDsIds, reader));
 		return new IndexChanges<>(allDsIds, docsToRemove);
 	}
 
@@ -62,7 +62,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		log.debug("\nIndex updated!");
 	}
 
-	private Set<ID> docsToRemove(Set<ID> ids, TypedIdIndexReader<ID> idsReader) {
-		return collectToHashSet(idsReader.getAllIds().filter(id -> !ids.remove(id)));
+	private Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
+		return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 	}
 }
