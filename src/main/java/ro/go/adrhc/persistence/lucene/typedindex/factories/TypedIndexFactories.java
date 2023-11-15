@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.typedindex.factories;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
@@ -13,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 @RequiredArgsConstructor
-public class TypedIndexFactories<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> {
+public class TypedIndexFactories<ID, T extends Identifiable<ID>> {
 	private final TypedIndexContext<ID, T> factoriesParams;
 
 	public TypedIndexSearchService<T> createSearchService() {

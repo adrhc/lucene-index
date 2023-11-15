@@ -58,4 +58,8 @@ public class TypedIndexContext<ID, T extends Identifiable<ID>>
 			throw exc;
 		}
 	}
+
+	public void commit() throws IOException {
+		indexWriter.commit();
+	}
 }
