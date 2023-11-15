@@ -50,38 +50,38 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
-				.map(CriterionScoreAndTyped::tValue);
+				.map(TypedSearchResult::tValue);
 	}
 
 	@Override
-	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	public List<TypedSearchResult<T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException {
 		return findBestMatches(Stream::findFirst, queries);
 	}
 
 	@Override
-	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	public List<TypedSearchResult<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return indexReaderTemplate.useReader(reader ->
 				doFindBestMatches(bestMatchingStrategy, queries, reader));
 	}
 
-	protected List<CriterionScoreAndTyped<Query, T>>
+	protected List<TypedSearchResult<T>>
 	doFindBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries, TypedIndexReader<?, T> reader) throws IOException {
-		List<CriterionScoreAndTyped<Query, T>> result = new ArrayList<>();
+		List<TypedSearchResult<T>> result = new ArrayList<>();
 		for (Query query : queries) {
 			doFindBestMatch(bestMatchingStrategy, query, reader).ifPresent(result::add);
 		}
 		return result;
 	}
 
-	protected Optional<CriterionScoreAndTyped<Query, T>> doFindBestMatch(
+	protected Optional<TypedSearchResult<T>> doFindBestMatch(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
-		Stream<CriterionScoreAndTyped<Query, T>> allMatches = doFindAllMatches(query, reader)
-				.map(sat -> new CriterionScoreAndTyped<>(query, sat));
+		Stream<TypedSearchResult<T>> allMatches = doFindAllMatches(query, reader)
+				.map(sat -> new TypedSearchResult<>(query, sat));
 		return bestMatchingStrategy.bestMatch(allMatches);
 	}
 

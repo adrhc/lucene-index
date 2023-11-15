@@ -14,8 +14,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.CriterionScoreAndTyped;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 import java.io.IOException;
@@ -85,12 +85,12 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 		return searchService.findBestMatch(bestMatchingStrategy, query);
 	}
 
-	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	public List<TypedSearchResult<T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(queries);
 	}
 
-	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	public List<TypedSearchResult<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);

@@ -16,10 +16,10 @@ public interface IndexSearchService<T> {
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query) throws IOException;
 
-	List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	List<TypedSearchResult<T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException;
 
-	List<CriterionScoreAndTyped<Query, T>> findBestMatches(
+	List<TypedSearchResult<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException;
 }
