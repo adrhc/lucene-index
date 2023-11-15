@@ -82,15 +82,15 @@ public class DocumentsIndexReader implements Closeable {
 				.map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
 	}
 
-	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
-		return safelyGetDocument(storedFields, Set.of(), docIndex);
-	}
-
 	protected Stream<Document> doGetAll(Bits liveDocs, StoredFields storedFields, Set<String> fieldNames) {
 		return IntStream.range(0, indexReader.maxDoc())
 				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
 				.mapToObj(docIndex -> this.safelyGetDocument(storedFields, fieldNames, docIndex))
 				.flatMap(Optional::stream);
+	}
+
+	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
+		return safelyGetDocument(storedFields, Set.of(), docIndex);
 	}
 
 	/**
