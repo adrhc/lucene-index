@@ -6,12 +6,15 @@ import ro.go.adrhc.persistence.lucene.core.read.DocumentsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
+import ro.go.adrhc.util.Assert;
 import ro.go.adrhc.util.ObjectUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 
 @RequiredArgsConstructor
 public class TypedIndexReader<ID, T> implements Closeable {
@@ -29,6 +32,8 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	 * The caller must use the proper type!
 	 */
 	public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
+		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
+				field.name() + " must have STORED type!");
 		return indexReader.getFieldOfAll(field.name())
 				.map(field::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
