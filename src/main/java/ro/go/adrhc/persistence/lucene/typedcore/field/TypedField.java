@@ -22,6 +22,10 @@ public interface TypedField<T> {
 
 	FieldType fieldType();
 
+	default boolean mustStore() {
+		return isIdField() || fieldType() == FieldType.STORED;
+	}
+
 	default Object toIndexableFieldValue(Object typedValue) {
 		return fieldSerde().toFieldValue().apply(typedValue);
 	}

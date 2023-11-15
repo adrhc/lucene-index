@@ -35,7 +35,7 @@ public class TypedFieldsProvider<T> {
 	}
 
 	private Field doCreate(TypedField<?> typedField, Object fieldValue) {
-		return fieldFactory.create(typedField.isIdField(),
+		return fieldFactory.create(typedField.mustStore(),
 				typedField.fieldType(), typedField.name(), fieldValue);
 	}
 }
