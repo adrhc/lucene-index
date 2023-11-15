@@ -38,14 +38,14 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 	private final Path indexPath;
 
 	public void commit() throws IOException {
-		log.debug("committing index changes ...");
+		log.debug("\ncommitting index changes ...");
 		indexWriter.commit();
-		log.debug("{} changes committed", indexPath);
+		log.debug("\n{} changes committed", indexPath);
 	}
 
 	@Override
 	public void close() throws IOException {
-		log.debug("closing {} ...", indexPath);
+		log.debug("\nclosing {} ...", indexPath);
 		IOException exc = null;
 		try {
 			log.debug("\nclosing IndexReaderPool ...");
