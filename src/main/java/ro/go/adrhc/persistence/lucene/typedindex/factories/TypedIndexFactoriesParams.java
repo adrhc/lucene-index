@@ -27,7 +27,7 @@ public class TypedIndexFactoriesParams<ID, T extends Identifiable<ID>>
 		TypedIndexInitServiceParams<T>, TypedIndexRetrieveServiceParams<T>, TypedIndexUpdaterParams<T> {
 	private final Class<T> type;
 	private final Collection<? extends TypedField<T>> typedFields;
-	private final TypedField<?> idField;
+	private final TypedField<T> idField;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 	private final IndexReaderPool indexReaderPool;

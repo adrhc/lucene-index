@@ -60,7 +60,7 @@ public class TypedIndexFactoriesParamsFactory {
 			int numHits, Path indexPath) throws IOException {
 		IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);
-		TypedField<?> idField = TypedField.getIdField(tFieldEnumClass);
+		TypedField<T> idField = TypedField.getIdField(tFieldEnumClass);
 		return new TypedIndexFactoriesParams<>(tClass, EnumSet.allOf(tFieldEnumClass),
 				idField, indexWriter.getAnalyzer(), indexWriter, indexReaderPool,
 				numHits, searchResultFilter, indexPath);
