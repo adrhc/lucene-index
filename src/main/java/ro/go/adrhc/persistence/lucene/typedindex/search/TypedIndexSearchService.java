@@ -47,7 +47,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
-	public Optional<T> findBestMatch(BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy, Query query) throws IOException {
+	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
 				.map(CriterionScoreAndTyped::tValue);
@@ -61,14 +61,14 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 
 	@Override
 	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return indexReaderTemplate.useReader(reader ->
 				doFindBestMatches(bestMatchingStrategy, queries, reader));
 	}
 
 	protected List<CriterionScoreAndTyped<Query, T>>
-	doFindBestMatches(BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+	doFindBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries, TypedIndexReader<?, T> reader) throws IOException {
 		List<CriterionScoreAndTyped<Query, T>> result = new ArrayList<>();
 		for (Query query : queries) {
@@ -78,7 +78,7 @@ public class TypedIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	protected Optional<CriterionScoreAndTyped<Query, T>> doFindBestMatch(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
 		Stream<ScoreAndTyped<T>> allMatches = doFindAllMatches(query, reader);
 		return bestMatchingStrategy.bestMatch(allMatches)

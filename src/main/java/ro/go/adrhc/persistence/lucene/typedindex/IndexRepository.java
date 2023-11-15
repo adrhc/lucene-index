@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.DocumentsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
@@ -81,7 +80,7 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	}
 
 	public Optional<T> findBestMatch(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query) throws IOException {
 		return searchService.findBestMatch(bestMatchingStrategy, query);
 	}
@@ -92,7 +91,7 @@ public class IndexRepository<ID, T extends Identifiable<?>> {
 	}
 
 	public List<CriterionScoreAndTyped<Query, T>> findBestMatches(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);
 	}

@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex.search;
 
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndTyped;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -14,13 +13,13 @@ public interface IndexSearchService<T> {
 	Optional<T> findBestMatch(Query query) throws IOException;
 
 	Optional<T> findBestMatch(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query) throws IOException;
 
 	List<CriterionScoreAndTyped<Query, T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException;
 
 	List<CriterionScoreAndTyped<Query, T>> findBestMatches(
-			BestMatchingStrategy<ScoreAndTyped<T>> bestMatchingStrategy,
+			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException;
 }
