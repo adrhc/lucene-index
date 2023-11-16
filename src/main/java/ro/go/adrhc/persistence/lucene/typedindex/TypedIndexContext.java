@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.factories;
+package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.Closeable;

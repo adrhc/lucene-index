@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepositoryFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
 
 import java.io.IOException;
 import java.nio.file.Path;
