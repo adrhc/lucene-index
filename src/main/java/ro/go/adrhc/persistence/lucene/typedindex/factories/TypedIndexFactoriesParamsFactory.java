@@ -22,8 +22,8 @@ public class TypedIndexFactoriesParamsFactory {
 	/**
 	 * defaults: analyzer(TokenizerProperties), numHits, searchResultFilter
 	 */
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
 		return create(tClass, tFieldEnumClass, tokenizerProperties, it -> true, indexPath);
 	}
@@ -31,8 +31,8 @@ public class TypedIndexFactoriesParamsFactory {
 	/**
 	 * defaults: analyzer(TokenizerProperties), numHits
 	 */
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			TokenizerProperties tokenizerProperties,
 			SearchResultFilter<T> searchResultFilter,
 			Path indexPath) throws IOException {
@@ -43,8 +43,8 @@ public class TypedIndexFactoriesParamsFactory {
 	/**
 	 * defaults: analyzer(TokenizerProperties)
 	 */
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			TokenizerProperties tokenizerProperties,
 			SearchResultFilter<T> searchResultFilter,
 			int numHits, Path indexPath) throws IOException {
@@ -53,8 +53,8 @@ public class TypedIndexFactoriesParamsFactory {
 				searchResultFilter, numHits, indexPath);
 	}
 
-	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<ID, T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
 			Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
 			int numHits, Path indexPath) throws IOException {
 		IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);

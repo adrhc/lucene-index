@@ -7,13 +7,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
-import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -23,9 +17,7 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexContext<ID, T extends Identifiable<ID>>
-		implements Closeable, TypedIndexSearchServiceParams<T>, TypedIndexRestoreServiceParams<T>,
-		TypedIndexInitServiceParams<T>, TypedIndexRetrieveServiceParams<T>, TypedIndexUpdaterParams<T> {
+public class TypedIndexContext<T> implements Closeable, TypedIndexFactoriesParams<T> {
 	private final Class<T> type;
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final TypedField<T> idField;

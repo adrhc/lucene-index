@@ -17,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
 public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexContext<Path, Album> albumsIndexSpec;
+	protected TypedIndexContext<Album> albumsIndexSpec;
 	protected IndexRepository<Path, Album> indexRepository;
 
 	@BeforeAll

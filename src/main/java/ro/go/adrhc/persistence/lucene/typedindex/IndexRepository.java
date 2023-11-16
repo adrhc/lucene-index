@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class IndexRepository<ID, T extends Identifiable<ID>> {
-	private final TypedIndexContext<ID, T> context;
+	private final TypedIndexContext<T> context;
 	private final TypedIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
@@ -37,7 +37,7 @@ public class IndexRepository<ID, T extends Identifiable<ID>> {
 	private final TypedIndexRestoreService<ID, T> restoreService;
 
 	public static <ID, T extends Identifiable<ID>> IndexRepository<ID, T>
-	create(TypedIndexContext<ID, T> context) {
+	create(TypedIndexContext<T> context) {
 		TypedIndexFactories<ID, T> factories = new TypedIndexFactories<>(context);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
