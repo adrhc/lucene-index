@@ -25,8 +25,15 @@ public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(ALBUMS.size());
 
-		indexRepository.addOne(generateAlbum(4));
+		Album album4 = generateAlbum(4);
+		indexRepository.addOne(album4);
 		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
+
+		Album album4Updated = album4.storedOnlyField("updated album4 storedOnlyField");
+		indexRepository.update(album4Updated);
+		Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album4"));
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get()).isEqualTo(album4Updated);
 
 		indexRepository.removeById(Path.of("/albums/album4"));
 		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isEmpty();

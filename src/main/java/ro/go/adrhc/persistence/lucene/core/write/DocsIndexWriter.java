@@ -54,6 +54,6 @@ public class DocsIndexWriter implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		indexWriter.flush();
+//		indexWriter.flush();
 	}
 }
