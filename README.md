@@ -8,6 +8,11 @@ classical [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) 
 - ro.go.adrhc.persistence.lucene.typedindex.IndexRepository
 - ro.go.adrhc.persistence.lucene.typedindex.IndexOperations
 
+# Examples
+
+- ro.go.adrhc.persistence.lucene.index.album.AlbumsCrudTest
+- ro.go.adrhc.persistence.lucene.index.person.SearchPerformanceTest
+
 # Articles
 
 [Lucene Fields and Term Vectors](https://northcoder.com/post/lucene-fields-and-term-vectors/)  

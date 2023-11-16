@@ -17,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.generat
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class AlbumsCrudOperationsTest extends AbstractAlbumsIndexTest {
+public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 	@Test
 	void crudTest() throws IOException {
 		int count = indexRepository.count(ID_QUERIES
