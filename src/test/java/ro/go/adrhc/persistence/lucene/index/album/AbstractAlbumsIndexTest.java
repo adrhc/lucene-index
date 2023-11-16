@@ -24,7 +24,7 @@ public abstract class AbstractAlbumsIndexTest {
 	void beforeAll() throws IOException {
 		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
 		indexRepository = IndexRepository.create(albumsIndexSpec);
-		indexRepository.initialize(ALBUMS);
+		indexRepository.reset(ALBUMS);
 	}
 
 	@AfterAll

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
@@ -31,8 +31,8 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>> {
 		return TypedIndexRestoreService.create(params);
 	}
 
-	public TypedIndexInitService<ID, T> createInitService() {
-		return TypedIndexInitService.create(params);
+	public TypedIndexResetService<T> createResetService() {
+		return TypedIndexResetService.create(params);
 	}
 
 	public TypedIndexAdderService<T> createAdderService() {

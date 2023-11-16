@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.add;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexAdderParams;
+import ro.go.adrhc.persistence.lucene.typedcore.write.AbstractTypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexAdderTemplate;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class TypedIndexAdderService<T> implements IndexAdderService<T> {
 	private final TypedIndexAdderTemplate<T> indexAdderTemplate;
 
-	public static <T> TypedIndexAdderService<T> create(TypedIndexAdderParams<T> params) {
+	public static <T> TypedIndexAdderService<T> create(AbstractTypedIndexParams<T> params) {
 		return new TypedIndexAdderService<>(TypedIndexAdderTemplate.create(params));
 	}
 

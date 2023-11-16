@@ -5,10 +5,10 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.create.TypedIndexInitService;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexContext;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
@@ -33,7 +33,7 @@ public class IndexRepository<ID, T extends Identifiable<ID>> {
 	private final TypedIndexAdderService<T> adderService;
 	private final TypedIndexUpdateService<T> updateService;
 	private final TypedIndexRemoveService<ID> removeService;
-	private final TypedIndexInitService<ID, T> initService;
+	private final TypedIndexResetService<T> resetService;
 	private final TypedIndexRestoreService<ID, T> restoreService;
 
 	public static <ID, T extends Identifiable<ID>> IndexRepository<ID, T>
@@ -45,10 +45,10 @@ public class IndexRepository<ID, T extends Identifiable<ID>> {
 		TypedIndexAdderService<T> adderService = factories.createAdderService();
 		TypedIndexUpdateService<T> updateService = factories.createUpdateService();
 		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
-		TypedIndexInitService<ID, T> initService = factories.createInitService();
+		TypedIndexResetService<T> resetService = factories.createResetService();
 		TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();
 		return new IndexRepository<>(context, searchService, retrieveService, countService,
-				adderService, updateService, removeService, initService, restoreService);
+				adderService, updateService, removeService, resetService, restoreService);
 	}
 
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -134,13 +134,13 @@ public class IndexRepository<ID, T extends Identifiable<ID>> {
 		context.commit();
 	}
 
-	public void initialize(Iterable<T> tIterable) throws IOException {
-		initService.initialize(tIterable);
+	public void reset(Iterable<T> tIterable) throws IOException {
+		resetService.reset(tIterable);
 		context.commit();
 	}
 
-	public void initialize(Stream<T> tStream) throws IOException {
-		initService.initialize(tStream);
+	public void reset(Stream<T> tStream) throws IOException {
+		resetService.reset(tStream);
 		context.commit();
 	}
 

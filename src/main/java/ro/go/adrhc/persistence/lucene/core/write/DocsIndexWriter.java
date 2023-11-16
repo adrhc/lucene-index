@@ -6,6 +6,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
+import ro.go.adrhc.util.collection.StreamCounter;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,6 +47,15 @@ public class DocsIndexWriter implements Closeable {
 
 	public void deleteAll() throws IOException {
 		indexWriter.deleteAll();
+	}
+
+	public void reset(Stream<Document> stateAfterReset) throws IOException {
+		log.debug("\nremoving all documents ...");
+		deleteAll();
+		log.debug("\nadding documents ...");
+		StreamCounter counter = new StreamCounter();
+		addMany(counter.countedStream(stateAfterReset));
+		log.debug("\nadded {} documents", counter.getCount());
 	}
 
 	public void commit() throws IOException {

@@ -25,7 +25,7 @@ public abstract class AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		initObjects();
-		indexRepository.initialize(PEOPLE);
+		indexRepository.reset(PEOPLE);
 	}
 
 	@AfterAll
