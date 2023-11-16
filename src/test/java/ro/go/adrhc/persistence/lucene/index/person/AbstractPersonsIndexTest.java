@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedindex.IndexOperations;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexContext;
 
@@ -20,7 +21,7 @@ public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected TypedIndexContext<Person> peopleIndexSpec;
-	protected IndexRepository<Long, Person> indexRepository;
+	protected IndexOperations<Long, Person> indexRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {

@@ -25,12 +25,18 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class IndexRepository<ID, T extends Identifiable<ID>> implements IndexOperations<ID, T> {
-	protected final IndexOperations<ID, T> indexOperations;
-	protected final TypedIndexContext<T> context;
+public class IndexOperationsImpl<ID, T extends Identifiable<ID>> implements IndexOperations<ID, T> {
+	private final TypedIndexSearchService<T> searchService;
+	private final TypedIndexRetrieveService<ID, T> retrieveService;
+	private final DocsCountService countService;
+	private final TypedIndexAdderService<T> adderService;
+	private final TypedIndexUpdateService<T> updateService;
+	private final TypedIndexRemoveService<ID> removeService;
+	private final TypedIndexResetService<T> resetService;
+	private final TypedIndexRestoreService<ID, T> restoreService;
 
-	public static <ID, T extends Identifiable<ID>>
-	IndexRepository<ID, T> create(TypedIndexContext<T> context) {
+	public static <ID, T extends Identifiable<ID>> IndexOperations<ID, T>
+	create(TypedIndexContext<T> context) {
 		TypedIndexFactories<ID, T> factories = new TypedIndexFactories<>(context);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
@@ -40,123 +46,117 @@ public class IndexRepository<ID, T extends Identifiable<ID>> implements IndexOpe
 		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
 		TypedIndexResetService<T> resetService = factories.createResetService();
 		TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();
-		IndexOperationsImpl<ID, T> indexOperations = new IndexOperationsImpl<>(
-				searchService, retrieveService, countService, adderService,
-				updateService, removeService, resetService, restoreService);
-		return new IndexRepository<>(indexOperations, context);
+		return new IndexOperationsImpl<>(searchService, retrieveService, countService,
+				adderService, updateService, removeService, resetService, restoreService);
 	}
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
-		return indexOperations.reduce(reducer);
+		return retrieveService.reduce(reducer);
 	}
 
 	@Override
 	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
-		return indexOperations.reduceIds(idsReducer);
+		return retrieveService.reduceIds(idsReducer);
 	}
 
 	@Override
 	public List<T> getAll() throws IOException {
-		return indexOperations.getAll();
+		return retrieveService.getAll();
 	}
 
 	@Override
 	public List<ID> getAllIds() throws IOException {
-		return indexOperations.getAllIds();
+		return retrieveService.getAllIds();
 	}
 
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
-		return indexOperations.findById(id);
+		return retrieveService.findById(id);
 	}
 
 	@Override
 	public List<T> findAllMatches(Query query) throws IOException {
-		return indexOperations.findAllMatches(query);
+		return searchService.findAllMatches(query);
 	}
 
 	@Override
 	public Optional<T> findBestMatch(Query query) throws IOException {
-		return indexOperations.findBestMatch(query);
+		return searchService.findBestMatch(query);
 	}
 
 	@Override
-	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
-		return indexOperations.findBestMatch(bestMatchingStrategy, query);
+	public Optional<T> findBestMatch(
+			BestMatchingStrategy<T> bestMatchingStrategy,
+			Query query) throws IOException {
+		return searchService.findBestMatch(bestMatchingStrategy, query);
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(Collection<? extends Query> queries) throws IOException {
-		return indexOperations.findBestMatches(queries);
+	public List<TypedSearchResult<T>> findBestMatches(
+			Collection<? extends Query> queries) throws IOException {
+		return searchService.findBestMatches(queries);
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy, Collection<? extends Query> queries) throws IOException {
-		return indexOperations.findBestMatches(bestMatchingStrategy, queries);
+	public List<TypedSearchResult<T>> findBestMatches(
+			BestMatchingStrategy<T> bestMatchingStrategy,
+			Collection<? extends Query> queries) throws IOException {
+		return searchService.findBestMatches(bestMatchingStrategy, queries);
 	}
 
 	@Override
 	public int count() throws IOException {
-		return indexOperations.count();
+		return countService.count();
 	}
 
 	@Override
 	public int count(Query query) throws IOException {
-		return indexOperations.count(query);
+		return countService.count(query);
 	}
 
 	@Override
 	public void addOne(T t) throws IOException {
-		indexOperations.addOne(t);
-		context.commit();
+		adderService.addOne(t);
 	}
 
 	@Override
 	public void addMany(Collection<T> tCollection) throws IOException {
-		indexOperations.addMany(tCollection);
-		context.commit();
+		adderService.addMany(tCollection);
 	}
 
 	@Override
 	public void addMany(Stream<T> tStream) throws IOException {
-		indexOperations.addMany(tStream);
-		context.commit();
+		adderService.addMany(tStream);
 	}
 
 	@Override
 	public void update(T t) throws IOException {
-		indexOperations.update(t);
-		context.commit();
+		updateService.update(t);
 	}
 
 	@Override
 	public void removeByIds(Collection<ID> ids) throws IOException {
-		indexOperations.removeByIds(ids);
-		context.commit();
+		removeService.removeByIds(ids);
 	}
 
 	@Override
 	public void removeById(ID id) throws IOException {
-		indexOperations.removeById(id);
-		context.commit();
+		removeService.removeById(id);
 	}
 
 	@Override
 	public void reset(Iterable<T> tIterable) throws IOException {
-		indexOperations.reset(tIterable);
-		context.commit();
+		resetService.reset(tIterable);
 	}
 
 	@Override
 	public void reset(Stream<T> tStream) throws IOException {
-		indexOperations.reset(tStream);
-		context.commit();
+		resetService.reset(tStream);
 	}
 
 	@Override
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
-		indexOperations.restore(dataSource);
-		context.commit();
+		restoreService.restore(dataSource);
 	}
 }
