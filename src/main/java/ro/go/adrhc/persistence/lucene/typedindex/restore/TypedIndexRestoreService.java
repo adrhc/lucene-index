@@ -59,7 +59,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		log.debug("\nadding documents to the index");
 		// with IndexWriter flush
 		typedIndexAdderTemplate.useAdder(writer -> writer.addMany(items));
-		log.debug("\nIndex updated!");
+		log.debug("\nIndex restored!");
 	}
 
 	private Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
