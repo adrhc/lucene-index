@@ -18,46 +18,46 @@ import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 
 @RequiredArgsConstructor
 public class TypedIndexReader<ID, T> implements Closeable {
-	private final TypedField<T> idField;
-	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final DocsIndexReader indexReader;
+    private final TypedField<T> idField;
+    private final DocumentToTypedConverter<T> docToTypedConverter;
+    private final DocsIndexReader indexReader;
 
-	public static <ID, T> TypedIndexReader<ID, T> create(TypedIndexReaderParams<T> params) throws IOException {
-		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
-		DocsIndexReader indexReader = DocsIndexReader.create(params);
-		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
-	}
+    public static <ID, T> TypedIndexReader<ID, T> create(TypedIndexReaderParams<T> params) throws IOException {
+        DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
+        DocsIndexReader indexReader = DocsIndexReader.create(params);
+        return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
+    }
 
-	public Stream<T> getAll() {
-		return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
-	}
+    public Stream<T> getAll() {
+        return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
+    }
 
-	public Stream<ID> getAllIds() {
-		return getFieldOfAll(idField);
-	}
+    public Stream<ID> getAllIds() {
+        return getFieldOfAll(idField);
+    }
 
-	/**
-	 * The caller must use the proper type!
-	 */
-	public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
-		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
-				field.name() + " must have STORED type!");
-		return indexReader.getFieldOfAll(field.name())
-				.map(field::indexableFieldToTypedValue)
-				.map(ObjectUtils::cast);
-	}
+    /**
+     * The caller must use the proper type!
+     */
+    public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
+        Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
+                field.name() + " must have STORED type!");
+        return indexReader.getFieldOfAll(field.name())
+                .map(field::indexableFieldToTypedValue)
+                .map(ObjectUtils::cast);
+    }
 
-	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
-		return indexReader.findMany(query).map(this::toScoreAndType).flatMap(Optional::stream);
-	}
+    public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
+        return indexReader.findMany(query).map(this::toScoreAndType).flatMap(Optional::stream);
+    }
 
-	protected Optional<ScoreAndValue<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {
-		return docToTypedConverter.convert(scoreAndDocument.document())
-				.map(t -> new ScoreAndValue<>(scoreAndDocument.score(), t));
-	}
+    protected Optional<ScoreAndValue<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {
+        return docToTypedConverter.convert(scoreAndDocument.document())
+                .map(t -> new ScoreAndValue<>(scoreAndDocument.score(), t));
+    }
 
-	@Override
-	public void close() throws IOException {
-		indexReader.close();
-	}
+    @Override
+    public void close() throws IOException {
+        indexReader.close();
+    }
 }

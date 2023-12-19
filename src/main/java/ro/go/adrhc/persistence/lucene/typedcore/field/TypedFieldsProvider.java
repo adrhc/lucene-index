@@ -10,32 +10,32 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class TypedFieldsProvider<T> {
-	private final FieldFactory fieldFactory;
-	private final Collection<? extends TypedField<T>> typedFields;
+    private final FieldFactory fieldFactory;
+    private final Collection<? extends TypedField<T>> typedFields;
 
-	public static <T> TypedFieldsProvider<T>
-	create(TypedFieldsProviderParams<T> providerParams) {
-		return new TypedFieldsProvider<>(
-				FieldFactory.create(providerParams.getAnalyzer()),
-				providerParams.getTypedFields());
-	}
+    public static <T> TypedFieldsProvider<T>
+    create(TypedFieldsProviderParams<T> providerParams) {
+        return new TypedFieldsProvider<>(
+                FieldFactory.create(providerParams.getAnalyzer()),
+                providerParams.getTypedFields());
+    }
 
-	public Stream<Field> createFields(T tValue) {
-		return typedFields.stream()
-				.map(typedField -> createField(tValue, typedField))
-				.flatMap(Optional::stream);
-	}
+    public Stream<Field> createFields(T tValue) {
+        return typedFields.stream()
+                .map(typedField -> createField(tValue, typedField))
+                .flatMap(Optional::stream);
+    }
 
-	public Optional<Field> createField(T t, TypedField<T> typedField) {
-		Object fieldValue = typedField.typedToIndexableFieldValue(t);
-		if (fieldValue == null) {
-			return Optional.empty();
-		}
-		return Optional.of(doCreate(typedField, fieldValue));
-	}
+    public Optional<Field> createField(T t, TypedField<T> typedField) {
+        Object fieldValue = typedField.typedToIndexableFieldValue(t);
+        if (fieldValue == null) {
+            return Optional.empty();
+        }
+        return Optional.of(doCreate(typedField, fieldValue));
+    }
 
-	private Field doCreate(TypedField<?> typedField, Object fieldValue) {
-		return fieldFactory.create(typedField.mustStore(),
-				typedField.fieldType(), typedField.name(), fieldValue);
-	}
+    private Field doCreate(TypedField<?> typedField, Object fieldValue) {
+        return fieldFactory.create(typedField.mustStore(),
+                typedField.fieldType(), typedField.name(), fieldValue);
+    }
 }

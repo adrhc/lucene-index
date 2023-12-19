@@ -7,18 +7,18 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TypedIndexAdderTemplate<T> {
-	private final TypedIndexAdder<T> indexWriter;
+    private final TypedIndexAdder<T> indexWriter;
 
-	public static <T> TypedIndexAdderTemplate<T> create(AbstractTypedIndexParams<T> params) {
-		TypedIndexAdder<T> indexWriter = TypedIndexAdder.create(params);
-		return new TypedIndexAdderTemplate<>(indexWriter);
-	}
+    public static <T> TypedIndexAdderTemplate<T> create(AbstractTypedIndexParams<T> params) {
+        TypedIndexAdder<T> indexWriter = TypedIndexAdder.create(params);
+        return new TypedIndexAdderTemplate<>(indexWriter);
+    }
 
-	public <E extends Exception> void useAdder(
-			SneakyConsumer<TypedIndexAdder<T>, E> indexWriterConsumer)
-			throws IOException, E {
-		try (TypedIndexAdder<T> indexWriter = this.indexWriter) {
-			indexWriterConsumer.accept(indexWriter);
-		}
-	}
+    public <E extends Exception> void useAdder(
+            SneakyConsumer<TypedIndexAdder<T>, E> indexWriterConsumer)
+            throws IOException, E {
+        try (TypedIndexAdder<T> indexWriter = this.indexWriter) {
+            indexWriterConsumer.accept(indexWriter);
+        }
+    }
 }

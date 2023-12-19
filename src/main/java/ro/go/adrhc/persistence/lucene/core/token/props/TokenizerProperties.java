@@ -11,9 +11,9 @@ import java.util.Map;
 @Getter
 @ToString
 public class TokenizerProperties {
-	private int minTokenLength;
-	private List<String> fixedPatternsNotToIndex = List.of();
-	private List<String> regexPatternsNotToIndex = List.of();
-	private Map<String, String> charactersToReplaceBeforeIndexing = Map.of();
-	private PatternsAndReplacement regexPatternsAndReplacement = PatternsAndReplacement.EMPTY;
+    private int minTokenLength;
+    private List<String> fixedPatternsNotToIndex = List.of();
+    private List<String> regexPatternsNotToIndex = List.of();
+    private Map<String, String> charactersToReplaceBeforeIndexing = Map.of();
+    private PatternsAndReplacement regexPatternsAndReplacement = PatternsAndReplacement.EMPTY;
 }

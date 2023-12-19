@@ -12,41 +12,41 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class ExactQuery {
-	private final TypedField<?> idField;
-	private final FieldQueries fieldQueries;
+    private final TypedField<?> idField;
+    private final FieldQueries fieldQueries;
 
-	public static ExactQuery create(TypedField<?> idField) {
-		return new ExactQuery(idField, new FieldQueries(idField.name()));
-	}
+    public static ExactQuery create(TypedField<?> idField) {
+        return new ExactQuery(idField, new FieldQueries(idField.name()));
+    }
 
-	public List<Query> newExactQueries(Collection<?> ids) {
-		return ids.stream().map(this::newExactQuery).toList();
-	}
+    public List<Query> newExactQueries(Collection<?> ids) {
+        return ids.stream().map(this::newExactQuery).toList();
+    }
 
-	public Query newExactQuery(Document document) {
-		return newExactQuery(document.getField(idField.name()));
-	}
+    public Query newExactQuery(Document document) {
+        return newExactQuery(document.getField(idField.name()));
+    }
 
-	public Query newExactQuery(IndexableField field) {
-		return switch (idField.fieldType()) {
-			case KEYWORD -> newExactQuery(field.stringValue());
-			case LONG -> newExactQuery(field.numericValue().longValue());
-			case INT -> newExactQuery(field.numericValue().intValue());
-			default -> throw new IllegalStateException(
-					"Unexpected type %s for %s! "
-							.formatted(idField.fieldType(), idField.name()));
-		};
-	}
+    public Query newExactQuery(IndexableField field) {
+        return switch (idField.fieldType()) {
+            case KEYWORD -> newExactQuery(field.stringValue());
+            case LONG -> newExactQuery(field.numericValue().longValue());
+            case INT -> newExactQuery(field.numericValue().intValue());
+            default -> throw new IllegalStateException(
+                    "Unexpected type %s for %s! "
+                            .formatted(idField.fieldType(), idField.name()));
+        };
+    }
 
-	public Query newExactQuery(Object typedValue) {
-		Object idFieldValue = idField.toIndexableFieldValue(typedValue);
-		return switch (idField.fieldType()) {
-			case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
-			case LONG -> fieldQueries.longEquals((Long) idFieldValue);
-			case INT -> fieldQueries.intEquals((Integer) idFieldValue);
-			default -> throw new IllegalStateException(
-					"Unexpected type %s for %s! "
-							.formatted(idField.fieldType(), idField));
-		};
-	}
+    public Query newExactQuery(Object typedValue) {
+        Object idFieldValue = idField.toIndexableFieldValue(typedValue);
+        return switch (idField.fieldType()) {
+            case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
+            case LONG -> fieldQueries.longEquals((Long) idFieldValue);
+            case INT -> fieldQueries.intEquals((Integer) idFieldValue);
+            default -> throw new IllegalStateException(
+                    "Unexpected type %s for %s! "
+                            .formatted(idField.fieldType(), idField));
+        };
+    }
 }

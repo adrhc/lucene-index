@@ -5,9 +5,9 @@ import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 
 @UtilityClass
 public class IndexRepositoryFactory {
-	public static <ID, T extends Identifiable<ID>>
-	IndexRepository<ID, T> create(TypedIndexContext<T> context) {
-		IndexOperations<ID, T> indexOperations = IndexOperationsFactory.create(context);
-		return new IndexRepositoryImpl<>(indexOperations, context);
-	}
+    public static <ID, T extends Identifiable<ID>>
+    IndexRepository<ID, T> create(TypedIndexContext<T> context) {
+        IndexOperations<ID, T> indexOperations = IndexOperationsFactory.create(context);
+        return new IndexRepositoryImpl<>(indexOperations, context);
+    }
 }

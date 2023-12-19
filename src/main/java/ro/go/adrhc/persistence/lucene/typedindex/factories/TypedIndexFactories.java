@@ -13,37 +13,37 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
 
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>> {
-	private final TypedIndexFactoriesParams<T> params;
+    private final TypedIndexFactoriesParams<T> params;
 
-	public TypedIndexSearchService<T> createSearchService() {
-		return TypedIndexSearchService.create(params);
-	}
+    public TypedIndexSearchService<T> createSearchService() {
+        return TypedIndexSearchService.create(params);
+    }
 
-	public TypedIndexRetrieveService<ID, T> createIdSearchService() {
-		return TypedIndexRetrieveService.create(params);
-	}
+    public TypedIndexRetrieveService<ID, T> createIdSearchService() {
+        return TypedIndexRetrieveService.create(params);
+    }
 
-	public DocsCountService createCountService() {
-		return DocsCountService.create(params.getIndexReaderPool());
-	}
+    public DocsCountService createCountService() {
+        return DocsCountService.create(params.getIndexReaderPool());
+    }
 
-	public TypedIndexRestoreService<ID, T> createRestoreService() {
-		return TypedIndexRestoreService.create(params);
-	}
+    public TypedIndexRestoreService<ID, T> createRestoreService() {
+        return TypedIndexRestoreService.create(params);
+    }
 
-	public TypedIndexResetService<T> createResetService() {
-		return TypedIndexResetService.create(params);
-	}
+    public TypedIndexResetService<T> createResetService() {
+        return TypedIndexResetService.create(params);
+    }
 
-	public TypedIndexAdderService<T> createAdderService() {
-		return TypedIndexAdderService.create(params);
-	}
+    public TypedIndexAdderService<T> createAdderService() {
+        return TypedIndexAdderService.create(params);
+    }
 
-	public TypedIndexUpdateService<T> createUpdateService() {
-		return TypedIndexUpdateService.create(params);
-	}
+    public TypedIndexUpdateService<T> createUpdateService() {
+        return TypedIndexUpdateService.create(params);
+    }
 
-	public TypedIndexRemoveService<ID> createRemoveService() {
-		return TypedIndexRemoveService.create(params);
-	}
+    public TypedIndexRemoveService<ID> createRemoveService() {
+        return TypedIndexRemoveService.create(params);
+    }
 }

@@ -15,21 +15,21 @@ import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertS
 
 @RequiredArgsConstructor
 public abstract class AbstractTypedIndex<T> implements Closeable {
-	protected final TypedToDocumentConverter<T> toDocumentConverter;
-	protected final DocsIndexWriter docsIndexWriter;
+    protected final TypedToDocumentConverter<T> toDocumentConverter;
+    protected final DocsIndexWriter docsIndexWriter;
 
-	protected Stream<Document> toDocuments(Stream<T> tStream) {
-		return convertStream(toDocumentConverter::convert, tStream);
-	}
+    protected Stream<Document> toDocuments(Stream<T> tStream) {
+        return convertStream(toDocumentConverter::convert, tStream);
+    }
 
-	protected Document toDocument(T t) {
-		Optional<Document> documentOptional = toDocumentConverter.convert(t);
-		Assert.isTrue(documentOptional.isPresent(), "Conversion failed!");
-		return documentOptional.get();
-	}
+    protected Document toDocument(T t) {
+        Optional<Document> documentOptional = toDocumentConverter.convert(t);
+        Assert.isTrue(documentOptional.isPresent(), "Conversion failed!");
+        return documentOptional.get();
+    }
 
-	@Override
-	public void close() throws IOException {
-		docsIndexWriter.close();
-	}
+    @Override
+    public void close() throws IOException {
+        docsIndexWriter.close();
+    }
 }

@@ -13,38 +13,38 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public class TokenizationUtils {
-	private final Analyzer analyzer;
+    private final Analyzer analyzer;
 
-	public Set<String> tokenizeAll(@NonNull Collection<String> words) throws IOException {
-		Set<String> result = new HashSet<>();
-		for (String w : words) {
-			result.addAll(tokenize(w));
-		}
-		return result;
-	}
+    public Set<String> tokenizeAll(@NonNull Collection<String> words) throws IOException {
+        Set<String> result = new HashSet<>();
+        for (String w : words) {
+            result.addAll(tokenize(w));
+        }
+        return result;
+    }
 
-	public Set<String> tokenize(String text) throws IOException {
-		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-			return doTokenize(tokenStream);
-		}
-	}
+    public Set<String> tokenize(String text) throws IOException {
+        try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
+            return doTokenize(tokenStream);
+        }
+    }
 
-	public String normalize(Enum<?> field, String text) {
-		return normalize(field.name(), text);
-	}
+    public String normalize(Enum<?> field, String text) {
+        return normalize(field.name(), text);
+    }
 
-	public String normalize(String fieldName, String text) {
-		return analyzer.normalize(fieldName, text).utf8ToString();
-	}
+    public String normalize(String fieldName, String text) {
+        return analyzer.normalize(fieldName, text).utf8ToString();
+    }
 
-	private Set<String> doTokenize(TokenStream tokenStream) throws IOException {
-		tokenStream.reset();
-		Set<String> tokens = new HashSet<>();
-		CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
-		while (tokenStream.incrementToken()) {
-			tokens.add(termAttribute.toString());
-		}
-		tokenStream.end();
-		return tokens;
-	}
+    private Set<String> doTokenize(TokenStream tokenStream) throws IOException {
+        tokenStream.reset();
+        Set<String> tokens = new HashSet<>();
+        CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
+        while (tokenStream.incrementToken()) {
+            tokens.add(termAttribute.toString());
+        }
+        tokenStream.end();
+        return tokens;
+    }
 }

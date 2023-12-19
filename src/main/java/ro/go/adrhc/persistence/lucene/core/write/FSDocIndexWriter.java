@@ -10,14 +10,14 @@ import java.nio.file.Path;
 
 @RequiredArgsConstructor
 public class FSDocIndexWriter {
-	private final IndexWriter indexWriter;
+    private final IndexWriter indexWriter;
 
-	public void copyTo(Path destination) throws IOException {
-		Directory sourceDir = indexWriter.getDirectory();
-		try (FSDirectory fsDirectory = FSDirectory.open(destination)) {
-			for (String fileName : sourceDir.listAll()) {
-				fsDirectory.copyFrom(sourceDir, fileName, fileName, null);
-			}
-		}
-	}
+    public void copyTo(Path destination) throws IOException {
+        Directory sourceDir = indexWriter.getDirectory();
+        try (FSDirectory fsDirectory = FSDirectory.open(destination)) {
+            for (String fileName : sourceDir.listAll()) {
+                fsDirectory.copyFrom(sourceDir, fileName, fileName, null);
+            }
+        }
+    }
 }

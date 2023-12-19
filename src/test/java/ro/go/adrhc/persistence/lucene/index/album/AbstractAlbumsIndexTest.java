@@ -16,20 +16,20 @@ import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractAlbumsIndexTest {
-	@TempDir
-	protected static Path tmpDir;
-	protected TypedIndexContext<Album> albumsIndexSpec;
-	protected IndexRepository<Path, Album> indexRepository;
+    @TempDir
+    protected static Path tmpDir;
+    protected TypedIndexContext<Album> albumsIndexSpec;
+    protected IndexRepository<Path, Album> indexRepository;
 
-	@BeforeAll
-	void beforeAll() throws IOException {
-		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
-		indexRepository = IndexRepositoryFactory.create(albumsIndexSpec);
-		indexRepository.reset(ALBUMS);
-	}
+    @BeforeAll
+    void beforeAll() throws IOException {
+        albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
+        indexRepository = IndexRepositoryFactory.create(albumsIndexSpec);
+        indexRepository.reset(ALBUMS);
+    }
 
-	@AfterAll
-	void afterAll() throws IOException {
-		albumsIndexSpec.close();
-	}
+    @AfterAll
+    void afterAll() throws IOException {
+        albumsIndexSpec.close();
+    }
 }

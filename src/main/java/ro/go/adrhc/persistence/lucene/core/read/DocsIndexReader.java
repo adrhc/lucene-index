@@ -20,106 +20,106 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 public class DocsIndexReader implements Closeable {
-	private final IndexReaderPool indexReaderPool;
-	private final IndexReader indexReader;
-	private final int numHits;
+    private final IndexReaderPool indexReaderPool;
+    private final IndexReader indexReader;
+    private final int numHits;
 
-	public static DocsIndexReader create(DocsIndexReaderParams params) throws IOException {
-		return new DocsIndexReader(params.getIndexReaderPool(),
-				params.getIndexReaderPool().getReader(), params.getNumHits());
-	}
+    public static DocsIndexReader create(DocsIndexReaderParams params) throws IOException {
+        return new DocsIndexReader(params.getIndexReaderPool(),
+                params.getIndexReaderPool().getReader(), params.getNumHits());
+    }
 
-	public static DocsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
-		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader(), numHits);
-	}
+    public static DocsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
+        return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader(), numHits);
+    }
 
-	public Stream<Document> getAll() {
-		return getFieldsOfAll(Set.of());
-	}
+    public Stream<Document> getAll() {
+        return getFieldsOfAll(Set.of());
+    }
 
-	public Stream<IndexableField> getFieldOfAll(String fieldName) {
-		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
-	}
+    public Stream<IndexableField> getFieldOfAll(String fieldName) {
+        return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
+    }
 
-	public Stream<Document> getFieldsOfAll(Set<String> fieldNames) {
-		// liveDocs can be null if the reader has no deletions
-		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
-		return storedFields()
-				.map(storedFields -> doGetAll(liveDocs, storedFields, fieldNames))
-				.orElseGet(Stream::of);
-	}
+    public Stream<Document> getFieldsOfAll(Set<String> fieldNames) {
+        // liveDocs can be null if the reader has no deletions
+        Bits liveDocs = MultiBits.getLiveDocs(indexReader);
+        return storedFields()
+                .map(storedFields -> doGetAll(liveDocs, storedFields, fieldNames))
+                .orElseGet(Stream::of);
+    }
 
-	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
-		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
-				.flatMap(Optional::stream);
-	}
+    public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
+        TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
+        return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
+                .map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+                .flatMap(Optional::stream);
+    }
 
-	public int count(Query query) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		return searcher.count(query);
-	}
+    public int count(Query query) throws IOException {
+        IndexSearcher searcher = new IndexSearcher(indexReader);
+        return searcher.count(query);
+    }
 
-	public int count() throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		return searcher.count(new MatchAllDocsQuery());
-	}
+    public int count() throws IOException {
+        IndexSearcher searcher = new IndexSearcher(indexReader);
+        return searcher.count(new MatchAllDocsQuery());
+    }
 
-	protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(
-			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
-		return safelyGetDocument(topDocsStoredFields.storedFields(), scoreDoc.doc)
-				.map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
-	}
+    protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(
+            TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+        return safelyGetDocument(topDocsStoredFields.storedFields(), scoreDoc.doc)
+                .map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
+    }
 
-	protected Stream<Document> doGetAll(Bits liveDocs, StoredFields storedFields, Set<String> fieldNames) {
-		return IntStream.range(0, indexReader.maxDoc())
-				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
-				.mapToObj(docIndex -> this.safelyGetDocument(storedFields, fieldNames, docIndex))
-				.flatMap(Optional::stream);
-	}
+    protected Stream<Document> doGetAll(Bits liveDocs, StoredFields storedFields, Set<String> fieldNames) {
+        return IntStream.range(0, indexReader.maxDoc())
+                .filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
+                .mapToObj(docIndex -> this.safelyGetDocument(storedFields, fieldNames, docIndex))
+                .flatMap(Optional::stream);
+    }
 
-	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
-		return safelyGetDocument(storedFields, Set.of(), docIndex);
-	}
+    protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
+        return safelyGetDocument(storedFields, Set.of(), docIndex);
+    }
 
-	/**
-	 * indexReader.document might fail if the document
-	 * is meanwhile purged (not only marked as removed)
-	 */
-	protected Optional<Document> safelyGetDocument(StoredFields storedFields, Set<String> fieldNames, int docIndex) {
-		try {
-			if (fieldNames.isEmpty()) {
-				return Optional.of(storedFields.document(docIndex));
-			} else {
-				return Optional.of(storedFields.document(docIndex, fieldNames));
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
+    /**
+     * indexReader.document might fail if the document
+     * is meanwhile purged (not only marked as removed)
+     */
+    protected Optional<Document> safelyGetDocument(StoredFields storedFields, Set<String> fieldNames, int docIndex) {
+        try {
+            if (fieldNames.isEmpty()) {
+                return Optional.of(storedFields.document(docIndex));
+            } else {
+                return Optional.of(storedFields.document(docIndex, fieldNames));
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return Optional.empty();
+    }
 
-	protected Optional<StoredFields> storedFields() {
-		try {
-			return Optional.of(indexReader.storedFields());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
+    protected Optional<StoredFields> storedFields() {
+        try {
+            return Optional.of(indexReader.storedFields());
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return Optional.empty();
+    }
 
-	protected TopDocsStoredFields topDocsStoredFields(Query query) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		TopDocs topDocs = searcher.search(query, numHits);
-		return new TopDocsStoredFields(topDocs, searcher.storedFields());
-	}
+    protected TopDocsStoredFields topDocsStoredFields(Query query) throws IOException {
+        IndexSearcher searcher = new IndexSearcher(indexReader);
+        TopDocs topDocs = searcher.search(query, numHits);
+        return new TopDocsStoredFields(topDocs, searcher.storedFields());
+    }
 
-	@Override
-	public void close() throws IOException {
-		indexReaderPool.returnReader(indexReader);
-	}
+    @Override
+    public void close() throws IOException {
+        indexReaderPool.returnReader(indexReader);
+    }
 
-	private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
-	}
+    private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
+    }
 }

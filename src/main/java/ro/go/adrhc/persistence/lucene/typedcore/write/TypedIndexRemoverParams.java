@@ -4,7 +4,7 @@ import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 
 public interface TypedIndexRemoverParams {
-	TypedField<?> getIdField();
+    TypedField<?> getIdField();
 
-	IndexWriter getIndexWriter();
+    IndexWriter getIndexWriter();
 }

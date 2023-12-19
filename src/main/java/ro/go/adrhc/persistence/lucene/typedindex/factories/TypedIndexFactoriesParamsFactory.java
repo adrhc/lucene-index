@@ -20,49 +20,49 @@ import static ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFact
 
 @UtilityClass
 public class TypedIndexFactoriesParamsFactory {
-	/**
-	 * defaults: analyzer(TokenizerProperties), numHits, searchResultFilter
-	 */
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
-		return create(tClass, tFieldEnumClass, tokenizerProperties, it -> true, indexPath);
-	}
+    /**
+     * defaults: analyzer(TokenizerProperties), numHits, searchResultFilter
+     */
+    public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
+        return create(tClass, tFieldEnumClass, tokenizerProperties, it -> true, indexPath);
+    }
 
-	/**
-	 * defaults: analyzer(TokenizerProperties), numHits
-	 */
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			TokenizerProperties tokenizerProperties,
-			SearchResultFilter<T> searchResultFilter,
-			Path indexPath) throws IOException {
-		return create(tClass, tFieldEnumClass, tokenizerProperties,
-				searchResultFilter, NUM_HITS, indexPath);
-	}
+    /**
+     * defaults: analyzer(TokenizerProperties), numHits
+     */
+    public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties,
+            SearchResultFilter<T> searchResultFilter,
+            Path indexPath) throws IOException {
+        return create(tClass, tFieldEnumClass, tokenizerProperties,
+                searchResultFilter, NUM_HITS, indexPath);
+    }
 
-	/**
-	 * defaults: analyzer(TokenizerProperties)
-	 */
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			TokenizerProperties tokenizerProperties,
-			SearchResultFilter<T> searchResultFilter,
-			int numHits, Path indexPath) throws IOException {
-		return create(tClass, tFieldEnumClass,
-				defaultAnalyzer(tokenizerProperties),
-				searchResultFilter, numHits, indexPath);
-	}
+    /**
+     * defaults: analyzer(TokenizerProperties)
+     */
+    public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties,
+            SearchResultFilter<T> searchResultFilter,
+            int numHits, Path indexPath) throws IOException {
+        return create(tClass, tFieldEnumClass,
+                defaultAnalyzer(tokenizerProperties),
+                searchResultFilter, numHits, indexPath);
+    }
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-			Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
-			int numHits, Path indexPath) throws IOException {
-		IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
-		IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);
-		TypedField<T> idField = TypedField.getIdField(tFieldEnumClass);
-		return new TypedIndexContext<>(tClass, EnumSet.allOf(tFieldEnumClass),
-				idField, indexWriter.getAnalyzer(), indexWriter, indexReaderPool,
-				numHits, searchResultFilter, indexPath);
-	}
+    public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
+            int numHits, Path indexPath) throws IOException {
+        IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
+        IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);
+        TypedField<T> idField = TypedField.getIdField(tFieldEnumClass);
+        return new TypedIndexContext<>(tClass, EnumSet.allOf(tFieldEnumClass),
+                idField, indexWriter.getAnalyzer(), indexWriter, indexReaderPool,
+                numHits, searchResultFilter, indexPath);
+    }
 }

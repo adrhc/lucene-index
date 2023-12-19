@@ -13,31 +13,31 @@ import static ro.go.adrhc.util.collection.StreamUtils.stream;
 
 @Slf4j
 public class TypedIndexAdder<T> extends AbstractTypedIndex<T> {
-	public TypedIndexAdder(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
-		super(toDocumentConverter, indexWriter);
-	}
+    public TypedIndexAdder(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
+        super(toDocumentConverter, indexWriter);
+    }
 
-	public static <T> TypedIndexAdder<T> create(AbstractTypedIndexParams<T> params) {
-		TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
-		return new TypedIndexAdder<>(toDocumentConverter, new DocsIndexWriter(params.getIndexWriter()));
-	}
+    public static <T> TypedIndexAdder<T> create(AbstractTypedIndexParams<T> params) {
+        TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
+        return new TypedIndexAdder<>(toDocumentConverter, new DocsIndexWriter(params.getIndexWriter()));
+    }
 
-	public void addOne(T t) throws IOException {
-		docsIndexWriter.addOne(toDocument(t));
-	}
+    public void addOne(T t) throws IOException {
+        docsIndexWriter.addOne(toDocument(t));
+    }
 
-	public void addMany(Iterable<T> tIterable) throws IOException {
-		addMany(stream(tIterable));
-	}
+    public void addMany(Iterable<T> tIterable) throws IOException {
+        addMany(stream(tIterable));
+    }
 
-	public void addMany(Stream<T> tStream) throws IOException {
-		StreamCounter tCounter = new StreamCounter();
-		Stream<Document> documents = toDocuments(tCounter.countedStream(tStream));
-		StreamCounter dCounter = new StreamCounter();
-		docsIndexWriter.addMany(dCounter.countedStream(documents));
-		if (tCounter.getCount() != dCounter.getCount()) {
-			log.warn("Only {} of {} were successfully converted!",
-					dCounter.getCount(), tCounter.getCount());
-		}
-	}
+    public void addMany(Stream<T> tStream) throws IOException {
+        StreamCounter tCounter = new StreamCounter();
+        Stream<Document> documents = toDocuments(tCounter.countedStream(tStream));
+        StreamCounter dCounter = new StreamCounter();
+        docsIndexWriter.addMany(dCounter.countedStream(documents));
+        if (tCounter.getCount() != dCounter.getCount()) {
+            log.warn("Only {} of {} were successfully converted!",
+                    dCounter.getCount(), tCounter.getCount());
+        }
+    }
 }

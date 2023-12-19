@@ -18,32 +18,32 @@ import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractPersonsIndexTest {
-	@TempDir
-	protected static Path tmpDir;
-	protected TypedIndexContext<Person> peopleIndexSpec;
-	protected IndexRepository<Long, Person> indexRepository;
+    @TempDir
+    protected static Path tmpDir;
+    protected TypedIndexContext<Person> peopleIndexSpec;
+    protected IndexRepository<Long, Person> indexRepository;
 
-	@BeforeAll
-	void beforeAll() throws IOException {
-		initObjects();
-		indexRepository.reset(PEOPLE);
-	}
+    @BeforeAll
+    void beforeAll() throws IOException {
+        initObjects();
+        indexRepository.reset(PEOPLE);
+    }
 
-	@AfterAll
-	void afterAll() throws IOException {
-		peopleIndexSpec.close();
-	}
+    @AfterAll
+    void afterAll() throws IOException {
+        peopleIndexSpec.close();
+    }
 
-	protected void initObjects() throws IOException {
-		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		indexRepository = IndexRepositoryFactory.create(peopleIndexSpec);
-	}
+    protected void initObjects() throws IOException {
+        peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
+        indexRepository = IndexRepositoryFactory.create(peopleIndexSpec);
+    }
 
-	protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
-		return TypedIndexReaderTemplate.create(peopleIndexSpec);
-	}
+    protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
+        return TypedIndexReaderTemplate.create(peopleIndexSpec);
+    }
 
-	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec);
-	}
+    protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
+        return OneHitIndexReaderTemplate.create(peopleIndexSpec);
+    }
 }

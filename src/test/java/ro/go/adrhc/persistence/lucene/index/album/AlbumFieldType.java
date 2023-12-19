@@ -19,20 +19,20 @@ import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.str
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum AlbumFieldType implements TypedField<Album> {
-	id(KEYWORD, pathToString(Identifiable::id), true),
-	name(PHRASE, Album::name),
-	storedOnlyField(STORED, Album::storedOnlyField);
+    id(KEYWORD, pathToString(Identifiable::id), true),
+    name(PHRASE, Album::name),
+    storedOnlyField(STORED, Album::storedOnlyField);
 
-	public static final FieldQueries NAME_QUERIES = FieldQueries.create(AlbumFieldType.name);
-	public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumFieldType.id);
+    public static final FieldQueries NAME_QUERIES = FieldQueries.create(AlbumFieldType.name);
+    public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumFieldType.id);
 
-	private final FieldType fieldType;
-	private final TypedFieldSerde<Album> fieldSerde;
-	private final boolean isIdField;
+    private final FieldType fieldType;
+    private final TypedFieldSerde<Album> fieldSerde;
+    private final boolean isIdField;
 
-	AlbumFieldType(FieldType fieldType, Function<Album, String> typedAccessor) {
-		this.fieldType = fieldType;
-		this.isIdField = false;
-		this.fieldSerde = stringField(typedAccessor);
-	}
+    AlbumFieldType(FieldType fieldType, Function<Album, String> typedAccessor) {
+        this.fieldType = fieldType;
+        this.isIdField = false;
+        this.fieldSerde = stringField(typedAccessor);
+    }
 }
