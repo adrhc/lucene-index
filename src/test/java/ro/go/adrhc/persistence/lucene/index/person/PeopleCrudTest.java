@@ -37,7 +37,7 @@ public class PeopleCrudTest extends AbstractPersonsIndexTest {
 
         String newStoredOnlyField = Instant.now().toString();
         Person person = optionalPerson.get().storedOnlyField(newStoredOnlyField);
-        indexRepository.update(person);
+        indexRepository.upsert(person);
 
         optionalPerson = indexRepository.findById(person.getId());
         assertThat(optionalPerson).isPresent();

@@ -30,7 +30,7 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
         assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
 
         Album album4Updated = album4.storedOnlyField("updated album4 storedOnlyField");
-        indexRepository.update(album4Updated);
+        indexRepository.upsert(album4Updated);
         Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album4"));
         assertThat(optionalAlbum).isPresent();
         assertThat(optionalAlbum.get()).isEqualTo(album4Updated);
@@ -46,7 +46,7 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 
         String newStoredOnlyField = Instant.now().toString();
         Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
-        indexRepository.update(album);
+        indexRepository.upsert(album);
 
         optionalAlbum = indexRepository.findById(album.getId());
         assertThat(optionalAlbum).isPresent();

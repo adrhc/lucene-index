@@ -99,8 +99,8 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements Inde
     }
 
     @Override
-    public void update(T t) throws IOException {
-        indexOperations.update(t);
+    public void upsert(T t) throws IOException {
+        indexOperations.upsert(t);
         context.commit();
     }
 

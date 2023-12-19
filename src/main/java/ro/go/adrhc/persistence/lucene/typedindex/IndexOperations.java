@@ -49,7 +49,7 @@ public interface IndexOperations<ID, T extends Identifiable<ID>> {
 
     void addMany(Stream<T> tStream) throws IOException;
 
-    void update(T t) throws IOException;
+    void upsert(T t) throws IOException;
 
     void removeByIds(Collection<ID> ids) throws IOException;
 

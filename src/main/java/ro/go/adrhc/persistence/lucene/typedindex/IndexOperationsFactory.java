@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @UtilityClass
 public class IndexOperationsFactory {
@@ -22,7 +22,7 @@ public class IndexOperationsFactory {
         TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
         DocsCountService countService = factories.createCountService();
         TypedIndexAdderService<T> adderService = factories.createAdderService();
-        TypedIndexUpdateService<T> updateService = factories.createUpdateService();
+        TypedIndexUpsertService<T> updateService = factories.createUpdateService();
         TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
         TypedIndexResetService<T> resetService = factories.createResetService();
         TypedIndexRestoreService<ID, T> restoreService = factories.createRestoreService();

@@ -9,7 +9,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexFactories<ID, T extends Identifiable<ID>> {
@@ -39,8 +39,8 @@ public class TypedIndexFactories<ID, T extends Identifiable<ID>> {
         return TypedIndexAdderService.create(params);
     }
 
-    public TypedIndexUpdateService<T> createUpdateService() {
-        return TypedIndexUpdateService.create(params);
+    public TypedIndexUpsertService<T> createUpdateService() {
+        return TypedIndexUpsertService.create(params);
     }
 
     public TypedIndexRemoveService<ID> createRemoveService() {

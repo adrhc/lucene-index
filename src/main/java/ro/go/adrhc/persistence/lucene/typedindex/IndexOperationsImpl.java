@@ -13,7 +13,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServ
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class IndexOperationsImpl<ID, T extends Identifiable<ID>> implements Inde
     private final TypedIndexRetrieveService<ID, T> retrieveService;
     private final DocsCountService countService;
     private final TypedIndexAdderService<T> adderService;
-    private final TypedIndexUpdateService<T> updateService;
+    private final TypedIndexUpsertService<T> upsertService;
     private final TypedIndexRemoveService<ID> removeService;
     private final TypedIndexResetService<T> resetService;
     private final TypedIndexRestoreService<ID, T> restoreService;
@@ -114,8 +114,8 @@ public class IndexOperationsImpl<ID, T extends Identifiable<ID>> implements Inde
     }
 
     @Override
-    public void update(T t) throws IOException {
-        updateService.update(t);
+    public void upsert(T t) throws IOException {
+        upsertService.upsert(t);
     }
 
     @Override
