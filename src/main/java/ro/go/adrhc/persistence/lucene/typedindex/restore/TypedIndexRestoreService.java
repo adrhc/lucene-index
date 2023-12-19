@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.util.collection.StreamUtils.collectToHashSet;
+import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
 @Slf4j
