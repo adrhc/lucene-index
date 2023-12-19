@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
-import ro.go.adrhc.util.collection.StreamCounter;
+import ro.go.adrhc.util.stream.StreamCounter;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.util.collection.StreamUtils.stream;
+import static ro.go.adrhc.util.stream.StreamUtils.stream;
 
 @Slf4j
 public class TypedIndexAdder<T> extends AbstractTypedIndex<T> {

@@ -6,7 +6,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.util.collection.StreamCounter;
+import ro.go.adrhc.util.stream.StreamCounter;
 
 import java.io.Closeable;
 import java.io.IOException;
