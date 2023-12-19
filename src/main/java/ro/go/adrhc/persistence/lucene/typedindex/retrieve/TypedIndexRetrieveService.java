@@ -1,16 +1,22 @@
 package ro.go.adrhc.persistence.lucene.typedindex.retrieve;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.search.BooleanQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ro.go.adrhc.persistence.lucene.core.query.BooleanQueryFactory.shouldSatisfy;
 
 @RequiredArgsConstructor
 public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID, T> {
@@ -58,5 +64,14 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
     public Optional<T> findById(ID id) throws IOException {
         return oneHitIndexReaderTemplate.useOneHitReader(reader ->
                 reader.findFirst(exactQuery.newExactQuery(id)));
+    }
+
+    @Override
+    public Set<T> findByIds(Set<ID> ids) throws IOException {
+        BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(ids));
+        return indexReaderTemplate.useReader(reader -> reader
+                .findMany(idsQuery)
+                .map(ScoreAndValue::value)
+                .collect(Collectors.toSet()));
     }
 }

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -42,6 +43,11 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements Inde
     @Override
     public Optional<T> findById(ID id) throws IOException {
         return indexOperations.findById(id);
+    }
+
+    @Override
+    public Set<T> findByIds(Set<ID> ids) throws IOException {
+        return indexOperations.findByIds(ids);
     }
 
     @Override

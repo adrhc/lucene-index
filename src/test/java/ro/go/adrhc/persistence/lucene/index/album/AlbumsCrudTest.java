@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.album.AlbumFieldType.ID_QUERIES;
@@ -37,6 +39,13 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 
         indexRepository.removeById(Path.of("/albums/album4"));
         assertThat(indexRepository.findById(Path.of("/albums/album4"))).isEmpty();
+    }
+
+    @Test
+    void findByIdsTest() throws IOException {
+        Set<Album> result = indexRepository
+                .findByIds(ALBUMS.stream().map(Album::id).collect(Collectors.toSet()));
+        assertThat(result).hasSize(ALBUMS.size());
     }
 
     @Test

@@ -5,6 +5,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -20,4 +21,6 @@ public interface IndexRetrieveService<ID, T> {
     <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException;
 
     Optional<T> findById(ID id) throws IOException;
+
+    Set<T> findByIds(Set<ID> ids) throws IOException;
 }

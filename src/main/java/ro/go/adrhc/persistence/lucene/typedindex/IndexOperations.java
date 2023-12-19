@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -23,6 +24,8 @@ public interface IndexOperations<ID, T extends Identifiable<ID>> {
     List<ID> getAllIds() throws IOException;
 
     Optional<T> findById(ID id) throws IOException;
+
+    Set<T> findByIds(Set<ID> ids) throws IOException;
 
     List<T> findAllMatches(Query query) throws IOException;
 
