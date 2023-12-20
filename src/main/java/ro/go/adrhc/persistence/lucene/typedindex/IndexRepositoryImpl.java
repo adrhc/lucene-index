@@ -123,6 +123,12 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements Inde
     }
 
     @Override
+    public void removeByQuery(Query query) throws IOException {
+        indexOperations.removeByQuery(query);
+        context.commit();
+    }
+
+    @Override
     public void reset(Iterable<T> tIterable) throws IOException {
         indexOperations.reset(tIterable);
         context.commit();
