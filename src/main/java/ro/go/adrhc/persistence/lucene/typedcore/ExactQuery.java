@@ -12,11 +12,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class ExactQuery {
-    private final TypedField<?> idField;
+    private final TypedField<?> field;
     private final FieldQueries fieldQueries;
 
-    public static ExactQuery create(TypedField<?> idField) {
-        return new ExactQuery(idField, new FieldQueries(idField.name()));
+    public static ExactQuery create(TypedField<?> field) {
+        return new ExactQuery(field, new FieldQueries(field.name()));
     }
 
     public List<Query> newExactQueries(Collection<?> ids) {
@@ -24,29 +24,29 @@ public class ExactQuery {
     }
 
     public Query newExactQuery(Document document) {
-        return newExactQuery(document.getField(idField.name()));
+        return newExactQuery(document.getField(field.name()));
     }
 
     public Query newExactQuery(IndexableField field) {
-        return switch (idField.fieldType()) {
+        return switch (this.field.fieldType()) {
             case KEYWORD -> newExactQuery(field.stringValue());
             case LONG -> newExactQuery(field.numericValue().longValue());
             case INT -> newExactQuery(field.numericValue().intValue());
             default -> throw new IllegalStateException(
                     "Unexpected type %s for %s! "
-                            .formatted(idField.fieldType(), idField.name()));
+                            .formatted(this.field.fieldType(), this.field.name()));
         };
     }
 
     public Query newExactQuery(Object typedValue) {
-        Object idFieldValue = idField.toIndexableFieldValue(typedValue);
-        return switch (idField.fieldType()) {
+        Object idFieldValue = field.toIndexableFieldValue(typedValue);
+        return switch (field.fieldType()) {
             case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
             case LONG -> fieldQueries.longEquals((Long) idFieldValue);
             case INT -> fieldQueries.intEquals((Integer) idFieldValue);
             default -> throw new IllegalStateException(
                     "Unexpected type %s for %s! "
-                            .formatted(idField.fieldType(), idField));
+                            .formatted(field.fieldType(), field));
         };
     }
 }
