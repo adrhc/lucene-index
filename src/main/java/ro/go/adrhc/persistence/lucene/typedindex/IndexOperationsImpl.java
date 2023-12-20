@@ -135,6 +135,11 @@ public class IndexOperationsImpl<ID, T extends Identifiable<ID>> implements Inde
     }
 
     @Override
+    public void removeByQuery(Query query) throws IOException {
+        removeService.removeByQuery(query);
+    }
+
+    @Override
     public void reset(Iterable<T> tIterable) throws IOException {
         resetService.reset(tIterable);
     }

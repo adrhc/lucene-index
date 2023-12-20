@@ -58,6 +58,8 @@ public interface IndexOperations<ID, T extends Identifiable<ID>> {
 
     void removeById(ID id) throws IOException;
 
+    void removeByQuery(Query query) throws IOException;
+
     void reset(Iterable<T> tIterable) throws IOException;
 
     void reset(Stream<T> tStream) throws IOException;

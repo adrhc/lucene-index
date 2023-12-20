@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedcore.write;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 
@@ -25,6 +26,10 @@ public class TypedIndexRemover<ID> implements Closeable {
 
     public void removeMany(Collection<? extends ID> ids) throws IOException {
         indexWriter.deleteByQueries(exactQuery.newExactQueries(ids));
+    }
+
+    public void removeByQuery(Query query) throws IOException {
+        indexWriter.deleteByQuery(query);
     }
 
     public void removeAll() throws IOException {

@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 public record TypedFieldSerde<T>(Function<T, ?> typedAccessor, Function<Object, ?> toFieldValue,
-                                 Function<IndexableField, Object> indexableFieldAccessor,
-                                 Function<Object, ?> toTypedValue) {
+        Function<IndexableField, Object> indexableFieldAccessor,
+        Function<Object, ?> toTypedValue) {
     private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
             = field -> field.storedValue().getIntValue();
     private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR

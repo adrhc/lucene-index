@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.remove;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverTemplate;
 
@@ -27,5 +28,10 @@ public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
     @Override
     public void removeById(ID id) throws IOException {
         indexRemoverTemplate.useRemover(remover -> remover.removeOne(id));
+    }
+
+    @Override
+    public void removeByQuery(Query query) throws IOException {
+        indexRemoverTemplate.useRemover(remover -> remover.removeByQuery(query));
     }
 }
