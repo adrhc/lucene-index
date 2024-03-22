@@ -11,6 +11,11 @@ public class TypedIndexFactoriesParamsDefaults {
     public static final int NUM_HITS = 10;
 
     @SneakyThrows
+    public static Analyzer defaultAnalyzer() {
+        return new AnalyzerFactory(new TokenizerProperties()).create();
+    }
+
+    @SneakyThrows
     public static Analyzer defaultAnalyzer(TokenizerProperties properties) {
         return new AnalyzerFactory(properties).create();
     }

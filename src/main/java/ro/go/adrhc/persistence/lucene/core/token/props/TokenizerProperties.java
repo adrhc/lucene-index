@@ -12,7 +12,7 @@ import java.util.Map;
 @ToString
 public class TokenizerProperties {
     private static final int DEFAULT_MIN_TOKEN_LENGTH = 2;
-    private int minTokenLength;
+    private int minTokenLength = DEFAULT_MIN_TOKEN_LENGTH;
     private List<String> fixedPatternsNotToIndex = List.of();
     private List<String> regexPatternsNotToIndex = List.of();
     private Map<String, String> charactersToReplaceBeforeIndexing = Map.of();
