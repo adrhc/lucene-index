@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.KeywordField;
 import org.apache.lucene.document.LongField;
+import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -14,6 +15,10 @@ public class FieldQueries {
 
     public static FieldQueries create(Enum<?> field) {
         return new FieldQueries(field.name());
+    }
+
+    public FuzzyQuery fuzzy(String value) {
+        return FuzzyQueryFactory.create(2, fieldName, value);
     }
 
     public PrefixQuery startsWith(String prefix) {
