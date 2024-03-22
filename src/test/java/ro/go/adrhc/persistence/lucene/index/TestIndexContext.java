@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplacement.caseInsensitive;
-import static ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParamsDefaults.defaultAnalyzer;
+import static ro.go.adrhc.persistence.lucene.typedindex.factories.AnalyzerFactory.defaultAnalyzer;
 
 public class TestIndexContext {
     public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
