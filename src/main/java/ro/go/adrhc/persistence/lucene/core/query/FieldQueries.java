@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.KeywordField;
 import org.apache.lucene.document.LongField;
+import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
+import org.apache.lucene.queries.spans.SpanNearQuery;
+import org.apache.lucene.queries.spans.SpanQuery;
 import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+
+import java.util.Collection;
 
 import static org.apache.lucene.util.automaton.LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE;
 
@@ -17,6 +22,15 @@ public class FieldQueries {
 
     public static FieldQueries create(Enum<?> field) {
         return new FieldQueries(field.name());
+    }
+
+    /**
+     * fuzzy search "token1 token2 ... tokenN" phrase (i.e. words placed next to each other)
+     */
+    public SpanNearQuery closeFuzzyWords(Collection<String> tokens) {
+        SpanQuery[] clausesIn = tokens.stream().map(this::fuzzy)
+                .map(SpanMultiTermQueryWrapper::new).toArray(SpanQuery[]::new);
+        return new SpanNearQuery(clausesIn, 0, true);
     }
 
     public FuzzyQuery fuzzy(String value) {
