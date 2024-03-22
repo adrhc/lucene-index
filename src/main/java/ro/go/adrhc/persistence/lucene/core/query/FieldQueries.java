@@ -9,6 +9,8 @@ import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
+import static org.apache.lucene.util.automaton.LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE;
+
 @RequiredArgsConstructor
 public class FieldQueries {
     private final String fieldName;
@@ -18,7 +20,11 @@ public class FieldQueries {
     }
 
     public FuzzyQuery fuzzy(String value) {
-        return FuzzyQueryFactory.create(2, fieldName, value);
+        return fuzzy(MAXIMUM_SUPPORTED_DISTANCE, value);
+    }
+
+    public FuzzyQuery fuzzy(int levenshteinDistance, String value) {
+        return FuzzyQueryFactory.create(levenshteinDistance, fieldName, value);
     }
 
     public PrefixQuery startsWith(String prefix) {
