@@ -7,9 +7,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class TokenizationUtils {
@@ -25,6 +23,12 @@ public class TokenizationUtils {
 
     public Set<String> tokenize(String text) throws IOException {
         try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
+            return new HashSet<>(doTokenize(tokenStream));
+        }
+    }
+
+    public List<String> tokenizeAsList(String text) throws IOException {
+        try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
             return doTokenize(tokenStream);
         }
     }
@@ -37,9 +41,9 @@ public class TokenizationUtils {
         return analyzer.normalize(fieldName, text).utf8ToString();
     }
 
-    private Set<String> doTokenize(TokenStream tokenStream) throws IOException {
+    private List<String> doTokenize(TokenStream tokenStream) throws IOException {
         tokenStream.reset();
-        Set<String> tokens = new HashSet<>();
+        List<String> tokens = new ArrayList<>();
         CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
         while (tokenStream.incrementToken()) {
             tokens.add(termAttribute.toString());
