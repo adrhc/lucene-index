@@ -26,8 +26,10 @@ public class FieldQueries {
 
     /**
      * fuzzy search "token1 token2 ... tokenN" phrase (i.e. words placed next to each other)
+     * <p>
+     * tokens are normalized words!
      */
-    public SpanNearQuery closeFuzzyWords(Collection<String> tokens) {
+    public SpanNearQuery closeFuzzyTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream().map(this::fuzzy)
                 .map(SpanMultiTermQueryWrapper::new).toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
