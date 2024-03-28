@@ -14,7 +14,7 @@ public class PeopleGenerator {
             new Person(1L, "#Person1", TokenizationUtilsTest.TEXT,
                     "alias_Keyword1", "alias_Word1", "alias_Phrase1",
                     111, 111L, "misc1"),
-            new Person(2L, "#Person2", "IMG-20210725-WA0029 ccc_ddd CAșț.jpeg",
+            new Person(2L, "#Person2", "IMG-20210725-WA0029 ccc_ddd an CAșț.jpeg",
                     "alias_Keyword2", "alias_Word2", "alias_Phrase2",
                     222, 222L, "misc2"),
             new Person(3L,

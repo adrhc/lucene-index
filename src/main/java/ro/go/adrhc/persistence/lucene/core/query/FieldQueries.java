@@ -7,6 +7,7 @@ import org.apache.lucene.document.LongField;
 import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.queries.spans.SpanNearQuery;
 import org.apache.lucene.queries.spans.SpanQuery;
+import org.apache.lucene.queries.spans.SpanTermQuery;
 import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
@@ -30,13 +31,19 @@ public class FieldQueries {
      * tokens are normalized words!
      */
     public SpanNearQuery closeFuzzyTokens(Collection<String> tokens) {
-        SpanQuery[] clausesIn = tokens.stream().map(this::fuzzy)
-                .map(SpanMultiTermQueryWrapper::new).toArray(SpanQuery[]::new);
+        SpanQuery[] clausesIn = tokens.stream()
+                .map(t -> t.length() <= 2 ? spanTermQuery(t)
+                        : new SpanMultiTermQueryWrapper<>(fuzzy(t)))
+                .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
     }
 
     public FuzzyQuery fuzzy(String value) {
         return fuzzy(MAXIMUM_SUPPORTED_DISTANCE, value);
+    }
+
+    public SpanTermQuery spanTermQuery(String value) {
+        return SpanTermQueryFactory.create(fieldName, value);
     }
 
     public FuzzyQuery fuzzy(int levenshteinDistance, String value) {

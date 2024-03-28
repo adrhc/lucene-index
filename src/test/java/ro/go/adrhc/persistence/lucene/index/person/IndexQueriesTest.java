@@ -18,6 +18,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class IndexQueriesTest extends AbstractPersonsIndexTest {
+    private static final Person PERSON2 = PEOPLE.get(1);
     private static final Person PERSON3 = PEOPLE.get(2);
 
     @Test
@@ -27,6 +28,16 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
                 .findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
         assertThat(result).hasSize(1);
         assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+    }
+
+    @Test
+    void closeFuzzyTokens() throws IOException {
+        // tokens (i.e. other than KeywordField) must be normalized!
+        List<Person> result = indexRepository.findAllMatches(
+                NAME_QUERIES.closeFuzzyTokens(List.of("ddd", "an", "cast")));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).id()).isEqualTo(PERSON2.id());
     }
 
     @Test
