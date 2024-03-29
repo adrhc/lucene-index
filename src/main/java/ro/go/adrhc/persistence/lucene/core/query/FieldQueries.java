@@ -15,17 +15,14 @@ import org.apache.lucene.search.TermQuery;
 
 import java.util.Collection;
 
+import static ro.go.adrhc.persistence.lucene.core.query.TermQueryFactory.shouldUseTermQuery;
+
 @RequiredArgsConstructor
 public class FieldQueries {
-    public static final int MAX_TERM_LENGTH_FOR_EXACT_QUERY = 2;
     private final String fieldName;
 
     public static FieldQueries create(Enum<?> field) {
         return new FieldQueries(field.name());
-    }
-
-    public static boolean shouldUseExactQuery(String value) {
-        return value.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY;
     }
 
     /**
@@ -35,7 +32,7 @@ public class FieldQueries {
      */
     public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> shouldUseExactQuery(t) ? spanTermQuery(t)
+                .map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
                         : maxFuzzinessSpanMultiTermQueryWrapper(t))
                 .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
@@ -43,8 +40,8 @@ public class FieldQueries {
 
     public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> t.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
-                        ? spanTermQuery(t) : lowFuzzinessSpanMultiTermQueryWrapper(t))
+                .map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
+                        : lowFuzzinessSpanMultiTermQueryWrapper(t))
                 .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
     }

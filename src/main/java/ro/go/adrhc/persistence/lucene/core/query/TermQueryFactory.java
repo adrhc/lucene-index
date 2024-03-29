@@ -10,6 +10,12 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class TermQueryFactory {
+    public static final int MAX_TERM_LENGTH_FOR_EXACT_QUERY = 2;
+
+    public static boolean shouldUseTermQuery(String value) {
+        return value.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY;
+    }
+
     public static TermQuery create(Enum<?> fieldType, String text) {
         return create(fieldType.name(), text);
     }
