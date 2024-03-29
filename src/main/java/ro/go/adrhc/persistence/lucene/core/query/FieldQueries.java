@@ -24,20 +24,24 @@ public class FieldQueries {
         return new FieldQueries(field.name());
     }
 
+    public static boolean shouldUseExactQuery(String value) {
+        return value.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY;
+    }
+
     /**
      * fuzzy search "token1 token2 ... tokenN" phrase (i.e. words placed next to each other)
      * <p>
      * tokens are normalized words!
      */
-    public SpanNearQuery maxFuzzinessCloseTokens(Collection<String> tokens) {
+    public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> t.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
-                        ? spanTermQuery(t) : maxFuzzinessSpanMultiTermQueryWrapper(t))
+                .map(t -> shouldUseExactQuery(t) ? spanTermQuery(t)
+                        : maxFuzzinessSpanMultiTermQueryWrapper(t))
                 .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
     }
 
-    public SpanNearQuery lowFuzzinessCloseTokens(Collection<String> tokens) {
+    public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
                 .map(t -> t.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
                         ? spanTermQuery(t) : lowFuzzinessSpanMultiTermQueryWrapper(t))
@@ -45,21 +49,30 @@ public class FieldQueries {
         return new SpanNearQuery(clausesIn, 0, true);
     }
 
-    public SpanNearQuery closeTokens(Collection<String> tokens) {
+    public SpanNearQuery nearTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
                 .map(this::spanTermQuery)
                 .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
     }
 
+    /**
+     * Useful with SpanNearQuery.
+     */
     public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(String value) {
         return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
     }
 
+    /**
+     * Useful with SpanNearQuery.
+     */
     public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(String value) {
         return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
     }
 
+    /**
+     * Useful with SpanNearQuery.
+     */
     public SpanTermQuery spanTermQuery(String value) {
         return SpanTermQueryFactory.create(fieldName, value);
     }

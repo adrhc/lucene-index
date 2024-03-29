@@ -34,7 +34,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
     void closeFuzzyTokens() throws IOException {
         // tokens (i.e. other than KeywordField) must be normalized!
         List<Person> result = indexRepository.findAllMatches(
-                NAME_QUERIES.maxFuzzinessCloseTokens(List.of("ddd", "an", "cast")));
+                NAME_QUERIES.maxFuzzinessNearTokens(List.of("ddd", "an", "cast")));
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).id()).isEqualTo(PERSON2.id());
