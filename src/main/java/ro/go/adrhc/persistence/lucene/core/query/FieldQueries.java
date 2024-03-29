@@ -15,10 +15,9 @@ import org.apache.lucene.search.TermQuery;
 
 import java.util.Collection;
 
-import static org.apache.lucene.util.automaton.LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE;
-
 @RequiredArgsConstructor
 public class FieldQueries {
+    public static final int MAX_TERM_LENGTH_FOR_EXACT_QUERY = 2;
     private final String fieldName;
 
     public static FieldQueries create(Enum<?> field) {
@@ -30,20 +29,47 @@ public class FieldQueries {
      * <p>
      * tokens are normalized words!
      */
-    public SpanNearQuery closeFuzzyTokens(Collection<String> tokens) {
+    public SpanNearQuery maxFuzzinessCloseTokens(Collection<String> tokens) {
         SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> t.length() <= 2 ? spanTermQuery(t)
-                        : new SpanMultiTermQueryWrapper<>(fuzzy(t)))
+                .map(t -> t.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
+                        ? spanTermQuery(t) : maxFuzzinessSpanMultiTermQueryWrapper(t))
                 .toArray(SpanQuery[]::new);
         return new SpanNearQuery(clausesIn, 0, true);
     }
 
-    public FuzzyQuery fuzzy(String value) {
-        return fuzzy(MAXIMUM_SUPPORTED_DISTANCE, value);
+    public SpanNearQuery lowFuzzinessCloseTokens(Collection<String> tokens) {
+        SpanQuery[] clausesIn = tokens.stream()
+                .map(t -> t.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
+                        ? spanTermQuery(t) : lowFuzzinessSpanMultiTermQueryWrapper(t))
+                .toArray(SpanQuery[]::new);
+        return new SpanNearQuery(clausesIn, 0, true);
+    }
+
+    public SpanNearQuery closeTokens(Collection<String> tokens) {
+        SpanQuery[] clausesIn = tokens.stream()
+                .map(this::spanTermQuery)
+                .toArray(SpanQuery[]::new);
+        return new SpanNearQuery(clausesIn, 0, true);
+    }
+
+    public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(String value) {
+        return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
+    }
+
+    public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(String value) {
+        return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
     }
 
     public SpanTermQuery spanTermQuery(String value) {
         return SpanTermQueryFactory.create(fieldName, value);
+    }
+
+    public FuzzyQuery maxFuzziness(String value) {
+        return FuzzyQueryFactory.maxFuzziness(fieldName, value);
+    }
+
+    public FuzzyQuery lowFuzziness(String value) {
+        return FuzzyQueryFactory.lowFuzziness(fieldName, value);
     }
 
     public FuzzyQuery fuzzy(int levenshteinDistance, String value) {
