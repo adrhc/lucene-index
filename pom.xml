@@ -30,16 +30,14 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
 
-        <adrhc-utilities.version>1.0-SNAPSHOT</adrhc-utilities.version>
-        <!--<lucene.version>8.11.2</lucene.version>-->
-        <lucene.version>9.8.0</lucene.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-text.version>1.10.0</commons-text.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
-        <sneakythrow.version>1.2.0</sneakythrow.version>
+        <maven-compiler-plugin-version>3.13.0</maven-compiler-plugin-version>
+        <maven-surefire-failsafe-plugin-version>3.2.5</maven-surefire-failsafe-plugin-version>
 
-        <!--        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>-->
-        <maven-surefire-failsafe-plugin.version>3.1.2</maven-surefire-failsafe-plugin.version>
+        <adrhc-utilities.version>1.0-SNAPSHOT</adrhc-utilities.version>
+        <lucene.version>9.10.0</lucene.version>
+        <commons-text.version>1.12.0</commons-text.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+
     </properties>
 
     <dependencies>
@@ -54,13 +52,6 @@
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -73,12 +64,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.rainerhahnekamp</groupId>
-            <artifactId>sneakythrow</artifactId>
-            <version>${sneakythrow.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
@@ -139,7 +124,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!--                <version>${maven-compiler-plugin.version}</version>-->
+                <version>${maven-compiler-plugin-version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -150,7 +135,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-failsafe-plugin.version}</version>
+                <version>${maven-surefire-failsafe-plugin-version}</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
@@ -158,7 +143,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-surefire-failsafe-plugin.version}</version>
+                <version>${maven-surefire-failsafe-plugin-version}</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
