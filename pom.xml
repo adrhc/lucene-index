@@ -5,13 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <!-- https://github.com/spring-projects/spring-shell/issues/324 -->
         <version>3.2.4</version>
-        <!--
-            Spring Boot [2.7.0] is not compatible with this Spring Cloud release train',
-            action = 'Change Spring Boot version to one of the following versions [2.4.x, 2.5.x].
-        -->
-        <!--<version>2.7.0</version>-->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -25,7 +19,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>20</java.version>
+        <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
