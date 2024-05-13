@@ -27,6 +27,7 @@ public enum PersonFieldType implements TypedField<Person> {
     aliasPhrase(PHRASE, Person::aliasPhrase),
     intField(INT, intField(Person::intField), false),
     longField(LONG, longField(Person::longField), false),
+    instantField(LONG, instantField(Person::instantField), false),
     storedOnlyField(STORED, Person::storedOnlyField);
 
     public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);

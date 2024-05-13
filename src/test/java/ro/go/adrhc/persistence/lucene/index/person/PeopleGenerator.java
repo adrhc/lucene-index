@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -13,15 +14,16 @@ public class PeopleGenerator {
             // String storedOnlyField
             new Person(1L, "#Person1", TokenizationUtilsTest.TEXT,
                     "alias_Keyword1", "alias_Word1", "alias_Phrase1",
-                    111, 111L, "misc1"),
+                    111, 111L, Instant.parse("2001-01-02T03:04:05.06Z"), "misc1"),
             new Person(2L, "#Person2", "IMG-20210725-WA0029 ccc_ddd an CAșț.jpeg",
                     "alias_Keyword2", "alias_Word2", "alias_Phrase2",
-                    222, 222L, "misc2"),
+                    222, 222L, Instant.parse("2002-01-02T03:04:05.06Z"), "misc2"),
             new Person(3L,
                     "Ping_Pong #name (Original)Person222 ăĂîÎșȘțȚ123",
                     "Ping_Pong #name (Original)Person222 ăĂîÎșȘțȚ123",
                     "alias_KeywordăĂîÎșȘțȚ123", "alias_WordăĂîÎșȘțȚ123",
-                    "alias_PhraseăĂîÎșȘțȚ123", 333, 333L, "misc3"));
+                    "alias_PhraseăĂîÎșȘțȚ123", 333, 333L,
+                    Instant.parse("2003-01-02T03:04:05.06Z"), "misc3"));
 
     public static List<Person> generatePeopleList(long size) {
         return LongStream.range(0, size)
@@ -39,6 +41,6 @@ public class PeopleGenerator {
                 "#Person" + i, TokenizationUtilsTest.TEXT + " nameșț" + i,
                 "alias_Keyword" + (i % 2), "alias_Word" + (i % 2),
                 "alias_Phrase" + (i % 2), (int) i, i,
-                "storedOnlyField" + (i % 100));
+                Instant.parse("2000-01-02T03:04:05.06Z"), "storedOnlyField" + (i % 100));
     }
 }
