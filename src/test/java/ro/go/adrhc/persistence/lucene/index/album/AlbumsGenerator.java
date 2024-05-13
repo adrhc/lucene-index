@@ -27,7 +27,11 @@ public class AlbumsGenerator {
     }
 
     public static Album generateAlbum(int i) {
-        return new Album(Path.of("/albums/album" + i),
+        return generateAlbum(i, Path.of("/albums/album" + i));
+    }
+
+    public static Album generateAlbum(int i, Path path) {
+        return new Album(path,
                 "Ping_Pong #name (Original)Person222 ăĂîÎșȘțȚ123" + (i % 100),
                 "storedOnlyField" + (i % 100));
     }

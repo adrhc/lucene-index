@@ -17,7 +17,8 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 
 	public static <T> TypedFieldSerde<T> stringField(
 			Function<T, ?> typedAccessor, Function<Object, ?> toTypedValue) {
-		return new TypedFieldSerde<>(typedAccessor, Object::toString,
+		return new TypedFieldSerde<>(typedAccessor,
+				it -> it == null ? null : it.toString(),
 				IndexableField::stringValue, toTypedValue);
 	}
 
@@ -35,11 +36,12 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 	}
 
 	public static <T> TypedFieldSerde<T> instantField(Function<T, Instant> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor, it -> ((Instant) it).toEpochMilli(),
+		return new TypedFieldSerde<>(typedAccessor,
+				it -> it == null ? null : ((Instant) it).toEpochMilli(),
 				LONG_FIELD_ACCESSOR, it -> Instant.ofEpochMilli((long) it));
 	}
 
 	public static <T> TypedFieldSerde<T> pathToString(Function<T, Path> typedAccessor) {
-		return stringField(typedAccessor, it -> Path.of((String) it));
+		return stringField(typedAccessor, it -> it == null ? null : Path.of((String) it));
 	}
 }

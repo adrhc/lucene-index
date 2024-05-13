@@ -37,10 +37,14 @@ public class PeopleGenerator {
     }
 
     public static Person generatePerson(long i) {
+        return generatePerson(i, Instant.parse("2000-01-02T03:04:05.06Z"));
+    }
+
+    public static Person generatePerson(long i, Instant instantField) {
         return new Person(i,
                 "#Person" + i, TokenizationUtilsTest.TEXT + " nameșț" + i,
                 "alias_Keyword" + (i % 2), "alias_Word" + (i % 2),
                 "alias_Phrase" + (i % 2), (int) i, i,
-                Instant.parse("2000-01-02T03:04:05.06Z"), "storedOnlyField" + (i % 100));
+                instantField, "storedOnlyField" + (i % 100));
     }
 }
