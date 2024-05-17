@@ -9,15 +9,15 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TypedIndexUpsertService<T extends Identifiable<?>> implements IndexUpsertService<T> {
-    private final TypedIndexUpdaterTemplate<T> indexUpdaterTemplate;
+	private final TypedIndexUpdaterTemplate<T> indexUpdaterTemplate;
 
-    public static <T extends Identifiable<?>>
-    TypedIndexUpsertService<T> create(TypedIndexUpdaterParams<T> params) {
-        return new TypedIndexUpsertService<>(TypedIndexUpdaterTemplate.create(params));
-    }
+	public static <T extends Identifiable<?>>
+	TypedIndexUpsertService<T> create(TypedIndexUpdaterParams<T> params) {
+		return new TypedIndexUpsertService<>(TypedIndexUpdaterTemplate.create(params));
+	}
 
-    @Override
-    public void upsert(T t) throws IOException {
-        indexUpdaterTemplate.useUpdater(updater -> updater.update(t));
-    }
+	@Override
+	public void upsert(T t) throws IOException {
+		indexUpdaterTemplate.useUpdater(updater -> updater.update(t));
+	}
 }

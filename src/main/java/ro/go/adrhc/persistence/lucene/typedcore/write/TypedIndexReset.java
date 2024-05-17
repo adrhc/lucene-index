@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 public class TypedIndexReset<T> extends AbstractTypedIndex<T> {
-    public TypedIndexReset(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
-        super(toDocumentConverter, indexWriter);
-    }
+	public TypedIndexReset(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
+		super(toDocumentConverter, indexWriter);
+	}
 
-    public static <T> TypedIndexReset<T> create(AbstractTypedIndexParams<T> params) {
-        return new TypedIndexReset<>(TypedToDocumentConverter.create(params),
-                new DocsIndexWriter(params.getIndexWriter()));
-    }
+	public static <T> TypedIndexReset<T> create(AbstractTypedIndexParams<T> params) {
+		return new TypedIndexReset<>(TypedToDocumentConverter.create(params),
+				new DocsIndexWriter(params.getIndexWriter()));
+	}
 
-    public void reset(Stream<T> stateAfterReset) throws IOException {
-        docsIndexWriter.reset(toDocuments(stateAfterReset));
-    }
+	public void reset(Stream<T> stateAfterReset) throws IOException {
+		docsIndexWriter.reset(toDocuments(stateAfterReset));
+	}
 }

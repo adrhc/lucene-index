@@ -11,16 +11,16 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class TypedIndexResetService<T> implements IndexResetService<T> {
-    private final TypedIndexResetTemplate<T> indexResetTemplate;
+	private final TypedIndexResetTemplate<T> indexResetTemplate;
 
-    /**
-     * constructor parameters union
-     */
-    public static <T> TypedIndexResetService<T> create(AbstractTypedIndexParams<T> params) {
-        return new TypedIndexResetService<>(TypedIndexResetTemplate.create(params));
-    }
+	/**
+	 * constructor parameters union
+	 */
+	public static <T> TypedIndexResetService<T> create(AbstractTypedIndexParams<T> params) {
+		return new TypedIndexResetService<>(TypedIndexResetTemplate.create(params));
+	}
 
-    public void reset(Stream<T> tStream) throws IOException {
-        indexResetTemplate.useReset(resetWriter -> resetWriter.reset(tStream));
-    }
+	public void reset(Stream<T> tStream) throws IOException {
+		indexResetTemplate.useReset(resetWriter -> resetWriter.reset(tStream));
+	}
 }

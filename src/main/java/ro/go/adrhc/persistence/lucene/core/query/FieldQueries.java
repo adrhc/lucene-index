@@ -19,90 +19,90 @@ import static ro.go.adrhc.persistence.lucene.core.query.TermQueryFactory.shouldU
 
 @RequiredArgsConstructor
 public class FieldQueries {
-    private final String fieldName;
+	private final String fieldName;
 
-    public static FieldQueries create(Enum<?> field) {
-        return new FieldQueries(field.name());
-    }
+	public static FieldQueries create(Enum<?> field) {
+		return new FieldQueries(field.name());
+	}
 
-    /**
-     * fuzzy search "token1 token2 ... tokenN" phrase (i.e. words placed next to each other)
-     * <p>
-     * tokens are normalized words!
-     */
-    public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
-        SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
-                        : maxFuzzinessSpanMultiTermQueryWrapper(t))
-                .toArray(SpanQuery[]::new);
-        return new SpanNearQuery(clausesIn, 0, true);
-    }
+	/**
+	 * fuzzy search "token1 token2 ... tokenN" phrase (i.e. words placed next to each other)
+	 * <p>
+	 * tokens are normalized words!
+	 */
+	public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
+		SpanQuery[] clausesIn = tokens.stream()
+				.map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
+						: maxFuzzinessSpanMultiTermQueryWrapper(t))
+				.toArray(SpanQuery[]::new);
+		return new SpanNearQuery(clausesIn, 0, true);
+	}
 
-    public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
-        SpanQuery[] clausesIn = tokens.stream()
-                .map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
-                        : lowFuzzinessSpanMultiTermQueryWrapper(t))
-                .toArray(SpanQuery[]::new);
-        return new SpanNearQuery(clausesIn, 0, true);
-    }
+	public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
+		SpanQuery[] clausesIn = tokens.stream()
+				.map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
+						: lowFuzzinessSpanMultiTermQueryWrapper(t))
+				.toArray(SpanQuery[]::new);
+		return new SpanNearQuery(clausesIn, 0, true);
+	}
 
-    public SpanNearQuery nearTokens(Collection<String> tokens) {
-        SpanQuery[] clausesIn = tokens.stream()
-                .map(this::spanTermQuery)
-                .toArray(SpanQuery[]::new);
-        return new SpanNearQuery(clausesIn, 0, true);
-    }
+	public SpanNearQuery nearTokens(Collection<String> tokens) {
+		SpanQuery[] clausesIn = tokens.stream()
+				.map(this::spanTermQuery)
+				.toArray(SpanQuery[]::new);
+		return new SpanNearQuery(clausesIn, 0, true);
+	}
 
-    /**
-     * Useful with SpanNearQuery.
-     */
-    public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(String value) {
-        return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
-    }
+	/**
+	 * Useful with SpanNearQuery.
+	 */
+	public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(String value) {
+		return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
+	}
 
-    /**
-     * Useful with SpanNearQuery.
-     */
-    public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(String value) {
-        return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
-    }
+	/**
+	 * Useful with SpanNearQuery.
+	 */
+	public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(String value) {
+		return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
+	}
 
-    /**
-     * Useful with SpanNearQuery.
-     */
-    public SpanTermQuery spanTermQuery(String value) {
-        return SpanTermQueryFactory.create(fieldName, value);
-    }
+	/**
+	 * Useful with SpanNearQuery.
+	 */
+	public SpanTermQuery spanTermQuery(String value) {
+		return SpanTermQueryFactory.create(fieldName, value);
+	}
 
-    public FuzzyQuery maxFuzziness(String value) {
-        return FuzzyQueryFactory.maxFuzziness(fieldName, value);
-    }
+	public FuzzyQuery maxFuzziness(String value) {
+		return FuzzyQueryFactory.maxFuzziness(fieldName, value);
+	}
 
-    public FuzzyQuery lowFuzziness(String value) {
-        return FuzzyQueryFactory.lowFuzziness(fieldName, value);
-    }
+	public FuzzyQuery lowFuzziness(String value) {
+		return FuzzyQueryFactory.lowFuzziness(fieldName, value);
+	}
 
-    public FuzzyQuery fuzzy(int levenshteinDistance, String value) {
-        return FuzzyQueryFactory.create(levenshteinDistance, fieldName, value);
-    }
+	public FuzzyQuery fuzzy(int levenshteinDistance, String value) {
+		return FuzzyQueryFactory.create(levenshteinDistance, fieldName, value);
+	}
 
-    public PrefixQuery startsWith(String prefix) {
-        return PrefixQueryFactory.create(fieldName, prefix);
-    }
+	public PrefixQuery startsWith(String prefix) {
+		return PrefixQueryFactory.create(fieldName, prefix);
+	}
 
-    public TermQuery tokenEquals(String value) {
-        return TermQueryFactory.create(fieldName, value);
-    }
+	public TermQuery tokenEquals(String value) {
+		return TermQueryFactory.create(fieldName, value);
+	}
 
-    public Query keywordEquals(String value) {
-        return KeywordField.newExactQuery(fieldName, value);
-    }
+	public Query keywordEquals(String value) {
+		return KeywordField.newExactQuery(fieldName, value);
+	}
 
-    public Query intEquals(int value) {
-        return IntPoint.newExactQuery(fieldName, value);
-    }
+	public Query intEquals(int value) {
+		return IntPoint.newExactQuery(fieldName, value);
+	}
 
-    public Query longEquals(long value) {
-        return LongField.newExactQuery(fieldName, value);
-    }
+	public Query longEquals(long value) {
+		return LongField.newExactQuery(fieldName, value);
+	}
 }

@@ -11,33 +11,33 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class TypedIndexRemover<ID> implements Closeable {
-    private final ExactQuery exactQuery;
-    private final DocsIndexWriter indexWriter;
+	private final ExactQuery exactQuery;
+	private final DocsIndexWriter indexWriter;
 
-    public static <ID> TypedIndexRemover<ID>
-    create(TypedIndexRemoverParams params) {
-        ExactQuery exactQuery = ExactQuery.create(params.getIdField());
-        return new TypedIndexRemover<>(exactQuery, new DocsIndexWriter(params.getIndexWriter()));
-    }
+	public static <ID> TypedIndexRemover<ID>
+	create(TypedIndexRemoverParams params) {
+		ExactQuery exactQuery = ExactQuery.create(params.getIdField());
+		return new TypedIndexRemover<>(exactQuery, new DocsIndexWriter(params.getIndexWriter()));
+	}
 
-    public void removeOne(ID id) throws IOException {
-        indexWriter.deleteByQuery(exactQuery.newExactQuery(id));
-    }
+	public void removeOne(ID id) throws IOException {
+		indexWriter.deleteByQuery(exactQuery.newExactQuery(id));
+	}
 
-    public void removeMany(Collection<? extends ID> ids) throws IOException {
-        indexWriter.deleteByQueries(exactQuery.newExactQueries(ids));
-    }
+	public void removeMany(Collection<? extends ID> ids) throws IOException {
+		indexWriter.deleteByQueries(exactQuery.newExactQueries(ids));
+	}
 
-    public void removeByQuery(Query query) throws IOException {
-        indexWriter.deleteByQuery(query);
-    }
+	public void removeByQuery(Query query) throws IOException {
+		indexWriter.deleteByQuery(query);
+	}
 
-    public void removeAll() throws IOException {
-        indexWriter.deleteAll();
-    }
+	public void removeAll() throws IOException {
+		indexWriter.deleteAll();
+	}
 
-    @Override
-    public void close() throws IOException {
-        indexWriter.close();
-    }
+	@Override
+	public void close() throws IOException {
+		indexWriter.close();
+	}
 }

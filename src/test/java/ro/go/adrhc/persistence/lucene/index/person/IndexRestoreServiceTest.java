@@ -15,18 +15,18 @@ import static ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSourceF
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
-    @Test
-    void restoreTest() throws IOException {
-        indexRepository.addOne(generatePerson(4));
+	@Test
+	void restoreTest() throws IOException {
+		indexRepository.addOne(generatePerson(4));
 
-        indexRepository.removeById(3L);
+		indexRepository.removeById(3L);
 
-        assertThat(indexRepository.findById(3L)).isEmpty();
-        assertThat(indexRepository.findById(4L)).isPresent();
+		assertThat(indexRepository.findById(3L)).isEmpty();
+		assertThat(indexRepository.findById(4L)).isPresent();
 
-        indexRepository.restore(createCachedDataSource(PEOPLE));
+		indexRepository.restore(createCachedDataSource(PEOPLE));
 
-        assertThat(indexRepository.findById(3L)).isPresent();
-        assertThat(indexRepository.findById(4L)).isEmpty();
-    }
+		assertThat(indexRepository.findById(3L)).isPresent();
+		assertThat(indexRepository.findById(4L)).isEmpty();
+	}
 }

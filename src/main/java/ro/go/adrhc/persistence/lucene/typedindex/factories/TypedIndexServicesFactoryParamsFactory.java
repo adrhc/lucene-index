@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedLuceneIndexServicesFactoryParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.typedindex.factories.AnalyzerFactor
 import static ro.go.adrhc.persistence.lucene.typedindex.factories.AnalyzerFactory.defaultAnalyzer;
 
 @UtilityClass
-public class TypedIndexFactoriesParamsFactory {
+public class TypedIndexServicesFactoryParamsFactory {
     /**
      * defaults: analyzer, numHits, searchResultFilter
      * <p>
@@ -28,8 +28,8 @@ public class TypedIndexFactoriesParamsFactory {
      * numHits is set to NUM_HITS
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
         return create(tClass, tFieldEnumClass, tokenizerProperties, _ -> true, indexPath);
     }
 
@@ -40,10 +40,10 @@ public class TypedIndexFactoriesParamsFactory {
      * numHits is set to NUM_HITS
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                TokenizerProperties tokenizerProperties,
-                                SearchResultFilter<T> searchResultFilter,
-                                Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties,
+            SearchResultFilter<T> searchResultFilter,
+            Path indexPath) throws IOException {
         return create(tClass, tFieldEnumClass, tokenizerProperties,
                 searchResultFilter, NUM_HITS, indexPath);
     }
@@ -54,10 +54,10 @@ public class TypedIndexFactoriesParamsFactory {
      * tokenizerProperties is used to create the Analyzer
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                TokenizerProperties tokenizerProperties,
-                                SearchResultFilter<T> searchResultFilter,
-                                int numHits, Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            TokenizerProperties tokenizerProperties,
+            SearchResultFilter<T> searchResultFilter,
+            int numHits, Path indexPath) throws IOException {
         return create(tClass, tFieldEnumClass,
                 defaultAnalyzer(tokenizerProperties),
                 searchResultFilter, numHits, indexPath);
@@ -69,8 +69,8 @@ public class TypedIndexFactoriesParamsFactory {
      * searchResultFilter is set to "it -> true"
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                int numHits, Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            int numHits, Path indexPath) throws IOException {
         return create(tClass, tFieldEnumClass,
                 defaultAnalyzer(), it -> true, numHits, indexPath);
     }
@@ -82,10 +82,10 @@ public class TypedIndexFactoriesParamsFactory {
      * numHits is set to NUM_HITS
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            Path indexPath) throws IOException {
         return create(tClass, tFieldEnumClass,
-                defaultAnalyzer(), it -> true, NUM_HITS, indexPath);
+                defaultAnalyzer(), _ -> true, NUM_HITS, indexPath);
     }
 
     /**
@@ -94,14 +94,14 @@ public class TypedIndexFactoriesParamsFactory {
      * idField is determined from tFieldEnumClass
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-    TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-                                Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
-                                int numHits, Path indexPath) throws IOException {
+    TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
+            Analyzer analyzer, SearchResultFilter<T> searchResultFilter,
+            int numHits, Path indexPath) throws IOException {
         IndexWriter indexWriter = IndexWriterFactory.fsWriter(analyzer, indexPath);
         IndexReaderPool indexReaderPool = new IndexReaderPool(indexWriter);
         TypedField<T> idField = TypedField.getIdField(tFieldEnumClass);
-        return new TypedIndexContext<>(tClass, EnumSet.allOf(tFieldEnumClass),
+        return new TypedLuceneIndexServicesFactoryParams<>(tClass, EnumSet.allOf(tFieldEnumClass),
                 idField, indexWriter.getAnalyzer(), indexWriter, indexReaderPool,
-                numHits, searchResultFilter, indexPath);
-    }
+				numHits, searchResultFilter, indexPath);
+	}
 }

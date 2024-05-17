@@ -11,15 +11,15 @@ import java.util.Map;
 @Getter
 @ToString
 public class TokenizerProperties {
-    private static final int DEFAULT_MIN_TOKEN_LENGTH = 2;
-    private int minTokenLength = DEFAULT_MIN_TOKEN_LENGTH;
-    private List<String> fixedPatternsNotToIndex = List.of();
-    private List<String> regexPatternsNotToIndex = List.of();
-    private Map<String, String> charactersToReplaceBeforeIndexing = Map.of();
-    private PatternsAndReplacement regexPatternsAndReplacement = PatternsAndReplacement.EMPTY;
+	private static final int DEFAULT_MIN_TOKEN_LENGTH = 2;
+	private int minTokenLength = DEFAULT_MIN_TOKEN_LENGTH;
+	private List<String> fixedPatternsNotToIndex = List.of();
+	private List<String> regexPatternsNotToIndex = List.of();
+	private Map<String, String> charactersToReplaceBeforeIndexing = Map.of();
+	private PatternsAndReplacement regexPatternsAndReplacement = PatternsAndReplacement.EMPTY;
 
-    public void setMinTokenLength(Integer minTokenLength) {
-        this.minTokenLength = minTokenLength == null ?
-                DEFAULT_MIN_TOKEN_LENGTH : minTokenLength;
-    }
+	public void setMinTokenLength(Integer minTokenLength) {
+		this.minTokenLength = minTokenLength == null ?
+				DEFAULT_MIN_TOKEN_LENGTH : minTokenLength;
+	}
 }

@@ -4,8 +4,8 @@ import lombok.experimental.UtilityClass;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactories;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexServicesFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexServicesFactoryParams;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
@@ -16,8 +16,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 @UtilityClass
 public class IndexOperationsFactory {
     public static <ID, T extends Identifiable<ID>> IndexOperations<ID, T>
-    create(TypedIndexFactoriesParams<T> params) {
-        TypedIndexFactories<ID, T> factories = new TypedIndexFactories<>(params);
+    create(TypedIndexServicesFactoryParams<T> params) {
+        TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
         TypedIndexSearchService<T> searchService = factories.createSearchService();
         TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
         DocsCountService countService = factories.createCountService();

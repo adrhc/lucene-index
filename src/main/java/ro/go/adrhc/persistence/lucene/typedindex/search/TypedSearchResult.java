@@ -4,11 +4,11 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndValue;
 
 public record TypedSearchResult<T>(Query query, ScoreAndValue<T> scoreAndValue) {
-    public float score() {
-        return scoreAndValue.score();
-    }
+	public float score() {
+		return scoreAndValue.score();
+	}
 
-    public T value() {
-        return scoreAndValue.value();
-    }
+	public T value() {
+		return scoreAndValue.value();
+	}
 }

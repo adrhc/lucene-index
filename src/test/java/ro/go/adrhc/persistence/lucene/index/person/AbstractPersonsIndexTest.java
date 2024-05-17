@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepositoryFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedIndexContext;
+import ro.go.adrhc.persistence.lucene.typedindex.TypedLuceneIndexServicesFactoryParams;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE
 public abstract class AbstractPersonsIndexTest {
     @TempDir
     protected static Path tmpDir;
-    protected TypedIndexContext<Person> peopleIndexSpec;
+    protected TypedLuceneIndexServicesFactoryParams<Person> peopleIndexSpec;
     protected IndexRepository<Long, Person> indexRepository;
 
     @BeforeAll

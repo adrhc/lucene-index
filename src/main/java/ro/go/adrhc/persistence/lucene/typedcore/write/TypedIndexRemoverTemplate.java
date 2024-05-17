@@ -7,19 +7,19 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TypedIndexRemoverTemplate<ID> {
-    private final TypedIndexRemover<ID> indexRemover;
+	private final TypedIndexRemover<ID> indexRemover;
 
-    public static <ID>
-    TypedIndexRemoverTemplate<ID> create(TypedIndexRemoverParams params) {
-        TypedIndexRemover<ID> indexRemover = TypedIndexRemover.create(params);
-        return new TypedIndexRemoverTemplate<>(indexRemover);
-    }
+	public static <ID>
+	TypedIndexRemoverTemplate<ID> create(TypedIndexRemoverParams params) {
+		TypedIndexRemover<ID> indexRemover = TypedIndexRemover.create(params);
+		return new TypedIndexRemoverTemplate<>(indexRemover);
+	}
 
-    public <E extends Exception> void useRemover(
-            SneakyConsumer<TypedIndexRemover<ID>, E> indexRemoverConsumer)
-            throws IOException, E {
-        try (TypedIndexRemover<ID> indexRemover = this.indexRemover) {
-            indexRemoverConsumer.accept(indexRemover);
-        }
-    }
+	public <E extends Exception> void useRemover(
+			SneakyConsumer<TypedIndexRemover<ID>, E> indexRemoverConsumer)
+			throws IOException, E {
+		try (TypedIndexRemover<ID> indexRemover = this.indexRemover) {
+			indexRemoverConsumer.accept(indexRemover);
+		}
+	}
 }

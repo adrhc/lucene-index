@@ -5,7 +5,7 @@ import org.apache.lucene.analysis.Analyzer;
 import java.util.Collection;
 
 public interface TypedFieldsProviderParams<T> {
-    Analyzer getAnalyzer();
+	Analyzer getAnalyzer();
 
-    Collection<? extends TypedField<T>> getTypedFields();
+	Collection<? extends TypedField<T>> getTypedFields();
 }

@@ -7,7 +7,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexFactoriesParams;
+import ro.go.adrhc.persistence.lucene.typedindex.factories.TypedIndexServicesFactoryParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.Closeable;
@@ -18,7 +18,8 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexContext<T> implements Closeable, TypedIndexFactoriesParams<T> {
+public class TypedLuceneIndexServicesFactoryParams<T>
+        implements Closeable, TypedIndexServicesFactoryParams<T> {
     private final Class<T> type;
     private final Collection<? extends TypedField<T>> typedFields;
     private final TypedField<T> idField;
@@ -41,7 +42,7 @@ public class TypedIndexContext<T> implements Closeable, TypedIndexFactoriesParam
             exc = e;
         }
         try {
-            log.info("\nclosing index ...");
+            log.info("\nclosing IndexWriter ...");
             indexWriter.close();
             log.info("\n{} closed", indexPath);
         } catch (IOException e) {

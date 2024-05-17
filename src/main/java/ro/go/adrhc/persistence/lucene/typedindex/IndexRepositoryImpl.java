@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements IndexRepository<ID, T> {
     protected final IndexOperations<ID, T> indexOperations;
-    protected final TypedIndexContext<T> context;
+    protected final TypedLuceneIndexServicesFactoryParams<T> context;
 
     @Override
     public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -61,12 +61,14 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements Inde
     }
 
     @Override
-    public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
+    public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
+            throws IOException {
         return indexOperations.findBestMatch(bestMatchingStrategy, query);
     }
 
     @Override
-    public List<TypedSearchResult<T>> findBestMatches(Collection<? extends Query> queries) throws IOException {
+    public List<TypedSearchResult<T>> findBestMatches(Collection<? extends Query> queries)
+            throws IOException {
         return indexOperations.findBestMatches(queries);
     }
 

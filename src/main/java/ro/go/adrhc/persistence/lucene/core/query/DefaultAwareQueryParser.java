@@ -7,14 +7,14 @@ import org.apache.lucene.search.Query;
 
 @RequiredArgsConstructor
 public class DefaultAwareQueryParser {
-    private final QueryParser queryParser;
-    private final String defaultField;
+	private final QueryParser queryParser;
+	private final String defaultField;
 
-    public static DefaultAwareQueryParser create(Analyzer analyzer, Enum<?> defaultField) {
-        return new DefaultAwareQueryParser(QueryParser.create(analyzer), defaultField.name());
-    }
+	public static DefaultAwareQueryParser create(Analyzer analyzer, Enum<?> defaultField) {
+		return new DefaultAwareQueryParser(QueryParser.create(analyzer), defaultField.name());
+	}
 
-    public Query parse(String query) throws QueryNodeException {
-        return queryParser.parse(defaultField, query);
-    }
+	public Query parse(String query) throws QueryNodeException {
+		return queryParser.parse(defaultField, query);
+	}
 }

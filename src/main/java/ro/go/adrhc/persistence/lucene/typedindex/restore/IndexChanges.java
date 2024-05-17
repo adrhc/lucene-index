@@ -7,15 +7,15 @@ import java.util.Set;
  * @param obsoleteIndexedIds contains indexed ids for which the indexed data no longer exist
  */
 public record IndexChanges<ID>(Set<ID> notIndexedIds, Set<ID> obsoleteIndexedIds) {
-    public boolean hasChanges() {
-        return !notIndexedIds.isEmpty() || !obsoleteIndexedIds.isEmpty();
-    }
+	public boolean hasChanges() {
+		return !notIndexedIds.isEmpty() || !obsoleteIndexedIds.isEmpty();
+	}
 
-    public int notIndexedSize() {
-        return notIndexedIds.size();
-    }
+	public int notIndexedSize() {
+		return notIndexedIds.size();
+	}
 
-    public int indexIdsMissingDataSize() {
-        return obsoleteIndexedIds.size();
-    }
+	public int indexIdsMissingDataSize() {
+		return obsoleteIndexedIds.size();
+	}
 }

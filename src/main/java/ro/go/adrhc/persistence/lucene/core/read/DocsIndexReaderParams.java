@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.core.read;
 
 public interface DocsIndexReaderParams {
-    IndexReaderPool getIndexReaderPool();
+	IndexReaderPool getIndexReaderPool();
 
-    int getNumHits();
+	int getNumHits();
 }

@@ -11,19 +11,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class DocumentToTypedConverter<T> {
-    private final ObjectReader tReader;
+	private final ObjectReader tReader;
 
-    public static <T> DocumentToTypedConverter<T> create(Class<T> tClass) {
-        return new DocumentToTypedConverter<>(ObjectMapperFactory.JSON_MAPPER.readerFor(tClass));
-    }
+	public static <T> DocumentToTypedConverter<T> create(Class<T> tClass) {
+		return new DocumentToTypedConverter<>(ObjectMapperFactory.JSON_MAPPER.readerFor(tClass));
+	}
 
-    public Optional<T> convert(Document doc) {
-        String json = RawDataFieldProvider.getRawData(doc);
-        try {
-            return Optional.of(tReader.readValue(json));
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-            return Optional.empty();
-        }
-    }
+	public Optional<T> convert(Document doc) {
+		String json = RawDataFieldProvider.getRawData(doc);
+		try {
+			return Optional.of(tReader.readValue(json));
+		} catch (JsonProcessingException e) {
+			log.error(e.getMessage(), e);
+			return Optional.empty();
+		}
+	}
 }
