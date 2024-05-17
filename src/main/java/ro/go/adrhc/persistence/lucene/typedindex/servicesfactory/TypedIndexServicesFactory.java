@@ -13,7 +13,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
-	private final TypedIndexServicesFactoryParams<T> params;
+	private final TypedIndexParams<T> params;
 
 	public TypedIndexSearchService<T> createSearchService() {
 		return TypedIndexSearchService.create(params);

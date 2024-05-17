@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNullElseGet;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.NUM_HITS;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 
-public class TypedLuceneIndexServicesFactoryParamsBuilder<T extends Identifiable<?>, E extends Enum<E> & TypedField<T>> {
+public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E> & TypedField<T>> {
 	private int numHits = NUM_HITS;
 	private SearchResultFilter<T> searchResultFilter = _ -> true;
 	private Class<T> tClass;
@@ -30,49 +30,49 @@ public class TypedLuceneIndexServicesFactoryParamsBuilder<T extends Identifiable
 	private Analyzer analyzer;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedLuceneIndexServicesFactoryParamsBuilder<T, E>
+	TypedIndexParamsBuilder<T, E>
 	of(Class<T> tClass, Class<E> tFieldEnumClass, Path indexPath) {
-		TypedLuceneIndexServicesFactoryParamsBuilder<T, E> builder =
-				new TypedLuceneIndexServicesFactoryParamsBuilder<>();
+		TypedIndexParamsBuilder<T, E> builder =
+				new TypedIndexParamsBuilder<>();
 		builder.tClass = tClass;
 		builder.indexPath = indexPath;
 		return builder.tFieldEnumClass(tFieldEnumClass);
 	}
 
-	public TypedLuceneIndexServicesFactoryParamsBuilder<T, E>
+	public TypedIndexParamsBuilder<T, E>
 	tFieldEnumClass(Class<E> tFieldEnumClass) {
 		typedFields = EnumSet.allOf(tFieldEnumClass);
 		idField = TypedField.getIdField(tFieldEnumClass);
 		return this;
 	}
 
-	public TypedLuceneIndexServicesFactoryParamsBuilder<T, E>
+	public TypedIndexParamsBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
 		analyzer = defaultAnalyzer(tokenizerProperties);
 		return this;
 	}
 
-	public TypedLuceneIndexServicesFactoryParamsBuilder<T, E> numHits(int numHits) {
+	public TypedIndexParamsBuilder<T, E> numHits(int numHits) {
 		this.numHits = numHits;
 		return this;
 	}
 
-	public TypedLuceneIndexServicesFactoryParamsBuilder<T, E> searchResultFilter(
+	public TypedIndexParamsBuilder<T, E> searchResultFilter(
 			SearchResultFilter<T> searchResultFilter) {
 		this.searchResultFilter = searchResultFilter;
 		return this;
 	}
 
-	public TypedLuceneIndexServicesFactoryParams<T> build() throws IOException {
+	public TypedIndexParamsImpl<T> build() throws IOException {
 		return build(false);
 	}
 
-	public TypedLuceneIndexServicesFactoryParams<T> build(boolean readOnly) throws IOException {
+	public TypedIndexParamsImpl<T> build(boolean readOnly) throws IOException {
 		analyzer = requireNonNullElseGet(analyzer, AnalyzerFactory::defaultAnalyzer);
 		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(
 				() -> DirectoryReader.open(FSDirectory.open(indexPath)));
-		return new TypedLuceneIndexServicesFactoryParams<>(tClass, typedFields,
+		return new TypedIndexParamsImpl<>(tClass, typedFields,
 				idField, analyzer, indexWriter, indexReaderPool,
 				numHits, searchResultFilter, indexPath);
 	}

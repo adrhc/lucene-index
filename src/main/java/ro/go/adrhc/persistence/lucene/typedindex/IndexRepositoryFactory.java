@@ -9,27 +9,27 @@ import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesFactoryParams;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedLuceneIndexServicesFactoryParams;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @UtilityClass
 public class IndexRepositoryFactory {
 	public static <ID, T extends Identifiable<ID>>
-	IndexRepository<ID, T> create(TypedLuceneIndexServicesFactoryParams<T> context) {
+	IndexRepository<ID, T> create(TypedIndexParamsImpl<T> context) {
 		IndexOperations<ID, T> indexOperations = createIndexOperations(context);
 		return new IndexRepositoryImpl<>(indexOperations, context);
 	}
 
 	public static <ID, T extends Identifiable<ID>>
 	ReadOnlyIndexOperations<ID, T> createReadOnlyIndexOperations(
-			TypedLuceneIndexServicesFactoryParams<T> context) {
+			TypedIndexParamsImpl<T> context) {
 		return create(context);
 	}
 
 	public static <ID, T extends Identifiable<ID>> IndexOperations<ID, T>
-	createIndexOperations(TypedIndexServicesFactoryParams<T> params) {
+	createIndexOperations(TypedIndexParams<T> params) {
 		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();

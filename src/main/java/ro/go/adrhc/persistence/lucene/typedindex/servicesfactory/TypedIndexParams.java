@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServic
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
 
-public interface TypedIndexServicesFactoryParams<T> extends TypedIndexSearchServiceParams<T>,
+public interface TypedIndexParams<T> extends TypedIndexSearchServiceParams<T>,
 		TypedIndexRestoreServiceParams<T>, TypedIndexRetrieveServiceParams<T>,
 		TypedIndexUpdaterParams<T>, AbstractTypedIndexParams<T>, TypedIndexRemoverParams {
 }

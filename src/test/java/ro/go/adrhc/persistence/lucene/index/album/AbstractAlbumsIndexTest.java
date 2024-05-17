@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepositoryFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedLuceneIndexServicesFactoryParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,7 +18,7 @@ import static ro.go.adrhc.persistence.lucene.index.album.AlbumsGenerator.ALBUMS;
 public abstract class AbstractAlbumsIndexTest {
     @TempDir
     protected static Path tmpDir;
-    protected TypedLuceneIndexServicesFactoryParams<Album> albumsIndexSpec;
+    protected TypedIndexParamsImpl<Album> albumsIndexSpec;
     protected IndexRepository<Path, Album> indexRepository;
 
     @BeforeAll

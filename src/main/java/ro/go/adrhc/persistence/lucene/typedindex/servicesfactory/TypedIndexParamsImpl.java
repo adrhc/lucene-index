@@ -17,8 +17,8 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedLuceneIndexServicesFactoryParams<T>
-		implements Closeable, TypedIndexServicesFactoryParams<T> {
+public class TypedIndexParamsImpl<T>
+		implements Closeable, TypedIndexParams<T> {
 	private final Class<T> type;
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final TypedField<T> idField;
