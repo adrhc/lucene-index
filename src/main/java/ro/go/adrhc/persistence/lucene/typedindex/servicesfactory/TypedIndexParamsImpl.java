@@ -26,6 +26,7 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 	private final int numHits;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
+	private boolean closed;
 
 	public boolean isReadOnly() {
 		return indexWriter == null;
@@ -33,6 +34,9 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 
 	@Override
 	public void close() throws IOException {
+		if (closed) {
+			return;
+		}
 		log.debug("\nclosing {} ...", indexPath);
 		IOException exc = null;
 		try {
@@ -51,6 +55,7 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 				exc = e;
 			}
 		}
+		closed = true;
 		if (exc != null) {
 			throw exc;
 		}
