@@ -8,7 +8,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServ
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.nio.file.Path;
 
 public interface TypedIndexParams<T> extends TypedIndexSearchServiceParams<T>,
@@ -17,5 +16,5 @@ public interface TypedIndexParams<T> extends TypedIndexSearchServiceParams<T>,
 		TypedIndexRemoverParams, Closeable {
 	Path getIndexPath();
 
-	void commit() throws IOException;
+	boolean isReadOnly();
 }

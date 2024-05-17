@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
@@ -9,6 +10,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +22,8 @@ import java.util.stream.Stream;
 public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
-	protected final TypedIndexParams<T> context;
+	@Getter
+	protected final TypedIndexParams<T> typedIndexParams;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -93,65 +96,77 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 	@Override
 	public void addOne(T t) throws IOException {
 		indexOperations.addOne(t);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void addMany(Collection<T> tCollection) throws IOException {
 		indexOperations.addMany(tCollection);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void addMany(Stream<T> tStream) throws IOException {
 		indexOperations.addMany(tStream);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void upsert(T t) throws IOException {
 		indexOperations.upsert(t);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void removeByIds(Collection<ID> ids) throws IOException {
 		indexOperations.removeByIds(ids);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void removeById(ID id) throws IOException {
 		indexOperations.removeById(id);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void removeByQuery(Query query) throws IOException {
 		indexOperations.removeByQuery(query);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void reset(Iterable<T> tIterable) throws IOException {
 		indexOperations.reset(tIterable);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void reset(Stream<T> tStream) throws IOException {
 		indexOperations.reset(tStream);
-		context.commit();
+		commit();
 	}
 
 	@Override
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		indexOperations.restore(dataSource);
-		context.commit();
+		commit();
+	}
+
+	@Override
+	public Path getIndexPath() {
+		return typedIndexParams.getIndexPath();
 	}
 
 	@Override
 	public void close() throws IOException {
-		context.close();
+		typedIndexParams.close();
+	}
+
+	protected void commit() throws IOException {
+		if (typedIndexParams.isReadOnly()) {
+			throw new UnsupportedOperationException();
+		}
+		typedIndexParams.getIndexWriter().commit();
 	}
 }
