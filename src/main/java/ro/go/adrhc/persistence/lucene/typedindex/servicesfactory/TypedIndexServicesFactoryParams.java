@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.factories;
+package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 
 import ro.go.adrhc.persistence.lucene.typedcore.write.AbstractTypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepositoryFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.TypedLuceneIndexServicesFactoryParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedLuceneIndexServicesFactoryParams;
 
 import java.io.IOException;
 import java.nio.file.Path;

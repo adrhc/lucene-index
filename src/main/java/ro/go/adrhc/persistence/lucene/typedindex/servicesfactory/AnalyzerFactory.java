@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.factories;
+package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
