@@ -30,7 +30,7 @@ public class TypedIndexFactoriesParamsFactory {
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
     TypedIndexContext<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
                                 TokenizerProperties tokenizerProperties, Path indexPath) throws IOException {
-        return create(tClass, tFieldEnumClass, tokenizerProperties, it -> true, indexPath);
+        return create(tClass, tFieldEnumClass, tokenizerProperties, _ -> true, indexPath);
     }
 
     /**
