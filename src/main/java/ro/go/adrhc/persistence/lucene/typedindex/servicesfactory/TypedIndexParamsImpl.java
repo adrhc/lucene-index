@@ -9,7 +9,6 @@ import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -17,8 +16,7 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexParamsImpl<T>
-		implements Closeable, TypedIndexParams<T> {
+public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 	private final Class<T> type;
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final TypedField<T> idField;
