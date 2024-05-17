@@ -55,11 +55,9 @@ public class TypedIndexServicesFactoryParamsFactory {
      */
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
     TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
-            TokenizerProperties tokenizerProperties,
-            SearchResultFilter<T> searchResultFilter,
+            TokenizerProperties tokenizerProperties, SearchResultFilter<T> searchResultFilter,
             int numHits, Path indexPath) throws IOException {
-        return create(tClass, tFieldEnumClass,
-                defaultAnalyzer(tokenizerProperties),
+        return create(tClass, tFieldEnumClass, defaultAnalyzer(tokenizerProperties),
                 searchResultFilter, numHits, indexPath);
     }
 
@@ -71,8 +69,7 @@ public class TypedIndexServicesFactoryParamsFactory {
     public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
     TypedLuceneIndexServicesFactoryParams<T> create(Class<T> tClass, Class<E> tFieldEnumClass,
             int numHits, Path indexPath) throws IOException {
-        return create(tClass, tFieldEnumClass,
-                defaultAnalyzer(), it -> true, numHits, indexPath);
+        return create(tClass, tFieldEnumClass, defaultAnalyzer(), _ -> true, numHits, indexPath);
     }
 
     /**
