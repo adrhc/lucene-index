@@ -17,7 +17,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 @UtilityClass
 public class IndexRepositoryFactory {
 	public static <ID, T extends Identifiable<ID>>
-	IndexRepository<ID, T> create(TypedIndexParamsImpl<T> context) {
+	IndexRepository<ID, T> create(TypedIndexParams<T> context) {
 		IndexOperations<ID, T> indexOperations = createIndexOperations(context);
 		return new IndexRepositoryImpl<>(indexOperations, context);
 	}

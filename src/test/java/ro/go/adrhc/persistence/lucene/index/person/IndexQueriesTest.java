@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.ANALYZER;
-import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.NAME_QUERY_PARSER;
+import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.ANALYZER;
+import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 

@@ -63,11 +63,11 @@ public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E
 		return this;
 	}
 
-	public TypedIndexParamsImpl<T> build() throws IOException {
+	public TypedIndexParams<T> build() throws IOException {
 		return build(false);
 	}
 
-	public TypedIndexParamsImpl<T> build(boolean readOnly) throws IOException {
+	public TypedIndexParams<T> build(boolean readOnly) throws IOException {
 		analyzer = requireNonNullElseGet(analyzer, AnalyzerFactory::defaultAnalyzer);
 		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(

@@ -56,7 +56,10 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 		}
 	}
 
-	public void commit() throws IOException, NullPointerException {
+	public void commit() throws IOException {
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException();
+		}
 		indexWriter.commit();
 	}
 }

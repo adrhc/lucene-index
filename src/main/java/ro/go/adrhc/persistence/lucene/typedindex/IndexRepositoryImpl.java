@@ -6,7 +6,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,9 +17,10 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements IndexRepository<ID, T> {
+public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
+		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
-	protected final TypedIndexParamsImpl<T> context;
+	protected final TypedIndexParams<T> context;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -147,5 +148,10 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>> implements Inde
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		indexOperations.restore(dataSource);
 		context.commit();
+	}
+
+	@Override
+	public void close() throws IOException {
+		context.close();
 	}
 }

@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,14 +18,14 @@ import static ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplace
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsBuilder.of;
 
-public class TestIndexContext {
+public class TestIndexParams {
 	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 	public static final DefaultAwareQueryParser NAME_QUERY_PARSER =
 			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexParamsImpl<T> createTypedIndexSpec(Class<T> tClass,
+	TypedIndexParams<T> createTypedIndexSpec(Class<T> tClass,
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		return of(tClass, typedFieldEnumClass, indexPath)
 				.tokenizerProperties(createTokenizerProperties()).build();

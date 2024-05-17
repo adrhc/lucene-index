@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ro.go.adrhc.persistence.lucene.index.TestIndexContext.TOKENIZATION_UTILS;
+import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.TOKENIZATION_UTILS;
 
 @ExtendWith(MockitoExtension.class)
 public
