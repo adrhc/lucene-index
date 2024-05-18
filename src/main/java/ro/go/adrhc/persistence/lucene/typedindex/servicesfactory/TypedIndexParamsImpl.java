@@ -35,14 +35,15 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 	@Override
 	public void close() throws IOException {
 		if (closed) {
+			log.info("\nindex already closed: {}", indexPath);
 			return;
 		}
-		log.debug("\nclosing {} ...", indexPath);
+		log.info("\nclosing {} ...", indexPath);
 		IOException exc = null;
 		try {
-			log.debug("\nclosing IndexReaderPool ...");
+			log.info("\nclosing IndexReaderPool ...");
 			indexReaderPool.close();
-			log.debug("\nIndexReaderPool closed");
+			log.info("\nIndexReaderPool closed");
 		} catch (IOException e) {
 			exc = e;
 		}
