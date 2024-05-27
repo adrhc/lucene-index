@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.nio.file.Path;
 
+@UtilityClass
 public class ObjectMapperFactory {
-	public static ObjectMapper JSON_MAPPER = createJsonMapper();
+	public static final ObjectMapper JSON_MAPPER = createJsonMapper();
 
 	public static ObjectMapper createJsonMapper() {
 		return Jackson2ObjectMapperBuilder.json()
