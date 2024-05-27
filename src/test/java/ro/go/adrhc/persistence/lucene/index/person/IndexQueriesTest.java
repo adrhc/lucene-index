@@ -48,8 +48,8 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 	@Test
 	void tokenEquals() throws IOException {
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository
-				.findAllMatches(ALIAS_PHRASE_QUERIES.tokenEquals("phraseaaiisstt123"));
+		List<Person> result = indexRepository.findAllMatches(
+				ALIAS_PHRASE_QUERIES.tokenEquals("aliasphraseaaiisstt123"));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
