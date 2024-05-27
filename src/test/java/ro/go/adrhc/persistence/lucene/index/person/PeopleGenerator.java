@@ -1,11 +1,11 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
+import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import ro.go.adrhc.persistence.lucene.index.core.TokenizationUtilsTest;
 
 public class PeopleGenerator {
 	public static final List<Person> PEOPLE = List.of(

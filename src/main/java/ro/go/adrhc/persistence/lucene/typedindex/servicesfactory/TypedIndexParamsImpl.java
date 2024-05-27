@@ -12,11 +12,12 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 @Getter
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
+public class TypedIndexParamsImpl<ID, T> implements TypedIndexParams<ID, T> {
 	private final Class<T> type;
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final TypedField<T> idField;
@@ -26,6 +27,10 @@ public class TypedIndexParamsImpl<T> implements TypedIndexParams<T> {
 	private final int numHits;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
+	/**
+	 * it refers to TypedIndexRestoreServiceParams
+	 */
+	private final Predicate<ID> shouldKeep;
 	private boolean closed;
 
 	public boolean isReadOnly() {

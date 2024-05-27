@@ -17,19 +17,19 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 @UtilityClass
 public class IndexRepositoryFactory {
 	public static <ID, T extends Identifiable<ID>>
-	IndexRepository<ID, T> create(TypedIndexParams<T> context) {
+	IndexRepository<ID, T> create(TypedIndexParams<ID, T> context) {
 		IndexOperations<ID, T> indexOperations = createIndexOperations(context);
 		return new IndexRepositoryImpl<>(indexOperations, context);
 	}
 
 	public static <ID, T extends Identifiable<ID>>
 	ReadOnlyIndexOperations<ID, T> createReadOnlyIndexOperations(
-			TypedIndexParamsImpl<T> context) {
+			TypedIndexParamsImpl<ID, T> context) {
 		return create(context);
 	}
 
 	public static <ID, T extends Identifiable<ID>> IndexOperations<ID, T>
-	createIndexOperations(TypedIndexParams<T> params) {
+	createIndexOperations(TypedIndexParams<ID, T> params) {
 		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
 		TypedIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();

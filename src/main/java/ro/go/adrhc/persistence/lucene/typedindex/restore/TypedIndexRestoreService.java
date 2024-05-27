@@ -9,8 +9,10 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemover;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
 import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
@@ -19,16 +21,21 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	private final TypedIndexReaderTemplate<ID, ?> indexReaderTemplate;
 	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
+	/**
+	 * Decision about keeping an id the data source is missing.
+	 */
+	private final Predicate<ID> shouldKeep;
 
 	/**
 	 * constructor parameters union
 	 */
 	public static <ID, T> TypedIndexRestoreService<ID, T>
-	create(TypedIndexRestoreServiceParams<T> params) {
+	create(TypedIndexRestoreServiceParams<ID, T> params) {
 		return new TypedIndexRestoreService<>(
 				TypedIndexReaderTemplate.create(params),
 				TypedIndexRemover.create(params),
-				TypedIndexAdderTemplate.create(params));
+				TypedIndexAdderTemplate.create(params),
+				params.shouldKeep());
 	}
 
 	@Override
@@ -66,6 +73,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	 * @return ids(reader) - ids
 	 */
 	protected Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
-		return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
+		return collectToHashSet(reader.getAllIds()
+				.filter(id -> !ids.remove(id)).filter(not(shouldKeep)));
 	}
 }

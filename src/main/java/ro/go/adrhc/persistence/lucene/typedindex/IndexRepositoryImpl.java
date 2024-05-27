@@ -23,7 +23,7 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
-	protected final TypedIndexParams<T> typedIndexParams;
+	protected final TypedIndexParams<ID, T> typedIndexParams;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {

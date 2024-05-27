@@ -15,12 +15,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNullElseGet;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.NUM_HITS;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 
-public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E> & TypedField<T>> {
+public class TypedIndexParamsBuilder<ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>> {
 	private int numHits = NUM_HITS;
 	private SearchResultFilter<T> searchResultFilter = _ -> true;
 	private Class<T> tClass;
@@ -28,52 +29,59 @@ public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E
 	private TypedField<T> idField;
 	private Path indexPath;
 	private Analyzer analyzer;
+	private Predicate<ID> shouldKeepIndexedButMissingFromDS = _ -> false;
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
-	TypedIndexParamsBuilder<T, E>
+	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
+	TypedIndexParamsBuilder<ID, T, E>
 	of(Class<T> tClass, Class<E> tFieldEnumClass, Path indexPath) {
-		TypedIndexParamsBuilder<T, E> builder =
+		TypedIndexParamsBuilder<ID, T, E> builder =
 				new TypedIndexParamsBuilder<>();
 		builder.tClass = tClass;
 		builder.indexPath = indexPath;
 		return builder.tFieldEnumClass(tFieldEnumClass);
 	}
 
-	public TypedIndexParamsBuilder<T, E>
+	public TypedIndexParamsBuilder<ID, T, E>
 	tFieldEnumClass(Class<E> tFieldEnumClass) {
 		typedFields = EnumSet.allOf(tFieldEnumClass);
 		idField = TypedField.getIdField(tFieldEnumClass);
 		return this;
 	}
 
-	public TypedIndexParamsBuilder<T, E>
+	public TypedIndexParamsBuilder<ID, T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
 		analyzer = defaultAnalyzer(tokenizerProperties);
 		return this;
 	}
 
-	public TypedIndexParamsBuilder<T, E> numHits(int numHits) {
+	public TypedIndexParamsBuilder<ID, T, E> numHits(int numHits) {
 		this.numHits = numHits;
 		return this;
 	}
 
-	public TypedIndexParamsBuilder<T, E> searchResultFilter(
+	public TypedIndexParamsBuilder<ID, T, E> searchResultFilter(
 			SearchResultFilter<T> searchResultFilter) {
 		this.searchResultFilter = searchResultFilter;
 		return this;
 	}
 
-	public TypedIndexParams<T> build() throws IOException {
+	public TypedIndexParamsBuilder<ID, T, E> shouldKeepIndexedButMissingFromDS(
+			Predicate<ID> shouldKeepIndexedButMissingFromDS) {
+		this.shouldKeepIndexedButMissingFromDS = shouldKeepIndexedButMissingFromDS;
+		return this;
+	}
+
+	public TypedIndexParams<ID, T> build() throws IOException {
 		return build(false);
 	}
 
-	public TypedIndexParams<T> build(boolean readOnly) throws IOException {
+	public TypedIndexParams<ID, T> build(boolean readOnly) throws IOException {
 		analyzer = requireNonNullElseGet(analyzer, AnalyzerFactory::defaultAnalyzer);
 		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(
 				() -> DirectoryReader.open(FSDirectory.open(indexPath)));
-		return new TypedIndexParamsImpl<>(tClass, typedFields,
-				idField, analyzer, indexWriter, indexReaderPool,
-				numHits, searchResultFilter, indexPath);
+		return new TypedIndexParamsImpl<>(tClass, typedFields, idField, analyzer,
+				indexWriter, indexReaderPool, numHits, searchResultFilter, indexPath,
+				shouldKeepIndexedButMissingFromDS);
 	}
 }

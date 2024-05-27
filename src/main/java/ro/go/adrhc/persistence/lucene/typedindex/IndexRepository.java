@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public interface IndexRepository<ID, T extends Identifiable<ID>>
 		extends IndexOperations<ID, T>, Closeable {
-	TypedIndexParams<T> getTypedIndexParams();
+	TypedIndexParams<ID, T> getTypedIndexParams();
 
 	Path getIndexPath();
 }

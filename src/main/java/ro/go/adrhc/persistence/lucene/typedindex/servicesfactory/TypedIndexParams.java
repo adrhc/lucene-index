@@ -10,8 +10,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceP
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface TypedIndexParams<T> extends TypedIndexSearchServiceParams<T>,
-		TypedIndexRestoreServiceParams<T>, TypedIndexRetrieveServiceParams<T>,
+public interface TypedIndexParams<ID, T> extends TypedIndexSearchServiceParams<T>,
+		TypedIndexRestoreServiceParams<ID, T>, TypedIndexRetrieveServiceParams<T>,
 		TypedIndexUpdaterParams<T>, AbstractTypedIndexParams<T>,
 		TypedIndexRemoverParams, Closeable {
 	Path getIndexPath();

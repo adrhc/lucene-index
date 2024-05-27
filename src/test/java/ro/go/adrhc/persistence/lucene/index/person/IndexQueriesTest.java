@@ -1,24 +1,19 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import java.io.IOException;
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ALIAS_KEYWORD_QUERIES;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ALIAS_PHRASE_QUERIES;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ALIAS_WORD_QUERIES;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.CNP_QUERIES;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.NAME_QUERIES;
-import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.NAME_WORD_QUERIES;
+import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
