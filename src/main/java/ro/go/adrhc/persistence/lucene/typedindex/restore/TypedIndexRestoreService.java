@@ -41,14 +41,14 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		}
 	}
 
-	private IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
+	protected IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
 		Set<ID> allDsIds = collectToHashSet(dataSource.loadAllIds());
 		Set<ID> docsToRemove = indexReaderTemplate
 				.useReader(reader -> docsToRemove(allDsIds, reader));
 		return new IndexChanges<>(allDsIds, docsToRemove);
 	}
 
-	private void applyIndexChanges(
+	protected void applyIndexChanges(
 			IndexDataSource<ID, T> dataSource,
 			IndexChanges<ID> changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
@@ -62,7 +62,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		log.debug("\nIndex restored!");
 	}
 
-	private Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
+	protected Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
 		return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 	}
 }
