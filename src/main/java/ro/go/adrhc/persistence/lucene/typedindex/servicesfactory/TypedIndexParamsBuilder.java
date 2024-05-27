@@ -29,7 +29,7 @@ public class TypedIndexParamsBuilder<ID, T extends Identifiable<ID>, E extends E
 	private TypedField<T> idField;
 	private Path indexPath;
 	private Analyzer analyzer;
-	private Predicate<ID> shouldKeepIndexedButMissingFromDS = _ -> false;
+	private Predicate<ID> ignoreAtRestorationCleanup = _ -> false;
 
 	public static <ID, T extends Identifiable<ID>, E extends Enum<E> & TypedField<T>>
 	TypedIndexParamsBuilder<ID, T, E>
@@ -67,7 +67,7 @@ public class TypedIndexParamsBuilder<ID, T extends Identifiable<ID>, E extends E
 
 	public TypedIndexParamsBuilder<ID, T, E> shouldKeepIndexedButMissingFromDS(
 			Predicate<ID> shouldKeepIndexedButMissingFromDS) {
-		this.shouldKeepIndexedButMissingFromDS = shouldKeepIndexedButMissingFromDS;
+		this.ignoreAtRestorationCleanup = shouldKeepIndexedButMissingFromDS;
 		return this;
 	}
 
@@ -82,6 +82,6 @@ public class TypedIndexParamsBuilder<ID, T extends Identifiable<ID>, E extends E
 				() -> DirectoryReader.open(FSDirectory.open(indexPath)));
 		return new TypedIndexParamsImpl<>(tClass, typedFields, idField, analyzer,
 				indexWriter, indexReaderPool, numHits, searchResultFilter, indexPath,
-				shouldKeepIndexedButMissingFromDS);
+				ignoreAtRestorationCleanup);
 	}
 }

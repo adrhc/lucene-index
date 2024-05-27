@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 public interface TypedIndexRestoreServiceParams<ID, T> extends
 		TypedIndexReaderParams<T>, AbstractTypedIndexParams<T>, TypedIndexRemoverParams {
-	default Predicate<ID> shouldKeep() {
+	default Predicate<ID> ignoreAtRestorationCleanup() {
 		return _ -> false;
 	}
 }

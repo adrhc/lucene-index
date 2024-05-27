@@ -24,7 +24,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	/**
 	 * Decision about keeping an id the data source is missing.
 	 */
-	private final Predicate<ID> shouldKeep;
+	private final Predicate<ID> ignoreAtRestorationCleanup;
 
 	/**
 	 * constructor parameters union
@@ -35,7 +35,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 				TypedIndexReaderTemplate.create(params),
 				TypedIndexRemover.create(params),
 				TypedIndexAdderTemplate.create(params),
-				params.shouldKeep());
+				params.ignoreAtRestorationCleanup());
 	}
 
 	@Override
@@ -74,6 +74,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	 */
 	protected Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
 		return collectToHashSet(reader.getAllIds()
-				.filter(id -> !ids.remove(id)).filter(not(shouldKeep)));
+				.filter(id -> !ids.remove(id))
+				.filter(not(ignoreAtRestorationCleanup)));
 	}
 }

@@ -30,7 +30,7 @@ public class TypedIndexParamsImpl<ID, T> implements TypedIndexParams<ID, T> {
 	/**
 	 * it refers to TypedIndexRestoreServiceParams
 	 */
-	private final Predicate<ID> shouldKeep;
+	private final Predicate<ID> ignoreAtRestorationCleanup;
 	private boolean closed;
 
 	public boolean isReadOnly() {
