@@ -4,7 +4,10 @@ import org.apache.lucene.index.IndexableField;
 
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Set;
 import java.util.function.Function;
+
+import static ro.go.adrhc.util.text.StringUtils.concat;
 
 public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 		Function<Object, ?> toFieldValue,
@@ -43,5 +46,16 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 
 	public static <T> TypedFieldSerde<T> pathToString(Function<T, Path> typedAccessor) {
 		return stringField(typedAccessor, it -> it == null ? null : Path.of((String) it));
+	}
+
+	public static <T> TypedFieldSerde<T> tagsField(Function<T, Set<String>> typedAccessor) {
+		return new TypedFieldSerde<>(typedAccessor,
+				it -> textSet(it).isEmpty() ? null : concat("\\s+", textSet(it)),
+				IndexableField::stringValue,
+				it -> it == null ? null : Set.of(((String) it).split(" ")));
+	}
+
+	private static Set<String> textSet(Object o) {
+		return (Set<String>) o;
 	}
 }

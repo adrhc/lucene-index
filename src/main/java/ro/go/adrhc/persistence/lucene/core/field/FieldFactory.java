@@ -96,8 +96,8 @@ public class FieldFactory {
 		return switch (fieldType) {
 			case KEYWORD -> keywordField(stored, fieldName, value);
 			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
-			case PHRASE -> textField(stored, fieldName, value);
-			case INT -> intField(fieldName, (Integer) value);
+			case PHRASE, TAGS -> textField(stored, fieldName, value);
+            case INT -> intField(fieldName, (Integer) value);
 			case LONG -> longField(stored, fieldName, (Long) value);
 			case STORED -> storedField(fieldName, value);
 		};
