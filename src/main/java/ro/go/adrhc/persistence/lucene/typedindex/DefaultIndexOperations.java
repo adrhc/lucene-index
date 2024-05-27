@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class IndexOperationsImpl<ID, T extends Identifiable<ID>> implements IndexOperations<ID, T> {
+public class DefaultIndexOperations<ID, T extends Identifiable<ID>> implements IndexOperations<ID, T> {
 	private final TypedIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
