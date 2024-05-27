@@ -3,12 +3,12 @@ package ro.go.adrhc.persistence.lucene.typedindex.restore;
 import java.util.Set;
 
 /**
- * @param notIndexedIds      contains not indexed data identifiers
- * @param obsoleteIndexedIds contains indexed ids for which the indexed data no longer exist
+ * @param notIndexedIds           contains the not indexed ids
+ * @param indexedButRemovedFromDS contains the indexed ids removed from the data source
  */
-public record IndexChanges<ID>(Set<ID> notIndexedIds, Set<ID> obsoleteIndexedIds) {
+public record IndexChanges<ID>(Set<ID> notIndexedIds, Set<ID> indexedButRemovedFromDS) {
 	public boolean hasChanges() {
-		return !notIndexedIds.isEmpty() || !obsoleteIndexedIds.isEmpty();
+		return !notIndexedIds.isEmpty() || !indexedButRemovedFromDS.isEmpty();
 	}
 
 	public int notIndexedSize() {
@@ -16,6 +16,6 @@ public record IndexChanges<ID>(Set<ID> notIndexedIds, Set<ID> obsoleteIndexedIds
 	}
 
 	public int indexIdsMissingDataSize() {
-		return obsoleteIndexedIds.size();
+		return indexedButRemovedFromDS.size();
 	}
 }

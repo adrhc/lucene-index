@@ -42,10 +42,10 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	}
 
 	protected IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
-		Set<ID> allDsIds = collectToHashSet(dataSource.loadAllIds());
-		Set<ID> docsToRemove = indexReaderTemplate
-				.useReader(reader -> docsToRemove(allDsIds, reader));
-		return new IndexChanges<>(allDsIds, docsToRemove);
+		Set<ID> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
+		Set<ID> indexedButRemovedFromDS = indexReaderTemplate
+				.useReader(reader -> docsToRemove(notIndexedIds, reader));
+		return new IndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
 
 	protected void applyIndexChanges(
@@ -53,7 +53,7 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 			IndexChanges<ID> changes) throws IOException {
 		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
 		// no IndexWriter flush
-		indexRemover.removeMany(changes.obsoleteIndexedIds());
+		indexRemover.removeMany(changes.indexedButRemovedFromDS());
 		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
 		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
 		log.debug("\nadding documents to the index");
@@ -62,6 +62,9 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		log.debug("\nIndex restored!");
 	}
 
+	/**
+	 * @return ids(reader) - ids
+	 */
 	protected Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
 		return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 	}
