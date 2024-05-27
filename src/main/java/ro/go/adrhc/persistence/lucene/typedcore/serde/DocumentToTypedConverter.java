@@ -18,7 +18,7 @@ public class DocumentToTypedConverter<T> {
 	}
 
 	public Optional<T> convert(Document doc) {
-		String json = RawDataFieldProvider.getRawData(doc);
+		String json = RawDataFieldFactory.getRawData(doc);
 		try {
 			return Optional.of(tReader.readValue(json));
 		} catch (JsonProcessingException e) {

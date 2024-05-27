@@ -12,15 +12,15 @@ import static ro.go.adrhc.persistence.lucene.typedcore.serde.ObjectMapperFactory
 import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
 
 @RequiredArgsConstructor
-public class RawDataFieldProvider<T> {
+public class RawDataFieldFactory<T> {
 	private static final String RAW_DATA_FIELD = "raw";
 
 	private final Function<T, Optional<String>> rawStringifier;
 
-	public static <T> RawDataFieldProvider<T> create() {
+	public static <T> RawDataFieldFactory<T> create() {
 		Function<T, Optional<String>> rawStringifier =
 				sneakyToOptionalResult(JSON_MAPPER::writeValueAsString);
-		return new RawDataFieldProvider<>(rawStringifier);
+		return new RawDataFieldFactory<>(rawStringifier);
 	}
 
 	public static String getRawData(Document doc) {

@@ -14,11 +14,11 @@ import java.util.Optional;
 @Slf4j
 public class TypedToDocumentConverter<T> {
 	private final TypedFieldsProvider<T> typedFieldsProvider;
-	private final RawDataFieldProvider<T> rawDataFieldProvider;
+	private final RawDataFieldFactory<T> rawDataFieldFactory;
 
 	public static <T> TypedToDocumentConverter<T> create(TypedFieldsProviderParams<T> params) {
 		TypedFieldsProvider<T> typedFieldsProvider = TypedFieldsProvider.create(params);
-		return new TypedToDocumentConverter<>(typedFieldsProvider, RawDataFieldProvider.create());
+		return new TypedToDocumentConverter<>(typedFieldsProvider, RawDataFieldFactory.create());
 	}
 
 	@NonNull
@@ -30,7 +30,7 @@ public class TypedToDocumentConverter<T> {
 
 		Document doc = new Document();
 
-		Optional<Field> rawField = rawDataFieldProvider.createField(tValue);
+		Optional<Field> rawField = rawDataFieldFactory.createField(tValue);
 		if (rawField.isEmpty()) {
 			return Optional.empty();
 		}
