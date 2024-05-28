@@ -19,10 +19,11 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 			= field -> field.storedValue().getLongValue();
 
 	public static <T> TypedFieldSerde<T> stringField(
-			Function<T, ?> typedAccessor, Function<Object, ?> toTypedValue) {
+			Function<T, ?> typedAccessor,
+			Function<Object, ?> indexedValueConverter) {
 		return new TypedFieldSerde<>(typedAccessor,
 				it -> it == null ? null : it.toString(),
-				IndexableField::stringValue, toTypedValue);
+				IndexableField::stringValue, indexedValueConverter);
 	}
 
 	public static <T> TypedFieldSerde<T> stringField(Function<T, String> typedAccessor) {
@@ -59,6 +60,12 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 				it -> textSet(it).isEmpty() ? null : concat("\\s+", textSet(it)),
 				IndexableField::stringValue,
 				it -> it == null ? null : Set.of(((String) it).split(" ")));
+	}
+
+	public static <T, E extends Enum<E>> TypedFieldSerde<T>
+	enumField(Class<E> enumClass, Function<T, Enum<?>> typedAccessor) {
+		return stringField(typedAccessor,
+				it -> Enum.valueOf(enumClass, (String) it));
 	}
 
 	private static Set<String> textSet(Object o) {
