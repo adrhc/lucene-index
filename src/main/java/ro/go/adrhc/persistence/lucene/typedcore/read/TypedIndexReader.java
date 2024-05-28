@@ -49,10 +49,10 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
-		return indexReader.findMany(query).map(this::toScoreAndType).flatMap(Optional::stream);
+		return indexReader.findMany(query).map(this::toScoreAndValue).flatMap(Optional::stream);
 	}
 
-	protected Optional<ScoreAndValue<T>> toScoreAndType(ScoreAndDocument scoreAndDocument) {
+	protected Optional<ScoreAndValue<T>> toScoreAndValue(ScoreAndDocument scoreAndDocument) {
 		return docToTypedConverter.convert(scoreAndDocument.document())
 				.map(t -> new ScoreAndValue<>(scoreAndDocument.score(), t));
 	}
