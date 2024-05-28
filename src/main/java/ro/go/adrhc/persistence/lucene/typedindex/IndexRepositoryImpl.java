@@ -177,7 +177,7 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 
 	protected void commit() throws IOException {
 		if (typedIndexParams.isReadOnly()) {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
 		}
 		typedIndexParams.getIndexWriter().commit();
 	}
