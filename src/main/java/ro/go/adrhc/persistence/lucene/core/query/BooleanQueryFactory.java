@@ -7,6 +7,12 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 public class BooleanQueryFactory {
+	public static BooleanQuery mustNotSatisfy(Collection<? extends Query> queries) {
+		BooleanQueryBuilder builder = new BooleanQueryBuilder();
+		queries.forEach(builder::mustNotSatisfy);
+		return builder.build();
+	}
+
 	public static BooleanQuery mustSatisfy(Collection<? extends Query> queries) {
 		BooleanQueryBuilder builder = new BooleanQueryBuilder();
 		queries.forEach(builder::mustSatisfy);
