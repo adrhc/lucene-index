@@ -106,7 +106,9 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> im
 		} catch (IOException e) {
 			exc = e;
 		}
-		if (!isReadOnly()) {
+		if (isReadOnly()) {
+			log.info("\nthe index was opened in read-only mode");
+		} else {
 			try {
 				log.info("\nclosing IndexWriter ...");
 				indexWriter.close();
