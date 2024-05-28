@@ -118,6 +118,12 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 	}
 
 	@Override
+	public void upsertAll(Iterable<T> iterable) throws IOException {
+		indexOperations.upsertAll(iterable);
+		commit();
+	}
+
+	@Override
 	public void removeByIds(Collection<ID> ids) throws IOException {
 		indexOperations.removeByIds(ids);
 		commit();

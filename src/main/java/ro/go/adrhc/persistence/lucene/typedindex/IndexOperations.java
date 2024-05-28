@@ -18,6 +18,8 @@ public interface IndexOperations<ID, T extends Identifiable<ID>>
 
 	void upsert(T t) throws IOException;
 
+	void upsertAll(Iterable<T> iterable) throws IOException;
+
 	void removeByIds(Collection<ID> ids) throws IOException;
 
 	void removeById(ID id) throws IOException;

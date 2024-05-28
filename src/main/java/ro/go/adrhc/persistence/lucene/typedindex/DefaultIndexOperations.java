@@ -125,6 +125,11 @@ public class DefaultIndexOperations<ID, T extends Identifiable<ID>> implements I
 	}
 
 	@Override
+	public void upsertAll(Iterable<T> iterable) throws IOException {
+		upsertService.upsertAll(iterable);
+	}
+
+	@Override
 	public void removeByIds(Collection<ID> ids) throws IOException {
 		removeService.removeByIds(ids);
 	}

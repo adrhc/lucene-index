@@ -20,4 +20,11 @@ public class TypedIndexUpsertService<T extends Identifiable<?>> implements Index
 	public void upsert(T t) throws IOException {
 		indexUpdaterTemplate.useUpdater(updater -> updater.update(t));
 	}
+
+	@Override
+	public void upsertAll(Iterable<T> iterable) throws IOException {
+		for (T t : iterable) {
+			this.upsert(t);
+		}
+	}
 }
