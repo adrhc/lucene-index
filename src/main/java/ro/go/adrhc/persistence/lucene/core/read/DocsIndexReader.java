@@ -49,6 +49,9 @@ public class DocsIndexReader implements Closeable {
 				.orElseGet(Stream::of);
 	}
 
+	/**
+	 * @return limited by numHits
+	 */
 	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
 		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
 		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
@@ -121,6 +124,6 @@ public class DocsIndexReader implements Closeable {
 		indexReaderPool.returnReader(indexReader);
 	}
 
-	private record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
+	protected record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
 	}
 }
