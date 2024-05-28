@@ -3,15 +3,15 @@ package ro.go.adrhc.persistence.lucene.core.read;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.MultiBits;
-import org.apache.lucene.index.StoredFields;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
+import ro.go.adrhc.persistence.lucene.core.read.storedfieldvisitor.AbstractOneStoredFieldVisitor;
+import ro.go.adrhc.persistence.lucene.core.read.storedfieldvisitor.OneStoredObjectFieldVisitor;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -54,9 +54,21 @@ public class DocsIndexReader implements Closeable {
 	 */
 	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
 		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
-		return Stream.of(topDocsStoredFields.topDocs().scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+		return topDocsStoredFields
+				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
+	}
+
+	/**
+	 * @return limited by numHits
+	 */
+	public Stream<Object> findFieldValues(String fieldName, Query query) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
+		OneStoredObjectFieldVisitor fieldVisitor =
+				new OneStoredObjectFieldVisitor(fieldName);
+		return topDocsStoredFields
+				.rawMap(scoreDoc -> safelyGetFieldValue(fieldVisitor, topDocsStoredFields, scoreDoc))
+				.filter(Objects::nonNull);
 	}
 
 	public int count(Query query) throws IOException {
@@ -90,8 +102,8 @@ public class DocsIndexReader implements Closeable {
 	 * indexReader.document might fail if the document
 	 * is meanwhile purged (not only marked as removed)
 	 */
-	protected Optional<Document> safelyGetDocument(StoredFields storedFields, Set<String> fieldNames,
-			int docIndex) {
+	protected Optional<Document> safelyGetDocument(
+			StoredFields storedFields, Set<String> fieldNames, int docIndex) {
 		try {
 			if (fieldNames.isEmpty()) {
 				return Optional.of(storedFields.document(docIndex));
@@ -124,6 +136,20 @@ public class DocsIndexReader implements Closeable {
 		indexReaderPool.returnReader(indexReader);
 	}
 
-	protected record TopDocsStoredFields(TopDocs topDocs, StoredFields storedFields) {
+	private <V> V safelyGetFieldValue(AbstractOneStoredFieldVisitor<V> fieldVisitor,
+			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+		fieldVisitor.reset();
+		safelyVisitDocument(fieldVisitor, topDocsStoredFields, scoreDoc);
+		return fieldVisitor.getValue();
 	}
+
+	private void safelyVisitDocument(StoredFieldVisitor fieldVisitor,
+			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+		try {
+			topDocsStoredFields.document(scoreDoc.doc, fieldVisitor);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
 }

@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
 
 import java.io.IOException;
 
-public class TypedIndexUpdater<T extends Identifiable<?>> extends AbstractTypedIndex<T> {
+public class TypedIndexUpdater<T extends Identifiable<?>> extends AbstractTypedIndexWriter<T> {
 	private final ExactQuery exactQuery;
 
 	public TypedIndexUpdater(TypedToDocumentConverter<T> toDocumentConverter,

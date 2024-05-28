@@ -15,17 +15,17 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @NoArgsConstructor
 public class DefaultIndexOperationsBuilder<ID, T extends Identifiable<ID>> {
-	private TypedIndexParams<ID, T> params;
+	private TypedIndexParams<T> params;
 	private TypedIndexRestoreService<ID, T> restoreService;
 	private TypedIndexResetService<T> resetService;
 
 	public static <ID, T extends Identifiable<ID>>
-	DefaultIndexOperationsBuilder<ID, T> of(TypedIndexParams<ID, T> params) {
+	DefaultIndexOperationsBuilder<ID, T> of(TypedIndexParams<T> params) {
 		DefaultIndexOperationsBuilder<ID, T> builder = new DefaultIndexOperationsBuilder<>();
 		return builder.params(params);
 	}
 
-	public DefaultIndexOperationsBuilder<ID, T> params(TypedIndexParams<ID, T> params) {
+	public DefaultIndexOperationsBuilder<ID, T> params(TypedIndexParams<T> params) {
 		this.params = params;
 		return this;
 	}

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
-public abstract class AbstractTypedIndex<T> implements Closeable {
+public abstract class AbstractTypedIndexWriter<T> implements Closeable {
 	protected final TypedToDocumentConverter<T> toDocumentConverter;
 	protected final DocsIndexWriter docsIndexWriter;
 

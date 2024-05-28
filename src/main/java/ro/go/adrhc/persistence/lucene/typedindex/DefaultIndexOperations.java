@@ -153,4 +153,9 @@ public class DefaultIndexOperations<ID, T extends Identifiable<ID>> implements I
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		restoreService.restore(dataSource);
 	}
+
+	@Override
+	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
+		restoreService.restoreSubset(dataSource, query);
+	}
 }

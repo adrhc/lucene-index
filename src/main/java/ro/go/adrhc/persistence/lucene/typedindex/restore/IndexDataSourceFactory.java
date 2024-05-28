@@ -11,6 +11,11 @@ import java.util.stream.Stream;
 @UtilityClass
 public class IndexDataSourceFactory {
 	public static <ID, T extends Identifiable<ID>>
+	IndexDataSource<ID, T> createCachedDataSource(Stream<T> tCollection) {
+		return createCachedDataSource(tCollection.toList());
+	}
+
+	public static <ID, T extends Identifiable<ID>>
 	IndexDataSource<ID, T> createCachedDataSource(Collection<T> tCollection) {
 		return new IndexDataSource<>() {
 			@Override

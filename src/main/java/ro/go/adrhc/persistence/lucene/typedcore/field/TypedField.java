@@ -36,7 +36,11 @@ public interface TypedField<T> {
 	}
 
 	default Object indexableFieldToTypedValue(IndexableField field) {
-		Object indexableFieldValue = fieldSerde().indexableFieldAccessor().apply(field);
-		return fieldSerde().toTypedValue().apply(indexableFieldValue);
+		Object indexedValue = fieldSerde().indexableFieldAccessor().apply(field);
+		return fieldSerde().toTypedValue().apply(indexedValue);
+	}
+
+	default Object toTypedValue(Object indexedValue) {
+		return fieldSerde().toTypedValue().apply(indexedValue);
 	}
 }

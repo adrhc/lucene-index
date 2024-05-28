@@ -9,7 +9,7 @@ import java.io.IOException;
 public class TypedIndexResetTemplate<T> {
 	private final TypedIndexReset<T> indexReset;
 
-	public static <T> TypedIndexResetTemplate<T> create(AbstractTypedIndexParams<T> params) {
+	public static <T> TypedIndexResetTemplate<T> create(TypedIndexWriterParams<T> params) {
 		TypedIndexReset<T> indexReset = TypedIndexReset.create(params);
 		return new TypedIndexResetTemplate<>(indexReset);
 	}

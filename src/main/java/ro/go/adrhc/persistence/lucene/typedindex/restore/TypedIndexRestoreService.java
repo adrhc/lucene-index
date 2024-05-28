@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReader;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexAdderTemplate;
@@ -9,10 +10,8 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemover;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static java.util.function.Predicate.not;
 import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
@@ -21,26 +20,21 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	private final TypedIndexReaderTemplate<ID, ?> indexReaderTemplate;
 	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
-	/**
-	 * Decision about keeping an id the data source is missing.
-	 */
-	private final Predicate<ID> ignoreAtRestorationCleanup;
 
 	/**
 	 * constructor parameters union
 	 */
 	public static <ID, T> TypedIndexRestoreService<ID, T>
-	create(TypedIndexRestoreServiceParams<ID, T> params) {
+	create(TypedIndexRestoreServiceParams<T> params) {
 		return new TypedIndexRestoreService<>(
-				TypedIndexReaderTemplate.create(params),
-				TypedIndexRemover.create(params),
-				TypedIndexAdderTemplate.create(params),
-				params.ignoreAtRestorationCleanup());
+				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
+				TypedIndexRemover.create(params.toTypedIndexRemoverParams()),
+				TypedIndexAdderTemplate.create(params));
 	}
 
 	@Override
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
-		IndexChanges<ID> changes = getIndexChanges(dataSource);
+		IndexChanges<ID> changes = getIndexChanges(dataSource, null);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
 		} else {
@@ -48,10 +42,21 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 		}
 	}
 
-	protected IndexChanges<ID> getIndexChanges(IndexDataSource<ID, ?> dataSource) throws IOException {
+	@Override
+	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
+		IndexChanges<ID> changes = getIndexChanges(dataSource, query);
+		if (changes.hasChanges()) {
+			applyIndexChanges(dataSource, changes);
+		} else {
+			log.debug("\nNo changes detected!");
+		}
+	}
+
+	protected IndexChanges<ID> getIndexChanges(
+			IndexDataSource<ID, ?> dataSource, Query query) throws IOException {
 		Set<ID> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
 		Set<ID> indexedButRemovedFromDS = indexReaderTemplate
-				.useReader(reader -> docsToRemove(notIndexedIds, reader));
+				.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
 		return new IndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
 
@@ -72,9 +77,12 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	/**
 	 * @return ids(reader) - ids
 	 */
-	protected Set<ID> docsToRemove(Set<ID> ids, TypedIndexReader<ID, ?> reader) {
-		return collectToHashSet(reader.getAllIds()
-				.filter(id -> !ids.remove(id))
-				.filter(not(ignoreAtRestorationCleanup)));
+	protected Set<ID> docsToRemove(Query query, Set<ID> ids,
+			TypedIndexReader<ID, ?> reader) throws IOException {
+		if (query == null) {
+			return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
+		} else {
+			return collectToHashSet(reader.findIds(query).filter(id -> !ids.remove(id)));
+		}
 	}
 }

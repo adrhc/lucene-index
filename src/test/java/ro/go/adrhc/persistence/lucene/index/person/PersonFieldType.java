@@ -22,13 +22,14 @@ public enum PersonFieldType implements TypedField<Person> {
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
-	aliasKeyWord(KEYWORD, Person::aliasKeyword),
+	aliasKeyWord(KEYWORD, Person::aliasKeyWord),
 	aliasWord(WORD, Person::aliasWord),
 	aliasPhrase(PHRASE, Person::aliasPhrase),
 	intField(INT, intField(Person::intField), false),
 	longField(LONG, longField(Person::longField), false),
 	instantField(LONG, instantField(Person::instantField), false),
-	storedOnlyField(STORED, Person::storedOnlyField);
+	storedOnlyField(STORED, Person::storedOnlyField),
+	male(INT, booleanField(Person::male), false);
 
 	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
 	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonFieldType.name);

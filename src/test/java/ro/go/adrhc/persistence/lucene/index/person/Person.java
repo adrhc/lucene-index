@@ -4,11 +4,11 @@ import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 
 import java.time.Instant;
 
-public record Person(Long id, String cnp, String name, String aliasKeyword,
+public record Person(Long id, String cnp, String name, String aliasKeyWord,
 		String aliasWord, String aliasPhrase, Integer intField, Long longField,
-		Instant instantField, String storedOnlyField) implements Identifiable<Long> {
+		Instant instantField, String storedOnlyField, boolean male) implements Identifiable<Long> {
 	public Person storedOnlyField(String storedOnlyField) {
-		return new Person(id, cnp, name, aliasKeyword, aliasWord,
-				aliasPhrase, intField, longField, Instant.now(), storedOnlyField);
+		return new Person(id, cnp, name, aliasKeyWord, aliasWord, aliasPhrase,
+				intField, longField, Instant.now(), storedOnlyField, male);
 	}
 }

@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE
 public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexParams<Long, Person> peopleIndexSpec;
+	protected TypedIndexParams<Person> peopleIndexSpec;
 	protected IndexRepository<Long, Person> indexRepository;
 
 	@BeforeAll
@@ -40,10 +40,10 @@ public abstract class AbstractPersonsIndexTest {
 	}
 
 	protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
-		return TypedIndexReaderTemplate.create(peopleIndexSpec);
+		return TypedIndexReaderTemplate.create(peopleIndexSpec.toAllHitsTypedIndexReaderParams());
 	}
 
 	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec);
+		return OneHitIndexReaderTemplate.create(peopleIndexSpec.toOneHitIndexReaderTemplate());
 	}
 }

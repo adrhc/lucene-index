@@ -13,14 +13,14 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
-	private final TypedIndexParams<ID, T> params;
+	private final TypedIndexParams<T> params;
 
 	public TypedIndexSearchService<T> createSearchService() {
-		return TypedIndexSearchService.create(params);
+		return TypedIndexSearchService.create(params.toTypedIndexSearchServiceParams());
 	}
 
 	public TypedIndexRetrieveService<ID, T> createIdSearchService() {
-		return TypedIndexRetrieveService.create(params);
+		return TypedIndexRetrieveService.create(params.toTypedIndexRetrieveServiceParams());
 	}
 
 	public DocsCountService createCountService() {
@@ -28,22 +28,22 @@ public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
 	}
 
 	public TypedIndexRestoreService<ID, T> createRestoreService() {
-		return TypedIndexRestoreService.create(params);
+		return TypedIndexRestoreService.create(params.toTypedIndexRestoreServiceParams());
 	}
 
 	public TypedIndexResetService<T> createResetService() {
-		return TypedIndexResetService.create(params);
+		return TypedIndexResetService.create(params.toTypedIndexResetServiceParams());
 	}
 
 	public TypedIndexAdderService<T> createAdderService() {
-		return TypedIndexAdderService.create(params);
+		return TypedIndexAdderService.create(params.toTypedIndexAdderServiceParams());
 	}
 
 	public TypedIndexUpsertService<T> createUpdateService() {
-		return TypedIndexUpsertService.create(params);
+		return TypedIndexUpsertService.create(params.toTypedIndexUpsertServiceParams());
 	}
 
 	public TypedIndexRemoveService<ID> createRemoveService() {
-		return TypedIndexRemoveService.create(params);
+		return TypedIndexRemoveService.create(params.toTypedIndexRemoveServiceParams());
 	}
 }

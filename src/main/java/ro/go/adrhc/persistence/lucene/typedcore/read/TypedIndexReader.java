@@ -22,9 +22,10 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final DocsIndexReader indexReader;
 
-	public static <ID, T> TypedIndexReader<ID, T> create(TypedIndexReaderParams<T> params)
-			throws IOException {
-		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
+	public static <ID, T> TypedIndexReader<ID, T>
+	create(TypedIndexReaderParams<T> params) throws IOException {
+		DocumentToTypedConverter<T> docToTypedConverter =
+				DocumentToTypedConverter.create(params.getType());
 		DocsIndexReader indexReader = DocsIndexReader.create(params);
 		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
 	}
@@ -46,6 +47,11 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		return indexReader.getFieldOfAll(field.name())
 				.map(field::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
+	}
+
+	public Stream<ID> findIds(Query query) throws IOException {
+		return indexReader.findFieldValues(idField.name(), query)
+				.map(value -> (ID) idField.toTypedValue(value));
 	}
 
 	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {

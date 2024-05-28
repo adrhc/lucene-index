@@ -1,14 +1,17 @@
 package ro.go.adrhc.persistence.lucene.typedindex.restore;
 
+import org.apache.lucene.index.IndexWriter;
+import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.typedcore.write.AbstractTypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexWriterParams;
 
-import java.util.function.Predicate;
+public interface TypedIndexRestoreServiceParams<T> extends TypedIndexWriterParams<T> {
+	IndexReaderPool getIndexReaderPool();
 
-public interface TypedIndexRestoreServiceParams<ID, T> extends
-		TypedIndexReaderParams<T>, AbstractTypedIndexParams<T>, TypedIndexRemoverParams {
-	default Predicate<ID> ignoreAtRestorationCleanup() {
-		return _ -> false;
-	}
+	TypedIndexReaderParams<T> toAllHitsTypedIndexReaderParams();
+
+	IndexWriter getIndexWriter();
+
+	TypedIndexRemoverParams toTypedIndexRemoverParams();
 }

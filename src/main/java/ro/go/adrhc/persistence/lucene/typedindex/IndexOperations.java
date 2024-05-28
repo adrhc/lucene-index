@@ -32,4 +32,6 @@ public interface IndexOperations<ID, T extends Identifiable<ID>>
 	void reset(Stream<T> tStream) throws IOException;
 
 	void restore(IndexDataSource<ID, T> dataSource) throws IOException;
+
+	void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException;
 }

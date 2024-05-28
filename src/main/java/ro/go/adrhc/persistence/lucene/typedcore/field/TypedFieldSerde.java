@@ -34,6 +34,12 @@ public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
 		return new TypedFieldSerde<>(typedAccessor, it -> it, INT_FIELD_ACCESSOR, it -> it);
 	}
 
+	public static <T> TypedFieldSerde<T> booleanField(Function<T, Boolean> typedAccessor) {
+		return new TypedFieldSerde<>(typedAccessor,
+				it -> it != null && ((Boolean) it) ? 1 : 0,
+				INT_FIELD_ACCESSOR, it -> it != null && ((Integer) it) != 0);
+	}
+
 	public static <T> TypedFieldSerde<T> longField(Function<T, Long> typedAccessor) {
 		return new TypedFieldSerde<>(typedAccessor, it -> it, LONG_FIELD_ACCESSOR, it -> it);
 	}

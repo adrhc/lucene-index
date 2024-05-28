@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
-import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generatePerson;
+import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generateGirl;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.ALIAS_KEYWORD_QUERIES;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,7 +23,7 @@ public class PersonCrudTest extends AbstractPersonsIndexTest {
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(PEOPLE.size());
 
-		indexRepository.addOne(generatePerson(4));
+		indexRepository.addOne(generateGirl(4));
 		assertThat(indexRepository.findById(4L)).isPresent();
 
 		indexRepository.removeById(4L);
@@ -32,7 +32,7 @@ public class PersonCrudTest extends AbstractPersonsIndexTest {
 
 	@Test
 	void nullInstantField() throws IOException {
-		indexRepository.addOne(generatePerson(PEOPLE.size() + 1, null));
+		indexRepository.addOne(PeopleGenerator.generateGirl(PEOPLE.size() + 1, null));
 		assertThat(indexRepository.findById(1L + PEOPLE.size())).isPresent();
 	}
 

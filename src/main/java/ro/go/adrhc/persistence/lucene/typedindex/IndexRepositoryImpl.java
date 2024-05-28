@@ -23,7 +23,7 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
-	protected final TypedIndexParams<ID, T> typedIndexParams;
+	protected final TypedIndexParams<T> typedIndexParams;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -150,6 +150,12 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 	@Override
 	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
 		indexOperations.restore(dataSource);
+		commit();
+	}
+
+	@Override
+	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
+		indexOperations.restoreSubset(dataSource, query);
 		commit();
 	}
 
