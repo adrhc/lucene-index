@@ -15,6 +15,10 @@ public class BooleanQueryBuilder {
 		builder.add(query, BooleanClause.Occur.MUST);
 	}
 
+	public void mustNotSatisfy(Query query) {
+		builder.add(query, BooleanClause.Occur.MUST_NOT);
+	}
+
 	public void shouldSatisfy(Query query) {
 		builder.add(query, BooleanClause.Occur.SHOULD);
 	}
