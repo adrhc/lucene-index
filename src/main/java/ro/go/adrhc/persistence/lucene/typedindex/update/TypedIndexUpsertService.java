@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.update;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterTemplate;
 

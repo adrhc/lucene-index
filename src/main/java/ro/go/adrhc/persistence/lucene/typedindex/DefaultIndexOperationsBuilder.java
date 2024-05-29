@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.NoArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
@@ -14,12 +13,12 @@ import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServi
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @NoArgsConstructor
-public class DefaultIndexOperationsBuilder<ID, T extends Identifiable<ID>> {
+public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 	private TypedIndexParams<T> params;
 	private TypedIndexRestoreService<ID, T> restoreService;
 	private TypedIndexResetService<T> resetService;
 
-	public static <ID, T extends Identifiable<ID>>
+	public static <ID, T extends Indexable<ID, T>>
 	DefaultIndexOperationsBuilder<ID, T> of(TypedIndexParams<T> params) {
 		DefaultIndexOperationsBuilder<ID, T> builder = new DefaultIndexOperationsBuilder<>();
 		return builder.params(params);

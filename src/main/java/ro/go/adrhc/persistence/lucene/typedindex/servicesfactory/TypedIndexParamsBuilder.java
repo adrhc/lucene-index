@@ -7,8 +7,8 @@ import org.apache.lucene.store.FSDirectory;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.IOException;

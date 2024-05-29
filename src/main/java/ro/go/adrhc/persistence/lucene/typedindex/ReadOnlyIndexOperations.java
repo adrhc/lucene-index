@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface ReadOnlyIndexOperations<ID, T extends Identifiable<ID>> {
+public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>> {
 	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;

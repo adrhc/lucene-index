@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
@@ -24,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class DefaultIndexOperations<ID, T extends Identifiable<ID>> implements IndexOperations<ID, T> {
+public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements IndexOperations<ID, T> {
 	private final TypedIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
@@ -122,6 +121,16 @@ public class DefaultIndexOperations<ID, T extends Identifiable<ID>> implements I
 	@Override
 	public void upsert(T t) throws IOException {
 		upsertService.upsert(t);
+	}
+
+	public void merge(T t) throws IOException {
+		Optional<T> storedOptional = retrieveService.findById(t.id());
+		if (storedOptional.isEmpty()) {
+			addOne(t);
+		} else {
+			T stored = storedOptional.get();
+			upsert(stored.merge(t));
+		}
 	}
 
 	@Override

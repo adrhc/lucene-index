@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;

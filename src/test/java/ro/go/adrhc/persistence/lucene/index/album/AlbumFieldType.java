@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 
 import java.util.function.Function;
 

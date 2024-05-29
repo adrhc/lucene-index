@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedcore.write;
 
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
 
 import java.io.IOException;

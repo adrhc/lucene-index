@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
@@ -18,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
+public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
@@ -113,6 +112,12 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 	@Override
 	public void upsert(T t) throws IOException {
 		indexOperations.upsert(t);
+		commit();
+	}
+
+	@Override
+	public void merge(T t) throws IOException {
+		indexOperations.merge(t);
 		commit();
 	}
 

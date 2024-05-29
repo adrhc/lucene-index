@@ -1,14 +1,13 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public interface IndexOperations<ID, T extends Identifiable<ID>>
+public interface IndexOperations<ID, T extends Indexable<ID, T>>
 		extends ReadOnlyIndexOperations<ID, T> {
 	void addOne(T t) throws IOException;
 
@@ -17,6 +16,8 @@ public interface IndexOperations<ID, T extends Identifiable<ID>>
 	void addMany(Stream<T> tStream) throws IOException;
 
 	void upsert(T t) throws IOException;
+
+	void merge(T t) throws IOException;
 
 	void upsertAll(Iterable<T> iterable) throws IOException;
 

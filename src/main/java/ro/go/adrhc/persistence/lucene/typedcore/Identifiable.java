@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedcore.serde;
+package ro.go.adrhc.persistence.lucene.typedcore;
 
 /**
  * Overwrite at least id() or getId()!

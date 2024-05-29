@@ -5,8 +5,8 @@ import ro.go.adrhc.persistence.lucene.core.query.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;

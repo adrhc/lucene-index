@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedcore.write;
 
 import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.typedcore.serde.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 
 import java.io.IOException;
 
