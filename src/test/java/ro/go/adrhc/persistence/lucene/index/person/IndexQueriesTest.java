@@ -27,7 +27,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		List<Person> result = indexRepository
 				.findAllMatches(NAME_QUERY_PARSER.parse("pers*2*"));
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
@@ -37,7 +37,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 				NAME_QUERIES.maxFuzzinessNearTokens(List.of("ddd", "an", "cast")));
 
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).id()).isEqualTo(PERSON2.id());
+		assertThat(result.getFirst().id()).isEqualTo(PERSON2.id());
 	}
 
 	@Test
@@ -47,7 +47,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 				ALIAS_PHRASE_QUERIES.tokenEquals("aliasphraseaaiisstt123"));
 
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 		List<Person> result = indexRepository.findAllMatches(ALIAS_WORD_QUERIES.tokenEquals(normalized));
 
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
@@ -71,7 +71,7 @@ class IndexQueriesTest extends AbstractPersonsIndexTest {
 				ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
 
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).id()).isEqualTo(PERSON3.id());
+		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
 	}
 
 	@Test
