@@ -104,16 +104,18 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> im
 			indexReaderPool.close();
 			log.info("\nIndexReaderPool closed");
 		} catch (IOException e) {
+			log.error("\nIndexReaderPool failed to close!");
 			exc = e;
 		}
 		if (isReadOnly()) {
-			log.info("\nWon't close the writer because the index was opened in read-only mode!");
+			log.info("\nWon't close IndexWriter because the index was opened in read-only mode!");
 		} else {
 			try {
 				log.info("\nclosing IndexWriter ...");
 				indexWriter.close();
-				log.info("\n{} closed", indexPath);
+				log.info("\nIndexWriter closed");
 			} catch (IOException e) {
+				log.error("\nIndexWriter failed to close!");
 				exc = e;
 			}
 		}

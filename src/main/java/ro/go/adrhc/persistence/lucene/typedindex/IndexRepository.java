@@ -10,5 +10,11 @@ public interface IndexRepository<ID, T extends Identifiable<ID>>
 		extends IndexOperations<ID, T>, Closeable {
 	TypedIndexParams<T> getTypedIndexParams();
 
-	Path getIndexPath();
+	default Path getIndexPath() {
+		return getTypedIndexParams().getIndexPath();
+	}
+
+	default boolean isReadOnly() {
+		return getTypedIndexParams().isReadOnly();
+	}
 }

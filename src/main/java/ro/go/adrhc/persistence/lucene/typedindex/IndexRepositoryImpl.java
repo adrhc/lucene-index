@@ -10,7 +10,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -163,11 +162,6 @@ public class IndexRepositoryImpl<ID, T extends Identifiable<ID>>
 	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
 		indexOperations.restoreSubset(dataSource, query);
 		commit();
-	}
-
-	@Override
-	public Path getIndexPath() {
-		return typedIndexParams.getIndexPath();
 	}
 
 	@Override
