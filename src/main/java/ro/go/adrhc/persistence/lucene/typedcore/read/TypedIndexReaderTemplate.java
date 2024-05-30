@@ -19,8 +19,8 @@ public class TypedIndexReaderTemplate<ID, T> {
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<TypedIndexReader<ID, T>, R, E> indexReaderFn)
 			throws IOException, E {
-		try (TypedIndexReader<ID, T> indexReader = indexReaderFactory.get()) {
-			R result = indexReaderFn.apply(indexReader);
+		try (TypedIndexReader<ID, T> reader = indexReaderFactory.get()) {
+			R result = indexReaderFn.apply(reader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;
 		}

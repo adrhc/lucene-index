@@ -8,9 +8,9 @@ import org.apache.lucene.search.SortedSetSortField;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ro.go.adrhc.persistence.lucene.typedindex.search.SortedValues;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.apache.lucene.search.SortField.Type.LONG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,19 +23,19 @@ public class PersonSortTest extends AbstractPersonsIndexTest {
 	@Test
 	void findManySortInstantField() throws IOException {
 		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
-		List<Person> result = indexRepository.findMany(
+		SortedValues<Person> result = indexRepository.findMany(
 				new FieldExistsQuery(id.name()), 10, sort);
-		assertThat(result).hasSize(10);
-		assertThat(result).map(Person::id).containsSequence(0L, 9L, 18L);
+		assertThat(result.values()).hasSize(10);
+		assertThat(result.values()).map(Person::id).containsSequence(0L, 9L, 18L);
 	}
 
 	@Test
 	void findManySortCnp() throws IOException {
 		Sort sort = new Sort(new SortedSetSortField(cnp.name(), false));
-		List<Person> result = indexRepository.findMany(
+		SortedValues<Person> result = indexRepository.findMany(
 				new FieldExistsQuery(id.name()), 10, sort);
-		assertThat(result).hasSize(10);
-		assertThat(result).map(Person::id).containsSequence(0L, 1L, 10L);
+		assertThat(result.values()).hasSize(10);
+		assertThat(result.values()).map(Person::id).containsSequence(0L, 1L, 10L);
 	}
 
 	protected void indexRepositoryReset() throws IOException {

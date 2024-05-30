@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.read.HitsLimitedDocsIndexReader;
-import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
+import ro.go.adrhc.persistence.lucene.core.read.ScoreDocAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.ScoreAndDocumentToScoreAndTypedConverter;
@@ -54,19 +54,19 @@ public class TypedIndexReader<ID, T> implements Closeable {
 				.map(value -> (ID) idField.toTypedValue(value));
 	}
 
-	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
+	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
 		return convert(indexReader.findMany(query));
 	}
 
-	public Stream<ScoreAndValue<T>> findMany(Query query, int numHits) throws IOException {
+	public Stream<ScoreDocAndValue<T>> findMany(Query query, int numHits) throws IOException {
 		return convert(indexReader.findMany(query, numHits));
 	}
 
-	public Stream<ScoreAndValue<T>> findMany(Query query, Sort sort) throws IOException {
+	public Stream<ScoreDocAndValue<T>> findMany(Query query, Sort sort) throws IOException {
 		return convert(indexReader.findMany(query, sort));
 	}
 
-	public Stream<ScoreAndValue<T>> findMany(
+	public Stream<ScoreDocAndValue<T>> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
 		return convert(indexReader.findMany(query, numHits, sort));
 	}
@@ -87,7 +87,7 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		indexReader.close();
 	}
 
-	private Stream<ScoreAndValue<T>> convert(Stream<ScoreAndDocument> stream) {
+	private Stream<ScoreDocAndValue<T>> convert(Stream<ScoreDocAndDocument> stream) {
 		return stream.map(toScoreAndTypedConverter::convert).flatMap(Optional::stream);
 	}
 }

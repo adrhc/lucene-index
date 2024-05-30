@@ -14,6 +14,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServ
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
+import ro.go.adrhc.persistence.lucene.typedindex.search.SortedValues;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 import java.io.IOException;
@@ -72,13 +73,13 @@ public class DefaultIndexOperations<ID, T
 	}
 
 	@Override
-	public List<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchService.findMany(query, hitsCount, sort);
 	}
 
 	@Override
-	public List<T> findAllMatches(Query query) throws IOException {
-		return searchService.findAllMatches(query);
+	public List<T> findMany(Query query) throws IOException {
+		return searchService.findMany(query);
 	}
 
 	@Override

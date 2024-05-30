@@ -57,12 +57,12 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
-	public List<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchManyService.findMany(query, hitsCount, sort);
 	}
 
 	@Override
-	public List<T> findAllMatches(Query query) throws IOException {
-		return searchManyService.findAllMatches(query);
+	public List<T> findMany(Query query) throws IOException {
+		return searchManyService.findMany(query);
 	}
 }

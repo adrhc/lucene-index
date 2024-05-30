@@ -46,14 +46,14 @@ public class DocsIndexReader implements Closeable {
 	/**
 	 * @return limited by numHits
 	 */
-	public Stream<ScoreAndDocument> findMany(Query query, int numHits) throws IOException {
+	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
 		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits);
 		return topDocsStoredFields
 				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
-	public Stream<ScoreAndDocument> findMany(
+	public Stream<ScoreDocAndDocument> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
 		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits, sort);
 		return topDocsStoredFields
@@ -85,10 +85,10 @@ public class DocsIndexReader implements Closeable {
 		return searcher.count(new MatchAllDocsQuery());
 	}
 
-	protected Optional<ScoreAndDocument> safelyGetScoreAndDocument(
+	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
 			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
 		return safelyGetDocument(topDocsStoredFields.storedFields(), scoreDoc.doc)
-				.map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
+				.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
 	}
 
 	protected Stream<Document> doGetAll(Bits liveDocs,

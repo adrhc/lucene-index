@@ -36,11 +36,11 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 				indexReaderPool, indexReaderPool.getReader(), numHits);
 	}
 
-	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
+	public Stream<ScoreDocAndDocument> findMany(Query query) throws IOException {
 		return findMany(query, numHits);
 	}
 
-	public Stream<ScoreAndDocument> findMany(Query query, Sort sort) throws IOException {
+	public Stream<ScoreDocAndDocument> findMany(Query query, Sort sort) throws IOException {
 		return findMany(query, numHits, sort);
 	}
 

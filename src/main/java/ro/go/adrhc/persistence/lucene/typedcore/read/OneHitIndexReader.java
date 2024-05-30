@@ -23,7 +23,7 @@ public class OneHitIndexReader<T> implements Closeable {
 				HitsLimitedDocsIndexReader.create(params.getIndexReaderPool(), 1));
 	}
 
-	public Optional<ScoreAndValue<T>> findFirst(Query query) throws IOException {
+	public Optional<ScoreDocAndValue<T>> findFirst(Query query) throws IOException {
 		return indexReader.findMany(query)
 				.map(toScoreAndTypedConverter::convert)
 				.flatMap(Optional::stream)

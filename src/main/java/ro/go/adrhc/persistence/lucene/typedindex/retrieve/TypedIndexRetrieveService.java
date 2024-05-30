@@ -5,7 +5,7 @@ import org.apache.lucene.search.BooleanQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndValue;
+import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(r ->
-				r.findFirst(exactQuery.newExactQuery(id)).map(ScoreAndValue::value));
+				r.findFirst(exactQuery.newExactQuery(id)).map(ScoreDocAndValue::value));
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
 		BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(ids));
 		return indexReaderTemplate.useReader(reader -> reader
 				.findMany(idsQuery)
-				.map(ScoreAndValue::value)
+				.map(ScoreDocAndValue::value)
 				.collect(Collectors.toSet()));
 	}
 }

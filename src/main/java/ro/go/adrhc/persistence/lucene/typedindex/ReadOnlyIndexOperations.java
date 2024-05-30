@@ -29,7 +29,7 @@ public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>>
 
 	Set<T> findByIds(Set<ID> ids) throws IOException;
 
-	List<T> findAllMatches(Query query) throws IOException;
+	List<T> findMany(Query query) throws IOException;
 
 	Optional<T> findBestMatch(Query query) throws IOException;
 

@@ -42,7 +42,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findAllMatches(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
+				.findMany(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -59,7 +59,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findAllMatches(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
+				.findMany(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -76,7 +76,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findAllMatches(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
+				.findMany(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -91,7 +91,7 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(1);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = indexRepository.findAllMatches(ID_QUERIES.longEquals(1111));
+		List<Person> people = indexRepository.findMany(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());

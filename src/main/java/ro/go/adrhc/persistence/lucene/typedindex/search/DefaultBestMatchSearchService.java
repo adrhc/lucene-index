@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreAndValue;
+import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class DefaultBestMatchSearchService<T> implements BestMatchSearchService<
 	@Override
 	public Optional<T> findBestMatch(Query query) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(
-				r -> r.findFirst(query).map(ScoreAndValue::value));
+				r -> r.findFirst(query).map(ScoreDocAndValue::value));
 	}
 
 	@Override
