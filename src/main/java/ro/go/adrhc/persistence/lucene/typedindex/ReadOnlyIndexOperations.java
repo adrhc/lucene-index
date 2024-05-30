@@ -1,7 +1,10 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
+import ro.go.adrhc.persistence.lucene.index.IndexCountService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 
 import java.io.IOException;
@@ -12,7 +15,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>> {
+public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>>
+		extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
 	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;

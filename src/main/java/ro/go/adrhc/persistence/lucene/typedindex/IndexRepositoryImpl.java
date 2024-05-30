@@ -3,6 +3,8 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
@@ -44,6 +46,11 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
+	public <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException {
+		return indexOperations.getFieldOfAll(field);
+	}
+
+	@Override
 	public Optional<T> findById(ID id) throws IOException {
 		return indexOperations.findById(id);
 	}
@@ -51,6 +58,11 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	@Override
 	public Set<T> findByIds(Set<ID> ids) throws IOException {
 		return indexOperations.findByIds(ids);
+	}
+
+	@Override
+	public List<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+		return indexOperations.findMany(query, hitsCount, sort);
 	}
 
 	@Override

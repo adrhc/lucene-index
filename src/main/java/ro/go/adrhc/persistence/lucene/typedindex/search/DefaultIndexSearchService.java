@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
@@ -53,6 +54,11 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return searchReduceService.findBestMatches(bestMatchingStrategy, queries);
+	}
+
+	@Override
+	public List<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+		return searchManyService.findMany(query, hitsCount, sort);
 	}
 
 	@Override

@@ -2,6 +2,9 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
+import org.apache.lucene.search.FieldExistsQuery;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortedSetSortField;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +23,15 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 class PersonQueriesTest extends AbstractPersonsIndexTest {
 	private static final Person PERSON2 = PEOPLE.get(1);
 	private static final Person PERSON3 = PEOPLE.get(2);
+
+	@Test
+	void findMany() throws IOException {
+		Sort sort = new Sort(new SortedSetSortField(cnp.name(), false));
+		List<Person> result = indexRepository.findMany(
+				new FieldExistsQuery(id.name()), 10, sort);
+		assertThat(result).hasSize(PEOPLE.size());
+		assertThat(result).map(Person::id).containsExactly(1L, 2L, 3L);
+	}
 
 	@Test
 	void parse() throws IOException, QueryNodeException {
@@ -56,7 +68,8 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		String normalized = ANALYZER.normalize(null, aliasWord).utf8ToString();
 		log.info("\naliasWord is:\t\t{}\nnormalized is:\t{}", aliasWord, normalized);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findAllMatches(ALIAS_WORD_QUERIES.tokenEquals(normalized));
+		List<Person> result = indexRepository.findAllMatches(
+				ALIAS_WORD_QUERIES.tokenEquals(normalized));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -81,7 +94,8 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		prefix = prefix.substring(0, prefix.length() - 1);
 		log.info("\ntoken is:\t{}\nprefix is:\t{}", token, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findAllMatches(ALIAS_PHRASE_QUERIES.startsWith(prefix));
+		List<Person> result = indexRepository.findAllMatches(
+				ALIAS_PHRASE_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}

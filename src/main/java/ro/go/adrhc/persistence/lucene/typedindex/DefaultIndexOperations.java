@@ -2,7 +2,9 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
+import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
@@ -23,7 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements IndexOperations<ID, T> {
+public class DefaultIndexOperations<ID, T
+		extends Indexable<ID, T>> implements IndexOperations<ID, T> {
 	private final DefaultIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
@@ -54,6 +57,11 @@ public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements I
 	}
 
 	@Override
+	public <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException {
+		return retrieveService.getFieldOfAll(field);
+	}
+
+	@Override
 	public Optional<T> findById(ID id) throws IOException {
 		return retrieveService.findById(id);
 	}
@@ -61,6 +69,11 @@ public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements I
 	@Override
 	public Set<T> findByIds(Set<ID> ids) throws IOException {
 		return retrieveService.findByIds(ids);
+	}
+
+	@Override
+	public List<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+		return searchService.findMany(query, hitsCount, sort);
 	}
 
 	@Override

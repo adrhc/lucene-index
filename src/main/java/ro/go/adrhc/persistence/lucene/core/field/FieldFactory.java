@@ -49,7 +49,8 @@ public class FieldFactory {
 	}
 
 	public static TextField textField(boolean stored, String fieldName, Object value) {
-		return new TextField(fieldName, value.toString(), stored ? Field.Store.YES : Field.Store.NO);
+		return new TextField(fieldName, value.toString(),
+				stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	/**
@@ -73,7 +74,8 @@ public class FieldFactory {
 	}
 
 	public static KeywordField keywordField(boolean stored, String fieldName, Object value) {
-		return new KeywordField(fieldName, value.toString(), stored ? Field.Store.YES : Field.Store.NO);
+		return new KeywordField(fieldName, value.toString(),
+				stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	public static StoredField storedField(Enum<?> field, Object value) {
