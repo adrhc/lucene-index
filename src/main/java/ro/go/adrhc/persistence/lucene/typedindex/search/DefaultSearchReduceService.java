@@ -49,8 +49,8 @@ public class DefaultSearchReduceService<T> implements SearchReduceService<T> {
 	protected Optional<QueryAndValue<T>> doFindBestMatch(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
-		Stream<TypedSearchResult<T>> allMatches = doFindAllMatches(query, reader)
-				.map(sat -> new TypedSearchResult<>(query, sat));
+		Stream<QueryAndScoreAndValue<T>> allMatches = doFindAllMatches(query, reader)
+				.map(sat -> new QueryAndScoreAndValue<>(query, sat));
 		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
 	}
 
