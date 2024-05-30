@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 
@@ -64,5 +65,11 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 	@Override
 	public List<T> findMany(Query query) throws IOException {
 		return searchManyService.findMany(query);
+	}
+
+	@Override
+	public SortedValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
+			throws IOException {
+		return searchManyService.findManyAfter(after, query, hitsCount, sort);
 	}
 }

@@ -24,7 +24,8 @@ import java.util.Collection;
 
 @Getter
 @Slf4j
-public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> implements TypedIndexParams<T> {
+public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
+		implements TypedIndexParams<T> {
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
@@ -33,8 +34,10 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> im
 	private final Path indexPath;
 	private boolean closed;
 
-	public TypedIndexParamsImpl(Class<T> type, TypedField<T> idField, IndexReaderPool indexReaderPool,
-			Collection<? extends TypedField<T>> typedFields, Analyzer analyzer, IndexWriter indexWriter,
+	public TypedIndexParamsImpl(Class<T> type, TypedField<T> idField,
+			IndexReaderPool indexReaderPool,
+			Collection<? extends TypedField<T>> typedFields, Analyzer analyzer,
+			IndexWriter indexWriter,
 			int searchHits, SearchResultFilter<T> searchResultFilter, Path indexPath) {
 		super(type, idField, indexReaderPool);
 		this.typedFields = typedFields;

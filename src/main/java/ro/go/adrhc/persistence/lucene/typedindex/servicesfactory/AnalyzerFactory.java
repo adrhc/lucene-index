@@ -17,6 +17,7 @@ public class AnalyzerFactory {
 
 	@SneakyThrows
 	public static Analyzer defaultAnalyzer(TokenizerProperties properties) {
-		return new ro.go.adrhc.persistence.lucene.core.analysis.AnalyzerFactory(properties).create();
+		return new ro.go.adrhc.persistence.lucene.core.analysis.AnalyzerFactory(
+				properties).create();
 	}
 }

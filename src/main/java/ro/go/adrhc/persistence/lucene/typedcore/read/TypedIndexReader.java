@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedcore.read;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.read.HitsLimitedDocsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.ScoreDocAndDocument;
@@ -69,6 +70,11 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	public Stream<ScoreDocAndValue<T>> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
 		return convert(indexReader.findMany(query, numHits, sort));
+	}
+
+	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
+			Query query, int numHits, Sort sort) throws IOException {
+		return convert(indexReader.findManyAfter(after, query, numHits, sort));
 	}
 
 	/**

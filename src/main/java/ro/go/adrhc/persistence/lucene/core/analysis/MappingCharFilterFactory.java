@@ -7,7 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MappingCharFilterFactory extends org.apache.lucene.analysis.charfilter.MappingCharFilterFactory {
+public class MappingCharFilterFactory
+		extends org.apache.lucene.analysis.charfilter.MappingCharFilterFactory {
 	private final Map<String, String> args;
 
 	public MappingCharFilterFactory(Map<String, String> args) {

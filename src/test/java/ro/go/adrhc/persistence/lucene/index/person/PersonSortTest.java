@@ -21,12 +21,29 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 @Slf4j
 public class PersonSortTest extends AbstractPersonsIndexTest {
 	@Test
+	void findPages() throws IOException {
+		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
+
+		// 1st page
+		SortedValues<Person> page1 = indexRepository.findMany(
+				new FieldExistsQuery(id.name()), 10, sort);
+		assertThat(page1.values()).hasSize(10);
+		assertThat(page1.values()).map(Person::id).containsSequence(0L, 28L, 1L);
+
+		// 2nd page
+		SortedValues<Person> page2 = indexRepository.findManyAfter(page1.last(),
+				new FieldExistsQuery(id.name()), 10, sort);
+		assertThat(page2.values()).hasSize(10);
+		assertThat(page2.values()).map(Person::id).containsSequence(5L, 33L, 6L);
+	}
+
+	@Test
 	void findManySortInstantField() throws IOException {
 		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
 		SortedValues<Person> result = indexRepository.findMany(
 				new FieldExistsQuery(id.name()), 10, sort);
 		assertThat(result.values()).hasSize(10);
-		assertThat(result.values()).map(Person::id).containsSequence(0L, 9L, 18L);
+		assertThat(result.values()).map(Person::id).containsSequence(0L, 28L, 1L);
 	}
 
 	@Test
@@ -39,6 +56,6 @@ public class PersonSortTest extends AbstractPersonsIndexTest {
 	}
 
 	protected void indexRepositoryReset() throws IOException {
-		indexRepository.reset(generatePeopleList(100));
+		indexRepository.reset(generatePeopleList(50));
 	}
 }

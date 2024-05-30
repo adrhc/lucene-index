@@ -69,7 +69,8 @@ public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E
 
 	public TypedIndexParams<T> build(boolean readOnly) throws IOException {
 		analyzer = requireNonNullElseGet(analyzer, AnalyzerFactory::defaultAnalyzer);
-		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
+		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer,
+				indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(
 				() -> DirectoryReader.open(FSDirectory.open(indexPath)));
 		return new TypedIndexParamsImpl<>(tClass, idField, indexReaderPool, typedFields,

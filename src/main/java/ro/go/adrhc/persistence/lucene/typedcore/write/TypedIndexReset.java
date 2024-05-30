@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 public class TypedIndexReset<T> extends AbstractTypedIndexWriter<T> {
-	public TypedIndexReset(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
+	public TypedIndexReset(TypedToDocumentConverter<T> toDocumentConverter,
+			DocsIndexWriter indexWriter) {
 		super(toDocumentConverter, indexWriter);
 	}
 

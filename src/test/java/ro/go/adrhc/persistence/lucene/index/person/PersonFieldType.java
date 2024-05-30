@@ -31,12 +31,15 @@ public enum PersonFieldType implements TypedField<Person> {
 	storedOnlyField(STORED, Person::storedOnlyField),
 	male(INT, booleanField(Person::male), false);
 
-	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
+	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(
+			PersonFieldType.nameWord);
 	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonFieldType.name);
 	public static final FieldQueries ALIAS_KEYWORD_QUERIES = FieldQueries.create(
 			PersonFieldType.aliasKeyWord);
-	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(PersonFieldType.aliasWord);
-	public static final FieldQueries ALIAS_PHRASE_QUERIES = FieldQueries.create(PersonFieldType.aliasPhrase);
+	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(
+			PersonFieldType.aliasWord);
+	public static final FieldQueries ALIAS_PHRASE_QUERIES = FieldQueries.create(
+			PersonFieldType.aliasPhrase);
 	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonFieldType.cnp);
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 

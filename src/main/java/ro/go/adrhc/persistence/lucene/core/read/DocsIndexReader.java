@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.core.read;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
@@ -47,7 +48,8 @@ public class DocsIndexReader implements Closeable {
 	 * @return limited by numHits
 	 */
 	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits);
+		TopDocsStoredFields topDocsStoredFields =
+				topDocsStoredFields(s -> s.search(query, numHits));
 		return topDocsStoredFields
 				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
@@ -55,7 +57,17 @@ public class DocsIndexReader implements Closeable {
 
 	public Stream<ScoreDocAndDocument> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits, sort);
+		TopDocsStoredFields topDocsStoredFields =
+				topDocsStoredFields(s -> s.search(query, numHits, sort));
+		return topDocsStoredFields
+				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+				.flatMap(Optional::stream);
+	}
+
+	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
+			Query query, int numHits, Sort sort) throws IOException {
+		TopDocsStoredFields topDocsStoredFields =
+				topDocsStoredFields(s -> s.searchAfter(after, query, numHits, sort));
 		return topDocsStoredFields
 				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
@@ -66,7 +78,8 @@ public class DocsIndexReader implements Closeable {
 	 */
 	public Stream<Object> findFieldValues(
 			String fieldName, Query query, int numHits) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits);
+		TopDocsStoredFields topDocsStoredFields =
+				topDocsStoredFields(s -> s.search(query, numHits));
 		OneStoredObjectFieldVisitor fieldVisitor =
 				new OneStoredObjectFieldVisitor(fieldName);
 		return topDocsStoredFields
@@ -132,16 +145,10 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	protected TopDocsStoredFields topDocsStoredFields(
-			Query query, int numHits) throws IOException {
+			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
+			throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
-		TopDocs topDocs = searcher.search(query, numHits);
-		return new TopDocsStoredFields(topDocs, searcher.storedFields());
-	}
-
-	protected TopDocsStoredFields topDocsStoredFields(
-			Query query, int numHits, Sort sort) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		TopDocs topDocs = searcher.search(query, numHits, sort);
+		TopDocs topDocs = topDocsSupplier.apply(searcher);
 		return new TopDocsStoredFields(topDocs, searcher.storedFields());
 	}
 

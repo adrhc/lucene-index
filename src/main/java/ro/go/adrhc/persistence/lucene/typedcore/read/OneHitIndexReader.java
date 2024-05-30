@@ -15,8 +15,10 @@ public class OneHitIndexReader<T> implements Closeable {
 	private final ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter;
 	private final HitsLimitedDocsIndexReader indexReader;
 
-	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params) throws IOException {
-		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(params.getType());
+	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
+			throws IOException {
+		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(
+				params.getType());
 		ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter =
 				new ScoreAndDocumentToScoreAndTypedConverter<>(docToTypedConverter);
 		return new OneHitIndexReader<>(toScoreAndTypedConverter,

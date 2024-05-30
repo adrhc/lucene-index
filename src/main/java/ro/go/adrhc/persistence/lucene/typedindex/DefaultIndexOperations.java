@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
@@ -75,6 +76,12 @@ public class DefaultIndexOperations<ID, T
 	@Override
 	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchService.findMany(query, hitsCount, sort);
+	}
+
+	@Override
+	public SortedValues<T> findManyAfter(ScoreDoc after,
+			Query query, int hitsCount, Sort sort) throws IOException {
+		return searchService.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override

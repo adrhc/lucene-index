@@ -25,11 +25,13 @@ public class DocsIndexWriter implements Closeable {
 		indexWriter.addDocument(document);
 	}
 
-	public void addMany(Iterable<? extends Iterable<? extends IndexableField>> documents) throws IOException {
+	public void addMany(Iterable<? extends Iterable<? extends IndexableField>> documents)
+			throws IOException {
 		indexWriter.addDocuments(documents);
 	}
 
-	public void addMany(Stream<? extends Iterable<? extends IndexableField>> documents) throws IOException {
+	public void addMany(Stream<? extends Iterable<? extends IndexableField>> documents)
+			throws IOException {
 		addMany(iterable(documents));
 	}
 

@@ -56,14 +56,16 @@ public class FieldQueries {
 	/**
 	 * Useful with SpanNearQuery.
 	 */
-	public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(String value) {
+	public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(
+			String value) {
 		return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
 	}
 
 	/**
 	 * Useful with SpanNearQuery.
 	 */
-	public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(String value) {
+	public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(
+			String value) {
 		return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
 	}
 

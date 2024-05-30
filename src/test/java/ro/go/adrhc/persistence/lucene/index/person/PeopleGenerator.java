@@ -40,7 +40,8 @@ public class PeopleGenerator {
 	}
 
 	public static Person generateGirl(long i) {
-		return generateGirl(i, Instant.parse(STR."200\{i % 9}-01-02T03:04:05.06Z"));
+		String day = "%02d".formatted(1 + i % 28);
+		return generateGirl(i, Instant.parse(STR."2000-01-\{day}T03:04:05.06Z"));
 	}
 
 	public static Person generateGirl(long i, Instant instantField) {

@@ -13,13 +13,15 @@ import static ro.go.adrhc.util.stream.StreamUtils.stream;
 
 @Slf4j
 public class TypedIndexAdder<T> extends AbstractTypedIndexWriter<T> {
-	public TypedIndexAdder(TypedToDocumentConverter<T> toDocumentConverter, DocsIndexWriter indexWriter) {
+	public TypedIndexAdder(TypedToDocumentConverter<T> toDocumentConverter,
+			DocsIndexWriter indexWriter) {
 		super(toDocumentConverter, indexWriter);
 	}
 
 	public static <T> TypedIndexAdder<T> create(TypedIndexWriterParams<T> params) {
 		TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
-		return new TypedIndexAdder<>(toDocumentConverter, new DocsIndexWriter(params.getIndexWriter()));
+		return new TypedIndexAdder<>(toDocumentConverter,
+				new DocsIndexWriter(params.getIndexWriter()));
 	}
 
 	public void addOne(T t) throws IOException {

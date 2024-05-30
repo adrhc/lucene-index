@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
@@ -64,6 +65,12 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	@Override
 	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return indexOperations.findMany(query, hitsCount, sort);
+	}
+
+	@Override
+	public SortedValues<T> findManyAfter(ScoreDoc after,
+			Query query, int hitsCount, Sort sort) throws IOException {
+		return indexOperations.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override
