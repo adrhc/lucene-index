@@ -47,8 +47,8 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> im
 
 	@Override
 	public IndexSearchServiceParams<T> toTypedIndexSearchServiceParams() {
-		return new DefaultIndexSearchServiceParams<>(
-				searchResultFilter, type, idField, indexReaderPool, searchHits);
+		return new DefaultIndexSearchServiceParams<>(type, idField,
+				indexReaderPool, searchResultFilter, searchHits);
 	}
 
 	@Override

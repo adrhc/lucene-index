@@ -13,24 +13,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
-	private final SearchReduceService<T> searchReduceService;
 	private final BestMatchSearchService<T> bestMatchSearchService;
+	private final SearchReduceService<T> searchReduceService;
 	private final SearchManyService<T> searchManyService;
 
 	public static <T> DefaultIndexSearchService<T>
 	create(IndexSearchServiceParams<T> params) {
-		TypedIndexReaderTemplate<?, T> indexReaderTemplate =
-				TypedIndexReaderTemplate.create(params);
-		SearchManyService<T> searchManyService =
-				new DefaultSearchManyService<>(
-						indexReaderTemplate, params.getSearchResultFilter());
-		SearchReduceService<T> searchReduceService =
-				new DefaultSearchReduceService<>(
-						indexReaderTemplate, params.getSearchResultFilter());
 		BestMatchSearchService<T> bestMatchSearchService =
 				DefaultBestMatchSearchService.of(params.toOneHitIndexReaderParams());
-		return new DefaultIndexSearchService<>(searchReduceService,
-				bestMatchSearchService, searchManyService);
+		SearchReduceService<T> searchReduceService = new DefaultSearchReduceService<>(
+				TypedIndexReaderTemplate.create(params), // limited to params.numHits
+				params.getSearchResultFilter());
+		SearchManyService<T> searchManyService = new DefaultSearchManyService<>(
+				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
+				params.getSearchResultFilter());
+		return new DefaultIndexSearchService<>(bestMatchSearchService,
+				searchReduceService, searchManyService);
 	}
 
 	@Override
