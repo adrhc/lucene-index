@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.ANALYZER;
-import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.NAME_QUERY_PARSER;
+import static ro.go.adrhc.persistence.lucene.index.TypedIndexParamsTestFactory.ANALYZER;
+import static ro.go.adrhc.persistence.lucene.index.TypedIndexParamsTestFactory.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-class IndexQueriesTest extends AbstractPersonsIndexTest {
+class PersonQueriesTest extends AbstractPersonsIndexTest {
 	private static final Person PERSON2 = PEOPLE.get(1);
 	private static final Person PERSON3 = PEOPLE.get(2);
 

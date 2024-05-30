@@ -17,20 +17,14 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class DocsIndexReader implements Closeable {
 	private final IndexReaderPool indexReaderPool;
 	private final IndexReader indexReader;
-	private final int numHits;
 
-	public static DocsIndexReader create(DocsIndexReaderParams params) throws IOException {
-		return new DocsIndexReader(params.getIndexReaderPool(),
-				params.getIndexReaderPool().getReader(), params.getNumHits());
-	}
-
-	public static DocsIndexReader create(int numHits, IndexReaderPool indexReaderPool) throws IOException {
-		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader(), numHits);
+	public static DocsIndexReader create(IndexReaderPool indexReaderPool) throws IOException {
+		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader());
 	}
 
 	public Stream<Document> getAll() {
@@ -52,8 +46,8 @@ public class DocsIndexReader implements Closeable {
 	/**
 	 * @return limited by numHits
 	 */
-	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
+	public Stream<ScoreAndDocument> findMany(Query query, int numHits) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits);
 		return topDocsStoredFields
 				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
 				.flatMap(Optional::stream);
@@ -62,12 +56,14 @@ public class DocsIndexReader implements Closeable {
 	/**
 	 * @return limited by numHits
 	 */
-	public Stream<Object> findFieldValues(String fieldName, Query query) throws IOException {
-		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query);
+	public Stream<Object> findFieldValues(
+			String fieldName, Query query, int numHits) throws IOException {
+		TopDocsStoredFields topDocsStoredFields = topDocsStoredFields(query, numHits);
 		OneStoredObjectFieldVisitor fieldVisitor =
 				new OneStoredObjectFieldVisitor(fieldName);
 		return topDocsStoredFields
-				.rawMap(scoreDoc -> safelyGetFieldValue(fieldVisitor, topDocsStoredFields, scoreDoc))
+				.rawMap(scoreDoc -> safelyGetFieldValue(fieldVisitor, topDocsStoredFields,
+						scoreDoc))
 				.filter(Objects::nonNull);
 	}
 
@@ -87,10 +83,12 @@ public class DocsIndexReader implements Closeable {
 				.map(doc -> new ScoreAndDocument(scoreDoc.score, doc));
 	}
 
-	protected Stream<Document> doGetAll(Bits liveDocs, StoredFields storedFields, Set<String> fieldNames) {
+	protected Stream<Document> doGetAll(Bits liveDocs,
+			StoredFields storedFields, Set<String> fieldNames) {
 		return IntStream.range(0, indexReader.maxDoc())
 				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
-				.mapToObj(docIndex -> this.safelyGetDocument(storedFields, fieldNames, docIndex))
+				.mapToObj(docIndex -> this.safelyGetDocument(
+						storedFields, fieldNames, docIndex))
 				.flatMap(Optional::stream);
 	}
 
@@ -125,7 +123,8 @@ public class DocsIndexReader implements Closeable {
 		return Optional.empty();
 	}
 
-	protected TopDocsStoredFields topDocsStoredFields(Query query) throws IOException {
+	protected TopDocsStoredFields topDocsStoredFields(
+			Query query, int numHits) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		TopDocs topDocs = searcher.search(query, numHits);
 		return new TopDocsStoredFields(topDocs, searcher.storedFields());

@@ -12,12 +12,14 @@ import java.util.stream.Stream;
 public class DocsIndexReaderTemplate {
 	private final SneakySupplier<DocsIndexReader, IOException> indexReaderFactory;
 
-	public static DocsIndexReaderTemplate create(DocsIndexReaderParams params) {
-		return new DocsIndexReaderTemplate(() -> DocsIndexReader.create(params));
+	public static DocsIndexReaderTemplate create(HitsLimitedDocsIndexReaderParams params) {
+		return new DocsIndexReaderTemplate(
+				() -> HitsLimitedDocsIndexReader.create(params));
 	}
 
-	public static DocsIndexReaderTemplate create(IndexReaderPool indexReaderPool) {
-		return new DocsIndexReaderTemplate(() -> DocsIndexReader.create(Integer.MAX_VALUE, indexReaderPool));
+	public static DocsIndexReaderTemplate createUnlimited(IndexReaderPool indexReaderPool) {
+		return new DocsIndexReaderTemplate(
+				() -> HitsLimitedDocsIndexReader.createUnlimited(indexReaderPool));
 	}
 
 	/*public <R, E extends Exception> R transformFields(String fieldName,

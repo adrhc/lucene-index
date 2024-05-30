@@ -18,7 +18,7 @@ import static ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplace
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsBuilder.of;
 
-public class TestIndexParams {
+public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 	public static final DefaultAwareQueryParser NAME_QUERY_PARSER =

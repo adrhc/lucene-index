@@ -13,7 +13,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParam
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.index.TestIndexParams.createTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.index.TypedIndexParamsTestFactory.createTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

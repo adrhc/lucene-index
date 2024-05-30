@@ -22,7 +22,7 @@ public class DocsCountService implements IndexCountService {
 	 * SearchedToQueryConverter = Optional::of
 	 */
 	public static DocsCountService create(IndexReaderPool indexReaderPool) {
-		return new DocsCountService(DocsIndexReaderTemplate.create(indexReaderPool));
+		return new DocsCountService(DocsIndexReaderTemplate.createUnlimited(indexReaderPool));
 	}
 
 	@Override
