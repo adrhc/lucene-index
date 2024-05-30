@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -33,10 +33,10 @@ public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>> {
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query) throws IOException;
 
-	List<TypedSearchResult<T>> findBestMatches(
+	List<QueryAndValue<T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException;
 
-	List<TypedSearchResult<T>> findBestMatches(
+	List<QueryAndValue<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException;
 

@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTypedIndexSearchServiceParams<T> implements TypedIndexSearchServiceParams<T> {
+public class DefaultIndexSearchServiceParams<T> implements IndexSearchServiceParams<T> {
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Class<T> type;
 	private final TypedField<T> idField;

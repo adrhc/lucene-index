@@ -62,8 +62,8 @@ public class TypedIndexRetrieveService<ID, T> implements IndexRetrieveService<ID
 
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
-		return oneHitIndexReaderTemplate.useOneHitReader(reader ->
-				reader.findFirst(exactQuery.newExactQuery(id)));
+		return oneHitIndexReaderTemplate.useOneHitReader(r ->
+				r.findFirst(exactQuery.newExactQuery(id)).map(ScoreAndValue::value));
 	}
 
 	@Override

@@ -10,8 +10,8 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements IndexOperations<ID, T> {
-	private final TypedIndexSearchService<T> searchService;
+	private final DefaultIndexSearchService<T> searchService;
 	private final TypedIndexRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
 	private final TypedIndexAdderService<T> adderService;
@@ -81,13 +81,13 @@ public class DefaultIndexOperations<ID, T extends Indexable<ID, T>> implements I
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(
+	public List<QueryAndValue<T>> findBestMatches(
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(queries);
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(
+	public List<QueryAndValue<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);

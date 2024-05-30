@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
@@ -43,7 +43,7 @@ public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 
 	public DefaultIndexOperations<ID, T> build() {
 		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
-		TypedIndexSearchService<T> searchService = factories.createSearchService();
+		DefaultIndexSearchService<T> searchService = factories.createSearchService();
 		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
 		DocsCountService countService = factories.createCountService();
 		TypedIndexAdderService<T> adderService = factories.createAdderService();

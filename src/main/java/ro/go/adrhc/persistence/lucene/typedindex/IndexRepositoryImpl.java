@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedSearchResult;
+import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
@@ -70,13 +70,13 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(Collection<? extends Query> queries)
+	public List<QueryAndValue<T>> findBestMatches(Collection<? extends Query> queries)
 			throws IOException {
 		return indexOperations.findBestMatches(queries);
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
+	public List<QueryAndValue<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return indexOperations.findBestMatches(bestMatchingStrategy, queries);
 	}

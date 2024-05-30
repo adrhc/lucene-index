@@ -8,15 +8,15 @@ import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
 	private final TypedIndexParams<T> params;
 
-	public TypedIndexSearchService<T> createSearchService() {
-		return TypedIndexSearchService.create(params.toTypedIndexSearchServiceParams());
+	public DefaultIndexSearchService<T> createSearchService() {
+		return DefaultIndexSearchService.create(params.toTypedIndexSearchServiceParams());
 	}
 
 	public TypedIndexRetrieveService<ID, T> createIdSearchService() {

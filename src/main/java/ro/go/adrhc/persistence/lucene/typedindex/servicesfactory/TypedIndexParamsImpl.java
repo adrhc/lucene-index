@@ -14,9 +14,9 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.DefaultTypedIndexRestor
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.DefaultTypedIndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultTypedIndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -46,8 +46,8 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T> im
 	}
 
 	@Override
-	public TypedIndexSearchServiceParams<T> toTypedIndexSearchServiceParams() {
-		return new DefaultTypedIndexSearchServiceParams<>(
+	public IndexSearchServiceParams<T> toTypedIndexSearchServiceParams() {
+		return new DefaultIndexSearchServiceParams<>(
 				searchResultFilter, type, idField, indexReaderPool, searchHits);
 	}
 

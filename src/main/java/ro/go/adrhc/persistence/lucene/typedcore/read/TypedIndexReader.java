@@ -3,9 +3,9 @@ package ro.go.adrhc.persistence.lucene.typedcore.read;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.read.DocsIndexReader;
-import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
+import ro.go.adrhc.persistence.lucene.typedcore.serde.ScoreAndDocumentToScoreAndTypedConverter;
 import ro.go.adrhc.util.Assert;
 import ro.go.adrhc.util.ObjectUtils;
 
@@ -20,14 +20,18 @@ import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 public class TypedIndexReader<ID, T> implements Closeable {
 	private final TypedField<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
+	private final ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter;
 	private final DocsIndexReader indexReader;
 
 	public static <ID, T> TypedIndexReader<ID, T>
 	create(TypedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
 				DocumentToTypedConverter.create(params.getType());
+		ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter =
+				new ScoreAndDocumentToScoreAndTypedConverter<>(docToTypedConverter);
 		DocsIndexReader indexReader = DocsIndexReader.create(params);
-		return new TypedIndexReader<>(params.getIdField(), docToTypedConverter, indexReader);
+		return new TypedIndexReader<>(params.getIdField(),
+				docToTypedConverter, toScoreAndTypedConverter, indexReader);
 	}
 
 	public Stream<T> getAll() {
@@ -55,12 +59,9 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
-		return indexReader.findMany(query).map(this::toScoreAndValue).flatMap(Optional::stream);
-	}
-
-	protected Optional<ScoreAndValue<T>> toScoreAndValue(ScoreAndDocument scoreAndDocument) {
-		return docToTypedConverter.convert(scoreAndDocument.document())
-				.map(t -> new ScoreAndValue<>(scoreAndDocument.score(), t));
+		return indexReader.findMany(query)
+				.map(toScoreAndTypedConverter::convert)
+				.flatMap(Optional::stream);
 	}
 
 	@Override

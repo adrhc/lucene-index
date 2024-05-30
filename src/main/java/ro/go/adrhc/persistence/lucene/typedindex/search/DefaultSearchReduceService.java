@@ -14,76 +14,44 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * This is part of infrastructure layer because contains methods directly using lucene API.
- * It is a service because one could swap it with other implementation without any other change.
- *
- * @param <T> means found
- */
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexSearchService<T> implements IndexSearchService<T> {
+public class DefaultSearchReduceService<T> implements SearchReduceService<T> {
 	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
-
-	public static <T> TypedIndexSearchService<T>
-	create(TypedIndexSearchServiceParams<T> params) {
-		return new TypedIndexSearchService<>(
-				TypedIndexReaderTemplate.create(params),
-				params.getSearchResultFilter()
-		);
-	}
-
-	@Override
-	public List<T> findAllMatches(Query query) throws IOException {
-		return indexReaderTemplate
-				.useReader(reader -> doFindAllMatches(query, reader)
-						.map(ScoreAndValue::value).toList());
-	}
-
-	@Override
-	public Optional<T> findBestMatch(Query query) throws IOException {
-		return findBestMatch(Stream::findFirst, query);
-	}
 
 	@Override
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
 			throws IOException {
 		return indexReaderTemplate
 				.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
-				.map(TypedSearchResult::value);
+				.map(QueryAndValue::value);
 	}
 
 	@Override
-	public List<TypedSearchResult<T>> findBestMatches(
-			Collection<? extends Query> queries) throws IOException {
-		return findBestMatches(Stream::findFirst, queries);
-	}
-
-	@Override
-	public List<TypedSearchResult<T>> findBestMatches(
+	public List<QueryAndValue<T>> findBestMatches(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries) throws IOException {
 		return indexReaderTemplate.useReader(reader ->
 				doFindBestMatches(bestMatchingStrategy, queries, reader));
 	}
 
-	protected List<TypedSearchResult<T>>
+	protected List<QueryAndValue<T>>
 	doFindBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
 			Collection<? extends Query> queries, TypedIndexReader<?, T> reader) throws IOException {
-		List<TypedSearchResult<T>> result = new ArrayList<>();
+		List<QueryAndValue<T>> result = new ArrayList<>();
 		for (Query query : queries) {
 			doFindBestMatch(bestMatchingStrategy, query, reader).ifPresent(result::add);
 		}
 		return result;
 	}
 
-	protected Optional<TypedSearchResult<T>> doFindBestMatch(
+	protected Optional<QueryAndValue<T>> doFindBestMatch(
 			BestMatchingStrategy<T> bestMatchingStrategy,
 			Query query, TypedIndexReader<?, T> reader) throws IOException {
 		Stream<TypedSearchResult<T>> allMatches = doFindAllMatches(query, reader)
 				.map(sat -> new TypedSearchResult<>(query, sat));
-		return bestMatchingStrategy.bestMatch(allMatches);
+		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
 	}
 
 	protected Stream<ScoreAndValue<T>> doFindAllMatches(

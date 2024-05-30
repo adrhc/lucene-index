@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexWriterParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.search.TypedIndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
 
 import java.io.Closeable;
 import java.nio.file.Path;
@@ -29,7 +29,7 @@ public interface TypedIndexParams<T> extends Closeable {
 
 	boolean isReadOnly();
 
-	TypedIndexSearchServiceParams<T> toTypedIndexSearchServiceParams();
+	IndexSearchServiceParams<T> toTypedIndexSearchServiceParams();
 
 	TypedIndexRetrieveServiceParams<T> toTypedIndexRetrieveServiceParams();
 
