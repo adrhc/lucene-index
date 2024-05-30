@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.core.read;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -37,6 +38,10 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 
 	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
 		return findMany(query, numHits);
+	}
+
+	public Stream<ScoreAndDocument> findMany(Query query, Sort sort) throws IOException {
+		return findMany(query, numHits, sort);
 	}
 
 	public Stream<Object> findFieldValues(String fieldName, Query query) throws IOException {

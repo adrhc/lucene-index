@@ -2,7 +2,9 @@ package ro.go.adrhc.persistence.lucene.typedcore.read;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.read.HitsLimitedDocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.read.ScoreAndDocument;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.ScoreAndDocumentToScoreAndTypedConverter;
@@ -42,6 +44,33 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		return getFieldOfAll(idField);
 	}
 
+	public Stream<ID> findIds(Query query) throws IOException {
+		return indexReader.findFieldValues(idField.name(), query)
+				.map(value -> (ID) idField.toTypedValue(value));
+	}
+
+	public Stream<ID> findIds(Query query, int numHits) throws IOException {
+		return indexReader.findFieldValues(idField.name(), query, numHits)
+				.map(value -> (ID) idField.toTypedValue(value));
+	}
+
+	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
+		return convert(indexReader.findMany(query));
+	}
+
+	public Stream<ScoreAndValue<T>> findMany(Query query, int numHits) throws IOException {
+		return convert(indexReader.findMany(query, numHits));
+	}
+
+	public Stream<ScoreAndValue<T>> findMany(Query query, Sort sort) throws IOException {
+		return convert(indexReader.findMany(query, sort));
+	}
+
+	public Stream<ScoreAndValue<T>> findMany(
+			Query query, int numHits, Sort sort) throws IOException {
+		return convert(indexReader.findMany(query, numHits, sort));
+	}
+
 	/**
 	 * The caller must use the proper type!
 	 */
@@ -53,30 +82,12 @@ public class TypedIndexReader<ID, T> implements Closeable {
 				.map(ObjectUtils::cast);
 	}
 
-	public Stream<ID> findIds(Query query) throws IOException {
-		return indexReader.findFieldValues(idField.name(), query)
-				.map(value -> (ID) idField.toTypedValue(value));
-	}
-
-	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
-		return indexReader.findMany(query)
-				.map(toScoreAndTypedConverter::convert)
-				.flatMap(Optional::stream);
-	}
-
-	public Stream<ID> findIds(Query query, int numHits) throws IOException {
-		return indexReader.findFieldValues(idField.name(), query, numHits)
-				.map(value -> (ID) idField.toTypedValue(value));
-	}
-
-	public Stream<ScoreAndValue<T>> findMany(Query query, int numHits) throws IOException {
-		return indexReader.findMany(query, numHits)
-				.map(toScoreAndTypedConverter::convert)
-				.flatMap(Optional::stream);
-	}
-
 	@Override
 	public void close() throws IOException {
 		indexReader.close();
+	}
+
+	private Stream<ScoreAndValue<T>> convert(Stream<ScoreAndDocument> stream) {
+		return stream.map(toScoreAndTypedConverter::convert).flatMap(Optional::stream);
 	}
 }
