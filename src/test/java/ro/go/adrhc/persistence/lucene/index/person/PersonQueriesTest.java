@@ -2,10 +2,6 @@ package ro.go.adrhc.persistence.lucene.index.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
-import org.apache.lucene.search.FieldExistsQuery;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortedNumericSortField;
-import org.apache.lucene.search.SortedSetSortField;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.List;
 
-import static org.apache.lucene.search.SortField.Type.LONG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.index.TypedIndexParamsTestFactory.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.index.TypedIndexParamsTestFactory.NAME_QUERY_PARSER;
@@ -25,24 +20,6 @@ import static ro.go.adrhc.persistence.lucene.index.person.PersonFieldType.*;
 class PersonQueriesTest extends AbstractPersonsIndexTest {
 	private static final Person PERSON2 = PEOPLE.get(1);
 	private static final Person PERSON3 = PEOPLE.get(2);
-
-	@Test
-	void findManySortInstantField() throws IOException {
-		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
-		List<Person> result = indexRepository.findMany(
-				new FieldExistsQuery(id.name()), 10, sort);
-		assertThat(result).hasSize(PEOPLE.size());
-		assertThat(result).map(Person::id).containsExactly(1L, 2L, 3L);
-	}
-
-	@Test
-	void findManySortCnp() throws IOException {
-		Sort sort = new Sort(new SortedSetSortField(cnp.name(), false));
-		List<Person> result = indexRepository.findMany(
-				new FieldExistsQuery(id.name()), 10, sort);
-		assertThat(result).hasSize(PEOPLE.size());
-		assertThat(result).map(Person::id).containsExactly(1L, 2L, 3L);
-	}
 
 	@Test
 	void parse() throws IOException, QueryNodeException {

@@ -26,7 +26,7 @@ public abstract class AbstractPersonsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		initObjects();
-		indexRepository.reset(PEOPLE);
+		indexRepositoryReset();
 	}
 
 	@AfterAll
@@ -45,5 +45,9 @@ public abstract class AbstractPersonsIndexTest {
 
 	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
 		return OneHitIndexReaderTemplate.create(peopleIndexSpec.toOneHitIndexReaderTemplate());
+	}
+
+	protected void indexRepositoryReset() throws IOException {
+		indexRepository.reset(PEOPLE);
 	}
 }
