@@ -13,7 +13,7 @@ public record SortedValues<T>(List<T> values, ScoreDoc first, ScoreDoc last)
 		return values.isEmpty();
 	}
 
-	public <Y> SortedValues<Y> map(Function<? super List<T>, List<Y>> mapper) {
+	public <U> SortedValues<U> map(Function<? super List<T>, List<U>> mapper) {
 		return new SortedValues<>(mapper.apply(values), first, last);
 	}
 
