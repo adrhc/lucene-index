@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.List;
 
 public interface SearchManyService<T> {
-	SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException;
+	ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException;
 
 	List<T> findMany(Query query) throws IOException;
 
-	SortedValues<T> findManyAfter(ScoreDoc after,
+	ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 			Query query, int hitsCount, Sort sort) throws IOException;
 }

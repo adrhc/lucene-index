@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public record SortedValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
+public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 		implements StreamAware<T> {
 	public ScoreDoc firstPosition() {
 		return scoreDocs.getFirst();
@@ -17,22 +17,22 @@ public record SortedValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 		return scoreDocs.getLast();
 	}
 
-	public SortedValues<T> removeFirst() {
-		return new SortedValues<>(values.subList(1, values.size()),
+	public ScoreDocAndValues<T> removeFirst() {
+		return new ScoreDocAndValues<>(values.subList(1, values.size()),
 				scoreDocs.subList(1, scoreDocs.size()));
 	}
 
-	public SortedValues<T> removeLast() {
-		return new SortedValues<>(values.subList(0, values.size() - 1),
+	public ScoreDocAndValues<T> removeLast() {
+		return new ScoreDocAndValues<>(values.subList(0, values.size() - 1),
 				scoreDocs.subList(0, scoreDocs.size() - 1));
 	}
 
-	public <U> SortedValues<U> map(Function<? super List<T>, List<U>> mapper) {
-		return new SortedValues<>(mapper.apply(values), scoreDocs);
+	public <U> ScoreDocAndValues<U> map(Function<? super List<T>, List<U>> mapper) {
+		return new ScoreDocAndValues<>(mapper.apply(values), scoreDocs);
 	}
 
-	public SortedValues<T> reverse() {
-		return new SortedValues<>(values.reversed(), scoreDocs.reversed());
+	public ScoreDocAndValues<T> reverse() {
+		return new ScoreDocAndValues<>(values.reversed(), scoreDocs.reversed());
 	}
 
 	public int size() {

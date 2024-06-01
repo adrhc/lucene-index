@@ -58,7 +58,7 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
-	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchManyService.findMany(query, hitsCount, sort);
 	}
 
@@ -68,7 +68,7 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
-	public SortedValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
+	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
 			throws IOException {
 		return searchManyService.findManyAfter(after, query, hitsCount, sort);
 	}

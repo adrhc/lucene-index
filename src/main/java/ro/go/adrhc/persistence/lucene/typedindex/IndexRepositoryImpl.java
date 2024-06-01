@@ -9,7 +9,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
-import ro.go.adrhc.persistence.lucene.typedindex.search.SortedValues;
+import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
@@ -63,12 +63,12 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public SortedValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return indexOperations.findMany(query, hitsCount, sort);
 	}
 
 	@Override
-	public SortedValues<T> findManyAfter(ScoreDoc after,
+	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 			Query query, int hitsCount, Sort sort) throws IOException {
 		return indexOperations.findManyAfter(after, query, hitsCount, sort);
 	}
