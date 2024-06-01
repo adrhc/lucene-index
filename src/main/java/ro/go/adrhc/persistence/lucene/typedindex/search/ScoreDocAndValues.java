@@ -23,8 +23,8 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 	}
 
 	public ScoreDocAndValues<T> removeLast() {
-		return new ScoreDocAndValues<>(values.subList(0, values.size() - 1),
-				scoreDocs.subList(0, scoreDocs.size() - 1));
+		return new ScoreDocAndValues<>(values.subList(0, values.size() - 2),
+				scoreDocs.subList(0, scoreDocs.size() - 2));
 	}
 
 	public <U> ScoreDocAndValues<U> map(Function<? super List<T>, List<U>> mapper) {
