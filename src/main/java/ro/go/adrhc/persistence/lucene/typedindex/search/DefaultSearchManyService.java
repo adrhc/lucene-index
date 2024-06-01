@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.util.collection.IterableUtils.iterable;
-
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultSearchManyService<T> implements SearchManyService<T> {
@@ -41,17 +39,13 @@ public class DefaultSearchManyService<T> implements SearchManyService<T> {
 	}
 
 	protected SortedValues<T> doFindSorted(Stream<ScoreDocAndValue<T>> stream) {
-		ScoreDoc first = null;
-		ScoreDoc last = null;
+		List<ScoreDoc> scoreDocs = new ArrayList<>();
 		List<T> values = new ArrayList<>();
-		for (ScoreDocAndValue<T> elem : iterable(stream)) {
-			if (first == null) {
-				first = elem.scoreDoc();
-			}
-			last = elem.scoreDoc();
-			values.add(elem.value());
-		}
-		return new SortedValues<>(values, first, last);
+		stream.forEach(sdv -> {
+			scoreDocs.add(sdv.scoreDoc());
+			values.add(sdv.value());
+		});
+		return new SortedValues<>(values, scoreDocs);
 	}
 
 	protected List<T> filterAndMap(Stream<ScoreDocAndValue<T>> stream) {

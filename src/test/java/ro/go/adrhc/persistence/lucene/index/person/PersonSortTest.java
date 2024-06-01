@@ -35,12 +35,12 @@ public class PersonSortTest extends AbstractPersonsIndexTest {
 
 		// 2nd page
 		SortedValues<Person> page2 = indexRepository.findManyAfter(
-				page1.last(), new MatchAllDocsQuery(), 10, sort);
+				page1.lastPosition(), new MatchAllDocsQuery(), 10, sort);
 		assertThat(page2.values()).hasSize(10);
 		assertThat(page2.values()).map(Person::id).containsSequence(10L, 11L, 12L);
 
 		// back to 1st page
-		SortedValues<Person> page3 = indexRepository.findManyAfter(page2.first(),
+		SortedValues<Person> page3 = indexRepository.findManyAfter(page2.firstPosition(),
 				new MatchAllDocsQuery(), 10, reverseSort).reverse();
 		assertThat(page3.values()).hasSize(10);
 		assertThat(page3.values()).map(Person::id).containsSequence(0L, 1L, 2L);
