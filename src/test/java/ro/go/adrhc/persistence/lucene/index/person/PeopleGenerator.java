@@ -40,8 +40,8 @@ public class PeopleGenerator {
 	}
 
 	public static Person generateGirl(long i) {
-		String day = "%02d".formatted(1 + i % 28);
-		return generateGirl(i, Instant.parse(STR."2000-01-\{day}T03:04:05.06Z"));
+		String millis = "%03d".formatted(i % 1000);
+		return generateGirl(i, Instant.parse(STR."2000-01-01T03:04:05.\{millis}Z"));
 	}
 
 	public static Person generateGirl(long i, Instant instantField) {

@@ -17,6 +17,10 @@ public record SortedValues<T>(List<T> values, ScoreDoc first, ScoreDoc last)
 		return new SortedValues<>(mapper.apply(values), first, last);
 	}
 
+	public SortedValues<T> reverse() {
+		return new SortedValues<>(values.reversed(), last, first);
+	}
+
 	@Override
 	public Stream<T> rawStream() {
 		return values.stream();
