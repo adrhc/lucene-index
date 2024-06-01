@@ -24,7 +24,8 @@ public class PersonSortTest extends AbstractPersonsIndexTest {
 	@Test
 	void findPages() throws IOException {
 		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
-		Sort reverseSort = new Sort(new SortedNumericSortField(instantField.name(), LONG, true));
+		Sort reverseSort = new Sort(new SortedNumericSortField(
+				instantField.name(), LONG, true));
 
 		// 1st page
 		SortedValues<Person> page1 = indexRepository.findMany(
