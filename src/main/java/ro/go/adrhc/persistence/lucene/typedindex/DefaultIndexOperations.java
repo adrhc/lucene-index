@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -145,12 +146,15 @@ public class DefaultIndexOperations<ID, T
 	}
 
 	public void merge(T t) throws IOException {
+		merge(t, T::merge);
+	}
+
+	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
 		Optional<T> storedOptional = retrieveService.findById(t.id());
 		if (storedOptional.isEmpty()) {
 			addOne(t);
 		} else {
-			T stored = storedOptional.get();
-			upsert(stored.merge(t));
+			upsert(mergeStrategy.apply(t, storedOptional.get()));
 		}
 	}
 

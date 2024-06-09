@@ -10,6 +10,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.IndexUpsertService;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 public interface IndexOperations<ID, T extends Indexable<ID, T>>
@@ -25,6 +26,12 @@ public interface IndexOperations<ID, T extends Indexable<ID, T>>
 	void upsert(T t) throws IOException;
 
 	void merge(T t) throws IOException;
+
+	/**
+	 * @param mergeStrategy 1st param is @param t while the 2nd is its stored value
+	 * @param t             might be added (instead of merged) if is not stored yet
+	 */
+	void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException;
 
 	void upsertAll(Iterable<T> iterable) throws IOException;
 

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -138,6 +139,12 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	@Override
 	public void merge(T t) throws IOException {
 		indexOperations.merge(t);
+		commit();
+	}
+
+	@Override
+	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
+		indexOperations.merge(t, mergeStrategy);
 		commit();
 	}
 
