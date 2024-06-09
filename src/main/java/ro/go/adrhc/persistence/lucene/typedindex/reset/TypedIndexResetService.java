@@ -20,7 +20,7 @@ public class TypedIndexResetService<T> implements IndexResetService<T> {
 		return new TypedIndexResetService<>(TypedIndexResetTemplate.create(params));
 	}
 
-	public void reset(Stream<T> tStream) throws IOException {
-		indexResetTemplate.useReset(resetWriter -> resetWriter.reset(tStream));
+	public void reset(Stream<T> stateAfterReset) throws IOException {
+		indexResetTemplate.useReset(resetWriter -> resetWriter.reset(stateAfterReset));
 	}
 }
