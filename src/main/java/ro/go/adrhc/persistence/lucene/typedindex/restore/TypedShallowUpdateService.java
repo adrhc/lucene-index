@@ -64,15 +64,16 @@ public class TypedShallowUpdateService<ID, T> implements ShallowUpdateService<ID
 	protected void applyIndexChanges(
 			IndexDataSource<ID, T> dataSource,
 			IndexChanges<ID> changes) throws IOException {
-		log.debug("\nremoving {} missing data from the index", changes.indexIdsMissingDataSize());
+		log.debug("\nremoving {} surplus documents from the index",
+				changes.indexIdsMissingDataSize());
 		// no IndexWriter flush
 		indexRemover.removeMany(changes.indexedButRemovedFromDS());
-		log.debug("\nextracting {} metadata to index", changes.notIndexedSize());
+		log.debug("\nextracting metadata for {} documents", changes.notIndexedSize());
 		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
-		log.debug("\nadding documents to the index");
+		log.debug("\nadding missing documents to the index");
 		// with IndexWriter flush
 		typedIndexAdderTemplate.useAdder(writer -> writer.addMany(items));
-		log.debug("\nIndex restored!");
+		log.debug("\nIndex updated (shallow)!");
 	}
 
 	/**
