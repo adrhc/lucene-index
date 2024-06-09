@@ -2,21 +2,21 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.NoArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
-import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 @NoArgsConstructor
 public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 	private TypedIndexParams<T> params;
-	private TypedIndexRestoreService<ID, T> restoreService;
-	private TypedIndexResetService<T> resetService;
+	private TypedShallowUpdateService<ID, T> shallowUpdateService;
+	private TypedResetService<T> resetService;
 
 	public static <ID, T extends Indexable<ID, T>>
 	DefaultIndexOperationsBuilder<ID, T> of(TypedIndexParams<T> params) {
@@ -30,13 +30,13 @@ public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 	}
 
 	public DefaultIndexOperationsBuilder<ID, T>
-	restoreService(TypedIndexRestoreService<ID, T> restoreService) {
-		this.restoreService = restoreService;
+	shallowUpdateService(TypedShallowUpdateService<ID, T> shallowUpdateService) {
+		this.shallowUpdateService = shallowUpdateService;
 		return this;
 	}
 
 	public DefaultIndexOperationsBuilder<ID, T>
-	resetService(TypedIndexResetService<T> resetService) {
+	resetService(TypedResetService<T> resetService) {
 		this.resetService = resetService;
 		return this;
 	}
@@ -44,16 +44,16 @@ public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 	public DefaultIndexOperations<ID, T> build() {
 		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
 		DefaultIndexSearchService<T> searchService = factories.createSearchService();
-		TypedIndexRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
+		TypedRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
 		DocsCountService countService = factories.createCountService();
-		TypedIndexAdderService<T> adderService = factories.createAdderService();
-		TypedIndexUpsertService<T> updateService = factories.createUpdateService();
-		TypedIndexRemoveService<ID> removeService = factories.createRemoveService();
-		TypedIndexResetService<T> resetService = this.resetService == null ?
+		TypedAddService<T> adderService = factories.createAddService();
+		TypedUpsertService<T> updateService = factories.createUpsertService();
+		TypedRemoveService<ID> removeService = factories.createRemoveService();
+		TypedResetService<T> resetService = this.resetService == null ?
 				factories.createResetService() : this.resetService;
-		TypedIndexRestoreService<ID, T> restoreService = this.restoreService == null ?
-				factories.createRestoreService() : this.restoreService;
+		TypedShallowUpdateService<ID, T> shallowUpdateService = this.shallowUpdateService == null ?
+				factories.createShallowUpdateService() : this.shallowUpdateService;
 		return new DefaultIndexOperations<>(searchService, retrieveService, countService,
-				adderService, updateService, removeService, resetService, restoreService);
+				adderService, updateService, removeService, resetService, shallowUpdateService);
 	}
 }

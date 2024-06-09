@@ -1,11 +1,11 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAdderService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.IndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexRestoreService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.ShallowUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.update.IndexUpsertService;
 
 import java.io.IOException;
@@ -14,9 +14,9 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 public interface IndexOperations<ID, T extends Indexable<ID, T>>
-		extends ReadOnlyIndexOperations<ID, T>, IndexAdderService<T>,
+		extends ReadOnlyIndexOperations<ID, T>, IndexAddService<T>,
 		IndexUpsertService<T>, IndexRemoveService<ID>,
-		IndexRestoreService<ID, T>, IndexResetService<T> {
+		ShallowUpdateService<ID, T>, IndexResetService<T> {
 	void addOne(T t) throws IOException;
 
 	void addMany(Collection<T> tCollection) throws IOException;
@@ -48,7 +48,7 @@ public interface IndexOperations<ID, T extends Indexable<ID, T>>
 
 	void reset(Stream<T> tStream) throws IOException;
 
-	void restore(IndexDataSource<ID, T> dataSource) throws IOException;
+	void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException;
 
-	void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException;
+	void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException;
 }

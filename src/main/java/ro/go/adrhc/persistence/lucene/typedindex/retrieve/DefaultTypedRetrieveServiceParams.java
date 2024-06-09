@@ -6,9 +6,9 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
 
 @Getter
-public class DefaultTypedIndexRetrieveServiceParams<T> extends
-		AllHitsTypedIndexReaderParams<T> implements TypedIndexRetrieveServiceParams<T> {
-	public DefaultTypedIndexRetrieveServiceParams(Class<T> type,
+public class DefaultTypedRetrieveServiceParams<T> extends
+		AllHitsTypedIndexReaderParams<T> implements TypedRetrieveServiceParams<T> {
+	public DefaultTypedRetrieveServiceParams(Class<T> type,
 			TypedField<T> idField, IndexReaderPool indexReaderPool) {
 		super(type, idField, indexReaderPool);
 	}

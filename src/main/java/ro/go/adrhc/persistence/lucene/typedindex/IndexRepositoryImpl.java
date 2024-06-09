@@ -185,14 +185,15 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
-		indexOperations.restore(dataSource);
+	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
+		indexOperations.shallowUpdate(dataSource);
 		commit();
 	}
 
 	@Override
-	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
-		indexOperations.restoreSubset(dataSource, query);
+	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
+			throws IOException {
+		indexOperations.shallowUpdateSubset(dataSource, query);
 		commit();
 	}
 

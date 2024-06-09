@@ -6,17 +6,17 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -31,13 +31,13 @@ import java.util.stream.Stream;
 public class DefaultIndexOperations<ID, T
 		extends Indexable<ID, T>> implements IndexOperations<ID, T> {
 	private final DefaultIndexSearchService<T> searchService;
-	private final TypedIndexRetrieveService<ID, T> retrieveService;
+	private final TypedRetrieveService<ID, T> retrieveService;
 	private final DocsCountService countService;
-	private final TypedIndexAdderService<T> adderService;
-	private final TypedIndexUpsertService<T> upsertService;
-	private final TypedIndexRemoveService<ID> removeService;
-	private final TypedIndexResetService<T> resetService;
-	private final TypedIndexRestoreService<ID, T> restoreService;
+	private final TypedAddService<T> addService;
+	private final TypedUpsertService<T> upsertService;
+	private final TypedRemoveService<ID> removeService;
+	private final TypedResetService<T> resetService;
+	private final TypedShallowUpdateService<ID, T> shallowUpdateService;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -127,17 +127,17 @@ public class DefaultIndexOperations<ID, T
 
 	@Override
 	public void addOne(T t) throws IOException {
-		adderService.addOne(t);
+		addService.addOne(t);
 	}
 
 	@Override
 	public void addMany(Collection<T> tCollection) throws IOException {
-		adderService.addMany(tCollection);
+		addService.addMany(tCollection);
 	}
 
 	@Override
 	public void addMany(Stream<T> tStream) throws IOException {
-		adderService.addMany(tStream);
+		addService.addMany(tStream);
 	}
 
 	@Override
@@ -189,12 +189,13 @@ public class DefaultIndexOperations<ID, T
 	}
 
 	@Override
-	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
-		restoreService.restore(dataSource);
+	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
+		shallowUpdateService.shallowUpdate(dataSource);
 	}
 
 	@Override
-	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
-		restoreService.restoreSubset(dataSource, query);
+	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
+			throws IOException {
+		shallowUpdateService.shallowUpdateSubset(dataSource, query);
 	}
 }

@@ -16,7 +16,7 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, T> {
+public class TypedShallowUpdateService<ID, T> implements ShallowUpdateService<ID, T> {
 	private final TypedIndexReaderTemplate<ID, ?> indexReaderTemplate;
 	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
@@ -24,16 +24,16 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID, T> TypedIndexRestoreService<ID, T>
-	create(TypedIndexRestoreServiceParams<T> params) {
-		return new TypedIndexRestoreService<>(
+	public static <ID, T> TypedShallowUpdateService<ID, T>
+	create(TypedShallowUpdateServiceParams<T> params) {
+		return new TypedShallowUpdateService<>(
 				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
 				TypedIndexRemover.create(params.toTypedIndexRemoverParams()),
 				TypedIndexAdderTemplate.create(params));
 	}
 
 	@Override
-	public void restore(IndexDataSource<ID, T> dataSource) throws IOException {
+	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
 		IndexChanges<ID> changes = getIndexChanges(dataSource, null);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
@@ -43,7 +43,8 @@ public class TypedIndexRestoreService<ID, T> implements IndexRestoreService<ID, 
 	}
 
 	@Override
-	public void restoreSubset(IndexDataSource<ID, T> dataSource, Query query) throws IOException {
+	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
+			throws IOException {
 		IndexChanges<ID> changes = getIndexChanges(dataSource, query);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);

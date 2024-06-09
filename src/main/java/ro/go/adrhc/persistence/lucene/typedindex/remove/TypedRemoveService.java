@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class TypedIndexRemoveService<ID> implements IndexRemoveService<ID> {
+public class TypedRemoveService<ID> implements IndexRemoveService<ID> {
 	private final TypedIndexRemoverTemplate<ID> indexRemoverTemplate;
 
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID> TypedIndexRemoveService<ID>
+	public static <ID> TypedRemoveService<ID>
 	create(TypedIndexRemoverParams params) {
-		return new TypedIndexRemoveService<>(TypedIndexRemoverTemplate.create(params));
+		return new TypedRemoveService<>(TypedIndexRemoverTemplate.create(params));
 	}
 
 	@Override

@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class TypedIndexAdderService<T> implements IndexAdderService<T> {
+public class TypedAddService<T> implements IndexAddService<T> {
 	private final TypedIndexAdderTemplate<T> indexAdderTemplate;
 
-	public static <T> TypedIndexAdderService<T> create(TypedIndexWriterParams<T> params) {
-		return new TypedIndexAdderService<>(TypedIndexAdderTemplate.create(params));
+	public static <T> TypedAddService<T> create(TypedIndexWriterParams<T> params) {
+		return new TypedAddService<>(TypedIndexAdderTemplate.create(params));
 	}
 
 	@Override

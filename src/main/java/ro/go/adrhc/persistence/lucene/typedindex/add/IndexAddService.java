@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public interface IndexAdderService<T> {
+public interface IndexAddService<T> {
 	void addOne(T t) throws IOException;
 
 	void addMany(Collection<T> tCollection) throws IOException;

@@ -7,19 +7,19 @@ import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class TypedIndexUpdaterTemplate<T extends Identifiable<?>> {
-	private final TypedIndexUpdater<T> indexUpdater;
+public class TypedUpsertTemplate<T extends Identifiable<?>> {
+	private final TypedIndexUpsert<T> indexUpsert;
 
 	public static <T extends Identifiable<?>>
-	TypedIndexUpdaterTemplate<T> create(TypedIndexUpdaterParams<T> params) {
-		TypedIndexUpdater<T> indexUpdater = TypedIndexUpdater.create(params);
-		return new TypedIndexUpdaterTemplate<>(indexUpdater);
+	TypedUpsertTemplate<T> create(TypedIndexUpsertParams<T> params) {
+		TypedIndexUpsert<T> indexUpdater = TypedIndexUpsert.create(params);
+		return new TypedUpsertTemplate<>(indexUpdater);
 	}
 
 	public <E extends Exception> void useUpdater(
-			SneakyConsumer<TypedIndexUpdater<T>, E> indexUpdaterConsumer)
+			SneakyConsumer<TypedIndexUpsert<T>, E> indexUpdaterConsumer)
 			throws IOException, E {
-		try (TypedIndexUpdater<T> indexUpdater = this.indexUpdater) {
+		try (TypedIndexUpsert<T> indexUpdater = this.indexUpsert) {
 			indexUpdaterConsumer.accept(indexUpdater);
 		}
 	}

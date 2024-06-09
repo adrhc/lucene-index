@@ -12,14 +12,14 @@ import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
 import java.util.Collection;
 
 @Getter
-public class DefaultTypedIndexRestoreServiceParams<T>
+public class DefaultTypedShallowUpdateServiceParams<T>
 		extends AllHitsTypedIndexReaderParams<T>
-		implements TypedIndexRestoreServiceParams<T> {
+		implements TypedShallowUpdateServiceParams<T> {
 	private final Collection<? extends TypedField<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 
-	public DefaultTypedIndexRestoreServiceParams(Class<T> type,
+	public DefaultTypedShallowUpdateServiceParams(Class<T> type,
 			TypedField<T> idField, IndexReaderPool indexReaderPool,
 			Collection<? extends TypedField<T>> typedFields,
 			Analyzer analyzer, IndexWriter indexWriter) {

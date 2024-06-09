@@ -3,13 +3,13 @@ package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DocsCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedindex.add.TypedIndexAdderService;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedIndexRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedIndexResetService;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreService;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedIndexUpsertService;
+import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
@@ -19,31 +19,31 @@ public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
 		return DefaultIndexSearchService.create(params.toTypedIndexSearchServiceParams());
 	}
 
-	public TypedIndexRetrieveService<ID, T> createIdSearchService() {
-		return TypedIndexRetrieveService.create(params.toTypedIndexRetrieveServiceParams());
+	public TypedRetrieveService<ID, T> createIdSearchService() {
+		return TypedRetrieveService.create(params.toTypedRetrieveServiceParams());
 	}
 
 	public DocsCountService createCountService() {
 		return DocsCountService.create(params.getIndexReaderPool());
 	}
 
-	public TypedIndexRestoreService<ID, T> createRestoreService() {
-		return TypedIndexRestoreService.create(params.toTypedIndexRestoreServiceParams());
+	public TypedShallowUpdateService<ID, T> createShallowUpdateService() {
+		return TypedShallowUpdateService.create(params.toTypedShallowUpdateServiceParams());
 	}
 
-	public TypedIndexResetService<T> createResetService() {
-		return TypedIndexResetService.create(params.toTypedIndexResetServiceParams());
+	public TypedResetService<T> createResetService() {
+		return TypedResetService.create(params.toTypedResetServiceParams());
 	}
 
-	public TypedIndexAdderService<T> createAdderService() {
-		return TypedIndexAdderService.create(params.toTypedIndexAdderServiceParams());
+	public TypedAddService<T> createAddService() {
+		return TypedAddService.create(params.toTypedAddServiceParams());
 	}
 
-	public TypedIndexUpsertService<T> createUpdateService() {
-		return TypedIndexUpsertService.create(params.toTypedIndexUpsertServiceParams());
+	public TypedUpsertService<T> createUpsertService() {
+		return TypedUpsertService.create(params.toTypedIndexUpsertParams());
 	}
 
-	public TypedIndexRemoveService<ID> createRemoveService() {
-		return TypedIndexRemoveService.create(params.toTypedIndexRemoveServiceParams());
+	public TypedRemoveService<ID> createRemoveService() {
+		return TypedRemoveService.create(params.toTypedRemoveServiceParams());
 	}
 }

@@ -26,7 +26,7 @@ public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
 		assertThat(indexRepository.findById(3L)).isEmpty();
 		assertThat(indexRepository.findById(4L)).isPresent();
 
-		indexRepository.restore(createCachedDataSource(PEOPLE));
+		indexRepository.shallowUpdate(createCachedDataSource(PEOPLE));
 
 		assertThat(indexRepository.count()).isEqualTo(PEOPLE.size());
 		assertThat(indexRepository.getAllIds()).containsOnlyOnceElementsOf(
@@ -43,7 +43,8 @@ public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
 		assertThat(indexRepository.findById(4L)).isPresent();
 
 		Query query = ExactQuery.create(PersonFieldType.male).newExactQuery(true);
-		indexRepository.restoreSubset(createCachedDataSource(PEOPLE.stream().filter(Person::male)),
+		indexRepository.shallowUpdateSubset(
+				createCachedDataSource(PEOPLE.stream().filter(Person::male)),
 				query);
 
 		assertThat(indexRepository.count()).isEqualTo(PEOPLE.size() + 1);

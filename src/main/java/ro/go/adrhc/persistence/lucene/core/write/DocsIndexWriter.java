@@ -35,7 +35,7 @@ public class DocsIndexWriter implements Closeable {
 		addMany(iterable(documents));
 	}
 
-	public void update(Query idQuery, Document document) throws IOException {
+	public void upsert(Query idQuery, Document document) throws IOException {
 		indexWriter.updateDocuments(idQuery, List.of(document));
 	}
 

@@ -7,10 +7,10 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
-import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpdaterParams;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexWriterParams;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedIndexRestoreServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedIndexRetrieveServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
 
 import java.io.Closeable;
@@ -31,17 +31,17 @@ public interface TypedIndexParams<T> extends Closeable {
 
 	IndexSearchServiceParams<T> toTypedIndexSearchServiceParams();
 
-	TypedIndexRetrieveServiceParams<T> toTypedIndexRetrieveServiceParams();
+	TypedRetrieveServiceParams<T> toTypedRetrieveServiceParams();
 
-	TypedIndexRestoreServiceParams<T> toTypedIndexRestoreServiceParams();
+	TypedShallowUpdateServiceParams<T> toTypedShallowUpdateServiceParams();
 
-	TypedIndexWriterParams<T> toTypedIndexResetServiceParams();
+	TypedIndexWriterParams<T> toTypedResetServiceParams();
 
-	TypedIndexWriterParams<T> toTypedIndexAdderServiceParams();
+	TypedIndexWriterParams<T> toTypedAddServiceParams();
 
-	TypedIndexUpdaterParams<T> toTypedIndexUpsertServiceParams();
+	TypedIndexUpsertParams<T> toTypedIndexUpsertParams();
 
-	TypedIndexRemoverParams toTypedIndexRemoveServiceParams();
+	TypedIndexRemoverParams toTypedRemoveServiceParams();
 
 	OneHitIndexReaderParams<T> toOneHitIndexReaderTemplate();
 

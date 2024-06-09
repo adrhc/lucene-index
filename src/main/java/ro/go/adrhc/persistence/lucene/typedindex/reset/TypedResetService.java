@@ -10,14 +10,14 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TypedIndexResetService<T> implements IndexResetService<T> {
+public class TypedResetService<T> implements IndexResetService<T> {
 	private final TypedIndexResetTemplate<T> indexResetTemplate;
 
 	/**
 	 * constructor parameters union
 	 */
-	public static <T> TypedIndexResetService<T> create(TypedIndexWriterParams<T> params) {
-		return new TypedIndexResetService<>(TypedIndexResetTemplate.create(params));
+	public static <T> TypedResetService<T> create(TypedIndexWriterParams<T> params) {
+		return new TypedResetService<>(TypedIndexResetTemplate.create(params));
 	}
 
 	public void reset(Stream<T> stateAfterReset) throws IOException {

@@ -1,0 +1,30 @@
+package ro.go.adrhc.persistence.lucene.typedindex.update;
+
+import lombok.RequiredArgsConstructor;
+import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpsertParams;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedUpsertTemplate;
+
+import java.io.IOException;
+
+@RequiredArgsConstructor
+public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpsertService<T> {
+	private final TypedUpsertTemplate<T> indexUpsertTemplate;
+
+	public static <T extends Identifiable<?>>
+	TypedUpsertService<T> create(TypedIndexUpsertParams<T> params) {
+		return new TypedUpsertService<>(TypedUpsertTemplate.create(params));
+	}
+
+	@Override
+	public void upsert(T t) throws IOException {
+		indexUpsertTemplate.useUpdater(updater -> updater.upsert(t));
+	}
+
+	@Override
+	public void upsertAll(Iterable<T> iterable) throws IOException {
+		for (T t : iterable) {
+			this.upsert(t);
+		}
+	}
+}

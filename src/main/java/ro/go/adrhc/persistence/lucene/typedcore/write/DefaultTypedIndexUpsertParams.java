@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTypedIndexUpdaterParams<T> implements TypedIndexUpdaterParams<T> {
+public class DefaultTypedIndexUpsertParams<T> implements TypedIndexUpsertParams<T> {
 	private final TypedField<T> idField;
 	private final IndexWriter indexWriter;
 	private final Analyzer analyzer;
