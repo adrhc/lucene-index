@@ -154,7 +154,7 @@ public class DefaultIndexOperations<ID, T
 		if (storedOptional.isEmpty()) {
 			addOne(t);
 		} else {
-			upsert(mergeStrategy.apply(t, storedOptional.get()));
+			upsert(mergeStrategy.apply(storedOptional.get(), t));
 		}
 	}
 
