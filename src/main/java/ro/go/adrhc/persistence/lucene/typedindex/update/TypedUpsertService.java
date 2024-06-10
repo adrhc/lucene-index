@@ -18,7 +18,7 @@ public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpser
 
 	@Override
 	public void upsert(T t) throws IOException {
-		indexUpsertTemplate.useUpdater(updater -> updater.upsert(t));
+		indexUpsertTemplate.useUpserter(upserter -> upserter.upsert(t));
 	}
 
 	@Override
