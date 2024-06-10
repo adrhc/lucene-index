@@ -61,4 +61,23 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 		assertThat(optionalAlbum).isPresent();
 		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
 	}
+
+	@Test
+	void mergeTest() throws IOException {
+		Album album = generateAlbum(ALBUMS.size() + 1);
+		indexRepository.addOne(album);
+		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
+
+		Album merged = new Album(album.id(), null, "storedOnlyField-merged");
+		indexRepository.merge(merged);
+
+		Optional<Album> storedOptional = indexRepository.findById(album.id());
+		assertThat(storedOptional).isPresent();
+		Album stored = storedOptional.get();
+		assertThat(stored.storedOnlyField()).isEqualTo("storedOnlyField-merged");
+		assertThat(stored.name()).isEqualTo(album.name());
+
+		indexRepository.removeById(album.id());
+		assertThat(indexRepository.findById(album.id())).isEmpty();
+	}
 }

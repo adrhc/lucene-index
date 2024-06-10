@@ -18,6 +18,8 @@ public record Album(Path path, String name, String storedOnlyField)
 
 	@Override
 	public Album merge(Album another) {
-		return another;
+		return new Album(path,
+				another.name == null ? name : another.name,
+				another.storedOnlyField == null ? storedOnlyField : another.storedOnlyField);
 	}
 }
