@@ -65,14 +65,21 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 
 	@Test
 	void upsertManyTest() throws IOException {
-		Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album1"));
-		assertThat(optionalAlbum).isPresent();
+		Optional<Album> optionalAlbum1 = indexRepository.findById(Path.of("/albums/album1"));
+		assertThat(optionalAlbum1).isPresent();
+		Optional<Album> optionalAlbum2 = indexRepository.findById(Path.of("/albums/album2"));
+		assertThat(optionalAlbum2).isPresent();
 
 		String newStoredOnlyField = Instant.now().toString();
-		Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
-		indexRepository.upsertMany(List.of(album));
+		Album album1 = optionalAlbum1.get().storedOnlyField(newStoredOnlyField);
+		Album album2 = optionalAlbum2.get().storedOnlyField(newStoredOnlyField);
+		indexRepository.upsertMany(List.of(album1, album2));
 
-		optionalAlbum = indexRepository.findById(album.getId());
+		Optional<Album> optionalAlbum = indexRepository.findById(album1.getId());
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
+
+		optionalAlbum = indexRepository.findById(album2.getId());
 		assertThat(optionalAlbum).isPresent();
 		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
 	}
