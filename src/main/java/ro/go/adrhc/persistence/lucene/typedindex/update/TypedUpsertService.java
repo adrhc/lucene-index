@@ -22,7 +22,7 @@ public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpser
 	}
 
 	@Override
-	public void upsertAll(Iterable<T> iterable) throws IOException {
+	public void upsertMany(Iterable<T> iterable) throws IOException {
 		for (T t : iterable) {
 			this.upsert(t);
 		}

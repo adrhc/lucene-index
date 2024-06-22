@@ -19,13 +19,13 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor
 public class DefaultIndexOperations<ID, T
@@ -149,6 +149,10 @@ public class DefaultIndexOperations<ID, T
 		merge(t, T::merge);
 	}
 
+	/**
+	 * @param mergeStrategy 1st param is the stored value while the 2nd is @param t
+	 * @param t             might be added (instead of merged) if is not stored yet
+	 */
 	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
 		Optional<T> storedOptional = retrieveService.findById(t.id());
 		if (storedOptional.isEmpty()) {
@@ -158,9 +162,25 @@ public class DefaultIndexOperations<ID, T
 		}
 	}
 
+	/**
+	 * @param mergeStrategy 1st param is the stored value while the 2nd is a tCollection element
+	 * @param tCollection   might be added (instead of merged) if is not stored yet
+	 */
+	public void mergeMany(Collection<T> tCollection,
+			BinaryOperator<T> mergeStrategy) throws IOException {
+		Map<ID, T> stored = new HashMap<>();
+		Set<T> storedAsSet = retrieveService
+				.findByIds(tCollection.stream().map(T::id).collect(Collectors.toSet()));
+		storedAsSet.forEach(t -> stored.put(t.id(), t));
+		addMany(tCollection.stream().filter(t -> !stored.containsKey(t.id())));
+		upsertMany(iterable(tCollection.stream()
+				.filter(t -> stored.containsKey(t.id()))
+				.map(t -> mergeStrategy.apply(stored.get(t.id()), t))));
+	}
+
 	@Override
-	public void upsertAll(Iterable<T> iterable) throws IOException {
-		upsertService.upsertAll(iterable);
+	public void upsertMany(Iterable<T> iterable) throws IOException {
+		upsertService.upsertMany(iterable);
 	}
 
 	@Override

@@ -5,5 +5,5 @@ import java.io.IOException;
 public interface IndexUpsertService<T> {
 	void upsert(T t) throws IOException;
 
-	void upsertAll(Iterable<T> iterable) throws IOException;
+	void upsertMany(Iterable<T> iterable) throws IOException;
 }

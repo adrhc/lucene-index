@@ -33,7 +33,13 @@ public interface IndexOperations<ID, T extends Indexable<ID, T>>
 	 */
 	void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException;
 
-	void upsertAll(Iterable<T> iterable) throws IOException;
+	/**
+	 * @param mergeStrategy 1st param is the stored value while the 2nd is a tCollection element
+	 * @param tCollection   might be added (instead of merged) if is not stored yet
+	 */
+	void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy) throws IOException;
+
+	void upsertMany(Iterable<T> iterable) throws IOException;
 
 	void removeByIds(Collection<ID> ids) throws IOException;
 
