@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ro.go.adrhc.util.collection.IterableUtils.iterable;
+import static ro.go.adrhc.util.collection.SetUtils.mapToSet;
 
 @RequiredArgsConstructor
 public class DefaultIndexOperations<ID, T
@@ -169,10 +169,11 @@ public class DefaultIndexOperations<ID, T
 	public void mergeMany(Collection<T> tCollection,
 			BinaryOperator<T> mergeStrategy) throws IOException {
 		Map<ID, T> stored = new HashMap<>();
-		Set<T> storedAsSet = retrieveService
-				.findByIds(tCollection.stream().map(T::id).collect(Collectors.toSet()));
+		Set<T> storedAsSet = retrieveService.findByIds(mapToSet(tCollection, T::id));
 		storedAsSet.forEach(t -> stored.put(t.id(), t));
-		addMany(tCollection.stream().filter(t -> !stored.containsKey(t.id())));
+		if (storedAsSet.size() < tCollection.size()) {
+			addMany(tCollection.stream().filter(t -> !stored.containsKey(t.id())));
+		}
 		upsertMany(iterable(tCollection.stream()
 				.filter(t -> stored.containsKey(t.id()))
 				.map(t -> mergeStrategy.apply(stored.get(t.id()), t))));
