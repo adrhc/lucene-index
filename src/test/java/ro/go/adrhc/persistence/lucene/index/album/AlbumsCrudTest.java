@@ -30,16 +30,16 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 
 		Album album4 = generateAlbum(4);
 		indexRepository.addOne(album4);
-		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
+		assertThat(indexRepository.findById(album4.id())).isPresent();
 
 		Album album4Updated = album4.storedOnlyField("updated album4 storedOnlyField");
 		indexRepository.upsert(album4Updated);
-		Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album4"));
+		Optional<Album> optionalAlbum = indexRepository.findById(album4.id());
 		assertThat(optionalAlbum).isPresent();
 		assertThat(optionalAlbum.get()).isEqualTo(album4Updated);
 
-		indexRepository.removeById(Path.of("/albums/album4"));
-		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isEmpty();
+		indexRepository.removeById(album4.id());
+		assertThat(indexRepository.findById(album4.id())).isEmpty();
 	}
 
 	@Test
@@ -69,11 +69,12 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 		assertThat(optionalAlbum1).isPresent();
 		Optional<Album> optionalAlbum2 = indexRepository.findById(Path.of("/albums/album2"));
 		assertThat(optionalAlbum2).isPresent();
+		Album album4 = generateAlbum(ALBUMS.size() + 1);
 
 		String newStoredOnlyField = Instant.now().toString();
 		Album album1 = optionalAlbum1.get().storedOnlyField(newStoredOnlyField);
 		Album album2 = optionalAlbum2.get().storedOnlyField(newStoredOnlyField);
-		indexRepository.upsertMany(List.of(album1, album2));
+		indexRepository.upsertMany(List.of(album1, album2, album4));
 
 		Optional<Album> optionalAlbum = indexRepository.findById(album1.getId());
 		assertThat(optionalAlbum).isPresent();
@@ -82,24 +83,30 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 		optionalAlbum = indexRepository.findById(album2.getId());
 		assertThat(optionalAlbum).isPresent();
 		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
+
+		optionalAlbum = indexRepository.findById(album4.getId());
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(album4.storedOnlyField());
+
+		indexRepository.removeById(album4.id());
 	}
 
 	@Test
 	void mergeTest() throws IOException {
-		Album album = generateAlbum(ALBUMS.size() + 1);
-		indexRepository.addOne(album);
-		assertThat(indexRepository.findById(Path.of("/albums/album4"))).isPresent();
+		Album album4 = generateAlbum(ALBUMS.size() + 1);
+		indexRepository.addOne(album4);
+		assertThat(indexRepository.findById(album4.id())).isPresent();
 
-		Album merged = new Album(album.id(), null, "storedOnlyField-merged");
+		Album merged = new Album(album4.id(), null, "storedOnlyField-merged");
 		indexRepository.merge(merged);
 
-		Optional<Album> storedOptional = indexRepository.findById(album.id());
+		Optional<Album> storedOptional = indexRepository.findById(album4.id());
 		assertThat(storedOptional).isPresent();
 		Album stored = storedOptional.get();
 		assertThat(stored.storedOnlyField()).isEqualTo("storedOnlyField-merged");
-		assertThat(stored.name()).isEqualTo(album.name());
+		assertThat(stored.name()).isEqualTo(album4.name());
 
-		indexRepository.removeById(album.id());
-		assertThat(indexRepository.findById(album.id())).isEmpty();
+		indexRepository.removeById(album4.id());
+		assertThat(indexRepository.findById(album4.id())).isEmpty();
 	}
 }
