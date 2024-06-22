@@ -156,8 +156,8 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public void upsertMany(Iterable<T> iterable) throws IOException {
-		indexOperations.upsertMany(iterable);
+	public void upsertMany(Collection<T> tCollection) throws IOException {
+		indexOperations.upsertMany(tCollection);
 		commit();
 	}
 

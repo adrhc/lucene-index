@@ -6,6 +6,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedUpsertTemplate;
 
 import java.io.IOException;
+import java.util.Collection;
 
 @RequiredArgsConstructor
 public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpsertService<T> {
@@ -22,9 +23,7 @@ public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpser
 	}
 
 	@Override
-	public void upsertMany(Iterable<T> iterable) throws IOException {
-		for (T t : iterable) {
-			this.upsert(t);
-		}
+	public void upsertMany(Collection<T> collection) throws IOException {
+		indexUpsertTemplate.useUpserter(upserter -> upserter.upsertMany(collection));
 	}
 }

@@ -24,8 +24,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.util.collection.IterableUtils.iterable;
-import static ro.go.adrhc.util.collection.SetUtils.mapToSet;
+import static ro.go.adrhc.persistence.lucene.typedcore.Identifiable.toIds;
 
 @RequiredArgsConstructor
 public class DefaultIndexOperations<ID, T
@@ -169,19 +168,20 @@ public class DefaultIndexOperations<ID, T
 	public void mergeMany(Collection<T> tCollection,
 			BinaryOperator<T> mergeStrategy) throws IOException {
 		Map<ID, T> stored = new HashMap<>();
-		Set<T> storedAsSet = retrieveService.findByIds(mapToSet(tCollection, T::id));
+		Set<T> storedAsSet = retrieveService.findByIds(toIds(tCollection));
 		storedAsSet.forEach(t -> stored.put(t.id(), t));
 		if (storedAsSet.size() < tCollection.size()) {
 			addMany(tCollection.stream().filter(t -> !stored.containsKey(t.id())));
 		}
-		upsertMany(iterable(tCollection.stream()
+		upsertMany(tCollection.stream()
 				.filter(t -> stored.containsKey(t.id()))
-				.map(t -> mergeStrategy.apply(stored.get(t.id()), t))));
+				.map(t -> mergeStrategy.apply(stored.get(t.id()), t))
+				.toList());
 	}
 
 	@Override
-	public void upsertMany(Iterable<T> iterable) throws IOException {
-		upsertService.upsertMany(iterable);
+	public void upsertMany(Collection<T> tCollection) throws IOException {
+		upsertService.upsertMany(tCollection);
 	}
 
 	@Override

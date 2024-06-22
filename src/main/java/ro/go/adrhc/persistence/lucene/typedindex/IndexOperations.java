@@ -39,7 +39,7 @@ public interface IndexOperations<ID, T extends Indexable<ID, T>>
 	 */
 	void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy) throws IOException;
 
-	void upsertMany(Iterable<T> iterable) throws IOException;
+	void upsertMany(Collection<T> tCollection) throws IOException;
 
 	void removeByIds(Collection<ID> ids) throws IOException;
 

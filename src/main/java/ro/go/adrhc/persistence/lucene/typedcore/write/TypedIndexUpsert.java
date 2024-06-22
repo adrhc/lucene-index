@@ -1,11 +1,16 @@
 package ro.go.adrhc.persistence.lucene.typedcore.write;
 
+import org.apache.lucene.search.BooleanQuery;
 import ro.go.adrhc.persistence.lucene.core.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.TypedToDocumentConverter;
 
 import java.io.IOException;
+import java.util.Collection;
+
+import static ro.go.adrhc.persistence.lucene.core.query.BooleanQueryFactory.shouldSatisfy;
+import static ro.go.adrhc.persistence.lucene.typedcore.Identifiable.toIds;
 
 public class TypedIndexUpsert<T extends Identifiable<?>> extends AbstractTypedIndexWriter<T> {
 	private final ExactQuery exactQuery;
@@ -26,5 +31,10 @@ public class TypedIndexUpsert<T extends Identifiable<?>> extends AbstractTypedIn
 
 	public void upsert(T t) throws IOException {
 		docsIndexWriter.upsert(exactQuery.newExactQuery(t.getId()), toDocument(t));
+	}
+
+	public void upsertMany(Collection<T> tCollection) throws IOException {
+		BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(toIds(tCollection)));
+		docsIndexWriter.upsertMany(idsQuery, toDocuments(tCollection));
 	}
 }

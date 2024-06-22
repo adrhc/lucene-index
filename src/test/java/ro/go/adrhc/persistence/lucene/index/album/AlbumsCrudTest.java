@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +57,20 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 		String newStoredOnlyField = Instant.now().toString();
 		Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
 		indexRepository.upsert(album);
+
+		optionalAlbum = indexRepository.findById(album.getId());
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
+	}
+
+	@Test
+	void upsertManyTest() throws IOException {
+		Optional<Album> optionalAlbum = indexRepository.findById(Path.of("/albums/album1"));
+		assertThat(optionalAlbum).isPresent();
+
+		String newStoredOnlyField = Instant.now().toString();
+		Album album = optionalAlbum.get().storedOnlyField(newStoredOnlyField);
+		indexRepository.upsertMany(List.of(album));
 
 		optionalAlbum = indexRepository.findById(album.getId());
 		assertThat(optionalAlbum).isPresent();
