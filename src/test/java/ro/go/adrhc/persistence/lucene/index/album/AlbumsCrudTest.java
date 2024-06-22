@@ -86,7 +86,34 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 
 		optionalAlbum = indexRepository.findById(album4.getId());
 		assertThat(optionalAlbum).isPresent();
-		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo(album4.storedOnlyField());
+
+		indexRepository.removeById(album4.id());
+	}
+
+	@Test
+	void mergeManyTest() throws IOException {
+		Album merge1 = new Album(ALBUMS.getFirst().id(), null, "merge1");
+		Album merge2 = new Album(ALBUMS.get(1).id(), null, "merge2");
+		Album album4 = generateAlbum(ALBUMS.size() + 1);
+
+		indexRepository.mergeMany(List.of(merge1, merge2, album4), Album::merge);
+
+		Optional<Album> optionalAlbum = indexRepository.findById(merge1.getId());
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo("merge1");
+		Optional<Album> optionalAlbum1 = indexRepository.findById(ALBUMS.getFirst().id());
+		assertThat(optionalAlbum1).isPresent();
+		assertThat(optionalAlbum.get().name()).isEqualTo(optionalAlbum1.get().name());
+
+		optionalAlbum = indexRepository.findById(merge2.getId());
+		assertThat(optionalAlbum).isPresent();
+		assertThat(optionalAlbum.get().storedOnlyField()).isEqualTo("merge2");
+		Optional<Album> optionalAlbum2 = indexRepository.findById(ALBUMS.get(1).id());
+		assertThat(optionalAlbum2).isPresent();
+		assertThat(optionalAlbum.get().name()).isEqualTo(optionalAlbum2.get().name());
+
+		optionalAlbum = indexRepository.findById(album4.getId());
+		assertThat(optionalAlbum).isPresent();
 
 		indexRepository.removeById(album4.id());
 	}

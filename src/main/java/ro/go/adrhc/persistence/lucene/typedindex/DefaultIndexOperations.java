@@ -168,15 +168,8 @@ public class DefaultIndexOperations<ID, T
 	public void mergeMany(Collection<T> tCollection,
 			BinaryOperator<T> mergeStrategy) throws IOException {
 		Map<ID, T> stored = new HashMap<>();
-		Set<T> storedAsSet = retrieveService.findByIds(toIds(tCollection));
-		storedAsSet.forEach(t -> stored.put(t.id(), t));
-		if (storedAsSet.size() < tCollection.size()) {
-			addMany(tCollection.stream().filter(t -> !stored.containsKey(t.id())));
-		}
-		upsertMany(tCollection.stream()
-				.filter(t -> stored.containsKey(t.id()))
-				.map(t -> mergeStrategy.apply(stored.get(t.id()), t))
-				.toList());
+		retrieveService.findByIds(toIds(tCollection)).forEach(t -> stored.put(t.id(), t));
+		upsertMany(tCollection.stream().map(t -> merge(mergeStrategy, stored, t)).toList());
 	}
 
 	@Override
@@ -218,5 +211,10 @@ public class DefaultIndexOperations<ID, T
 	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
 			throws IOException {
 		shallowUpdateService.shallowUpdateSubset(dataSource, query);
+	}
+
+	private T merge(BinaryOperator<T> mergeStrategy, Map<ID, T> stored, T another) {
+		T storedT = stored.get(another.id());
+		return storedT == null ? another : mergeStrategy.apply(storedT, another);
 	}
 }
