@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.core.write;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
@@ -10,16 +11,29 @@ import ro.go.adrhc.util.stream.StreamCounter;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory.fsWriter;
+import static ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory.ramWriter;
 import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor
 @Slf4j
 public class DocsIndexWriter implements Closeable {
 	private final IndexWriter indexWriter;
+
+	public static DocsIndexWriter
+	ofRamWriter(Analyzer analyzer) throws IOException {
+		return new DocsIndexWriter(ramWriter(analyzer));
+	}
+
+	public static DocsIndexWriter ofFsWriter(
+			Analyzer analyzer, Path indexPath) throws IOException {
+		return new DocsIndexWriter(fsWriter(analyzer, indexPath));
+	}
 
 	public void addOne(Iterable<? extends IndexableField> document) throws IOException {
 		indexWriter.addDocument(document);

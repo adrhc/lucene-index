@@ -13,16 +13,16 @@ import java.nio.file.Path;
 @UtilityClass
 public class IndexWriterFactory {
 	public static IndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
-		IndexWriterConfig config = createOrAppend(analyzer);
+		IndexWriterConfig config = createOrAppendConfig(analyzer);
 		return new IndexWriter(FSDirectory.open(indexPath), config);
 	}
 
 	public static IndexWriter ramWriter(Analyzer analyzer) throws IOException {
-		IndexWriterConfig config = createOrAppend(analyzer);
+		IndexWriterConfig config = createOrAppendConfig(analyzer);
 		return new IndexWriter(new ByteBuffersDirectory(), config);
 	}
 
-	private static IndexWriterConfig createOrAppend(Analyzer analyzer) {
+	private static IndexWriterConfig createOrAppendConfig(Analyzer analyzer) {
 		return new IndexWriterConfig(analyzer)
 				.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 	}
