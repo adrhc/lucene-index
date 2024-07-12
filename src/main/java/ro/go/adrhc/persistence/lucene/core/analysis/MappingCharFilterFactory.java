@@ -1,28 +1,35 @@
 package ro.go.adrhc.persistence.lucene.core.analysis;
 
+import org.apache.lucene.analysis.CharFilterFactory;
+import org.apache.lucene.analysis.charfilter.MappingCharFilter;
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
-import org.apache.lucene.util.ResourceLoader;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.Reader;
 import java.util.Map;
 
-public class MappingCharFilterFactory
-		extends org.apache.lucene.analysis.charfilter.MappingCharFilterFactory {
-	private final Map<String, String> args;
+public class MappingCharFilterFactory extends CharFilterFactory {
+	protected NormalizeCharMap normMap;
 
 	public MappingCharFilterFactory(Map<String, String> args) {
-		super(new HashMap<>());
-		this.args = Collections.unmodifiableMap(new HashMap<>(args));
+		this.normMap = toNormalizeCharMap(args);
 	}
 
 	@Override
-	public void inform(ResourceLoader loader) {
+	public Reader create(Reader input) {
+		return normMap == null ? input : new MappingCharFilter(normMap, input);
+	}
+
+	@Override
+	public Reader normalize(Reader input) {
+		return create(input);
+	}
+
+	protected NormalizeCharMap toNormalizeCharMap(Map<String, String> args) {
 		if (args.isEmpty()) {
-			return;
+			return null;
 		}
 		NormalizeCharMap.Builder normalizeCharMapBuilder = new NormalizeCharMap.Builder();
 		args.forEach(normalizeCharMapBuilder::add);
-		normMap = normalizeCharMapBuilder.build();
+		return normalizeCharMapBuilder.build();
 	}
 }
