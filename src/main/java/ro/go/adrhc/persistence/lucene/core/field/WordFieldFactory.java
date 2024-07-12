@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
 public class WordFieldFactory {
 	private final TokenizationUtils tokenizationUtils;
 
-	public static WordFieldFactory create(Analyzer analyzer) {
+	public static WordFieldFactory of(Analyzer analyzer) {
 		return new WordFieldFactory(new TokenizationUtils(analyzer));
 	}
 
@@ -20,7 +20,7 @@ public class WordFieldFactory {
 	 * For example this might be used for a 'country' field or an 'id' field. If you also need to sort
 	 * on this field, separately add a {@link SortedDocValuesField} to your document.
 	 * <p>
-	 * The field is still normalized (aka, filtered) before indexing!
+	 * The field is still normalized (aka, char-filtered) before indexing!
 	 */
 	public StringField wordField(boolean stored, Enum<?> field, Object value) {
 		return wordField(stored, field.name(), value);

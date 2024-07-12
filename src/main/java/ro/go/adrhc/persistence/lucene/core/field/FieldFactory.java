@@ -15,7 +15,7 @@ public class FieldFactory {
 	private final WordFieldFactory wordFieldFactory;
 
 	public static FieldFactory create(Analyzer analyzer) {
-		return new FieldFactory(WordFieldFactory.create(analyzer));
+		return new FieldFactory(WordFieldFactory.of(analyzer));
 	}
 
 	/**
