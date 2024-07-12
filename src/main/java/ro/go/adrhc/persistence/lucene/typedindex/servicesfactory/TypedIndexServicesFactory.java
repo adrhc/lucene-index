@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.index.DocsCountService;
+import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
@@ -23,8 +23,8 @@ public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
 		return TypedRetrieveService.create(params.toTypedRetrieveServiceParams());
 	}
 
-	public DocsCountService createCountService() {
-		return DocsCountService.create(params.getIndexReaderPool());
+	public DefaultIndexCountService createCountService() {
+		return DefaultIndexCountService.create(params.getIndexReaderPool());
 	}
 
 	public TypedShallowUpdateService<ID, T> createShallowUpdateService() {

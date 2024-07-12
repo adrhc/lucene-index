@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.NoArgsConstructor;
-import ro.go.adrhc.persistence.lucene.index.DocsCountService;
+import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
@@ -45,7 +45,7 @@ public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
 		DefaultIndexSearchService<T> searchService = factories.createSearchService();
 		TypedRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
-		DocsCountService countService = factories.createCountService();
+		DefaultIndexCountService countService = factories.createCountService();
 		TypedAddService<T> adderService = factories.createAddService();
 		TypedUpsertService<T> updateService = factories.createUpsertService();
 		TypedRemoveService<ID> removeService = factories.createRemoveService();

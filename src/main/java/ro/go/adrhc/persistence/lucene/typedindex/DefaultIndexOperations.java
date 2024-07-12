@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.index.DocsCountService;
+import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
@@ -31,7 +31,7 @@ public class DefaultIndexOperations<ID, T
 		extends Indexable<ID, T>> implements IndexOperations<ID, T> {
 	private final DefaultIndexSearchService<T> searchService;
 	private final TypedRetrieveService<ID, T> retrieveService;
-	private final DocsCountService countService;
+	private final DefaultIndexCountService countService;
 	private final TypedAddService<T> addService;
 	private final TypedUpsertService<T> upsertService;
 	private final TypedRemoveService<ID> removeService;
