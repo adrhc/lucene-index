@@ -14,7 +14,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class IndexReaderPool implements Closeable {
-	private final SneakySupplier<DirectoryReader, IOException> directoryReaderSupplier;
+	private final SneakySupplier<DirectoryReader, IOException> dirReaderSupplier;
 	private DirectoryReader directoryReader;
 
 	public synchronized IndexReader getReader() throws IOException {
@@ -23,7 +23,7 @@ public class IndexReaderPool implements Closeable {
 		return directoryReader;
 	}
 
-	public synchronized void returnReader(IndexReader indexReader) throws IOException {
+	public synchronized void dismissReader(IndexReader indexReader) throws IOException {
 		indexReader.decRef();
 		if (directoryReader != indexReader) {
 			closeIfUnused(indexReader);
@@ -32,14 +32,15 @@ public class IndexReaderPool implements Closeable {
 
 	protected void updateReader() throws IOException {
 		if (directoryReader == null) {
-			directoryReader = directoryReaderSupplier.get();
+			directoryReader = dirReaderSupplier.get();
 		} else {
 			DirectoryReader previousIndexReader = directoryReader;
-			if (previousIndexReader.isCurrent()) {
-				return;
-			}
 			directoryReader = DirectoryReader.openIfChanged(directoryReader);
-			closeIfUnused(previousIndexReader);
+			if (directoryReader != null) {
+				closeIfUnused(previousIndexReader);
+			} else {
+				directoryReader = previousIndexReader;
+			}
 		}
 	}
 
@@ -62,7 +63,7 @@ public class IndexReaderPool implements Closeable {
 		try {
 			directoryReader.close();
 		} catch (AlreadyClosedException ac) {
-			// ignoring
+			log.error("\nTried to close an already closed index!");
 		}
 	}
 }

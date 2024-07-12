@@ -47,8 +47,8 @@ public class DocsIndexReaderTemplate {
 	}*/
 
 	/**
-	 * Make sure that songsIndexReaderFn does not return a Stream! at the moment
-	 * the Stream will actually run the DocsIndexReader shall already be closed.
+	 * Make sure that songsIndexReaderFn does not return a Stream!
+	 * before the Stream is return the DocsIndexReader is closed.
 	 */
 	public <R, E extends Exception> R useReader(
 			SneakyFunction<DocsIndexReader, R, E> indexReaderFn)

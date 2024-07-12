@@ -24,7 +24,7 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	private final TypedField<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter;
-	private final HitsLimitedDocsIndexReader indexReader;
+	private final HitsLimitedDocsIndexReader hitsLimitedDocsIndexReader;
 
 	public static <ID, T> TypedIndexReader<ID, T>
 	create(TypedIndexReaderParams<T> params) throws IOException {
@@ -38,7 +38,8 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<T> getAll() {
-		return indexReader.getAll().map(docToTypedConverter::convert).flatMap(Optional::stream);
+		return hitsLimitedDocsIndexReader.getDocumentStream().map(
+				docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
 	public Stream<ID> getAllIds() {
@@ -46,35 +47,40 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ID> findIds(Query query) throws IOException {
-		return indexReader.findFieldValues(idField.name(), query)
+		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query)
 				.map(value -> (ID) idField.toTypedValue(value));
 	}
 
 	public Stream<ID> findIds(Query query, int numHits) throws IOException {
-		return indexReader.findFieldValues(idField.name(), query, numHits)
+		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query, numHits)
 				.map(value -> (ID) idField.toTypedValue(value));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
-		return convert(indexReader.findMany(query));
+		return convert(hitsLimitedDocsIndexReader.findMany(query));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, int numHits) throws IOException {
-		return convert(indexReader.findMany(query, numHits));
+		return convert(hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, Sort sort) throws IOException {
-		return convert(indexReader.findMany(query, sort));
+		return convert(hitsLimitedDocsIndexReader.findMany(query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
-		return convert(indexReader.findMany(query, numHits, sort));
+		return convert(hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
+	}
+
+	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
+			Query query, Sort sort) throws IOException {
+		return convert(hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
 			Query query, int numHits, Sort sort) throws IOException {
-		return convert(indexReader.findManyAfter(after, query, numHits, sort));
+		return convert(hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
 	}
 
 	/**
@@ -83,14 +89,14 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 				field.name() + " must have STORED type!");
-		return indexReader.getFieldOfAll(field.name())
+		return hitsLimitedDocsIndexReader.getFieldStream(field.name())
 				.map(field::indexableFieldToTypedValue)
 				.map(ObjectUtils::cast);
 	}
 
 	@Override
 	public void close() throws IOException {
-		indexReader.close();
+		hitsLimitedDocsIndexReader.close();
 	}
 
 	private Stream<ScoreDocAndValue<T>> convert(Stream<ScoreDocAndDocument> stream) {

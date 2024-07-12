@@ -12,6 +12,7 @@ import ro.go.adrhc.persistence.lucene.core.read.storedfieldvisitor.OneStoredObje
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -28,19 +29,19 @@ public class DocsIndexReader implements Closeable {
 		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader());
 	}
 
-	public Stream<Document> getAll() {
-		return getFieldsOfAll(Set.of());
+	public Stream<Document> getDocumentStream() {
+		return getDocProjectionStream(Set.of());
 	}
 
-	public Stream<IndexableField> getFieldOfAll(String fieldName) {
-		return getFieldsOfAll(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
+	public Stream<IndexableField> getFieldStream(String fieldName) {
+		return getDocProjectionStream(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
-	public Stream<Document> getFieldsOfAll(Set<String> fieldNames) {
+	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
 		return storedFields()
-				.map(storedFields -> doGetAll(liveDocs, storedFields, fieldNames))
+				.map(storedFields -> doGetAll(liveDocs, fieldNames, storedFields))
 				.orElseGet(Stream::of);
 	}
 
@@ -48,43 +49,39 @@ public class DocsIndexReader implements Closeable {
 	 * @return limited by numHits
 	 */
 	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
-		TopDocsStoredFields topDocsStoredFields =
-				topDocsStoredFields(s -> s.search(query, numHits));
-		return topDocsStoredFields
-				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
+		return Arrays.stream(topDocs.scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
 	public Stream<ScoreDocAndDocument> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
-		TopDocsStoredFields topDocsStoredFields =
-				topDocsStoredFields(s -> s.search(query, numHits, sort));
-		return topDocsStoredFields
-				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits, sort));
+		return Arrays.stream(topDocs.scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
 	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
 			Query query, int numHits, Sort sort) throws IOException {
-		TopDocsStoredFields topDocsStoredFields =
-				topDocsStoredFields(s -> s.searchAfter(after, query, numHits, sort));
-		return topDocsStoredFields
-				.rawMap(scoreDoc -> safelyGetScoreAndDocument(topDocsStoredFields, scoreDoc))
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(s -> s.searchAfter(after, query, numHits, sort));
+		return Arrays.stream(topDocs.scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
 				.flatMap(Optional::stream);
 	}
 
-	/**
-	 * @return limited by numHits
-	 */
 	public Stream<Object> findFieldValues(
 			String fieldName, Query query, int numHits) throws IOException {
-		TopDocsStoredFields topDocsStoredFields =
-				topDocsStoredFields(s -> s.search(query, numHits));
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
 		OneStoredObjectFieldVisitor fieldVisitor =
 				new OneStoredObjectFieldVisitor(fieldName);
-		return topDocsStoredFields
-				.rawMap(scoreDoc -> safelyGetFieldValue(fieldVisitor, topDocsStoredFields,
-						scoreDoc))
+		return Arrays.stream(topDocs.scoreDocs)
+				.map(scoreDoc -> safelyVisitOneFieldDocument(storedFields, fieldVisitor, scoreDoc))
 				.filter(Objects::nonNull);
 	}
 
@@ -98,19 +95,19 @@ public class DocsIndexReader implements Closeable {
 		return searcher.count(new MatchAllDocsQuery());
 	}
 
-	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
-			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
-		return safelyGetDocument(topDocsStoredFields.storedFields(), scoreDoc.doc)
-				.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
-	}
-
 	protected Stream<Document> doGetAll(Bits liveDocs,
-			StoredFields storedFields, Set<String> fieldNames) {
+			Set<String> fieldNames, StoredFields storedFields) {
 		return IntStream.range(0, indexReader.maxDoc())
 				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
 				.mapToObj(docIndex -> this.safelyGetDocument(
 						storedFields, fieldNames, docIndex))
 				.flatMap(Optional::stream);
+	}
+
+	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
+			StoredFields storedFields, ScoreDoc scoreDoc) {
+		return safelyGetDocument(storedFields, scoreDoc.doc)
+				.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
 	}
 
 	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
@@ -144,30 +141,28 @@ public class DocsIndexReader implements Closeable {
 		return Optional.empty();
 	}
 
-	protected TopDocsStoredFields topDocsStoredFields(
-			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
+	protected <R> R useIndexSearcher(
+			SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
 			throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		TopDocs topDocs = topDocsSupplier.apply(searcher);
-		return new TopDocsStoredFields(topDocs, searcher.storedFields());
+		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
 	@Override
 	public void close() throws IOException {
-		indexReaderPool.returnReader(indexReader);
+		indexReaderPool.dismissReader(indexReader);
 	}
 
-	private <V> V safelyGetFieldValue(AbstractOneStoredFieldVisitor<V> fieldVisitor,
-			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+	private <V> V safelyVisitOneFieldDocument(StoredFields storedFields,
+			AbstractOneStoredFieldVisitor<V> fieldVisitor, ScoreDoc scoreDoc) {
 		fieldVisitor.reset();
-		safelyVisitDocument(fieldVisitor, topDocsStoredFields, scoreDoc);
+		safelyVisitDocument(storedFields, fieldVisitor, scoreDoc);
 		return fieldVisitor.getValue();
 	}
 
-	private void safelyVisitDocument(StoredFieldVisitor fieldVisitor,
-			TopDocsStoredFields topDocsStoredFields, ScoreDoc scoreDoc) {
+	private void safelyVisitDocument(StoredFields storedFields,
+			StoredFieldVisitor fieldVisitor, ScoreDoc scoreDoc) {
 		try {
-			topDocsStoredFields.document(scoreDoc.doc, fieldVisitor);
+			storedFields.document(scoreDoc.doc, fieldVisitor);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}

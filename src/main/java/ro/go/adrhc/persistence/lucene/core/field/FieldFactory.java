@@ -19,14 +19,16 @@ public class FieldFactory {
 	}
 
 	/**
-	 * Can't be stored!
+	 * If you also need to store the value, you should
+	 * add a separate {@link StoredField} instance.
 	 */
 	public static IntPoint intField(Enum<?> field, Integer value) {
 		return intField(field.name(), value);
 	}
 
 	/**
-	 * Can't be stored!
+	 * If you also need to store the value, you should
+	 * add a separate {@link StoredField} instance.
 	 */
 	public static IntPoint intField(String fieldName, Integer value) {
 		return new IntPoint(fieldName, value);
@@ -41,14 +43,14 @@ public class FieldFactory {
 	}
 
 	/**
-	 * A field that is indexed and tokenized, without term vectors. For example this would be used on a
-	 * 'body' field, that contains the bulk of a document's text.
+	 * A field that is indexed and tokenized, without term vectors. For example this
+	 * would be used on a 'body' field, that contains the bulk of a document's text.
 	 */
-	public static TextField textField(boolean stored, Enum<?> field, Object value) {
-		return textField(stored, field.name(), value.toString());
+	public static TextField phraseField(boolean stored, Enum<?> field, Object value) {
+		return phraseField(stored, field.name(), value.toString());
 	}
 
-	public static TextField textField(boolean stored, String fieldName, Object value) {
+	public static TextField phraseField(boolean stored, String fieldName, Object value) {
 		return new TextField(fieldName, value.toString(),
 				stored ? Field.Store.YES : Field.Store.NO);
 	}
@@ -98,7 +100,7 @@ public class FieldFactory {
 		return switch (fieldType) {
 			case KEYWORD -> keywordField(stored, fieldName, value);
 			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
-			case PHRASE, TAGS -> textField(stored, fieldName, value);
+			case PHRASE, TAGS -> phraseField(stored, fieldName, value);
 			case INT -> intField(fieldName, (Integer) value);
 			case LONG -> longField(stored, fieldName, (Long) value);
 			case STORED -> storedField(fieldName, value);

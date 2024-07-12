@@ -79,14 +79,30 @@ public class DefaultIndexOperations<ID, T
 	}
 
 	@Override
-	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
-			Query query, int hitsCount, Sort sort) throws IOException {
-		return searchService.findManyAfter(after, query, hitsCount, sort);
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
+		return searchService.findMany(query, hitsCount);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
+		return searchService.findMany(query, sort);
 	}
 
 	@Override
 	public List<T> findMany(Query query) throws IOException {
 		return searchService.findMany(query);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(
+			ScoreDoc after, Query query, Sort sort) throws IOException {
+		return searchService.findManyAfter(after, query, sort);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
+			Query query, int hitsCount, Sort sort) throws IOException {
+		return searchService.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override

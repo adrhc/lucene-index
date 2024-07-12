@@ -33,6 +33,22 @@ public class DefaultSearchManyService<T> implements SearchManyService<T> {
 	}
 
 	@Override
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
+		return useReader(r -> doFindSorted(r.findMany(query, hitsCount)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
+		return useReader(r -> doFindSorted(r.findMany(query, sort)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(
+			ScoreDoc after, Query query, Sort sort) throws IOException {
+		return useReader(r -> doFindSorted(r.findManyAfter(after, query, sort)));
+	}
+
+	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 			Query query, int hitsCount, Sort sort) throws IOException {
 		return useReader(r -> doFindSorted(r.findManyAfter(after, query, hitsCount, sort)));

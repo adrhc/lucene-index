@@ -63,12 +63,29 @@ public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
 	}
 
 	@Override
+	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
+		return searchManyService.findMany(query, sort);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
+		return searchManyService.findMany(query, hitsCount);
+	}
+
+	@Override
 	public List<T> findMany(Query query) throws IOException {
 		return searchManyService.findMany(query);
 	}
 
 	@Override
-	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
+	public ScoreDocAndValues<T> findManyAfter(
+			ScoreDoc after, Query query, Sort sort) throws IOException {
+		return searchManyService.findManyAfter(after, query, sort);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(
+			ScoreDoc after, Query query, int hitsCount, Sort sort)
 			throws IOException {
 		return searchManyService.findManyAfter(after, query, hitsCount, sort);
 	}
