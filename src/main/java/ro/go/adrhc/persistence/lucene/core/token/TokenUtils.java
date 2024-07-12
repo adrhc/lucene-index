@@ -20,9 +20,23 @@ public class TokenUtils {
 
 	private boolean containedDiffersSlightly(int levenshteinDistance,
 			Set<String> containerTokens, Set<String> containedTokens) {
-		return SetUtils.difference(containedTokens, containerTokens).stream()
-				.allMatch(contained -> containerTokens.stream()
-						.anyMatch(container -> LevenshteinDistance.getDefaultInstance()
-								.apply(container, contained) <= levenshteinDistance));
+		return SetUtils.difference(containedTokens, containerTokens)
+				.stream().allMatch(contained -> tokenMatchSlightlyDifferent(
+						levenshteinDistance, containerTokens, contained));
+	}
+
+	private static boolean tokenMatchSlightlyDifferent(int levenshteinDistance,
+			Set<String> containerTokens, CharSequence contained) {
+		return containerTokens.stream().anyMatch(container ->
+				leLevenshteinDistance(levenshteinDistance, contained, container));
+	}
+
+	private static boolean leLevenshteinDistance(
+			int levenshteinDistance, CharSequence first, CharSequence second) {
+		return LevenshteinDistance.getDefaultInstance().apply(first, second) <= levenshteinDistance;
+	}
+
+	private static Integer levenshteinDistance(CharSequence first, CharSequence second) {
+		return LevenshteinDistance.getDefaultInstance().apply(first, second);
 	}
 }
