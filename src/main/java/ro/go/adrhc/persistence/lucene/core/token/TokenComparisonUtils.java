@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class TokenUtils {
+public class TokenComparisonUtils {
 	private final TokenizationUtils tokenizationUtils;
 
 	public boolean containedDiffersSlightly(int levenshteinDistance,
