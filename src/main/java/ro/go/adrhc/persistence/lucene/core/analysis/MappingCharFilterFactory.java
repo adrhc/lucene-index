@@ -5,12 +5,14 @@ import org.apache.lucene.analysis.charfilter.MappingCharFilter;
 import org.apache.lucene.analysis.charfilter.NormalizeCharMap;
 
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MappingCharFilterFactory extends CharFilterFactory {
 	protected NormalizeCharMap normMap;
 
 	public MappingCharFilterFactory(Map<String, String> args) {
+		super(new HashMap<>());
 		this.normMap = toNormalizeCharMap(args);
 	}
 
