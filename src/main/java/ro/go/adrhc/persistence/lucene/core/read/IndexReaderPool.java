@@ -57,7 +57,7 @@ public class IndexReaderPool implements Closeable {
 			return;
 		}
 		if (directoryReader.getRefCount() != 1) {
-			log.warn("\ndirectoryReader refCount should be 1 but is {}!",
+			log.error("\ndirectoryReader refCount should be 1 but is {}!",
 					directoryReader.getRefCount());
 		}
 		try {
