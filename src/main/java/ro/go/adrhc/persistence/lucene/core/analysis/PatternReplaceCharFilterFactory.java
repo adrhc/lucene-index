@@ -17,7 +17,7 @@ public class PatternReplaceCharFilterFactory extends CharFilterFactory {
 
 	public PatternReplaceCharFilterFactory(Map<String, String> args) {
 		super(args);
-		pattern = createPattern(args);
+		pattern = toPattern(args);
 		replacement = get(args, REPLACEMENT, "");
 		if (!args.isEmpty()) {
 			throw new IllegalArgumentException("Unknown parameters: " + args);
@@ -34,7 +34,7 @@ public class PatternReplaceCharFilterFactory extends CharFilterFactory {
 		return create(input);
 	}
 
-	protected Pattern createPattern(Map<String, String> args) {
+	protected Pattern toPattern(Map<String, String> args) {
 		try {
 			return Pattern.compile(require(args, PATTERN), getInt(args, FLAGS, 0));
 		} catch (PatternSyntaxException e) {
