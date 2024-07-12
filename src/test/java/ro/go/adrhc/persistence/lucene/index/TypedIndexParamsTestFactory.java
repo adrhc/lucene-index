@@ -1,9 +1,9 @@
 package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
+import ro.go.adrhc.persistence.lucene.core.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.query.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
-import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import static ro.go.adrhc.persistence.lucene.core.token.props.PatternsAndReplacement.caseInsensitive;
+import static ro.go.adrhc.persistence.lucene.core.analysis.PatternsAndReplacement.caseInsensitive;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsBuilder.of;
 

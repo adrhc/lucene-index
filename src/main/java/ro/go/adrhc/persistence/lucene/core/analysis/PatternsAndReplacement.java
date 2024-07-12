@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.token.props;
+package ro.go.adrhc.persistence.lucene.core.analysis;
 
 import java.util.Collection;
 import java.util.List;

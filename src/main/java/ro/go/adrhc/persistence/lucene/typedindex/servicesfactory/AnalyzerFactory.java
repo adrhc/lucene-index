@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.analysis.Analyzer;
-import ro.go.adrhc.persistence.lucene.core.token.props.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.analysis.TokenizerProperties;
 
 @UtilityClass
 public class AnalyzerFactory {
