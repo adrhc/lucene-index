@@ -13,8 +13,8 @@ public class TokenUtils {
 
 	public boolean containedDiffersSlightly(int levenshteinDistance,
 			String containing, String contained) throws IOException {
-		Set<String> containerTokens = tokenizationUtils.tokenize(containing);
-		Set<String> containedTokens = tokenizationUtils.tokenize(contained);
+		Set<String> containerTokens = tokenizationUtils.textToTokenSet(containing);
+		Set<String> containedTokens = tokenizationUtils.textToTokenSet(contained);
 		return containedDiffersSlightly(levenshteinDistance, containerTokens, containedTokens);
 	}
 

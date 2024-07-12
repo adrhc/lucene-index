@@ -21,23 +21,21 @@ class TokenizationUtilsTest {
 			"ăĂîÎșȘțȚ ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
 
 	@Test
-	void tokenize() throws IOException {
-		Set<String> tokens = TOKENIZATION_UTILS.tokenize(TEXT);
+	void test() throws IOException {
+		Set<String> tokens = TOKENIZATION_UTILS.textToTokenSet(TEXT);
 		assertThat(tokens).containsOnly("img", "20210725", "wa0029",
 				"aaa", "bbb", "ccc", "ddd", "555", "888", "aaiisstt", "ttt.ttt", "uuu", "vvv");
 
 		assertTrue(Stream.of(".jPg", ".jpEg", ".jPg ", " .jpEg", " .jpEg ", " .jPg ")
-				.map(sneaked(TOKENIZATION_UTILS::tokenize))
+				.map(sneaked(TOKENIZATION_UTILS::textToTokenSet))
 				.allMatch(Collection::isEmpty));
 
 		assertThat(Stream.of(". jPg", ". jpEg")
-				.map(sneaked(TOKENIZATION_UTILS::tokenize))
+				.map(sneaked(TOKENIZATION_UTILS::textToTokenSet))
 				.flatMap(Collection::stream))
 				.containsOnly("jpg", "jpeg");
 
-		assertThat(Stream.of(".jPg123", ".jpEg123")
-				.map(sneaked(TOKENIZATION_UTILS::tokenize))
-				.flatMap(Collection::stream))
+		assertThat(TOKENIZATION_UTILS.wordsToTokenSet(Set.of(".jPg123", ".jpEg123")))
 				.containsOnly("123");
 	}
 }

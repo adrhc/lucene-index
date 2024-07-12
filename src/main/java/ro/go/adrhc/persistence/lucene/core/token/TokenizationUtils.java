@@ -13,23 +13,23 @@ import java.util.*;
 public class TokenizationUtils {
 	private final Analyzer analyzer;
 
-	public Set<String> tokenizeAll(@NonNull Collection<String> words) throws IOException {
+	public Set<String> wordsToTokenSet(@NonNull Collection<String> words) throws IOException {
 		Set<String> result = new HashSet<>();
 		for (String w : words) {
-			result.addAll(tokenize(w));
+			result.addAll(textToTokenSet(w));
 		}
 		return result;
 	}
 
-	public Set<String> tokenize(String text) throws IOException {
+	public Set<String> textToTokenSet(String text) throws IOException {
 		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-			return new HashSet<>(doTokenize(tokenStream));
+			return textToTokenSet(tokenStream);
 		}
 	}
 
-	public List<String> tokenizeAsList(String text) throws IOException {
+	public List<String> textToTokenList(String text) throws IOException {
 		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-			return doTokenize(tokenStream);
+			return textToTokenList(tokenStream);
 		}
 	}
 
@@ -41,14 +41,25 @@ public class TokenizationUtils {
 		return analyzer.normalize(fieldName, text).utf8ToString();
 	}
 
-	private List<String> doTokenize(TokenStream tokenStream) throws IOException {
+	private List<String> textToTokenList(TokenStream tokenStream) throws IOException {
+		List<String> list = new ArrayList<>();
+		addTokensToCollection(list, tokenStream);
+		return list;
+	}
+
+	private Set<String> textToTokenSet(TokenStream tokenStream) throws IOException {
+		Set<String> set = new HashSet<>();
+		addTokensToCollection(set, tokenStream);
+		return set;
+	}
+
+	private void addTokensToCollection(Collection<String> collection, TokenStream tokenStream)
+			throws IOException {
 		tokenStream.reset();
-		List<String> tokens = new ArrayList<>();
 		CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
 		while (tokenStream.incrementToken()) {
-			tokens.add(termAttribute.toString());
+			collection.add(termAttribute.toString());
 		}
 		tokenStream.end();
-		return tokens;
 	}
 }
