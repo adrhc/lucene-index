@@ -43,17 +43,17 @@ public class DefaultIndexOperationsBuilder<ID, T extends Indexable<ID, T>> {
 	}
 
 	public DefaultIndexOperations<ID, T> build() {
-		TypedIndexServicesFactory<ID, T> factories = new TypedIndexServicesFactory<>(params);
-		DefaultIndexSearchService<T> searchService = factories.createSearchService();
-		TypedRetrieveService<ID, T> retrieveService = factories.createIdSearchService();
-		DefaultIndexCountService countService = factories.createCountService();
-		TypedAddService<T> adderService = factories.createAddService();
-		TypedUpsertService<T> updateService = factories.createUpsertService();
-		TypedRemoveService<ID> removeService = factories.createRemoveService();
+		TypedIndexServicesFactory<ID, T> srvFactory = new TypedIndexServicesFactory<>(params);
+		DefaultIndexSearchService<T> searchService = srvFactory.createSearchService();
+		TypedRetrieveService<ID, T> retrieveService = srvFactory.createIdSearchService();
+		DefaultIndexCountService countService = srvFactory.createCountService();
+		TypedAddService<T> adderService = srvFactory.createAddService();
+		TypedUpsertService<T> updateService = srvFactory.createUpsertService();
+		TypedRemoveService<ID> removeService = srvFactory.createRemoveService();
 		TypedResetService<T> resetService = this.resetService == null ?
-				factories.createResetService() : this.resetService;
+				srvFactory.createResetService() : this.resetService;
 		TypedShallowUpdateService<ID, T> shallowUpdateService = this.shallowUpdateService == null ?
-				factories.createShallowUpdateService() : this.shallowUpdateService;
+				srvFactory.createShallowUpdateService() : this.shallowUpdateService;
 		return new DefaultIndexOperations<>(searchService, retrieveService, countService,
 				adderService, updateService, removeService, resetService, shallowUpdateService);
 	}
