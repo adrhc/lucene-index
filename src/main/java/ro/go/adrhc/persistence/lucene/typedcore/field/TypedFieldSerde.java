@@ -13,10 +13,10 @@ import java.util.function.Function;
 import static ro.go.adrhc.util.text.StringUtils.concat;
 
 @Slf4j
-public record TypedFieldSerde<T>(Function<T, ?> typedAccessor,
+public record TypedFieldSerde<T>(Function<T, ?> propertyAccessor,
 		Function<Object, ?> toFieldValue,
-		Function<IndexableField, Object> indexableFieldAccessor,
-		Function<Object, ?> toTypedValue) {
+		Function<IndexableField, Object> fieldAccessor,
+		Function<Object, ?> toPropertyValue) {
 	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
 			= field -> field.storedValue().getIntValue();
 	private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR

@@ -28,16 +28,16 @@ public interface TypedField<T> {
 	}
 
 	default Object typedToIndexableFieldValue(T t) {
-		Object typedValue = fieldSerde().typedAccessor().apply(t);
+		Object typedValue = fieldSerde().propertyAccessor().apply(t);
 		return fieldSerde().toFieldValue().apply(typedValue);
 	}
 
 	default Object indexableFieldToTypedValue(IndexableField field) {
-		Object indexedValue = fieldSerde().indexableFieldAccessor().apply(field);
-		return fieldSerde().toTypedValue().apply(indexedValue);
+		Object indexedValue = fieldSerde().fieldAccessor().apply(field);
+		return fieldSerde().toPropertyValue().apply(indexedValue);
 	}
 
 	default Object toTypedValue(Object indexedValue) {
-		return fieldSerde().toTypedValue().apply(indexedValue);
+		return fieldSerde().toPropertyValue().apply(indexedValue);
 	}
 }
