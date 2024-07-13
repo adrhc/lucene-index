@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
-import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
 
@@ -19,7 +18,7 @@ import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.str
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum AlbumFieldType implements TypedField<Album> {
-	id(KEYWORD, pathToString(Identifiable::id), true),
+	id(KEYWORD, pathToString(Album::id), true),
 	name(PHRASE, Album::name),
 	storedOnlyField(STORED, Album::storedOnlyField);
 
@@ -27,7 +26,7 @@ public enum AlbumFieldType implements TypedField<Album> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumFieldType.id);
 
 	private final FieldType fieldType;
-	private final TypedFieldSerde<Album> fieldSerde;
+	private final TypedFieldSerde<Album, ?> fieldSerde;
 	private final boolean isIdField;
 
 	AlbumFieldType(FieldType fieldType, Function<Album, String> typedAccessor) {

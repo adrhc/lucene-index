@@ -11,7 +11,7 @@ public interface TypedField<T> {
 				.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
 	}
 
-	TypedFieldSerde<T> fieldSerde();
+	TypedFieldSerde<T, ?> fieldSerde();
 
 	String name();
 

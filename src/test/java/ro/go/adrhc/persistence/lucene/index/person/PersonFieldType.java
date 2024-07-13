@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
-import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
 import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
 
@@ -18,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.*;
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements TypedField<Person> {
-	id(LONG, longField(Identifiable::id), true),
+	id(LONG, longField(Person::id), true),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
@@ -44,12 +43,12 @@ public enum PersonFieldType implements TypedField<Person> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 
 	private final FieldType fieldType;
-	private final TypedFieldSerde<Person> fieldSerde;
+	private final TypedFieldSerde<Person, ?> fieldSerde;
 	private final boolean isIdField;
 
-	PersonFieldType(FieldType fieldType, Function<Person, String> typedAccessor) {
+	PersonFieldType(FieldType fieldType, Function<Person, String> propertyAccessor) {
 		this.fieldType = fieldType;
 		this.isIdField = false;
-		this.fieldSerde = stringField(typedAccessor);
+		this.fieldSerde = stringField(propertyAccessor);
 	}
 }

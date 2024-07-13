@@ -13,7 +13,7 @@ import java.util.function.Function;
 import static ro.go.adrhc.util.text.StringUtils.concat;
 
 @Slf4j
-public record TypedFieldSerde<T>(Function<T, ?> propertyAccessor,
+public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 		Function<Object, ?> toFieldValue,
 		Function<IndexableField, Object> fieldAccessor,
 		Function<Object, ?> toPropertyValue) {
@@ -22,62 +22,68 @@ public record TypedFieldSerde<T>(Function<T, ?> propertyAccessor,
 	private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR
 			= field -> field.storedValue().getLongValue();
 
-	public static <T> TypedFieldSerde<T> stringField(
-			Function<T, ?> typedAccessor,
+	public static <T, P> TypedFieldSerde<T, P> stringField(
+			Function<T, P> propertyAccessor,
 			Function<Object, ?> indexedValueConverter) {
-		return new TypedFieldSerde<>(typedAccessor,
+		return new TypedFieldSerde<>(propertyAccessor,
 				TypedFieldSerde::toString,
 				IndexableField::stringValue, indexedValueConverter);
 	}
 
-	public static <T> TypedFieldSerde<T> stringField(Function<T, String> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor,
+	public static <T> TypedFieldSerde<T, String> stringField(
+			Function<T, String> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor,
 				it -> it, IndexableField::stringValue, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> uriField(Function<T, URI> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor, TypedFieldSerde::toString,
+	public static <T> TypedFieldSerde<T, URI> uriField(Function<T, URI> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor, TypedFieldSerde::toString,
 				IndexableField::stringValue, TypedFieldSerde::toURI);
 	}
 
-	public static <T> TypedFieldSerde<T> intField(Function<T, Integer> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor, it -> it, INT_FIELD_ACCESSOR, it -> it);
+	public static <T> TypedFieldSerde<T, Integer> intField(Function<T, Integer> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor, it -> it, INT_FIELD_ACCESSOR, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> booleanField(Function<T, Boolean> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor,
+	public static <T> TypedFieldSerde<T, Boolean> booleanField(
+			Function<T, Boolean> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor,
 				it -> it != null && ((Boolean) it) ? 1 : 0,
 				INT_FIELD_ACCESSOR, it -> it != null && ((Integer) it) != 0);
 	}
 
-	public static <T> TypedFieldSerde<T> longField(Function<T, Long> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor, it -> it, LONG_FIELD_ACCESSOR, it -> it);
+	public static <T> TypedFieldSerde<T, Long>
+	longField(Function<T, Long> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor, it -> it, LONG_FIELD_ACCESSOR, it -> it);
 	}
 
-	public static <T> TypedFieldSerde<T> instantField(Function<T, Instant> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor,
+	public static <T> TypedFieldSerde<T, Instant>
+	instantField(Function<T, Instant> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor,
 				it -> it == null ? null : ((Instant) it).toEpochMilli(),
 				LONG_FIELD_ACCESSOR, it -> Instant.ofEpochMilli((long) it));
 	}
 
-	public static <T> TypedFieldSerde<T> pathToString(Function<T, Path> typedAccessor) {
-		return stringField(typedAccessor, it -> it == null ? null : Path.of((String) it));
+	public static <T> TypedFieldSerde<T, Path>
+	pathToString(Function<T, Path> propertyAccessor) {
+		return stringField(propertyAccessor, it -> it == null ? null : Path.of((String) it));
 	}
 
-	public static <T> TypedFieldSerde<T> tagsField(Function<T, Set<String>> typedAccessor) {
-		return new TypedFieldSerde<>(typedAccessor,
-				it -> textSet(it).isEmpty() ? null : concat(" ", textSet(it)),
+	public static <T> TypedFieldSerde<T, Set<String>>
+	tagsField(Function<T, Set<String>> propertyAccessor) {
+		return new TypedFieldSerde<>(propertyAccessor,
+				it -> stringSet(it).isEmpty() ? null : concat(" ", stringSet(it)),
 				IndexableField::stringValue,
 				it -> it == null ? null : Set.of(((String) it).split("\\s+")));
 	}
 
-	public static <T, E extends Enum<E>> TypedFieldSerde<T>
-	enumField(Class<E> enumClass, Function<T, Enum<?>> typedAccessor) {
-		return stringField(typedAccessor,
+	public static <T, E extends Enum<E>> TypedFieldSerde<T, Enum<E>>
+	enumField(Class<E> enumClass, Function<T, Enum<E>> propertyAccessor) {
+		return stringField(propertyAccessor,
 				it -> Enum.valueOf(enumClass, (String) it));
 	}
 
-	private static Set<String> textSet(Object o) {
+	private static Set<String> stringSet(Object o) {
 		return (Set<String>) o;
 	}
 
