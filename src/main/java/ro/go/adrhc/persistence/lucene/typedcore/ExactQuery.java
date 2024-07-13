@@ -39,7 +39,7 @@ public class ExactQuery {
 	}
 
 	public Query newExactQuery(Object typedValue) {
-		Object idFieldValue = field.toIndexableFieldValue(typedValue);
+		Object idFieldValue = field.propToIndexableValue(typedValue);
 		return switch (field.fieldType()) {
 			case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
 			case LONG -> fieldQueries.longEquals((Long) idFieldValue);

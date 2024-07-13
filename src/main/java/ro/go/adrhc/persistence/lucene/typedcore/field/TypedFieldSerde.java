@@ -15,7 +15,7 @@ import static ro.go.adrhc.util.text.StringUtils.concat;
 @Slf4j
 public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 		Function<Object, ?> toFieldValue,
-		Function<IndexableField, Object> fieldAccessor,
+		Function<IndexableField, Object> fieldValueAccessor,
 		Function<Object, P> toPropertyValue) {
 	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
 			= field -> field.storedValue().getIntValue();
@@ -24,10 +24,10 @@ public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 
 	public static <T, P> TypedFieldSerde<T, P> stringField(
 			Function<T, P> propertyAccessor,
-			Function<Object, P> indexedValueConverter) {
+			Function<Object, P> indexedValueToPropValue) {
 		return new TypedFieldSerde<>(propertyAccessor,
 				TypedFieldSerde::toString,
-				IndexableField::stringValue, indexedValueConverter);
+				IndexableField::stringValue, indexedValueToPropValue);
 	}
 
 	public static <T> TypedFieldSerde<T, String> stringField(

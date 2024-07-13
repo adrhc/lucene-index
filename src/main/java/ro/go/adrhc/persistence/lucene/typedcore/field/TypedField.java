@@ -23,21 +23,21 @@ public interface TypedField<T> {
 		return isIdField() || fieldType() == FieldType.STORED;
 	}
 
-	default Object toIndexableFieldValue(Object typedValue) {
-		return fieldSerde().toFieldValue().apply(typedValue);
+	default Object propToIndexableValue(Object propValue) {
+		return fieldSerde().toFieldValue().apply(propValue);
 	}
 
-	default Object typedToIndexableFieldValue(T t) {
-		Object typedValue = fieldSerde().propertyAccessor().apply(t);
-		return fieldSerde().toFieldValue().apply(typedValue);
+	default Object typedToIndexableValue(T t) {
+		Object propValue = fieldSerde().propertyAccessor().apply(t);
+		return propToIndexableValue(propValue);
 	}
 
-	default Object indexableFieldToTypedValue(IndexableField field) {
-		Object indexedValue = fieldSerde().fieldAccessor().apply(field);
-		return fieldSerde().toPropertyValue().apply(indexedValue);
+	default Object toPropValue(Object indexableValue) {
+		return fieldSerde().toPropertyValue().apply(indexableValue);
 	}
 
-	default Object toTypedValue(Object indexedValue) {
-		return fieldSerde().toPropertyValue().apply(indexedValue);
+	default Object indexableFieldToPropValue(IndexableField field) {
+		Object indexedValue = fieldSerde().fieldValueAccessor().apply(field);
+		return toPropValue(indexedValue);
 	}
 }

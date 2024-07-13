@@ -48,12 +48,12 @@ public class TypedIndexReader<ID, T> implements Closeable {
 
 	public Stream<ID> findIds(Query query) throws IOException {
 		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query)
-				.map(value -> (ID) idField.toTypedValue(value));
+				.map(value -> (ID) idField.toPropValue(value));
 	}
 
 	public Stream<ID> findIds(Query query, int numHits) throws IOException {
 		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query, numHits)
-				.map(value -> (ID) idField.toTypedValue(value));
+				.map(value -> (ID) idField.toPropValue(value));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
@@ -90,7 +90,7 @@ public class TypedIndexReader<ID, T> implements Closeable {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 				field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFieldStream(field.name())
-				.map(field::indexableFieldToTypedValue)
+				.map(field::indexableFieldToPropValue)
 				.map(ObjectUtils::cast);
 	}
 

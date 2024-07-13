@@ -37,7 +37,7 @@ public class TypedIndexReaderTemplate<ID, T> {
 	public <V, R> R transformFieldValues(TypedField<?> typedField,
 			SneakyFunction<Stream<V>, R, IOException> transformer) throws IOException {
 		return docIndexReaderTemplate.transformFields(typedField.name(),
-				fields -> transformer.apply(fields.map(cast(typedField.fieldAccessor()))));
+				fields -> transformer.apply(fields.map(cast(typedField.fieldValueAccessor()))));
 	}
 
 	public <R> R transformFieldValues(String fieldName,
