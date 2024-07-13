@@ -27,8 +27,8 @@ public class TypedShallowUpdateService<ID, T> implements ShallowUpdateService<ID
 	public static <ID, T> TypedShallowUpdateService<ID, T>
 	create(TypedShallowUpdateServiceParams<T> params) {
 		return new TypedShallowUpdateService<>(
-				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
-				TypedIndexRemover.create(params.toTypedIndexRemoverParams()),
+				TypedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+				TypedIndexRemover.create(params.typedIndexRemoverParams()),
 				TypedIndexAdderTemplate.create(params));
 	}
 

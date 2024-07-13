@@ -7,5 +7,5 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
 public interface TypedRetrieveServiceParams<T> extends OneHitIndexReaderParams<T> {
 	LuceneFieldSpec<T> getIdField();
 
-	TypedIndexReaderParams<T> toAllHitsTypedIndexReaderParams();
+	TypedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 }

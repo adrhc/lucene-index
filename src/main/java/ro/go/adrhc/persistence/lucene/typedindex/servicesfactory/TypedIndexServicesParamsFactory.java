@@ -16,7 +16,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface TypedIndexParams<T> extends Closeable {
+public interface TypedIndexServicesParamsFactory<T> extends Closeable {
 	LuceneFieldSpec<T> getIdField();
 
 	Analyzer getAnalyzer();
@@ -29,21 +29,21 @@ public interface TypedIndexParams<T> extends Closeable {
 
 	boolean isReadOnly();
 
-	IndexSearchServiceParams<T> toTypedIndexSearchServiceParams();
+	IndexSearchServiceParams<T> indexSearchServiceParams();
 
-	TypedRetrieveServiceParams<T> toTypedRetrieveServiceParams();
+	TypedRetrieveServiceParams<T> typedRetrieveServiceParams();
 
-	TypedShallowUpdateServiceParams<T> toTypedShallowUpdateServiceParams();
+	TypedShallowUpdateServiceParams<T> typedShallowUpdateServiceParams();
 
-	TypedIndexWriterParams<T> toTypedResetServiceParams();
+	TypedIndexWriterParams<T> typedIndexWriterParams();
 
-	TypedIndexWriterParams<T> toTypedAddServiceParams();
+	TypedIndexWriterParams<T> typedAddServiceParams();
 
-	TypedIndexUpsertParams<T> toTypedIndexUpsertParams();
+	TypedIndexUpsertParams<T> typedIndexUpsertParams();
 
-	TypedIndexRemoverParams toTypedRemoveServiceParams();
+	TypedIndexRemoverParams typedIndexRemoverParams();
 
-	OneHitIndexReaderParams<T> toOneHitIndexReaderTemplate();
+	OneHitIndexReaderParams<T> oneHitIndexReaderParams();
 
-	TypedIndexReaderParams<T> toAllHitsTypedIndexReaderParams();
+	TypedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 }

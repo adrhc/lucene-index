@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepository;
 import ro.go.adrhc.persistence.lucene.typedindex.IndexRepositoryFactory;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE
 public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected TypedIndexParams<Person> peopleIndexSpec;
+	protected TypedIndexServicesParamsFactory<Person> peopleIndexSpec;
 	protected IndexRepository<Long, Person> indexRepository;
 
 	@BeforeAll
@@ -40,11 +40,11 @@ public abstract class AbstractPersonsIndexTest {
 	}
 
 	protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
-		return TypedIndexReaderTemplate.create(peopleIndexSpec.toAllHitsTypedIndexReaderParams());
+		return TypedIndexReaderTemplate.create(peopleIndexSpec.allHitsTypedIndexReaderParams());
 	}
 
 	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec.toOneHitIndexReaderTemplate());
+		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
 	}
 
 	protected void indexRepositoryReset() throws IOException {

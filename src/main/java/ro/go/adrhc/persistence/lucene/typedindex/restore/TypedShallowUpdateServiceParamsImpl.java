@@ -30,7 +30,7 @@ public class TypedShallowUpdateServiceParamsImpl<T>
 	}
 
 	@Override
-	public TypedIndexRemoverParams toTypedIndexRemoverParams() {
+	public TypedIndexRemoverParams typedIndexRemoverParams() {
 		return new TypedIndexRemoverParamsImpl(getIdField(), indexWriter);
 	}
 }

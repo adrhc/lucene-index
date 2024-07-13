@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
-	protected final TypedIndexParams<T> typedIndexParams;
+	protected final TypedIndexServicesParamsFactory<T> typedIndexParams;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {

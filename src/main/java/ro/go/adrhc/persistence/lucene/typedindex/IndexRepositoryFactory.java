@@ -2,23 +2,23 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.experimental.UtilityClass;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesParamsFactory;
 
 @UtilityClass
 public class IndexRepositoryFactory {
 	public static <ID, T extends Indexable<ID, T>>
-	IndexRepository<ID, T> create(TypedIndexParams<T> params) {
+	IndexRepository<ID, T> create(TypedIndexServicesParamsFactory<T> params) {
 		IndexOperations<ID, T> indexOperations = createIndexOperations(params);
 		return new IndexRepositoryImpl<>(indexOperations, params);
 	}
 
 	public static <ID, T extends Indexable<ID, T>> ReadOnlyIndexOperations<ID, T>
-	createReadOnlyIndexOperations(TypedIndexParams<T> params) {
+	createReadOnlyIndexOperations(TypedIndexServicesParamsFactory<T> params) {
 		return create(params);
 	}
 
 	public static <ID, T extends Indexable<ID, T>> IndexOperations<ID, T>
-	createIndexOperations(TypedIndexParams<T> params) {
+	createIndexOperations(TypedIndexServicesParamsFactory<T> params) {
 		return IndexOperationsImplBuilder.of(params).build();
 	}
 }

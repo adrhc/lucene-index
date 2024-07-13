@@ -13,37 +13,37 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
-	private final TypedIndexParams<T> params;
+	private final TypedIndexServicesParamsFactory<T> paramsFactory;
 
 	public IndexSearchServiceImpl<T> createSearchService() {
-		return IndexSearchServiceImpl.create(params.toTypedIndexSearchServiceParams());
+		return IndexSearchServiceImpl.create(paramsFactory.indexSearchServiceParams());
 	}
 
 	public TypedRetrieveService<ID, T> createIdSearchService() {
-		return TypedRetrieveService.create(params.toTypedRetrieveServiceParams());
+		return TypedRetrieveService.create(paramsFactory.typedRetrieveServiceParams());
 	}
 
 	public IndexCountServiceImpl createCountService() {
-		return IndexCountServiceImpl.create(params.getIndexReaderPool());
+		return IndexCountServiceImpl.create(paramsFactory.getIndexReaderPool());
 	}
 
 	public TypedShallowUpdateService<ID, T> createShallowUpdateService() {
-		return TypedShallowUpdateService.create(params.toTypedShallowUpdateServiceParams());
+		return TypedShallowUpdateService.create(paramsFactory.typedShallowUpdateServiceParams());
 	}
 
 	public TypedResetService<T> createResetService() {
-		return TypedResetService.create(params.toTypedResetServiceParams());
+		return TypedResetService.create(paramsFactory.typedIndexWriterParams());
 	}
 
 	public TypedAddService<T> createAddService() {
-		return TypedAddService.create(params.toTypedAddServiceParams());
+		return TypedAddService.create(paramsFactory.typedAddServiceParams());
 	}
 
 	public TypedUpsertService<T> createUpsertService() {
-		return TypedUpsertService.create(params.toTypedIndexUpsertParams());
+		return TypedUpsertService.create(paramsFactory.typedIndexUpsertParams());
 	}
 
 	public TypedRemoveService<ID> createRemoveService() {
-		return TypedRemoveService.create(params.toTypedRemoveServiceParams());
+		return TypedRemoveService.create(paramsFactory.typedIndexRemoverParams());
 	}
 }

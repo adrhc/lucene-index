@@ -9,23 +9,23 @@ import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceImpl;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 @NoArgsConstructor
 public class IndexOperationsImplBuilder<ID, T extends Indexable<ID, T>> {
-	private TypedIndexParams<T> params;
+	private TypedIndexServicesParamsFactory<T> params;
 	private TypedShallowUpdateService<ID, T> shallowUpdateService;
 	private TypedResetService<T> resetService;
 
 	public static <ID, T extends Indexable<ID, T>>
-	IndexOperationsImplBuilder<ID, T> of(TypedIndexParams<T> params) {
+	IndexOperationsImplBuilder<ID, T> of(TypedIndexServicesParamsFactory<T> params) {
 		IndexOperationsImplBuilder<ID, T> builder = new IndexOperationsImplBuilder<>();
 		return builder.params(params);
 	}
 
-	public IndexOperationsImplBuilder<ID, T> params(TypedIndexParams<T> params) {
+	public IndexOperationsImplBuilder<ID, T> params(TypedIndexServicesParamsFactory<T> params) {
 		this.params = params;
 		return this;
 	}

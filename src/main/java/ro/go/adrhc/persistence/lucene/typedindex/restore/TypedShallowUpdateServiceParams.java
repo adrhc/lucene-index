@@ -9,9 +9,9 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexWriterParams;
 public interface TypedShallowUpdateServiceParams<T> extends TypedIndexWriterParams<T> {
 	IndexReaderPool getIndexReaderPool();
 
-	TypedIndexReaderParams<T> toAllHitsTypedIndexReaderParams();
+	TypedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 
 	IndexWriter getIndexWriter();
 
-	TypedIndexRemoverParams toTypedIndexRemoverParams();
+	TypedIndexRemoverParams typedIndexRemoverParams();
 }

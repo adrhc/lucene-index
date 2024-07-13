@@ -1,21 +1,16 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParamsImpl;
 
-import static ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParamsImpl.allHits;
+public class AllHitsTypedIndexReaderParams<T> extends TypedIndexReaderParamsImpl<T> {
+	public AllHitsTypedIndexReaderParams(Class<T> type,
+			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
+		super(type, idField, indexReaderPool, Integer.MAX_VALUE);
+	}
 
-@RequiredArgsConstructor
-@Getter
-public class AllHitsTypedIndexReaderParams<T> {
-	protected final Class<T> type;
-	protected final LuceneFieldSpec<T> idField;
-	protected final IndexReaderPool indexReaderPool;
-
-	public TypedIndexReaderParams<T> toAllHitsTypedIndexReaderParams() {
-		return allHits(getType(), getIdField(), getIndexReaderPool());
+	public AllHitsTypedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
+		return this;
 	}
 }

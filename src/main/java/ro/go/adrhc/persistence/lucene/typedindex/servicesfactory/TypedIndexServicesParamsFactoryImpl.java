@@ -24,8 +24,8 @@ import java.util.Collection;
 
 @Getter
 @Slf4j
-public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
-		implements TypedIndexParams<T> {
+public class TypedIndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderParams<T>
+		implements TypedIndexServicesParamsFactory<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
@@ -34,7 +34,7 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
 	private final Path indexPath;
 	private boolean closed;
 
-	public TypedIndexParamsImpl(Class<T> type, LuceneFieldSpec<T> idField,
+	public TypedIndexServicesParamsFactoryImpl(Class<T> type, LuceneFieldSpec<T> idField,
 			IndexReaderPool indexReaderPool,
 			Collection<? extends LuceneFieldSpec<T>> typedFields, Analyzer analyzer,
 			IndexWriter indexWriter,
@@ -49,44 +49,44 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
 	}
 
 	@Override
-	public IndexSearchServiceParams<T> toTypedIndexSearchServiceParams() {
+	public IndexSearchServiceParams<T> indexSearchServiceParams() {
 		return new IndexSearchServiceParamsImpl<>(type, idField,
 				indexReaderPool, searchResultFilter, searchHits);
 	}
 
 	@Override
-	public TypedRetrieveServiceParams<T> toTypedRetrieveServiceParams() {
+	public TypedRetrieveServiceParams<T> typedRetrieveServiceParams() {
 		return new TypedRetrieveServiceParamsImpl<>(type, idField, indexReaderPool);
 	}
 
 	@Override
-	public TypedShallowUpdateServiceParams<T> toTypedShallowUpdateServiceParams() {
+	public TypedShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
 		return new TypedShallowUpdateServiceParamsImpl<>(type, idField,
 				indexReaderPool, typedFields, analyzer, indexWriter);
 	}
 
 	@Override
-	public TypedIndexWriterParams<T> toTypedResetServiceParams() {
+	public TypedIndexWriterParams<T> typedIndexWriterParams() {
 		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
 	}
 
 	@Override
-	public TypedIndexWriterParams<T> toTypedAddServiceParams() {
+	public TypedIndexWriterParams<T> typedAddServiceParams() {
 		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
 	}
 
 	@Override
-	public TypedIndexUpsertParams<T> toTypedIndexUpsertParams() {
+	public TypedIndexUpsertParams<T> typedIndexUpsertParams() {
 		return new TypedIndexUpsertParamsImpl<>(idField, indexWriter, analyzer, typedFields);
 	}
 
 	@Override
-	public TypedIndexRemoverParams toTypedRemoveServiceParams() {
+	public TypedIndexRemoverParams typedIndexRemoverParams() {
 		return new TypedIndexRemoverParamsImpl(idField, indexWriter);
 	}
 
 	@Override
-	public OneHitIndexReaderParams<T> toOneHitIndexReaderTemplate() {
+	public OneHitIndexReaderParams<T> oneHitIndexReaderParams() {
 		return new OneHitIndexReaderParamsImpl<>(indexReaderPool, type);
 	}
 

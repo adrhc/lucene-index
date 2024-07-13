@@ -28,7 +28,7 @@ public class TypedRetrieveService<ID, T> implements IndexRetrieveService<ID, T> 
 	create(TypedRetrieveServiceParams<T> params) {
 		return new TypedRetrieveService<>(
 				ExactQuery.create(params.getIdField()),
-				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
+				TypedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
 				OneHitIndexReaderTemplate.create(params));
 	}
 

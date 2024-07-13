@@ -8,10 +8,10 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 @RequiredArgsConstructor
 @Getter
 public class TypedIndexReaderParamsImpl<T> implements TypedIndexReaderParams<T> {
-	private final Class<T> type;
-	private final LuceneFieldSpec<T> idField;
-	private final IndexReaderPool indexReaderPool;
-	private final int numHits;
+	protected final Class<T> type;
+	protected final LuceneFieldSpec<T> idField;
+	protected final IndexReaderPool indexReaderPool;
+	protected final int numHits;
 
 	public static <T> TypedIndexReaderParams<T> allHits(Class<T> type,
 			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
