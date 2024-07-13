@@ -16,7 +16,7 @@ import static ro.go.adrhc.util.text.StringUtils.concat;
 public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 		Function<Object, ?> toFieldValue,
 		Function<IndexableField, Object> fieldAccessor,
-		Function<Object, ?> toPropertyValue) {
+		Function<Object, P> toPropertyValue) {
 	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
 			= field -> field.storedValue().getIntValue();
 	private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR
@@ -24,7 +24,7 @@ public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 
 	public static <T, P> TypedFieldSerde<T, P> stringField(
 			Function<T, P> propertyAccessor,
-			Function<Object, ?> indexedValueConverter) {
+			Function<Object, P> indexedValueConverter) {
 		return new TypedFieldSerde<>(propertyAccessor,
 				TypedFieldSerde::toString,
 				IndexableField::stringValue, indexedValueConverter);
@@ -33,7 +33,7 @@ public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 	public static <T> TypedFieldSerde<T, String> stringField(
 			Function<T, String> propertyAccessor) {
 		return new TypedFieldSerde<>(propertyAccessor,
-				it -> it, IndexableField::stringValue, it -> it);
+				it -> it, IndexableField::stringValue, it -> (String) it);
 	}
 
 	public static <T> TypedFieldSerde<T, URI> uriField(Function<T, URI> propertyAccessor) {
@@ -42,7 +42,8 @@ public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 	}
 
 	public static <T> TypedFieldSerde<T, Integer> intField(Function<T, Integer> propertyAccessor) {
-		return new TypedFieldSerde<>(propertyAccessor, it -> it, INT_FIELD_ACCESSOR, it -> it);
+		return new TypedFieldSerde<>(propertyAccessor,
+				it -> it, INT_FIELD_ACCESSOR, it -> (Integer) it);
 	}
 
 	public static <T> TypedFieldSerde<T, Boolean> booleanField(
@@ -54,7 +55,8 @@ public record TypedFieldSerde<T, P>(Function<T, P> propertyAccessor,
 
 	public static <T> TypedFieldSerde<T, Long>
 	longField(Function<T, Long> propertyAccessor) {
-		return new TypedFieldSerde<>(propertyAccessor, it -> it, LONG_FIELD_ACCESSOR, it -> it);
+		return new TypedFieldSerde<>(propertyAccessor,
+				it -> it, LONG_FIELD_ACCESSOR, it -> (Long) it);
 	}
 
 	public static <T> TypedFieldSerde<T, Instant>
