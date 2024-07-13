@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
+package ro.go.adrhc.persistence.lucene.typedindex.srvparams;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -6,10 +6,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.typedcore.read.AllHitsTypedIndexReaderParamsFactory;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.write.*;
-import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParams;
@@ -24,8 +24,8 @@ import java.util.Collection;
 
 @Getter
 @Slf4j
-public class TypedIndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderParams<T>
-		implements TypedIndexServicesParamsFactory<T> {
+public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderParamsFactory<T>
+		implements IndexServicesParamsFactory<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
@@ -34,7 +34,7 @@ public class TypedIndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexRea
 	private final Path indexPath;
 	private boolean closed;
 
-	public TypedIndexServicesParamsFactoryImpl(Class<T> type, LuceneFieldSpec<T> idField,
+	public IndexServicesParamsFactoryImpl(Class<T> type, LuceneFieldSpec<T> idField,
 			IndexReaderPool indexReaderPool,
 			Collection<? extends LuceneFieldSpec<T>> typedFields, Analyzer analyzer,
 			IndexWriter indexWriter,

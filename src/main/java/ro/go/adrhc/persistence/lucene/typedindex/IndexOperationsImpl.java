@@ -8,6 +8,7 @@ import ro.go.adrhc.persistence.lucene.index.IndexCountServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
@@ -20,12 +21,13 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static ro.go.adrhc.persistence.lucene.typedcore.Identifiable.toIds;
 
 @RequiredArgsConstructor
 public class IndexOperationsImpl<ID, T
@@ -38,6 +40,23 @@ public class IndexOperationsImpl<ID, T
 	private final TypedRemoveService<ID> removeService;
 	private final TypedResetService<T> resetService;
 	private final TypedShallowUpdateService<ID, T> shallowUpdateService;
+	private final IndexMergeService<T> mergeService;
+
+	@Override
+	public void merge(T t) throws IOException {
+		mergeService.merge(t);
+	}
+
+	@Override
+	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
+		mergeService.merge(t, mergeStrategy);
+	}
+
+	@Override
+	public void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy)
+			throws IOException {
+		mergeService.mergeMany(tCollection, mergeStrategy);
+	}
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -161,34 +180,6 @@ public class IndexOperationsImpl<ID, T
 		upsertService.upsert(t);
 	}
 
-	public void merge(T t) throws IOException {
-		merge(t, T::merge);
-	}
-
-	/**
-	 * @param mergeStrategy 1st param is the stored value while the 2nd is @param t
-	 * @param t             might be added (instead of merged) if is not stored yet
-	 */
-	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
-		Optional<T> storedOptional = retrieveService.findById(t.id());
-		if (storedOptional.isEmpty()) {
-			addOne(t);
-		} else {
-			upsert(mergeStrategy.apply(storedOptional.get(), t));
-		}
-	}
-
-	/**
-	 * @param mergeStrategy 1st param is the stored value while the 2nd is a tCollection element
-	 * @param tCollection   might be added (instead of merged) if is not stored yet
-	 */
-	public void mergeMany(Collection<T> tCollection,
-			BinaryOperator<T> mergeStrategy) throws IOException {
-		Map<ID, T> stored = new HashMap<>();
-		retrieveService.findByIds(toIds(tCollection)).forEach(t -> stored.put(t.id(), t));
-		upsertMany(tCollection.stream().map(t -> merge(mergeStrategy, stored, t)).toList());
-	}
-
 	@Override
 	public void upsertMany(Collection<T> tCollection) throws IOException {
 		upsertService.upsertMany(tCollection);
@@ -228,10 +219,5 @@ public class IndexOperationsImpl<ID, T
 	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
 			throws IOException {
 		shallowUpdateService.shallowUpdateSubset(dataSource, query);
-	}
-
-	private T merge(BinaryOperator<T> mergeStrategy, Map<ID, T> stored, T another) {
-		T storedT = stored.get(another.id());
-		return storedT == null ? another : mergeStrategy.apply(storedT, another);
 	}
 }

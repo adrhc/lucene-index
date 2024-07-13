@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.core.analysis;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
@@ -20,7 +21,18 @@ import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LE
 
 @RequiredArgsConstructor
 public class AnalyzerFactory {
+	public static final int NUM_HITS = 10;
 	private final TokenizerProperties properties;
+
+	@SneakyThrows
+	public static Analyzer defaultAnalyzer() {
+		return new AnalyzerFactory(new TokenizerProperties()).create();
+	}
+
+	@SneakyThrows
+	public static Analyzer defaultAnalyzer(TokenizerProperties properties) {
+		return new AnalyzerFactory(properties).create();
+	}
 
 	public Analyzer create() throws IOException {
 		CustomAnalyzer.Builder builder = CustomAnalyzer.builder()

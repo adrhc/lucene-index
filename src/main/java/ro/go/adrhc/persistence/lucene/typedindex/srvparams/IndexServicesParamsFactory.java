@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
+package ro.go.adrhc.persistence.lucene.typedindex.srvparams;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -16,7 +16,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface TypedIndexServicesParamsFactory<T> extends Closeable {
+public interface IndexServicesParamsFactory<T> extends Closeable {
 	LuceneFieldSpec<T> getIdField();
 
 	Analyzer getAnalyzer();

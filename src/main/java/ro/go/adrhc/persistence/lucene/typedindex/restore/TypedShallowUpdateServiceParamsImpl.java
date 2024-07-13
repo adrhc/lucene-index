@@ -5,15 +5,15 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.typedcore.read.AllHitsTypedIndexReaderParamsFactory;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParamsImpl;
-import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
 
 import java.util.Collection;
 
 @Getter
 public class TypedShallowUpdateServiceParamsImpl<T>
-		extends AllHitsTypedIndexReaderParams<T>
+		extends AllHitsTypedIndexReaderParamsFactory<T>
 		implements TypedShallowUpdateServiceParams<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;

@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.IndexResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
@@ -11,13 +12,16 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.IndexUpsertService;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
+/**
+ * This is a facade for all index services.
+ */
 public interface IndexOperations<ID, T extends Indexable<ID, T>>
 		extends ReadOnlyIndexOperations<ID, T>, IndexAddService<T>,
 		IndexUpsertService<T>, IndexRemoveService<ID>,
-		ShallowUpdateService<ID, T>, IndexResetService<T> {
+		ShallowUpdateService<ID, T>, IndexResetService<T>,
+		IndexMergeService<T> {
 	void addOne(T t) throws IOException;
 
 	void addMany(Collection<T> tCollection) throws IOException;
@@ -25,20 +29,6 @@ public interface IndexOperations<ID, T extends Indexable<ID, T>>
 	void addMany(Stream<T> tStream) throws IOException;
 
 	void upsert(T t) throws IOException;
-
-	void merge(T t) throws IOException;
-
-	/**
-	 * @param mergeStrategy 1st param is the stored value while the 2nd is @param t
-	 * @param t             might be added (instead of merged) if is not stored yet
-	 */
-	void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException;
-
-	/**
-	 * @param mergeStrategy 1st param is the stored value while the 2nd is a tCollection element
-	 * @param tCollection   might be added (instead of merged) if is not stored yet
-	 */
-	void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy) throws IOException;
 
 	void upsertMany(Collection<T> tCollection) throws IOException;
 

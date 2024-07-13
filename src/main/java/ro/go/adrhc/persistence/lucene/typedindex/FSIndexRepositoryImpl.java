@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
-import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexServicesParamsFactory;
+import ro.go.adrhc.persistence.lucene.typedindex.srvparams.IndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -22,12 +22,20 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static ro.go.adrhc.persistence.lucene.typedindex.IndexOperationsImplBuilder.createIndexOperations;
+
 @RequiredArgsConstructor
-public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
-		implements IndexRepository<ID, T> {
+public class FSIndexRepositoryImpl<ID, T extends Indexable<ID, T>>
+		implements FSIndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
-	protected final TypedIndexServicesParamsFactory<T> typedIndexServicesParamsFactory;
+	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
+	
+	public static <ID, T extends Indexable<ID, T>>
+	FSIndexRepository<ID, T> create(IndexServicesParamsFactory<T> params) {
+		IndexOperations<ID, T> indexOperations = createIndexOperations(params);
+		return new FSIndexRepositoryImpl<>(indexOperations, params);
+	}
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -223,13 +231,13 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public void close() throws IOException {
-		typedIndexServicesParamsFactory.close();
+		indexServicesParamsFactory.close();
 	}
 
 	protected void commit() throws IOException {
-		if (typedIndexServicesParamsFactory.isReadOnly()) {
+		if (indexServicesParamsFactory.isReadOnly()) {
 			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
 		}
-		typedIndexServicesParamsFactory.getIndexWriter().commit();
+		indexServicesParamsFactory.getIndexWriter().commit();
 	}
 }
