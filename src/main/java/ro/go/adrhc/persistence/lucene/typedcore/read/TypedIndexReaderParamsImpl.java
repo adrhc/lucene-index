@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTypedIndexReaderParams<T> implements TypedIndexReaderParams<T> {
+public class TypedIndexReaderParamsImpl<T> implements TypedIndexReaderParams<T> {
 	private final Class<T> type;
 	private final LuceneFieldSpec<T> idField;
 	private final IndexReaderPool indexReaderPool;
@@ -15,7 +15,7 @@ public class DefaultTypedIndexReaderParams<T> implements TypedIndexReaderParams<
 
 	public static <T> TypedIndexReaderParams<T> allHits(Class<T> type,
 			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
-		return new DefaultTypedIndexReaderParams<>(type,
+		return new TypedIndexReaderParamsImpl<>(type,
 				idField, indexReaderPool, Integer.MAX_VALUE);
 	}
 }

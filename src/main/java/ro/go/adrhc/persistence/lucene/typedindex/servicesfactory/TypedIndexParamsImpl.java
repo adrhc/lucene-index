@@ -6,16 +6,16 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.typedcore.read.DefaultOneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.write.*;
 import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.DefaultTypedShallowUpdateServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.DefaultTypedRetrieveServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.IOException;
@@ -50,44 +50,44 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
 
 	@Override
 	public IndexSearchServiceParams<T> toTypedIndexSearchServiceParams() {
-		return new DefaultIndexSearchServiceParams<>(type, idField,
+		return new IndexSearchServiceParamsImpl<>(type, idField,
 				indexReaderPool, searchResultFilter, searchHits);
 	}
 
 	@Override
 	public TypedRetrieveServiceParams<T> toTypedRetrieveServiceParams() {
-		return new DefaultTypedRetrieveServiceParams<>(type, idField, indexReaderPool);
+		return new TypedRetrieveServiceParamsImpl<>(type, idField, indexReaderPool);
 	}
 
 	@Override
 	public TypedShallowUpdateServiceParams<T> toTypedShallowUpdateServiceParams() {
-		return new DefaultTypedShallowUpdateServiceParams<>(type, idField,
+		return new TypedShallowUpdateServiceParamsImpl<>(type, idField,
 				indexReaderPool, typedFields, analyzer, indexWriter);
 	}
 
 	@Override
 	public TypedIndexWriterParams<T> toTypedResetServiceParams() {
-		return new DefaultTypedIndexWriterParams<>(indexWriter, analyzer, typedFields);
+		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
 	}
 
 	@Override
 	public TypedIndexWriterParams<T> toTypedAddServiceParams() {
-		return new DefaultTypedIndexWriterParams<>(indexWriter, analyzer, typedFields);
+		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
 	}
 
 	@Override
 	public TypedIndexUpsertParams<T> toTypedIndexUpsertParams() {
-		return new DefaultTypedIndexUpsertParams<>(idField, indexWriter, analyzer, typedFields);
+		return new TypedIndexUpsertParamsImpl<>(idField, indexWriter, analyzer, typedFields);
 	}
 
 	@Override
 	public TypedIndexRemoverParams toTypedRemoveServiceParams() {
-		return new DefaultTypedIndexRemoverParams(idField, indexWriter);
+		return new TypedIndexRemoverParamsImpl(idField, indexWriter);
 	}
 
 	@Override
 	public OneHitIndexReaderParams<T> toOneHitIndexReaderTemplate() {
-		return new DefaultOneHitIndexReaderParams<>(indexReaderPool, type);
+		return new OneHitIndexReaderParamsImpl<>(indexReaderPool, type);
 	}
 
 	public boolean isReadOnly() {

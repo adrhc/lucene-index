@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
+import ro.go.adrhc.persistence.lucene.index.IndexCountServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
@@ -14,7 +14,7 @@ import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
@@ -28,11 +28,11 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.persistence.lucene.typedcore.Identifiable.toIds;
 
 @RequiredArgsConstructor
-public class DefaultIndexOperations<ID, T
+public class IndexOperationsImpl<ID, T
 		extends Indexable<ID, T>> implements IndexOperations<ID, T> {
-	private final DefaultIndexSearchService<T> searchService;
+	private final IndexSearchServiceImpl<T> searchService;
 	private final TypedRetrieveService<ID, T> retrieveService;
-	private final DefaultIndexCountService countService;
+	private final IndexCountServiceImpl countService;
 	private final TypedAddService<T> addService;
 	private final TypedUpsertService<T> upsertService;
 	private final TypedRemoveService<ID> removeService;

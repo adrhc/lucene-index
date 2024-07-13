@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultSearchReduceService<T> implements SearchReduceService<T> {
+public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
 

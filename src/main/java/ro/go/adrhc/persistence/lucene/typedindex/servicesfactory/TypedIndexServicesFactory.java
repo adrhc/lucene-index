@@ -1,30 +1,30 @@
 package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 
 import lombok.RequiredArgsConstructor;
-import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
+import ro.go.adrhc.persistence.lucene.index.IndexCountServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
-import ro.go.adrhc.persistence.lucene.typedindex.search.DefaultIndexSearchService;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 
 @RequiredArgsConstructor
 public class TypedIndexServicesFactory<ID, T extends Identifiable<ID>> {
 	private final TypedIndexParams<T> params;
 
-	public DefaultIndexSearchService<T> createSearchService() {
-		return DefaultIndexSearchService.create(params.toTypedIndexSearchServiceParams());
+	public IndexSearchServiceImpl<T> createSearchService() {
+		return IndexSearchServiceImpl.create(params.toTypedIndexSearchServiceParams());
 	}
 
 	public TypedRetrieveService<ID, T> createIdSearchService() {
 		return TypedRetrieveService.create(params.toTypedRetrieveServiceParams());
 	}
 
-	public DefaultIndexCountService createCountService() {
-		return DefaultIndexCountService.create(params.getIndexReaderPool());
+	public IndexCountServiceImpl createCountService() {
+		return IndexCountServiceImpl.create(params.getIndexReaderPool());
 	}
 
 	public TypedShallowUpdateService<ID, T> createShallowUpdateService() {

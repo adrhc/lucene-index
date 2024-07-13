@@ -5,21 +5,21 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.typedcore.write.DefaultTypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
+import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.AllHitsTypedIndexReaderParams;
 
 import java.util.Collection;
 
 @Getter
-public class DefaultTypedShallowUpdateServiceParams<T>
+public class TypedShallowUpdateServiceParamsImpl<T>
 		extends AllHitsTypedIndexReaderParams<T>
 		implements TypedShallowUpdateServiceParams<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 
-	public DefaultTypedShallowUpdateServiceParams(Class<T> type,
+	public TypedShallowUpdateServiceParamsImpl(Class<T> type,
 			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool,
 			Collection<? extends LuceneFieldSpec<T>> typedFields,
 			Analyzer analyzer, IndexWriter indexWriter) {
@@ -31,6 +31,6 @@ public class DefaultTypedShallowUpdateServiceParams<T>
 
 	@Override
 	public TypedIndexRemoverParams toTypedIndexRemoverParams() {
-		return new DefaultTypedIndexRemoverParams(getIdField(), indexWriter);
+		return new TypedIndexRemoverParamsImpl(getIdField(), indexWriter);
 	}
 }

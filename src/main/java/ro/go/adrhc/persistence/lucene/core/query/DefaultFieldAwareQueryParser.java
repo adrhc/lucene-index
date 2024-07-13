@@ -6,12 +6,12 @@ import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
 
 @RequiredArgsConstructor
-public class DefaultAwareQueryParser {
+public class DefaultFieldAwareQueryParser {
 	private final QueryParser queryParser;
 	private final String defaultField;
 
-	public static DefaultAwareQueryParser create(Analyzer analyzer, Enum<?> defaultField) {
-		return new DefaultAwareQueryParser(QueryParser.create(analyzer), defaultField.name());
+	public static DefaultFieldAwareQueryParser create(Analyzer analyzer, Enum<?> defaultField) {
+		return new DefaultFieldAwareQueryParser(QueryParser.create(analyzer), defaultField.name());
 	}
 
 	public Query parse(String query) throws QueryNodeException {

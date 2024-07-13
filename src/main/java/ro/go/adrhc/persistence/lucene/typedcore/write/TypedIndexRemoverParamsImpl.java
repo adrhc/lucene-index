@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTypedIndexRemoverParams implements TypedIndexRemoverParams {
+public class TypedIndexRemoverParamsImpl implements TypedIndexRemoverParams {
 	private final LuceneFieldSpec<?> idField;
 	private final IndexWriter indexWriter;
 }

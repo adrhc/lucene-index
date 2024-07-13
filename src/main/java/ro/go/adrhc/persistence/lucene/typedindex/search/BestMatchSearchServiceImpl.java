@@ -15,11 +15,11 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultBestMatchSearchService<T> implements BestMatchSearchService<T> {
+public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> {
 	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
 
-	public static <T> DefaultBestMatchSearchService<T> of(OneHitIndexReaderParams<T> params) {
-		return new DefaultBestMatchSearchService<>(OneHitIndexReaderTemplate.create(params));
+	public static <T> BestMatchSearchServiceImpl<T> of(OneHitIndexReaderParams<T> params) {
+		return new BestMatchSearchServiceImpl<>(OneHitIndexReaderTemplate.create(params));
 	}
 
 	@Override

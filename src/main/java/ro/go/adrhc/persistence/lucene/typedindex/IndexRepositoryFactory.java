@@ -19,6 +19,6 @@ public class IndexRepositoryFactory {
 
 	public static <ID, T extends Indexable<ID, T>> IndexOperations<ID, T>
 	createIndexOperations(TypedIndexParams<T> params) {
-		return DefaultIndexOperationsBuilder.of(params).build();
+		return IndexOperationsImplBuilder.of(params).build();
 	}
 }

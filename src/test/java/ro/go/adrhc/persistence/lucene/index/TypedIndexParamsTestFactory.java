@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.analysis.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.core.query.DefaultAwareQueryParser;
+import ro.go.adrhc.persistence.lucene.core.query.DefaultFieldAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
@@ -16,13 +16,13 @@ import java.util.Map;
 
 import static ro.go.adrhc.persistence.lucene.core.analysis.PatternsAndReplacement.caseInsensitive;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
-import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsBuilder.of;
+import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParamsImplBuilder.of;
 
 public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
-	public static final DefaultAwareQueryParser NAME_QUERY_PARSER =
-			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
+	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
+			DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	TypedIndexParams<T> createTypedIndexSpec(Class<T> tClass,

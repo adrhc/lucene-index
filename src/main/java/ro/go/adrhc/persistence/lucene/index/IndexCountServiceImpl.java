@@ -11,18 +11,18 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultIndexCountService implements IndexCountService {
+public class IndexCountServiceImpl implements IndexCountService {
 	private final DocsIndexReaderTemplate docsReaderTemplate;
 
 	/**
-	 * Query base DefaultIndexCountService
+	 * Query base IndexCountServiceImpl
 	 * <p>
 	 * constructor parameters union
 	 * <p>
 	 * SearchedToQueryConverter = Optional::of
 	 */
-	public static DefaultIndexCountService create(IndexReaderPool indexReaderPool) {
-		return new DefaultIndexCountService(
+	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
+		return new IndexCountServiceImpl(
 				DocsIndexReaderTemplate.createUnlimited(indexReaderPool));
 	}
 

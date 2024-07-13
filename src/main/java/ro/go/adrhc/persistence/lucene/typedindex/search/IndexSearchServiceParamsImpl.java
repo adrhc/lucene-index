@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultIndexSearchServiceParams<T> implements IndexSearchServiceParams<T> {
+public class IndexSearchServiceParamsImpl<T> implements IndexSearchServiceParams<T> {
 	private final Class<T> type;
 	private final LuceneFieldSpec<T> idField;
 	private final IndexReaderPool indexReaderPool;

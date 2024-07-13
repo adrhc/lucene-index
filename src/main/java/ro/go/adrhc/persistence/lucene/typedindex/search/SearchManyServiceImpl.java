@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultSearchManyService<T> implements SearchManyService<T> {
+public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	private final TypedIndexReaderTemplate<Object, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
 

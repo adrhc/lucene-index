@@ -10,7 +10,8 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTypedIndexWriterParams<T> implements TypedIndexWriterParams<T> {
+public class TypedIndexUpsertParamsImpl<T> implements TypedIndexUpsertParams<T> {
+	private final LuceneFieldSpec<T> idField;
 	private final IndexWriter indexWriter;
 	private final Analyzer analyzer;
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;

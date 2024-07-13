@@ -14,22 +14,22 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultIndexSearchService<T> implements IndexSearchService<T> {
+public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 	private final BestMatchSearchService<T> bestMatchSearchService;
 	private final SearchReduceService<T> searchReduceService;
 	private final SearchManyService<T> searchManyService;
 
-	public static <T> DefaultIndexSearchService<T>
+	public static <T> IndexSearchServiceImpl<T>
 	create(IndexSearchServiceParams<T> params) {
 		BestMatchSearchService<T> bestMatchSearchService =
-				DefaultBestMatchSearchService.of(params.toOneHitIndexReaderParams());
-		SearchReduceService<T> searchReduceService = new DefaultSearchReduceService<>(
+				BestMatchSearchServiceImpl.of(params.toOneHitIndexReaderParams());
+		SearchReduceService<T> searchReduceService = new SearchReduceServiceImpl<>(
 				TypedIndexReaderTemplate.create(params), // limited to params.numHits
 				params.getSearchResultFilter());
-		SearchManyService<T> searchManyService = new DefaultSearchManyService<>(
+		SearchManyService<T> searchManyService = new SearchManyServiceImpl<>(
 				TypedIndexReaderTemplate.create(params.toAllHitsTypedIndexReaderParams()),
 				params.getSearchResultFilter());
-		return new DefaultIndexSearchService<>(bestMatchSearchService,
+		return new IndexSearchServiceImpl<>(bestMatchSearchService,
 				searchReduceService, searchManyService);
 	}
 

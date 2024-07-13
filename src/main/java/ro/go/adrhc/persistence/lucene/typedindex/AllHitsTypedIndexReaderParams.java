@@ -6,7 +6,7 @@ import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
 
-import static ro.go.adrhc.persistence.lucene.typedcore.read.DefaultTypedIndexReaderParams.allHits;
+import static ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParamsImpl.allHits;
 
 @RequiredArgsConstructor
 @Getter
