@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.index.album;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import ro.go.adrhc.persistence.lucene.typedindex.Indexable;
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 
 import java.nio.file.Path;
 

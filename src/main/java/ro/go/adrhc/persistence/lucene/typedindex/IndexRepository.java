@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.Closeable;

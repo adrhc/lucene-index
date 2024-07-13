@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import lombok.NoArgsConstructor;
 import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;

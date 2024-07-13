@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.IndexRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.IndexResetService;

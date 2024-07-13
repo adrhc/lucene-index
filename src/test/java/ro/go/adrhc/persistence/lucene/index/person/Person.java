@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.index.person;
 
-import ro.go.adrhc.persistence.lucene.typedindex.Indexable;
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 
 import java.time.Instant;
 

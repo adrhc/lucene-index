@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.index.IndexCountService;
+import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchService;
