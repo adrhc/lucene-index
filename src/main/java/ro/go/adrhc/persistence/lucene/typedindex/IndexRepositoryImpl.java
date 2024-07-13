@@ -27,7 +27,7 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 		implements IndexRepository<ID, T> {
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
-	protected final TypedIndexServicesParamsFactory<T> typedIndexParams;
+	protected final TypedIndexServicesParamsFactory<T> typedIndexServicesParamsFactory;
 
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
@@ -223,13 +223,13 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public void close() throws IOException {
-		typedIndexParams.close();
+		typedIndexServicesParamsFactory.close();
 	}
 
 	protected void commit() throws IOException {
-		if (typedIndexParams.isReadOnly()) {
+		if (typedIndexServicesParamsFactory.isReadOnly()) {
 			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
 		}
-		typedIndexParams.getIndexWriter().commit();
+		typedIndexServicesParamsFactory.getIndexWriter().commit();
 	}
 }

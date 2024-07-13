@@ -8,13 +8,13 @@ import java.nio.file.Path;
 
 public interface IndexRepository<ID, T extends Indexable<ID, T>>
 		extends IndexOperations<ID, T>, Closeable {
-	TypedIndexServicesParamsFactory<T> getTypedIndexParams();
+	TypedIndexServicesParamsFactory<T> getTypedIndexServicesParamsFactory();
 
 	default Path getIndexPath() {
-		return getTypedIndexParams().getIndexPath();
+		return getTypedIndexServicesParamsFactory().getIndexPath();
 	}
 
 	default boolean isReadOnly() {
-		return getTypedIndexParams().isReadOnly();
+		return getTypedIndexServicesParamsFactory().isReadOnly();
 	}
 }
