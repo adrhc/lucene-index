@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.typedindex.retrieve;
 
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface IndexRetrieveService<ID, T> {
 
 	List<ID> getAllIds() throws IOException;
 
-	<F> List<F> getFieldOfAll(TypedField<T> field) throws IOException;
+	<F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException;
 
 	Optional<T> findById(ID id) throws IOException;
 

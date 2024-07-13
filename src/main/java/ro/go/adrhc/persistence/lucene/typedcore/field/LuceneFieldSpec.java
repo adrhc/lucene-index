@@ -5,13 +5,13 @@ import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 
 import java.util.EnumSet;
 
-public interface TypedField<T> {
-	static <E extends Enum<E> & TypedField<?>> E getIdField(Class<E> enumClass) {
-		return EnumSet.allOf(enumClass).stream().filter(TypedField::isIdField).findAny()
+public interface LuceneFieldSpec<T> {
+	static <E extends Enum<E> & LuceneFieldSpec<?>> E getIdField(Class<E> enumClass) {
+		return EnumSet.allOf(enumClass).stream().filter(LuceneFieldSpec::isIdField).findAny()
 				.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
 	}
 
-	TypedFieldSerde<T, ?> fieldSerde();
+	ObjectLuceneFieldMapper<T, ?> fieldSerde();
 
 	String name();
 

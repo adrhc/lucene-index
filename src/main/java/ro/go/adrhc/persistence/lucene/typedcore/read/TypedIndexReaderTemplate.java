@@ -34,7 +34,7 @@ public class TypedIndexReaderTemplate<ID, T> {
 		return docIndexReaderTemplate.transformDocuments(fieldNames, curry(this::doTransform, transformer));
 	}
 
-	public <V, R> R transformFieldValues(TypedField<?> typedField,
+	public <V, R> R transformFieldValues(LuceneFieldSpec<?> typedField,
 			SneakyFunction<Stream<V>, R, IOException> transformer) throws IOException {
 		return docIndexReaderTemplate.transformFields(typedField.name(),
 				fields -> transformer.apply(fields.map(cast(typedField.fieldValueAccessor()))));

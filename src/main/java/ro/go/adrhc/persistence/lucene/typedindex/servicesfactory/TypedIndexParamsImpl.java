@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedcore.read.DefaultOneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.*;
@@ -26,7 +26,7 @@ import java.util.Collection;
 @Slf4j
 public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
 		implements TypedIndexParams<T> {
-	private final Collection<? extends TypedField<T>> typedFields;
+	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 	private final int searchHits;
@@ -34,9 +34,9 @@ public class TypedIndexParamsImpl<T> extends AllHitsTypedIndexReaderParams<T>
 	private final Path indexPath;
 	private boolean closed;
 
-	public TypedIndexParamsImpl(Class<T> type, TypedField<T> idField,
+	public TypedIndexParamsImpl(Class<T> type, LuceneFieldSpec<T> idField,
 			IndexReaderPool indexReaderPool,
-			Collection<? extends TypedField<T>> typedFields, Analyzer analyzer,
+			Collection<? extends LuceneFieldSpec<T>> typedFields, Analyzer analyzer,
 			IndexWriter indexWriter,
 			int searchHits, SearchResultFilter<T> searchResultFilter, Path indexPath) {
 		super(type, idField, indexReaderPool);

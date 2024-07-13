@@ -5,7 +5,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.index.DefaultIndexCountService;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
 import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
 import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
@@ -59,7 +59,7 @@ public class DefaultIndexOperations<ID, T
 	}
 
 	@Override
-	public <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException {
+	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return retrieveService.getFieldOfAll(field);
 	}
 

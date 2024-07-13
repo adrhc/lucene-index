@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.retrieve;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.BooleanQuery;
 import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.typedcore.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderTemplate;
@@ -56,7 +56,7 @@ public class TypedRetrieveService<ID, T> implements IndexRetrieveService<ID, T> 
 	 * The caller must use the proper type!
 	 */
 	@Override
-	public <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException {
+	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return indexReaderTemplate.useReader(reader -> reader.<F>getFieldOfAll(field).toList());
 	}
 

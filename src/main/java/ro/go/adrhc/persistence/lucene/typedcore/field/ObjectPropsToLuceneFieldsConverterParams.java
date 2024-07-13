@@ -4,8 +4,8 @@ import org.apache.lucene.analysis.Analyzer;
 
 import java.util.Collection;
 
-public interface TypedFieldsProviderParams<T> {
+public interface ObjectPropsToLuceneFieldsConverterParams<T> {
 	Analyzer getAnalyzer();
 
-	Collection<? extends TypedField<T>> getTypedFields();
+	Collection<? extends LuceneFieldSpec<T>> getTypedFields();
 }

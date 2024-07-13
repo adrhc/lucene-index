@@ -5,17 +5,17 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 
 import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class ExactQuery {
-	private final TypedField<?> field;
+	private final LuceneFieldSpec<?> field;
 	private final FieldQueries fieldQueries;
 
-	public static ExactQuery create(TypedField<?> field) {
+	public static ExactQuery create(LuceneFieldSpec<?> field) {
 		return new ExactQuery(field, new FieldQueries(field.name()));
 	}
 

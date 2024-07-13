@@ -6,7 +6,7 @@ import ro.go.adrhc.persistence.lucene.core.query.DefaultAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.TypedIndexParams;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class TypedIndexParamsTestFactory {
 	public static final DefaultAwareQueryParser NAME_QUERY_PARSER =
 			DefaultAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	TypedIndexParams<T> createTypedIndexSpec(Class<T> tClass,
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		return of(tClass, typedFieldEnumClass, indexPath)

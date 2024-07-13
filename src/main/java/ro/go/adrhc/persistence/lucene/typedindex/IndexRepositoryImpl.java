@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
@@ -49,7 +49,7 @@ public class IndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public <F> List<F> getFieldOfAll(TypedField<T> field) throws IOException {
+	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return indexOperations.getFieldOfAll(field);
 	}
 

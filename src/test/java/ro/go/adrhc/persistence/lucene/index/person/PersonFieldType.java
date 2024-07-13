@@ -5,18 +5,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.query.FieldQueries;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.typedcore.field.ObjectLuceneFieldMapper;
 
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.field.FieldType.*;
-import static ro.go.adrhc.persistence.lucene.typedcore.field.TypedFieldSerde.*;
+import static ro.go.adrhc.persistence.lucene.typedcore.field.ObjectLuceneFieldMapper.*;
 
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
-public enum PersonFieldType implements TypedField<Person> {
+public enum PersonFieldType implements LuceneFieldSpec<Person> {
 	id(LONG, longField(Person::id), true),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
@@ -43,7 +43,7 @@ public enum PersonFieldType implements TypedField<Person> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
 
 	private final FieldType fieldType;
-	private final TypedFieldSerde<Person, ?> fieldSerde;
+	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;
 	private final boolean isIdField;
 
 	PersonFieldType(FieldType fieldType, Function<Person, String> propertyAccessor) {

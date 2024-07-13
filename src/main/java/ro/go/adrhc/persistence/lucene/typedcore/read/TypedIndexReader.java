@@ -6,7 +6,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.read.HitsLimitedDocsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.read.ScoreDocAndDocument;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.typedcore.serde.ScoreAndDocumentToScoreAndTypedConverter;
 import ro.go.adrhc.util.Assert;
@@ -21,7 +21,7 @@ import static ro.go.adrhc.persistence.lucene.core.field.FieldType.STORED;
 
 @RequiredArgsConstructor
 public class TypedIndexReader<ID, T> implements Closeable {
-	private final TypedField<T> idField;
+	private final LuceneFieldSpec<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter;
 	private final HitsLimitedDocsIndexReader hitsLimitedDocsIndexReader;
@@ -86,7 +86,7 @@ public class TypedIndexReader<ID, T> implements Closeable {
 	/**
 	 * The caller must use the proper type!
 	 */
-	public <F> Stream<F> getFieldOfAll(TypedField<T> field) {
+	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 				field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFieldStream(field.name())

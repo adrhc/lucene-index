@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
 
 import java.io.IOException;
@@ -20,16 +20,16 @@ import static java.util.Objects.requireNonNullElseGet;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.NUM_HITS;
 import static ro.go.adrhc.persistence.lucene.typedindex.servicesfactory.AnalyzerFactory.defaultAnalyzer;
 
-public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E> & TypedField<T>> {
+public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>> {
 	private int searchHits = NUM_HITS;
 	private SearchResultFilter<T> searchResultFilter = _ -> true;
 	private Class<T> tClass;
-	private Collection<? extends TypedField<T>> typedFields;
-	private TypedField<T> idField;
+	private Collection<? extends LuceneFieldSpec<T>> typedFields;
+	private LuceneFieldSpec<T> idField;
 	private Path indexPath;
 	private Analyzer analyzer;
 
-	public static <T extends Identifiable<?>, E extends Enum<E> & TypedField<T>>
+	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	TypedIndexParamsBuilder<T, E>
 	of(Class<T> tClass, Class<E> tFieldEnumClass, Path indexPath) {
 		TypedIndexParamsBuilder<T, E> builder =
@@ -42,7 +42,7 @@ public class TypedIndexParamsBuilder<T extends Identifiable<?>, E extends Enum<E
 	public TypedIndexParamsBuilder<T, E>
 	tFieldEnumClass(Class<E> tFieldEnumClass) {
 		typedFields = EnumSet.allOf(tFieldEnumClass);
-		idField = TypedField.getIdField(tFieldEnumClass);
+		idField = LuceneFieldSpec.getIdField(tFieldEnumClass);
 		return this;
 	}
 

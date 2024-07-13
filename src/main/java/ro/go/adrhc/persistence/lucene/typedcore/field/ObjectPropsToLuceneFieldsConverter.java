@@ -9,33 +9,33 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class TypedFieldsProvider<T> {
+public class ObjectPropsToLuceneFieldsConverter<T> {
 	private final FieldFactory fieldFactory;
-	private final Collection<? extends TypedField<T>> typedFields;
+	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 
-	public static <T> TypedFieldsProvider<T>
-	create(TypedFieldsProviderParams<T> providerParams) {
-		return new TypedFieldsProvider<>(
-				FieldFactory.create(providerParams.getAnalyzer()),
-				providerParams.getTypedFields());
+	public static <T> ObjectPropsToLuceneFieldsConverter<T>
+	create(ObjectPropsToLuceneFieldsConverterParams<T> params) {
+		return new ObjectPropsToLuceneFieldsConverter<>(
+				FieldFactory.create(params.getAnalyzer()),
+				params.getTypedFields());
 	}
 
-	public Stream<Field> createFields(T tValue) {
+	public Stream<Field> toFields(T tValue) {
 		return typedFields.stream()
-				.map(typedField -> createField(tValue, typedField))
+				.map(typedField -> toField(tValue, typedField))
 				.flatMap(Optional::stream);
 	}
 
-	public Optional<Field> createField(T t, TypedField<T> typedField) {
+	public Optional<Field> toField(T t, LuceneFieldSpec<T> typedField) {
 		Object fieldValue = typedField.typedToIndexableValue(t);
 		if (fieldValue == null) {
 			return Optional.empty();
 		} else {
-			return Optional.of(doCreateField(typedField, fieldValue));
+			return Optional.of(toField(typedField, fieldValue));
 		}
 	}
 
-	private Field doCreateField(TypedField<?> typedField, Object fieldValue) {
+	private Field toField(LuceneFieldSpec<?> typedField, Object fieldValue) {
 		return fieldFactory.create(typedField.mustStore(),
 				typedField.fieldType(), typedField.name(), fieldValue);
 	}

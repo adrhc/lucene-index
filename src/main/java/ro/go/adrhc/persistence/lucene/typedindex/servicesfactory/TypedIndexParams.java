@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.typedindex.servicesfactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.read.IndexReaderPool;
-import ro.go.adrhc.persistence.lucene.typedcore.field.TypedField;
+import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
@@ -17,7 +17,7 @@ import java.io.Closeable;
 import java.nio.file.Path;
 
 public interface TypedIndexParams<T> extends Closeable {
-	TypedField<T> getIdField();
+	LuceneFieldSpec<T> getIdField();
 
 	Analyzer getAnalyzer();
 
