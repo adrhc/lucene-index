@@ -30,11 +30,12 @@ public class TypedFieldsProvider<T> {
 		Object fieldValue = typedField.typedToIndexableValue(t);
 		if (fieldValue == null) {
 			return Optional.empty();
+		} else {
+			return Optional.of(doCreateField(typedField, fieldValue));
 		}
-		return Optional.of(doCreate(typedField, fieldValue));
 	}
 
-	private Field doCreate(TypedField<?> typedField, Object fieldValue) {
+	private Field doCreateField(TypedField<?> typedField, Object fieldValue) {
 		return fieldFactory.create(typedField.mustStore(),
 				typedField.fieldType(), typedField.name(), fieldValue);
 	}
