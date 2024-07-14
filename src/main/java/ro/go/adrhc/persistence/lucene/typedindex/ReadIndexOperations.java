@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface ReadOnlyIndexOperations<ID, T extends Indexable<ID, T>>
+public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
 		extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
 	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
 

@@ -30,7 +30,7 @@ public class FSIndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 	protected final IndexOperations<ID, T> indexOperations;
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
-	
+
 	public static <ID, T extends Indexable<ID, T>>
 	FSIndexRepository<ID, T> create(IndexServicesParamsFactory<T> params) {
 		IndexOperations<ID, T> indexOperations = createIndexOperations(params);

@@ -17,8 +17,6 @@ import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
 @NoArgsConstructor
 public class IndexOperationsImplBuilder<ID, T extends Indexable<ID, T>> {
 	private IndexServicesParamsFactory<T> params;
-	private TypedShallowUpdateService<ID, T> shallowUpdateService;
-	private TypedResetService<T> resetService;
 
 	public static <ID, T extends Indexable<ID, T>> IndexOperations<ID, T>
 	createIndexOperations(IndexServicesParamsFactory<T> params) {
@@ -36,18 +34,6 @@ public class IndexOperationsImplBuilder<ID, T extends Indexable<ID, T>> {
 		return this;
 	}
 
-	public IndexOperationsImplBuilder<ID, T>
-	shallowUpdateService(TypedShallowUpdateService<ID, T> shallowUpdateService) {
-		this.shallowUpdateService = shallowUpdateService;
-		return this;
-	}
-
-	public IndexOperationsImplBuilder<ID, T>
-	resetService(TypedResetService<T> resetService) {
-		this.resetService = resetService;
-		return this;
-	}
-
 	public IndexOperations<ID, T> build() {
 		IndexServicesFactory<ID, T> srvFactory = new IndexServicesFactory<>(params);
 		IndexSearchServiceImpl<T> searchService = srvFactory.createSearchService();
@@ -58,10 +44,9 @@ public class IndexOperationsImplBuilder<ID, T extends Indexable<ID, T>> {
 		TypedRemoveService<ID> removeService = srvFactory.createRemoveService();
 		IndexMergeService<T> mergeService = new IndexMergeServiceImpl<>(
 				retrieveService, addService, upsertService);
-		TypedResetService<T> resetService = this.resetService == null ?
-				srvFactory.createResetService() : this.resetService;
-		TypedShallowUpdateService<ID, T> shallowUpdateService = this.shallowUpdateService == null ?
-				srvFactory.createShallowUpdateService() : this.shallowUpdateService;
+		TypedResetService<T> resetService = srvFactory.createResetService();
+		TypedShallowUpdateService<ID, T> shallowUpdateService =
+				srvFactory.createShallowUpdateService();
 		return new IndexOperationsImpl<>(searchService, retrieveService, countService,
 				addService, upsertService, removeService, resetService,
 				shallowUpdateService, mergeService);
