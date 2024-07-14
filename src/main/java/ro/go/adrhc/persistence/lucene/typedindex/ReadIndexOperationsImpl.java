@@ -7,7 +7,7 @@ import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.index.IndexCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 		implements ReadIndexOperations<T, ID> {
 	private final IndexCountService countService;
-	private final TypedRetrieveService<ID, T> retrieveService;
+	private final IndexRetrieveServiceImpl<ID, T> retrieveService;
 	private final IndexSearchService<T> searchService;
 
 	@Override

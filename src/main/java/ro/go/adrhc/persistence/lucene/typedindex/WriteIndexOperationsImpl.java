@@ -3,13 +3,13 @@ package ro.go.adrhc.persistence.lucene.typedindex;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
-import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAddServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.merge.IndexMergeService;
-import ro.go.adrhc.persistence.lucene.typedindex.remove.TypedRemoveService;
-import ro.go.adrhc.persistence.lucene.typedindex.reset.TypedResetService;
+import ro.go.adrhc.persistence.lucene.typedindex.remove.IndexRemoveServiceImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.reset.IndexResetServiceImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSource;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateService;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexShallowUpdateServiceImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.update.IndexUpsertServiceImpl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,11 +19,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 		implements WriteIndexOperations<T, ID> {
-	private final TypedAddService<T> addService;
-	private final TypedUpsertService<T> upsertService;
-	private final TypedRemoveService<ID> removeService;
-	private final TypedResetService<T> resetService;
-	private final TypedShallowUpdateService<ID, T> shallowUpdateService;
+	private final IndexAddServiceImpl<T> addService;
+	private final IndexUpsertServiceImpl<T> upsertService;
+	private final IndexRemoveServiceImpl<ID> removeService;
+	private final IndexResetServiceImpl<T> resetService;
+	private final IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService;
 	private final IndexMergeService<T> mergeService;
 
 	@Override

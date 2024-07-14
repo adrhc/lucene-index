@@ -10,10 +10,10 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.AllHitsTypedIndexReaderPara
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.read.OneHitIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedcore.write.*;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParamsImpl;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParamsImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexShallowUpdateServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexShallowUpdateServiceParamsImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.typedindex.search.SearchResultFilter;
@@ -55,13 +55,13 @@ public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderPa
 	}
 
 	@Override
-	public TypedRetrieveServiceParams<T> typedRetrieveServiceParams() {
-		return new TypedRetrieveServiceParamsImpl<>(type, idField, indexReaderPool);
+	public IndexRetrieveServiceParams<T> typedRetrieveServiceParams() {
+		return new IndexRetrieveServiceParamsImpl<>(type, idField, indexReaderPool);
 	}
 
 	@Override
-	public TypedShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
-		return new TypedShallowUpdateServiceParamsImpl<>(type, idField,
+	public IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
+		return new IndexShallowUpdateServiceParamsImpl<>(type, idField,
 				indexReaderPool, typedFields, analyzer, indexWriter);
 	}
 

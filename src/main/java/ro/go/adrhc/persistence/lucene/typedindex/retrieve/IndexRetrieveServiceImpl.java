@@ -19,14 +19,14 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.persistence.lucene.core.query.BooleanQueryFactory.shouldSatisfy;
 
 @RequiredArgsConstructor
-public class TypedRetrieveService<ID, T> implements IndexRetrieveService<ID, T> {
+public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID, T> {
 	private final ExactQuery exactQuery;
 	private final TypedIndexReaderTemplate<ID, T> indexReaderTemplate;
 	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
 
-	public static <ID, T> TypedRetrieveService<ID, T>
-	create(TypedRetrieveServiceParams<T> params) {
-		return new TypedRetrieveService<>(
+	public static <ID, T> IndexRetrieveServiceImpl<ID, T>
+	create(IndexRetrieveServiceParams<T> params) {
+		return new IndexRetrieveServiceImpl<>(
 				ExactQuery.create(params.getIdField()),
 				TypedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
 				OneHitIndexReaderTemplate.create(params));

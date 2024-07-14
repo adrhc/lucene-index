@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Change the index to only have the IndexDataSource data; remove (by id) the surplus, add missing.
  */
-public interface ShallowUpdateService<ID, T> {
+public interface IndexShallowUpdateService<ID, T> {
 	/**
 	 * add the missing and remove the surplus
 	 */

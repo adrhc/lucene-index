@@ -9,8 +9,8 @@ import ro.go.adrhc.persistence.lucene.typedcore.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexWriterParams;
-import ro.go.adrhc.persistence.lucene.typedindex.restore.TypedShallowUpdateServiceParams;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.restore.IndexShallowUpdateServiceParams;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceParams;
 
 import java.io.Closeable;
@@ -31,9 +31,9 @@ public interface IndexServicesParamsFactory<T> extends Closeable {
 
 	IndexSearchServiceParams<T> indexSearchServiceParams();
 
-	TypedRetrieveServiceParams<T> typedRetrieveServiceParams();
+	IndexRetrieveServiceParams<T> typedRetrieveServiceParams();
 
-	TypedShallowUpdateServiceParams<T> typedShallowUpdateServiceParams();
+	IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams();
 
 	TypedIndexWriterParams<T> typedIndexWriterParams();
 

@@ -16,7 +16,7 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TypedShallowUpdateService<ID, T> implements ShallowUpdateService<ID, T> {
+public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateService<ID, T> {
 	private final TypedIndexReaderTemplate<ID, ?> indexReaderTemplate;
 	private final TypedIndexRemover<ID> indexRemover;
 	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
@@ -24,9 +24,9 @@ public class TypedShallowUpdateService<ID, T> implements ShallowUpdateService<ID
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID, T> TypedShallowUpdateService<ID, T>
-	create(TypedShallowUpdateServiceParams<T> params) {
-		return new TypedShallowUpdateService<>(
+	public static <ID, T> IndexShallowUpdateServiceImpl<ID, T>
+	create(IndexShallowUpdateServiceParams<T> params) {
+		return new IndexShallowUpdateServiceImpl<>(
 				TypedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
 				TypedIndexRemover.create(params.typedIndexRemoverParams()),
 				TypedIndexAdderTemplate.create(params));

@@ -2,9 +2,9 @@ package ro.go.adrhc.persistence.lucene.typedindex.merge;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
-import ro.go.adrhc.persistence.lucene.typedindex.add.TypedAddService;
-import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
-import ro.go.adrhc.persistence.lucene.typedindex.update.TypedUpsertService;
+import ro.go.adrhc.persistence.lucene.typedindex.add.IndexAddServiceImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.retrieve.IndexRetrieveServiceImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.update.IndexUpsertServiceImpl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -18,9 +18,9 @@ import static ro.go.adrhc.persistence.lucene.typedcore.Identifiable.toIds;
 @RequiredArgsConstructor
 public class IndexMergeServiceImpl<T extends Indexable<ID, T>, ID>
 		implements IndexMergeService<T> {
-	private final TypedRetrieveService<ID, T> retrieveService;
-	private final TypedAddService<T> addService;
-	private final TypedUpsertService<T> upsertService;
+	private final IndexRetrieveServiceImpl<ID, T> retrieveService;
+	private final IndexAddServiceImpl<T> addService;
+	private final IndexUpsertServiceImpl<T> upsertService;
 
 	public void merge(T t) throws IOException {
 		merge(t, T::merge);

@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class TypedUpsertService<T extends Identifiable<?>> implements IndexUpsertService<T> {
+public class IndexUpsertServiceImpl<T extends Identifiable<?>> implements IndexUpsertService<T> {
 	private final TypedUpsertTemplate<T> indexUpsertTemplate;
 
 	public static <T extends Identifiable<?>>
-	TypedUpsertService<T> create(TypedIndexUpsertParams<T> params) {
-		return new TypedUpsertService<>(TypedUpsertTemplate.create(params));
+	IndexUpsertServiceImpl<T> create(TypedIndexUpsertParams<T> params) {
+		return new IndexUpsertServiceImpl<>(TypedUpsertTemplate.create(params));
 	}
 
 	@Override

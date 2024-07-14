@@ -12,14 +12,14 @@ import ro.go.adrhc.persistence.lucene.typedcore.write.TypedIndexRemoverParamsImp
 import java.util.Collection;
 
 @Getter
-public class TypedShallowUpdateServiceParamsImpl<T>
+public class IndexShallowUpdateServiceParamsImpl<T>
 		extends AllHitsTypedIndexReaderParamsFactory<T>
-		implements TypedShallowUpdateServiceParams<T> {
+		implements IndexShallowUpdateServiceParams<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
 
-	public TypedShallowUpdateServiceParamsImpl(Class<T> type,
+	public IndexShallowUpdateServiceParamsImpl(Class<T> type,
 			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool,
 			Collection<? extends LuceneFieldSpec<T>> typedFields,
 			Analyzer analyzer, IndexWriter indexWriter) {
