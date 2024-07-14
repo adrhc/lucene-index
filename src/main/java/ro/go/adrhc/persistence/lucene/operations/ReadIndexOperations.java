@@ -1,0 +1,51 @@
+package ro.go.adrhc.persistence.lucene.operations;
+
+import org.apache.lucene.search.Query;
+import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
+import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
+import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
+import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
+		extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
+	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
+
+	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;
+
+	List<T> getAll() throws IOException;
+
+	List<ID> getAllIds() throws IOException;
+
+	Optional<T> findById(ID id) throws IOException;
+
+	Set<T> findByIds(Set<ID> ids) throws IOException;
+
+	List<T> findMany(Query query) throws IOException;
+
+	Optional<T> findBestMatch(Query query) throws IOException;
+
+	Optional<T> findBestMatch(
+			BestMatchingStrategy<T> bestMatchingStrategy,
+			Query query) throws IOException;
+
+	List<QueryAndValue<T>> findBestMatches(
+			Collection<? extends Query> queries) throws IOException;
+
+	List<QueryAndValue<T>> findBestMatches(
+			BestMatchingStrategy<T> bestMatchingStrategy,
+			Collection<? extends Query> queries) throws IOException;
+
+	int count() throws IOException;
+
+	int count(Query query) throws IOException;
+}

@@ -1,0 +1,41 @@
+package ro.go.adrhc.persistence.lucene;
+
+import org.apache.lucene.analysis.Analyzer;
+import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.bare.query.DefaultFieldAwareQueryParser;
+import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtils;
+import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
+import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
+import ro.go.adrhc.persistence.lucene.person.PersonFieldType;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+
+import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
+import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndReplacement.caseInsensitive;
+import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryImplBuilder.of;
+
+public class TypedIndexParamsTestFactory {
+	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
+	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
+	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
+			DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
+
+	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
+	IndexServicesParamsFactory<T> createTypedIndexSpec(Class<T> tClass,
+			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
+		return of(tClass, typedFieldEnumClass, indexPath)
+				.tokenizerProperties(createTokenizerProperties()).build();
+	}
+
+	private static TokenizerProperties createTokenizerProperties() {
+		return new TokenizerProperties(2,
+				List.of("Fixed Pattern To Remove"),
+				List.of("\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
+				Map.of("_", " "),
+				caseInsensitive("$1", "([^\\s]*)\\.jpe?g"));
+	}
+}
