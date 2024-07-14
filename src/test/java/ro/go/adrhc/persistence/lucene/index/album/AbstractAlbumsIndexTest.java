@@ -4,9 +4,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.typedindex.FSIndexRepository;
-import ro.go.adrhc.persistence.lucene.typedindex.FSIndexRepositoryImpl;
-import ro.go.adrhc.persistence.lucene.typedindex.srvparams.IndexServicesParamsFactory;
+import ro.go.adrhc.persistence.lucene.index.FSIndexRepository;
+import ro.go.adrhc.persistence.lucene.index.FSIndexRepositoryImpl;
+import ro.go.adrhc.persistence.lucene.index.operations.params.IndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;

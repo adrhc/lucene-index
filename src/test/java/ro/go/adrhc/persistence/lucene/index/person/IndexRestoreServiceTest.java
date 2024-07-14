@@ -10,9 +10,9 @@ import ro.go.adrhc.persistence.lucene.typedcore.ExactQuery;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ro.go.adrhc.persistence.lucene.index.operations.restore.IndexDataSourceFactory.createCachedDataSource;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.index.person.PeopleGenerator.generateGirl;
-import static ro.go.adrhc.persistence.lucene.typedindex.restore.IndexDataSourceFactory.createCachedDataSource;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

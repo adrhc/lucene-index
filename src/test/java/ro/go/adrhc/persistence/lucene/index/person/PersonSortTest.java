@@ -8,7 +8,7 @@ import org.apache.lucene.search.SortedSetSortField;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
+import ro.go.adrhc.persistence.lucene.index.operations.search.ScoreDocAndValues;
 
 import java.io.IOException;
 

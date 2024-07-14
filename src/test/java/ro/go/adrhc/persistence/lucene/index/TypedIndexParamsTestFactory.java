@@ -4,10 +4,10 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.query.DefaultFieldAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.token.TokenizationUtils;
+import ro.go.adrhc.persistence.lucene.index.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.index.person.PersonFieldType;
 import ro.go.adrhc.persistence.lucene.typedcore.Identifiable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.typedindex.srvparams.IndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static ro.go.adrhc.persistence.lucene.core.analysis.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.core.analysis.PatternsAndReplacement.caseInsensitive;
-import static ro.go.adrhc.persistence.lucene.typedindex.srvparams.IndexServicesParamsFactoryImplBuilder.of;
+import static ro.go.adrhc.persistence.lucene.index.operations.params.IndexServicesParamsFactoryImplBuilder.of;
 
 public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
