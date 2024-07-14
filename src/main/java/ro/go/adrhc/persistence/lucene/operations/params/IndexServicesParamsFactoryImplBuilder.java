@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import static java.util.Objects.requireNonNullElseGet;
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 
 public class IndexServicesParamsFactoryImplBuilder<
@@ -50,7 +49,7 @@ public class IndexServicesParamsFactoryImplBuilder<
 	}
 
 	public IndexServicesParamsFactoryImplBuilder<T, E>
-	tokenizerProperties(TokenizerProperties tokenizerProperties) {
+	tokenizerProperties(TokenizerProperties tokenizerProperties) throws IOException {
 		analyzer = defaultAnalyzer(tokenizerProperties);
 		return this;
 	}
@@ -71,7 +70,7 @@ public class IndexServicesParamsFactoryImplBuilder<
 	}
 
 	public IndexServicesParamsFactoryImpl<T> build(boolean readOnly) throws IOException {
-		analyzer = requireNonNullElseGet(analyzer, AnalyzerFactory::defaultAnalyzer);
+		analyzer = analyzer == null ? AnalyzerFactory.defaultAnalyzer() : analyzer;
 		IndexWriter indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer,
 				indexPath);
 		IndexReaderPool indexReaderPool = new IndexReaderPool(

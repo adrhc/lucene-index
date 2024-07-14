@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.bare.query.DefaultFieldAwareQueryParser;
@@ -18,8 +19,9 @@ import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndReplacement.caseInsensitive;
 import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryImplBuilder.of;
 
+@Slf4j
 public class TypedIndexParamsTestFactory {
-	public static final Analyzer ANALYZER = defaultAnalyzer(createTokenizerProperties());
+	public static final Analyzer ANALYZER = safelyCreateDefaultAnalyzer();
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
 			DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
@@ -29,6 +31,14 @@ public class TypedIndexParamsTestFactory {
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		return of(tClass, typedFieldEnumClass, indexPath)
 				.tokenizerProperties(createTokenizerProperties()).build();
+	}
+
+	private static Analyzer safelyCreateDefaultAnalyzer() {
+		try {
+			return defaultAnalyzer(createTokenizerProperties());
+		} catch (IOException e) {
+			throw new RuntimeException("Can't create the default Analyzer!", e);
+		}
 	}
 
 	private static TokenizerProperties createTokenizerProperties() {
