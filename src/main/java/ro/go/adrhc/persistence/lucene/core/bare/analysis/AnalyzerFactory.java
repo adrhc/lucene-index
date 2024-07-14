@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.core.bare.analysis;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
@@ -9,38 +10,48 @@ import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import ro.go.adrhc.util.OptionalUtils;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
+import static ro.go.adrhc.util.Slf4jUtils.logError;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AnalyzerFactory {
 	private final TokenizerProperties properties;
 
-	public static Analyzer defaultAnalyzer() throws IOException {
+	public static Optional<Analyzer> defaultAnalyzer() {
 		return new AnalyzerFactory(new TokenizerProperties()).create();
 	}
 
-	public static Analyzer defaultAnalyzer(
-			TokenizerProperties properties) throws IOException {
+	public static Optional<Analyzer> defaultAnalyzer(
+			TokenizerProperties properties) {
 		return new AnalyzerFactory(properties).create();
 	}
 
-	public Analyzer create() throws IOException {
-		CustomAnalyzer.Builder builder = CustomAnalyzer.builder()
-				// tokenizer
-				.withTokenizer(StandardTokenizerFactory.NAME,
-						"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
+	public Optional<Analyzer> create() {
+		CustomAnalyzer.Builder builder;
+		try {
+			builder = CustomAnalyzer.builder()
+					// tokenizer
+					.withTokenizer(StandardTokenizerFactory.NAME,
+							"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
 
-		trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(builder);
-		rmCharsRmTextsRmPatternsSwapPatternsCharFilter(builder);
+			trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(builder);
+			rmCharsRmTextsRmPatternsSwapPatternsCharFilter(builder);
 
-		return builder.build();
+			return OptionalUtils.of(builder::build);
+		} catch (IOException e) {
+			logError(log, e);
+		}
+		return Optional.empty();
 	}
 
 	/**

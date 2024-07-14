@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndReplacement.caseInsensitive;
-import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryImplBuilder.of;
+import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryBuilder.of;
 
 @Slf4j
 public class TypedIndexParamsTestFactory {
@@ -30,15 +30,14 @@ public class TypedIndexParamsTestFactory {
 	IndexServicesParamsFactory<T> createTypedIndexSpec(Class<T> tClass,
 			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
 		return of(tClass, typedFieldEnumClass, indexPath)
-				.tokenizerProperties(createTokenizerProperties()).build();
+				.tokenizerProperties(createTokenizerProperties()).build()
+				.orElseThrow(() -> new
+						RuntimeException("Can't create IndexServicesParamsFactory!"));
 	}
 
 	private static Analyzer safelyCreateDefaultAnalyzer() {
-		try {
-			return defaultAnalyzer(createTokenizerProperties());
-		} catch (IOException e) {
-			throw new RuntimeException("Can't create the default Analyzer!", e);
-		}
+		return defaultAnalyzer(createTokenizerProperties())
+				.orElseThrow(() -> new RuntimeException("Can't create the default Analyzer!"));
 	}
 
 	private static TokenizerProperties createTokenizerProperties() {
