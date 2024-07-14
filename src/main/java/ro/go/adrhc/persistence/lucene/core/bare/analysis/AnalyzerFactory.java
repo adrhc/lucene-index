@@ -50,8 +50,8 @@ public class AnalyzerFactory {
 	 * - PatternReplaceCharFilter to remove by regex patterns
 	 * - PatternReplaceCharFilter using regex patterns to replace with the provided replacement
 	 */
-	private void rmCharsRmTextsRmPatternsSwapPatternsCharFilter(CustomAnalyzer.Builder builder)
-			throws IOException {
+	private void rmCharsRmTextsRmPatternsSwapPatternsCharFilter(
+			CustomAnalyzer.Builder builder) throws IOException {
 		builder.addCharFilter(MappingCharFilterFactory.class,
 				properties.getCharactersToReplaceBeforeIndexing());
 
@@ -81,8 +81,8 @@ public class AnalyzerFactory {
 	 * - LowerCaseFilter
 	 * - RemoveDuplicatesTokenFilter
 	 */
-	private void trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(CustomAnalyzer.Builder builder)
-			throws IOException {
+	private void trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(
+			CustomAnalyzer.Builder builder) throws IOException {
 		builder
 				.addTokenFilter(TrimFilterFactory.NAME)
 				.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
