@@ -221,7 +221,7 @@ public class FSIndexRepositoryImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public void close() throws IOException {
-		executeWrite(indexServicesParamsFactory::close);
+		indexServicesParamsFactory.close();
 	}
 
 	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
