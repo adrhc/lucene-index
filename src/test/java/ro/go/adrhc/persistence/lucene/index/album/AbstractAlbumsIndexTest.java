@@ -24,7 +24,7 @@ public abstract class AbstractAlbumsIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
-		indexRepository = FSIndexRepositoryImpl.create(albumsIndexSpec);
+		indexRepository = FSIndexRepositoryImpl.of(albumsIndexSpec);
 		indexRepository.reset(ALBUMS);
 	}
 

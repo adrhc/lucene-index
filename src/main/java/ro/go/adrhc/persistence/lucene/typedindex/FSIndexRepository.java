@@ -7,7 +7,7 @@ import java.io.Closeable;
 import java.nio.file.Path;
 
 public interface FSIndexRepository<ID, T extends Indexable<ID, T>>
-		extends IndexOperations<ID, T>, Closeable {
+		extends ReadIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
 	IndexServicesParamsFactory<T> getIndexServicesParamsFactory();
 
 	default Path getIndexPath() {

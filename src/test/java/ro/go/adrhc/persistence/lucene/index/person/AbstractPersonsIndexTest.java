@@ -36,7 +36,7 @@ public abstract class AbstractPersonsIndexTest {
 
 	protected void initObjects() throws IOException {
 		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		indexRepository = FSIndexRepositoryImpl.create(peopleIndexSpec);
+		indexRepository = FSIndexRepositoryImpl.of(peopleIndexSpec);
 	}
 
 	protected TypedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {

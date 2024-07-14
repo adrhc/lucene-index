@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.index.IndexCountServiceImpl;
+import ro.go.adrhc.persistence.lucene.index.IndexCountService;
 import ro.go.adrhc.persistence.lucene.typedcore.Indexable;
 import ro.go.adrhc.persistence.lucene.typedcore.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.typedindex.retrieve.TypedRetrieveService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchServiceImpl;
+import ro.go.adrhc.persistence.lucene.typedindex.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.typedindex.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.typedindex.search.ScoreDocAndValues;
 
@@ -24,9 +24,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 		implements ReadIndexOperations<T, ID> {
+	private final IndexCountService countService;
 	private final TypedRetrieveService<ID, T> retrieveService;
-	private final IndexCountServiceImpl countService;
-	private final IndexSearchServiceImpl<T> searchService;
+	private final IndexSearchService<T> searchService;
 
 	@Override
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
