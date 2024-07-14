@@ -20,7 +20,6 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
-import static ro.go.adrhc.util.Slf4jUtils.logError;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -49,7 +48,7 @@ public class AnalyzerFactory {
 
 			return OptionalUtils.of(builder::build);
 		} catch (IOException e) {
-			logError(log, e);
+			log.error(e.getMessage(), e);
 		}
 		return Optional.empty();
 	}

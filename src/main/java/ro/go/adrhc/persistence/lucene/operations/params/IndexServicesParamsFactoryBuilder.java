@@ -20,7 +20,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
-import static ro.go.adrhc.util.Slf4jUtils.logError;
 
 @Slf4j
 public class IndexServicesParamsFactoryBuilder<
@@ -86,7 +85,7 @@ public class IndexServicesParamsFactoryBuilder<
 		try {
 			indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
 		} catch (IOException e) {
-			logError(log, e);
+			log.error(e.getMessage(), e);
 			return Optional.empty();
 		}
 		IndexReaderPool indexReaderPool = new IndexReaderPool(
