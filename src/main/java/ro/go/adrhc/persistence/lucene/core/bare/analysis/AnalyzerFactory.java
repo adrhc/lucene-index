@@ -38,19 +38,20 @@ public class AnalyzerFactory {
 	public Optional<Analyzer> create() {
 		CustomAnalyzer.Builder builder;
 		try {
-			builder = CustomAnalyzer.builder()
-					// tokenizer
-					.withTokenizer(StandardTokenizerFactory.NAME,
-							"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
-
+			builder = createMaxLengthTokenCustomAnalyzerBuilder();
 			trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(builder);
 			rmCharsRmTextsRmPatternsSwapPatternsCharFilter(builder);
-
 			return OptionalUtils.of(builder::build);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
 		return Optional.empty();
+	}
+
+	private CustomAnalyzer.Builder createMaxLengthTokenCustomAnalyzerBuilder() throws IOException {
+		return CustomAnalyzer.builder()
+				.withTokenizer(StandardTokenizerFactory.NAME,
+						"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
 	}
 
 	/**
