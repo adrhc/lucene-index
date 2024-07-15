@@ -2,8 +2,11 @@ package ro.go.adrhc.persistence.lucene.core.bare.query;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.search.Query;
+
+import java.util.Optional;
+
+import static ro.go.adrhc.util.optional.OptionalUtils.ofSneaky;
 
 @RequiredArgsConstructor
 public class DefaultFieldAwareQueryParser {
@@ -14,7 +17,7 @@ public class DefaultFieldAwareQueryParser {
 		return new DefaultFieldAwareQueryParser(QueryParser.create(analyzer), defaultField.name());
 	}
 
-	public Query parse(String query) throws QueryNodeException {
-		return queryParser.parse(defaultField, query);
+	public Optional<Query> parse(String query) {
+		return ofSneaky(() -> queryParser.parse(defaultField, query));
 	}
 }
