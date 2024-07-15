@@ -110,7 +110,7 @@ public class IndexServicesParamsFactoryBuilder<
 		if (analyzer == null) {
 			setNotNullAnalyzerOrFail(AnalyzerFactory.defaultAnalyzer().orElse(null));
 		}
-		return failed;
+		return !failed;
 	}
 
 	private void setNotNullAnalyzerOrFail(Analyzer analyzer) {

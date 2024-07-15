@@ -10,7 +10,6 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.person.PersonFieldType;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +26,11 @@ public class TypedIndexParamsTestFactory {
 			DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
-	IndexServicesParamsFactory<T> createTypedIndexSpec(Class<T> tClass,
-			Class<E> typedFieldEnumClass, Path indexPath) throws IOException {
+	IndexServicesParamsFactory<T> createTypedIndexSpec(
+			Class<T> tClass, Class<E> typedFieldEnumClass, Path indexPath) {
 		return of(tClass, typedFieldEnumClass, indexPath)
-				.tokenizerProperties(createTokenizerProperties()).build()
+				.tokenizerProperties(createTokenizerProperties())
+				.build()
 				.orElseThrow(() -> new
 						RuntimeException("Can't create IndexServicesParamsFactory!"));
 	}
