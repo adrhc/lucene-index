@@ -10,7 +10,6 @@ import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
-import ro.go.adrhc.util.OptionalUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
+import static ro.go.adrhc.util.OptionalUtils.ofSneaky;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,16 +36,12 @@ public class AnalyzerFactory {
 	}
 
 	public Optional<Analyzer> create() {
-		CustomAnalyzer.Builder builder;
-		try {
-			builder = createMaxLengthTokenCustomAnalyzerBuilder();
+		return ofSneaky(() -> {
+			CustomAnalyzer.Builder builder = createMaxLengthTokenCustomAnalyzerBuilder();
 			trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(builder);
 			rmCharsRmTextsRmPatternsSwapPatternsCharFilter(builder);
-			return OptionalUtils.of(builder::build);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
+			return builder.build();
+		});
 	}
 
 	private CustomAnalyzer.Builder createMaxLengthTokenCustomAnalyzerBuilder() throws IOException {
