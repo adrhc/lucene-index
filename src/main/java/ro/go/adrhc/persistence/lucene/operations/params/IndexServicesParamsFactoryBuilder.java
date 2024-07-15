@@ -52,9 +52,15 @@ public class IndexServicesParamsFactoryBuilder<
 		return this;
 	}
 
+	public IndexServicesParamsFactoryBuilder<T, E> analyzer(Analyzer analyzer) {
+		this.analyzer = analyzer;
+		failed = false;
+		return this;
+	}
+
 	public IndexServicesParamsFactoryBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
-		setAnalyzer(defaultAnalyzer(tokenizerProperties).orElse(null));
+		setNotNullAnalyzerOrFail(defaultAnalyzer(tokenizerProperties).orElse(null));
 		return this;
 	}
 
@@ -74,27 +80,40 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
-		if (analyzer == null) {
-			setAnalyzer(AnalyzerFactory.defaultAnalyzer().orElse(null));
-		}
 		if (failed) {
 			return Optional.empty();
 		}
-		analyzer = analyzer == null ? AnalyzerFactory.defaultAnalyzer().orElse(null) : analyzer;
-		IndexWriter indexWriter;
-		try {
-			indexWriter = readOnly ? null : IndexWriterFactory.fsWriter(analyzer, indexPath);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
+		if (!prepareAnalyzer()) {
 			return Optional.empty();
 		}
-		IndexReaderPool indexReaderPool = new IndexReaderPool(
-				() -> DirectoryReader.open(FSDirectory.open(indexPath)));
-		return Optional.of(new IndexServicesParamsFactoryImpl<>(tClass, idField, indexReaderPool,
-				typedFields, analyzer, indexWriter, searchHits, searchResultFilter, indexPath));
+		Optional<IndexWriter> indexWriterOptional =
+				readOnly ? Optional.empty() : createIndexWriter();
+		return indexWriterOptional.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
+				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+				indexWriter, searchHits, searchResultFilter, indexPath));
 	}
 
-	private void setAnalyzer(Analyzer analyzer) {
+	private IndexReaderPool createIndexReaderPool() {
+		return new IndexReaderPool(() -> DirectoryReader.open(FSDirectory.open(indexPath)));
+	}
+
+	private Optional<IndexWriter> createIndexWriter() {
+		try {
+			return Optional.of(IndexWriterFactory.fsWriter(analyzer, indexPath));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	private boolean prepareAnalyzer() {
+		if (analyzer == null) {
+			setNotNullAnalyzerOrFail(AnalyzerFactory.defaultAnalyzer().orElse(null));
+		}
+		return failed;
+	}
+
+	private void setNotNullAnalyzerOrFail(Analyzer analyzer) {
 		this.analyzer = analyzer;
 		failed = analyzer == null;
 	}
