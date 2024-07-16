@@ -21,7 +21,9 @@ public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 	@Override
 	@NonNull
 	public Optional<ScoreDocAndValue<T>> convert(@NonNull ScoreDocAndDocument scoreAndDocument) {
-		return docToTypedConverter.convert(scoreAndDocument.document())
+		return scoreAndDocument
+				.mapIfOk(ScoreDocAndDocument::document)
+				.flatMap(docToTypedConverter::convert)
 				.map(t -> new ScoreDocAndValue<>(scoreAndDocument.scoreDoc(), t));
 	}
 }
