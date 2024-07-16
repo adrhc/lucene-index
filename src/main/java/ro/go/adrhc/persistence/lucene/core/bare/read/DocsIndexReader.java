@@ -111,7 +111,7 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
-		return safelyGetDocument(storedFields, Set.of(), docIndex);
+		return safelyGetDocument(storedFields, null, docIndex);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class DocsIndexReader implements Closeable {
 	protected Optional<Document> safelyGetDocument(
 			StoredFields storedFields, Set<String> fieldNames, int docIndex) {
 		try {
-			if (fieldNames.isEmpty()) {
+			if (fieldNames == null || fieldNames.isEmpty()) {
 				return Optional.of(storedFields.document(docIndex));
 			} else {
 				return Optional.of(storedFields.document(docIndex, fieldNames));
