@@ -57,30 +57,33 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findMany(query));
+		return toScoreDocAndValueStream(hitsLimitedDocsIndexReader.findMany(query));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, int numHits) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findMany(query, numHits));
+		return toScoreDocAndValueStream(hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, Sort sort) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findMany(query, sort));
+		return toScoreDocAndValueStream(hitsLimitedDocsIndexReader.findMany(query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(
 			Query query, int numHits, Sort sort) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
+		return toScoreDocAndValueStream(
+				hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
 			Query query, Sort sort) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
+		return toScoreDocAndValueStream(hitsLimitedDocsIndexReader
+				.findManyAfter(after, query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
 			Query query, int numHits, Sort sort) throws IOException {
-		return convert(hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
+		return toScoreDocAndValueStream(hitsLimitedDocsIndexReader
+				.findManyAfter(after, query, numHits, sort));
 	}
 
 	/**
@@ -99,7 +102,8 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 		hitsLimitedDocsIndexReader.close();
 	}
 
-	private Stream<ScoreDocAndValue<T>> convert(Stream<ScoreDocAndDocument> stream) {
+	private Stream<ScoreDocAndValue<T>>
+	toScoreDocAndValueStream(Stream<ScoreDocAndDocument> stream) {
 		return stream.map(toScoreAndTypedConverter::convert).flatMap(Optional::stream);
 	}
 }
