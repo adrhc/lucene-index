@@ -95,7 +95,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 				field.name() + " must have STORED type!");
-		return hitsLimitedDocsIndexReader.getFieldStream(field.name())
+		return hitsLimitedDocsIndexReader.getFields(field.name())
 				.map(field::indexableFieldToPropValue)
 				.map(ObjectUtils::cast);
 	}

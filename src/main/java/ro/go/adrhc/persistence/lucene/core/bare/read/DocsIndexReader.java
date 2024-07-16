@@ -29,12 +29,18 @@ public class DocsIndexReader implements Closeable {
 		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader());
 	}
 
-	public Stream<Document> getDocumentStream() {
-		return getDocProjectionStream(Set.of());
+	public int count(Query query) throws IOException {
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		return searcher.count(query);
 	}
 
-	public Stream<IndexableField> getFieldStream(String fieldName) {
-		return getDocProjectionStream(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
+	public int count() throws IOException {
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		return searcher.count(new MatchAllDocsQuery());
+	}
+
+	public Stream<Document> getDocumentStream() {
+		return getDocProjectionStream(Set.of());
 	}
 
 	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) {
@@ -45,33 +51,8 @@ public class DocsIndexReader implements Closeable {
 				.orElseGet(Stream::of);
 	}
 
-	/**
-	 * @return limited by numHits
-	 */
-	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
-		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
-		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
-				.flatMap(Optional::stream);
-	}
-
-	public Stream<ScoreDocAndDocument> findMany(
-			Query query, int numHits, Sort sort) throws IOException {
-		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits, sort));
-		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
-				.flatMap(Optional::stream);
-	}
-
-	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
-			Query query, int numHits, Sort sort) throws IOException {
-		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> s.searchAfter(after, query, numHits, sort));
-		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
-				.flatMap(Optional::stream);
+	public Stream<IndexableField> getFields(String fieldName) {
+		return getDocProjectionStream(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
 	public Stream<Object> findFieldValues(
@@ -81,18 +62,35 @@ public class DocsIndexReader implements Closeable {
 		OneStoredObjectFieldVisitor fieldVisitor =
 				new OneStoredObjectFieldVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyVisitOneFieldDocument(storedFields, fieldVisitor, scoreDoc))
+				.map(scoreDoc -> safelyGetOneFieldValue(storedFields, fieldVisitor, scoreDoc))
 				.filter(Objects::nonNull);
 	}
 
-	public int count(Query query) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		return searcher.count(query);
+	/**
+	 * @return limited by numHits
+	 */
+	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
+		return doFindMany(s -> s.search(query, numHits));
 	}
 
-	public int count() throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		return searcher.count(new MatchAllDocsQuery());
+	public Stream<ScoreDocAndDocument> findMany(
+			Query query, int numHits, Sort sort) throws IOException {
+		return doFindMany(s -> s.search(query, numHits, sort));
+	}
+
+	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
+			Query query, int numHits, Sort sort) throws IOException {
+		return doFindMany(s -> s.searchAfter(after, query, numHits, sort));
+	}
+
+	protected Stream<ScoreDocAndDocument> doFindMany(
+			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
+			throws IOException {
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
+		return Arrays.stream(topDocs.scoreDocs)
+				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
+				.flatMap(Optional::stream);
 	}
 
 	protected Stream<Document> doGetAll(Bits liveDocs,
@@ -137,18 +135,18 @@ public class DocsIndexReader implements Closeable {
 		return Optional.empty();
 	}
 
+	@Override
+	public void close() throws IOException {
+		indexReaderPool.dismissReader(indexReader);
+	}
+
 	protected <R> R useIndexSearcher(
 			SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
 			throws IOException {
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
-	@Override
-	public void close() throws IOException {
-		indexReaderPool.dismissReader(indexReader);
-	}
-
-	private <V> V safelyVisitOneFieldDocument(StoredFields storedFields,
+	private <V> V safelyGetOneFieldValue(StoredFields storedFields,
 			AbstractOneStoredFieldVisitor<V> fieldVisitor, ScoreDoc scoreDoc) {
 		fieldVisitor.reset();
 		safelyVisitDocument(storedFields, fieldVisitor, scoreDoc);
