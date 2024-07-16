@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndDocument;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreAndTypedConverter;
+import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
 import ro.go.adrhc.util.Assert;
 import ro.go.adrhc.util.ObjectUtils;
 
@@ -23,15 +23,15 @@ import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	private final LuceneFieldSpec<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter;
+	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
 	private final HitsLimitedDocsIndexReader hitsLimitedDocsIndexReader;
 
 	public static <ID, T> HitsLimitedIndexReader<ID, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
 				DocumentToTypedConverter.create(params.getType());
-		ScoreAndDocumentToScoreAndTypedConverter<T> toScoreAndTypedConverter =
-				new ScoreAndDocumentToScoreAndTypedConverter<>(docToTypedConverter);
+		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
+				new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 		HitsLimitedDocsIndexReader indexReader = HitsLimitedDocsIndexReader.create(params);
 		return new HitsLimitedIndexReader<>(params.getIdField(),
 				docToTypedConverter, toScoreAndTypedConverter, indexReader);
@@ -104,6 +104,6 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 
 	private Stream<ScoreDocAndValue<T>>
 	toScoreDocAndValueStream(Stream<ScoreDocAndDocument> stream) {
-		return stream.map(toScoreAndTypedConverter::convert).flatMap(Optional::stream);
+		return stream.map(toScoreDocAndValueConverter::convert).flatMap(Optional::stream);
 	}
 }

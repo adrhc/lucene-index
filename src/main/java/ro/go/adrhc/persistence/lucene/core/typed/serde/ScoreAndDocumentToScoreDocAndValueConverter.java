@@ -9,7 +9,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ScoreAndDocumentToScoreAndTypedConverter<T>
+public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 		implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 
