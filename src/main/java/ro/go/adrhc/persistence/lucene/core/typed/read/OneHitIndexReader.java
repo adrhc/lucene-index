@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class OneHitIndexReader<T> implements Closeable {
-	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter;
+	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
 	private final HitsLimitedDocsIndexReader indexReader;
 
 	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
@@ -27,7 +27,7 @@ public class OneHitIndexReader<T> implements Closeable {
 
 	public Optional<ScoreDocAndValue<T>> findFirst(Query query) throws IOException {
 		return indexReader.findMany(query)
-				.map(toScoreAndTypedConverter::convert)
+				.map(toScoreDocAndValueConverter::convert)
 				.flatMap(Optional::stream)
 				.findAny(); // DocsIndexReader is created with numHits = 1
 	}

@@ -7,11 +7,16 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndDocument;
 import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 		implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
+
+	public Stream<ScoreDocAndValue<T>> convertStream(Stream<ScoreDocAndDocument> stream) {
+		return stream.map(this::convert).flatMap(Optional::stream);
+	}
 
 	@Override
 	@NonNull
