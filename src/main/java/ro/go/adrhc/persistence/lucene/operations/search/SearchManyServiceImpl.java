@@ -29,32 +29,33 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query,
 			int hitsCount, Sort sort) throws IOException {
-		return useReader(r -> doFindSorted(r.findMany(query, hitsCount, sort)));
+		return useReader(r -> toScoreDocAndValues(r.findMany(query, hitsCount, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
-		return useReader(r -> doFindSorted(r.findMany(query, hitsCount)));
+		return useReader(r -> toScoreDocAndValues(r.findMany(query, hitsCount)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
-		return useReader(r -> doFindSorted(r.findMany(query, sort)));
+		return useReader(r -> toScoreDocAndValues(r.findMany(query, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(
 			ScoreDoc after, Query query, Sort sort) throws IOException {
-		return useReader(r -> doFindSorted(r.findManyAfter(after, query, sort)));
+		return useReader(r -> toScoreDocAndValues(r.findManyAfter(after, query, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 			Query query, int hitsCount, Sort sort) throws IOException {
-		return useReader(r -> doFindSorted(r.findManyAfter(after, query, hitsCount, sort)));
+		return useReader(r -> toScoreDocAndValues(
+				r.findManyAfter(after, query, hitsCount, sort)));
 	}
 
-	protected ScoreDocAndValues<T> doFindSorted(Stream<ScoreDocAndValue<T>> stream) {
+	protected ScoreDocAndValues<T> toScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
 		List<ScoreDoc> scoreDocs = new ArrayList<>();
 		List<T> values = new ArrayList<>();
 		stream.forEach(sdv -> {
