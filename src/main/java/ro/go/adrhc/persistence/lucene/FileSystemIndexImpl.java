@@ -27,19 +27,19 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FSIndexRepositoryImpl<ID, T extends Indexable<ID, T>>
-		implements FSIndexRepository<ID, T> {
+public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
+		implements FileSystemIndex<ID, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
 	protected final ReadIndexOperations<T, ID> readIndexOperations;
 	protected final WriteIndexOperations<T, ID> writeIndexOperations;
 
 	public static <ID, T extends Indexable<ID, T>>
-	FSIndexRepository<ID, T> of(IndexServicesParamsFactory<T> params) {
+	FileSystemIndex<ID, T> of(IndexServicesParamsFactory<T> params) {
 		IndexOperationsFactory<T, ID> factory = IndexOperationsFactory.of(params);
 		ReadIndexOperations<T, ID> readIndexOperations = factory.createReadIndexOperations();
 		WriteIndexOperations<T, ID> writeIndexOperations = factory.createWriteIndexOperations();
-		return new FSIndexRepositoryImpl<>(params, readIndexOperations, writeIndexOperations);
+		return new FileSystemIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
 	@Override

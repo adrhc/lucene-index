@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFacto
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface FSIndexRepository<ID, T extends Indexable<ID, T>>
+public interface FileSystemIndex<ID, T extends Indexable<ID, T>>
 		extends ReadIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
 	IndexServicesParamsFactory<T> getIndexServicesParamsFactory();
 

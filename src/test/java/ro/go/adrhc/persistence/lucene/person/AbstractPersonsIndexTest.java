@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.FSIndexRepository;
-import ro.go.adrhc.persistence.lucene.FSIndexRepositoryImpl;
+import ro.go.adrhc.persistence.lucene.FileSystemIndex;
+import ro.go.adrhc.persistence.lucene.FileSystemIndexImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
@@ -21,7 +21,7 @@ public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
-	protected FSIndexRepository<Long, Person> indexRepository;
+	protected FileSystemIndex<Long, Person> indexRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
@@ -36,7 +36,7 @@ public abstract class AbstractPersonsIndexTest {
 
 	protected void initObjects() throws IOException {
 		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		indexRepository = FSIndexRepositoryImpl.of(peopleIndexSpec);
+		indexRepository = FileSystemIndexImpl.of(peopleIndexSpec);
 	}
 
 	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
