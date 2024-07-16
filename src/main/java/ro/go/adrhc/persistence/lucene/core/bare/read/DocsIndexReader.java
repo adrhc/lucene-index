@@ -106,12 +106,8 @@ public class DocsIndexReader implements Closeable {
 
 	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
 			StoredFields storedFields, ScoreDoc scoreDoc) {
-		return safelyGetDocument(storedFields, scoreDoc.doc)
+		return safelyGetDocument(storedFields, null, scoreDoc.doc)
 				.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
-	}
-
-	protected Optional<Document> safelyGetDocument(StoredFields storedFields, int docIndex) {
-		return safelyGetDocument(storedFields, null, docIndex);
 	}
 
 	/**
