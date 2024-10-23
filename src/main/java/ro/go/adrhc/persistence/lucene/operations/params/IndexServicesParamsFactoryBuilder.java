@@ -86,11 +86,15 @@ public class IndexServicesParamsFactoryBuilder<
 		if (!prepareAnalyzer()) {
 			return Optional.empty();
 		}
-		Optional<IndexWriter> indexWriterOptional =
-				readOnly ? Optional.empty() : createIndexWriter();
-		return indexWriterOptional.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
-				indexWriter, searchHits, searchResultFilter, indexPath));
+		if (readOnly) {
+			return Optional.of(new IndexServicesParamsFactoryImpl<>(
+					tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+					null, searchHits, searchResultFilter, indexPath));
+		} else {
+			return createIndexWriter().map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
+					tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+					indexWriter, searchHits, searchResultFilter, indexPath));
+		}
 	}
 
 	private IndexReaderPool createIndexReaderPool() {
