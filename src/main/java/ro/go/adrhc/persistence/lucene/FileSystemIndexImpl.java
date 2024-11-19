@@ -43,6 +43,11 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
+	public boolean isEmpty() throws IOException {
+		return readIndexOperations.isEmpty();
+	}
+
+	@Override
 	public int count() throws IOException {
 		return readIndexOperations.count();
 	}

@@ -27,6 +27,11 @@ public class IndexCountServiceImpl implements IndexCountService {
 	}
 
 	@Override
+	public boolean isEmpty() throws IOException {
+		return docsReaderTemplate.useReader(DocsIndexReader::isEmpty);
+	}
+
+	@Override
 	public int count() throws IOException {
 		return docsReaderTemplate.useReader(DocsIndexReader::count);
 	}

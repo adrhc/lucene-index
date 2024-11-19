@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.AlreadyClosedException;
+import org.springframework.lang.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,9 +18,12 @@ public class IndexReaderPool implements Closeable {
 	private final SneakySupplier<DirectoryReader, IOException> dirReaderSupplier;
 	private DirectoryReader directoryReader;
 
+	@Nullable
 	public synchronized IndexReader getReader() throws IOException {
 		updateReader();
-		directoryReader.incRef();
+		if (directoryReader != null) {
+			directoryReader.incRef();
+		}
 		return directoryReader;
 	}
 

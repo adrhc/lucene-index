@@ -119,6 +119,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
+	public boolean isEmpty() throws IOException {
+		return countService.isEmpty();
+	}
+
+	@Override
 	public int count() throws IOException {
 		return countService.count();
 	}

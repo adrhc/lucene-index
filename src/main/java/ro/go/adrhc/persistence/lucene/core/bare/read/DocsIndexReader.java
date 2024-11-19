@@ -7,6 +7,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
+import org.springframework.util.Assert;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.AbstractOneStoredFieldVisitor;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.OneStoredObjectFieldVisitor;
 
@@ -29,14 +30,28 @@ public class DocsIndexReader implements Closeable {
 		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader());
 	}
 
-	public int count(Query query) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		return searcher.count(query);
+	public boolean isEmpty() throws IOException {
+		if (indexReader == null) {
+			return true;
+		} else {
+			return count() == 0;
+		}
 	}
 
 	public int count() throws IOException {
+		if (indexReader == null) {
+			return 0;
+		}
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(new MatchAllDocsQuery());
+	}
+
+	public int count(Query query) throws IOException {
+		if (indexReader == null) {
+			return 0;
+		}
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+		return searcher.count(query);
 	}
 
 	public Stream<Document> getDocumentStream() {
@@ -44,6 +59,9 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) {
+		if (indexReader == null) {
+			return Stream.empty();
+		}
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
 		return storedFields()
@@ -57,6 +75,9 @@ public class DocsIndexReader implements Closeable {
 
 	public Stream<Object> findFieldValues(
 			String fieldName, Query query, int numHits) throws IOException {
+		if (indexReader == null) {
+			return Stream.empty();
+		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
 		OneStoredObjectFieldVisitor fieldVisitor =
@@ -86,6 +107,7 @@ public class DocsIndexReader implements Closeable {
 	protected Stream<ScoreDocAndDocument> doFindMany(
 			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
 			throws IOException {
+		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
 		return Arrays.stream(topDocs.scoreDocs)
@@ -95,6 +117,7 @@ public class DocsIndexReader implements Closeable {
 
 	protected Stream<Document> doGetAll(Bits liveDocs,
 			Set<String> fieldNames, StoredFields storedFields) {
+		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		return IntStream.range(0, indexReader.maxDoc())
 				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
 				.mapToObj(docIndex -> this.safelyGetDocument(
@@ -127,6 +150,7 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	protected Optional<StoredFields> storedFields() {
+		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		try {
 			return Optional.of(indexReader.storedFields());
 		} catch (IOException e) {
@@ -137,12 +161,15 @@ public class DocsIndexReader implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		indexReaderPool.dismissReader(indexReader);
+		if (indexReader != null) {
+			indexReaderPool.dismissReader(indexReader);
+		}
 	}
 
 	protected <R> R useIndexSearcher(
 			SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
 			throws IOException {
+		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 

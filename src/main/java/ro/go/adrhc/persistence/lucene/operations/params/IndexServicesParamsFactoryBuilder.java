@@ -98,7 +98,15 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	private IndexReaderPool createIndexReaderPool() {
-		return new IndexReaderPool(() -> DirectoryReader.open(FSDirectory.open(indexPath)));
+		return new IndexReaderPool(() -> {
+			FSDirectory directory = FSDirectory.open(indexPath);
+			if (DirectoryReader.indexExists(directory)) {
+				return DirectoryReader.open(directory);
+			} else {
+				log.warn("\n{} is an empty index!", indexPath);
+				return null;
+			}
+		});
 	}
 
 	private Optional<IndexWriter> createIndexWriter() {

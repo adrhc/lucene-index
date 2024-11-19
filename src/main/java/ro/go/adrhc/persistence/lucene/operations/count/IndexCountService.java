@@ -5,6 +5,8 @@ import org.apache.lucene.search.Query;
 import java.io.IOException;
 
 public interface IndexCountService {
+	boolean isEmpty() throws IOException;
+
 	int count() throws IOException;
 
 	int count(Query query) throws IOException;
