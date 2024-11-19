@@ -107,7 +107,9 @@ public class DocsIndexReader implements Closeable {
 	protected Stream<ScoreDocAndDocument> doFindMany(
 			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
 			throws IOException {
-		Assert.isTrue(indexReader != null, "indexReader must be not null!");
+		if (indexReader == null) {
+			return Stream.empty();
+		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
 		return Arrays.stream(topDocs.scoreDocs)
