@@ -41,6 +41,7 @@ public enum PersonFieldType implements LuceneFieldSpec<Person> {
 			PersonFieldType.aliasPhrase);
 	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonFieldType.cnp);
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
+	public static final FieldQueries MALE_QUERIES = FieldQueries.create(PersonFieldType.male);
 
 	private final FieldType fieldType;
 	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;

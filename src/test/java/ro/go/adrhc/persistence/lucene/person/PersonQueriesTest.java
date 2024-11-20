@@ -3,6 +3,8 @@ package ro.go.adrhc.persistence.lucene.person;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -110,5 +112,12 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		List<Person> result = indexRepository.findMany(CNP_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void findByMale(boolean male) throws IOException {
+		List<Person> result = indexRepository.findMany(MALE_QUERIES.booleanEquals(male));
+		assertThat(result).hasSize((int) PEOPLE.stream().filter(p -> p.male() == male).count());
 	}
 }
