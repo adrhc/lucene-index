@@ -100,6 +100,10 @@ public class FieldQueries {
 		return KeywordField.newExactQuery(fieldName, value);
 	}
 
+	public Query booleanEquals(boolean value) {
+		return IntPoint.newExactQuery(fieldName, value ? 1 : 0);
+	}
+
 	public Query intEquals(int value) {
 		return IntPoint.newExactQuery(fieldName, value);
 	}

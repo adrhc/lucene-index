@@ -34,7 +34,7 @@ public abstract class AbstractPersonsIndexTest {
 		peopleIndexSpec.close();
 	}
 
-	protected void initObjects() throws IOException {
+	protected void initObjects() {
 		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
 		indexRepository = FileSystemIndexImpl.of(peopleIndexSpec);
 	}
