@@ -15,6 +15,8 @@ import org.apache.lucene.search.TermQuery;
 
 import java.util.Collection;
 
+import static ro.go.adrhc.persistence.lucene.core.bare.query.FuzzyQueryFactory.MAX_FUZZINESS;
+import static ro.go.adrhc.persistence.lucene.core.bare.query.TermQueryFactory.MAX_TERM_LENGTH_FOR_EXACT_QUERY;
 import static ro.go.adrhc.persistence.lucene.core.bare.query.TermQueryFactory.shouldUseTermQuery;
 
 @RequiredArgsConstructor
@@ -32,16 +34,14 @@ public class FieldQueries {
 	 */
 	public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
 		SpanQuery[] clausesIn = tokens.stream()
-				.map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
-						: maxFuzzinessSpanMultiTermQueryWrapper(t))
+				.map(this::toMaxFuzzinessSpanQuery)
 				.toArray(SpanQuery[]::new);
 		return new SpanNearQuery(clausesIn, 0, true);
 	}
 
 	public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
 		SpanQuery[] clausesIn = tokens.stream()
-				.map(t -> shouldUseTermQuery(t) ? spanTermQuery(t)
-						: lowFuzzinessSpanMultiTermQueryWrapper(t))
+				.map(this::toLowFuzzinessSpanQuery)
 				.toArray(SpanQuery[]::new);
 		return new SpanNearQuery(clausesIn, 0, true);
 	}
@@ -110,5 +110,19 @@ public class FieldQueries {
 
 	public Query longEquals(long value) {
 		return LongField.newExactQuery(fieldName, value);
+	}
+
+	private SpanQuery toMaxFuzzinessSpanQuery(String token) {
+		if (token.length() > MAX_TERM_LENGTH_FOR_EXACT_QUERY + MAX_FUZZINESS) {
+			return maxFuzzinessSpanMultiTermQueryWrapper(token);
+		} else {
+			return toLowFuzzinessSpanQuery(token);
+		}
+	}
+
+	private SpanQuery toLowFuzzinessSpanQuery(String token) {
+		// token.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
+		return shouldUseTermQuery(token) ? spanTermQuery(token)
+				: lowFuzzinessSpanMultiTermQueryWrapper(token);
 	}
 }
