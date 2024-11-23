@@ -67,6 +67,11 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
+	public void removeAll() throws IOException {
+		removeService.removeAll();
+	}
+
+	@Override
 	public void reset(Stream<T> stateAfterReset) throws IOException {
 		resetService.reset(stateAfterReset);
 	}
