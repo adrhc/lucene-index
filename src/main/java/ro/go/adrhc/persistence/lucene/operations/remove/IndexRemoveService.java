@@ -11,4 +11,6 @@ public interface IndexRemoveService<ID> {
 	void removeById(ID id) throws IOException;
 
 	void removeByQuery(Query query) throws IOException;
+
+	void removeAll() throws IOException;
 }

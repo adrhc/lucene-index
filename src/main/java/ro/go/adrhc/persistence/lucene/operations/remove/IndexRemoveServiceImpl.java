@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.operations.remove;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverTemplate;
 
@@ -21,17 +22,22 @@ public class IndexRemoveServiceImpl<ID> implements IndexRemoveService<ID> {
 	}
 
 	@Override
-	public void removeByIds(Collection<ID> ids) throws IOException {
-		indexRemoverTemplate.useRemover(remover -> remover.removeMany(ids));
-	}
-
-	@Override
 	public void removeById(ID id) throws IOException {
 		indexRemoverTemplate.useRemover(remover -> remover.removeOne(id));
 	}
 
 	@Override
+	public void removeByIds(Collection<ID> ids) throws IOException {
+		indexRemoverTemplate.useRemover(remover -> remover.removeMany(ids));
+	}
+
+	@Override
 	public void removeByQuery(Query query) throws IOException {
 		indexRemoverTemplate.useRemover(remover -> remover.removeByQuery(query));
+	}
+
+	@Override
+	public void removeAll() throws IOException {
+		indexRemoverTemplate.useRemover(TypedIndexRemover::removeAll);
 	}
 }
