@@ -188,6 +188,11 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
+	public void removeAll() throws IOException {
+		executeWrite(writeIndexOperations::removeAll);
+	}
+
+	@Override
 	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdate(dataSource));
 	}
