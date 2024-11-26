@@ -15,8 +15,7 @@ import org.apache.lucene.search.TermQuery;
 
 import java.util.Collection;
 
-import static ro.go.adrhc.persistence.lucene.core.bare.query.FuzzyQueryFactory.MAX_FUZZINESS;
-import static ro.go.adrhc.persistence.lucene.core.bare.query.TermQueryFactory.MAX_TERM_LENGTH_FOR_EXACT_QUERY;
+import static ro.go.adrhc.persistence.lucene.core.bare.query.FuzzyQueryFactory.maxFuzzinessIsSupported;
 import static ro.go.adrhc.persistence.lucene.core.bare.query.TermQueryFactory.shouldUseTermQuery;
 
 @RequiredArgsConstructor
@@ -113,7 +112,7 @@ public class FieldQueries {
 	}
 
 	private SpanQuery toMaxFuzzinessSpanQuery(String token) {
-		if (token.length() > MAX_TERM_LENGTH_FOR_EXACT_QUERY + MAX_FUZZINESS) {
+		if (maxFuzzinessIsSupported(token)) {
 			return maxFuzzinessSpanMultiTermQueryWrapper(token);
 		} else {
 			return toLowFuzzinessSpanQuery(token);
