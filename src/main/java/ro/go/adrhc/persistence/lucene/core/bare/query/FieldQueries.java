@@ -120,7 +120,6 @@ public class FieldQueries {
 	}
 
 	private SpanQuery toLowFuzzinessSpanQuery(String token) {
-		// token.length() <= MAX_TERM_LENGTH_FOR_EXACT_QUERY
 		return shouldUseTermQuery(token) ? spanTermQuery(token)
 				: lowFuzzinessSpanMultiTermQueryWrapper(token);
 	}
