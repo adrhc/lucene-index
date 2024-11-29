@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldFactory.storedField;
-import static ro.go.adrhc.util.fn.FunctionUtils.sneakyToOptionalResult;
+import static ro.go.adrhc.util.fn.FunctionUtils.toEmptyFailResultFn;
 
 @RequiredArgsConstructor
 public class RawDataFieldFactory<T> {
@@ -21,7 +21,7 @@ public class RawDataFieldFactory<T> {
 	public static <T> RawDataFieldFactory<T> create() {
 		ObjectMapper jsonMapper = ObjectMapperFactory.createJsonMapper();
 		Function<T, Optional<String>> rawStringifier =
-				sneakyToOptionalResult(jsonMapper::writeValueAsString);
+				toEmptyFailResultFn(jsonMapper::writeValueAsString);
 		return new RawDataFieldFactory<>(rawStringifier);
 	}
 

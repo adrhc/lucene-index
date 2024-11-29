@@ -15,7 +15,7 @@ import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.ANALYZE
 import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.*;
-import static ro.go.adrhc.util.fn.SneakyFunctionUtils.toNullResultFn;
+import static ro.go.adrhc.util.fn.FunctionUtils.toNullFailResultFn;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
@@ -27,7 +27,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 	void parse() {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = NAME_QUERY_PARSER.parse("pers*2*")
-				.map(toNullResultFn(indexRepository::findMany))
+				.map(toNullFailResultFn(indexRepository::findMany))
 				.orElseGet(List::of);
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
