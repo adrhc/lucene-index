@@ -1,14 +1,14 @@
 package ro.go.adrhc.persistence.lucene.operations.search;
 
 import org.apache.lucene.search.ScoreDoc;
-import ro.go.adrhc.util.stream.StreamAware;
+import ro.go.adrhc.util.stream.StreamOwner;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
-		implements StreamAware<T> {
+		implements StreamOwner<T> {
 	public ScoreDoc firstPosition() {
 		return scoreDocs.getFirst();
 	}
@@ -27,7 +27,7 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 				scoreDocs.subList(0, scoreDocs.size() - 1));
 	}
 
-	public <U> ScoreDocAndValues<U> map(Function<? super List<T>, List<U>> mapper) {
+	public <U> ScoreDocAndValues<U> mapToScoreDocAndValues(Function<? super List<T>, List<U>> mapper) {
 		return new ScoreDocAndValues<>(mapper.apply(values), scoreDocs);
 	}
 
@@ -44,7 +44,7 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 	}
 
 	@Override
-	public Stream<T> rawStream() {
+	public Stream<T> stream() {
 		return values.stream();
 	}
 }
