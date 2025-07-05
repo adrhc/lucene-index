@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ScoreAndDocumentToScoreDocAndValueConverter<T>
-		implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
+	implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 
 	public Stream<ScoreDocAndValue<T>> convertStream(Stream<ScoreDocAndDocument> stream) {
@@ -21,9 +21,11 @@ public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 	@Override
 	@NonNull
 	public Optional<ScoreDocAndValue<T>> convert(@NonNull ScoreDocAndDocument scoreAndDocument) {
-		return scoreAndDocument
-				.mapIfOk(ScoreDocAndDocument::document)
-				.flatMap(docToTypedConverter::convert)
+		if (scoreAndDocument.isBroken()) {
+			return Optional.empty();
+		} else {
+			return docToTypedConverter.convert(scoreAndDocument.document())
 				.map(t -> new ScoreDocAndValue<>(scoreAndDocument.scoreDoc(), t));
+		}
 	}
 }

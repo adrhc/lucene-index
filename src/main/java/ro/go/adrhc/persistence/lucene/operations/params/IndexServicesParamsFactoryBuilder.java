@@ -27,7 +27,7 @@ public class IndexServicesParamsFactoryBuilder<
 		E extends Enum<E> & LuceneFieldSpec<T>> {
 	public static final int NUM_HITS = 10;
 	private int searchHits = NUM_HITS;
-	private SearchResultFilter<T> searchResultFilter = _ -> true;
+	private SearchResultFilter<T> searchResultFilter = it -> true;
 	private Class<T> tClass;
 	private Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private LuceneFieldSpec<T> idField;

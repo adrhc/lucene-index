@@ -2,10 +2,10 @@ package ro.go.adrhc.persistence.lucene.core.bare.read;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
-import ro.go.adrhc.util.specialcase.Broken;
+import ro.go.adrhc.util.Breakable;
 
 public record ScoreDocAndDocument(ScoreDoc scoreDoc, Document document)
-		implements Broken<ScoreDocAndDocument> {
+		implements Breakable<ScoreDocAndDocument> {
 	public String getFieldValue(Enum<?> field) {
 		return document.get(field.name());
 	}

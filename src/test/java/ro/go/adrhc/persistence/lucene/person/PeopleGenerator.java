@@ -41,7 +41,7 @@ public class PeopleGenerator {
 
 	public static Person generateGirl(long i) {
 		String millis = "%03d".formatted(i % 1000);
-		return generateGirl(i, Instant.parse(STR."2000-01-01T03:04:05.\{millis}Z"));
+		return generateGirl(i, Instant.parse("2000-01-01T03:04:05.%sZ".formatted(millis)));
 	}
 
 	public static Person generateGirl(long i, Instant instantField) {
