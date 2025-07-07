@@ -21,8 +21,8 @@ public class IndexBackupServiceImpl implements IndexBackupService {
 		SnapshotDeletionPolicy sdp = (SnapshotDeletionPolicy)
 			indexWriter.getConfig().getIndexDeletionPolicy();
 		IndexCommit snapshot = sdp.snapshot(); // 1️⃣ pin current commit
-		try (FSDirectory target = FSDirectory.open(indexBackupPath);
-		     Directory source = snapshot.getDirectory()) {
+		Directory source = snapshot.getDirectory();
+		try (FSDirectory target = FSDirectory.open(indexBackupPath)) {
 			// 2️⃣ copy exactly the files in the snapshot
 			for (String file : snapshot.getFileNames()) {
 				target.copyFrom(source, file, file, IOContext.DEFAULT);
