@@ -58,7 +58,7 @@ public class IndexServicesParamsFactoryBuilder<
 
 	public IndexServicesParamsFactoryBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
-		this.analyzer = defaultAnalyzer(tokenizerProperties).orElseThrow();
+		this.analyzer = defaultAnalyzer(tokenizerProperties).orElse(null);
 		return this;
 	}
 
@@ -79,6 +79,9 @@ public class IndexServicesParamsFactoryBuilder<
 
 	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
 		useDefaultAnalyzerIfEmpty();
+		if (analyzer == null) {
+			return Optional.empty();
+		}
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
 				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
@@ -113,7 +116,7 @@ public class IndexServicesParamsFactoryBuilder<
 
 	private void useDefaultAnalyzerIfEmpty() {
 		if (analyzer == null) {
-			this.analyzer = AnalyzerFactory.defaultAnalyzer().orElseThrow();
+			this.analyzer = AnalyzerFactory.defaultAnalyzer().orElse(null);
 		}
 	}
 }
