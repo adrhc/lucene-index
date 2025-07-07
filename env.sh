@@ -1,16 +1,22 @@
 #!/bin/bash
+# printf "HOME: $HOME\nSDKMAN_DIR: $SDKMAN_DIR"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # export JAVA_HOME=$TOOLS/jdk1.8.0_141
 # export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 # export JAVA_HOME=$HOME/.sdkman/candidates/java/11.0.2-open
-# export JAVA_HOME=$HOME/.sdkman/candidates/java/17.0.1-tem
-#export JAVA_HOME=$HOME/.sdkman/candidates/java/18.0.1-oracle/
-#export JAVA_HOME=$HOME/.sdkman/candidates/java/19.0.2-oracle/
-#export JAVA_HOME=$HOME/.sdkman/candidates/java/20.0.1-oracle/
-export JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.3-oracle
-export PATH=$JAVA_HOME/bin:$PATH
-#export MAVEN_OPTS="$MAVEN_OPTS --enable-preview"
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/17.0.1-tem/
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/18.0.1-oracle/
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/19.0.2-oracle/
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/20.0.1-oracle/
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.3-oracle/
+# export JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.6-graal/
+# export PATH=$JAVA_HOME/bin:$PATH
+#
+# The above is replaced by .sdkmanrc!!! see it in the project's root.
+sdk env install
 
+# export MAVEN_OPTS="$MAVEN_OPTS --enable-preview"
 # export M2_HOME=$TOOLS/maven-3.3.9
 # export M2_CONF=$M2_HOME/conf/settings-jisr.xml
 # export MVN="$M2_HOME/bin/mvn -s \"$M2_CONF\""
@@ -24,8 +30,8 @@ elif [ -e ../mvnw ]; then
 elif [ -e mvnw ]; then
 	echo "using mvnw"
 	MVN="mvnw"
-elif [ "`which mvn`" != "" ]; then
-	echo "using `which mvn`"
+elif [ "$(which mvn)" != "" ]; then
+	echo "using $(which mvn)"
 	MVN="mvn"
 else
     echo "Can't find any of \"mvn\" or \"mvnw\"!"

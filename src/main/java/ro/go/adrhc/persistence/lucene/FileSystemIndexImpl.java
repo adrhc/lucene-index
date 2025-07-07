@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -109,6 +110,11 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 	@Override
 	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
 		return readIndexOperations.reduce(reducer);
+	}
+
+	@Override
+	public void readAll(Consumer<Stream<T>> consumer) throws IOException {
+		readIndexOperations.readAll(consumer);
 	}
 
 	@Override

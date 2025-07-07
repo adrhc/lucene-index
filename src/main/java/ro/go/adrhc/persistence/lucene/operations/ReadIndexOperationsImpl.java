@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -106,6 +107,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	@Override
 	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return retrieveService.getFieldOfAll(field);
+	}
+
+	@Override
+	public void readAll(Consumer<Stream<T>> consumer) throws IOException {
+		retrieveService.readAll(consumer);
 	}
 
 	@Override

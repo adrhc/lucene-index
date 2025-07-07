@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface IndexRetrieveService<ID, T> {
+	void readAll(Consumer<Stream<T>> consumer) throws IOException;
+	
 	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;
