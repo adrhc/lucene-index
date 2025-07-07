@@ -3,6 +3,8 @@ package ro.go.adrhc.persistence.lucene.operations;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
+import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
+import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.operations.remove.IndexRemoveServiceImpl;
@@ -13,8 +15,12 @@ import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 @RequiredArgsConstructor
-public class IndexServicesFactory<ID, T extends Identifiable<ID>> {
+public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 	private final IndexServicesParamsFactory<T> paramsFactory;
+
+	public IndexBackupService createBackupService() {
+		return new IndexBackupServiceImpl(paramsFactory.getIndexWriter());
+	}
 
 	public IndexSearchServiceImpl<T> createSearchService() {
 		return IndexSearchServiceImpl.create(paramsFactory.indexSearchServiceParams());

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
+import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.remove.IndexRemoveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.reset.IndexResetServiceImpl;
@@ -12,6 +13,7 @@ import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServi
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
@@ -25,6 +27,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	private final IndexResetServiceImpl<T> resetService;
 	private final IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService;
 	private final IndexMergeService<T> mergeService;
+	private final IndexBackupService backupService;
 
 	@Override
 	public void addMany(Collection<T> tCollection) throws IOException {
@@ -108,4 +111,8 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 		mergeService.mergeMany(tCollection, mergeStrategy);
 	}
 
+	@Override
+	public void backup(Path indexBackupPath) throws IOException {
+		backupService.backup(indexBackupPath);
+	}
 }

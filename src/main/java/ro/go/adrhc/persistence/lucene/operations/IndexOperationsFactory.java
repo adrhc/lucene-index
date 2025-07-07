@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.operations;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
+import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
@@ -25,12 +26,14 @@ public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 	private final IndexMergeService<T> mergeService;
 	private final IndexResetServiceImpl<T> resetService;
 	private final IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService;
+	private final IndexBackupService backupService;
 
 	public static <T extends Indexable<ID, T>, ID>
 	IndexOperationsFactory<T, ID> of(IndexServicesParamsFactory<T> params) {
-		IndexServicesFactory<ID, T> srvFactory = new IndexServicesFactory<>(params);
+		IndexServiceFactory<ID, T> srvFactory = new IndexServiceFactory<>(params);
 		IndexCountService countService = srvFactory.createCountService();
 		IndexRetrieveServiceImpl<ID, T> retrieveService = srvFactory.createIdSearchService();
+		IndexBackupService backupService = srvFactory.createBackupService();
 		IndexSearchService<T> searchService = srvFactory.createSearchService();
 		IndexAddServiceImpl<T> addService = srvFactory.createAddService();
 		IndexUpsertServiceImpl<T> upsertService = srvFactory.createUpsertService();
@@ -42,13 +45,13 @@ public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 				srvFactory.createShallowUpdateService();
 		return new IndexOperationsFactory<>(countService, retrieveService,
 				searchService, addService, upsertService, removeService,
-				mergeService, resetService, shallowUpdateService);
+				mergeService, resetService, shallowUpdateService, backupService);
 	}
 
 	public WriteIndexOperations<T, ID> createWriteIndexOperations() {
 		return new WriteIndexOperationsImpl<>(
 				addService, upsertService, removeService, resetService,
-				shallowUpdateService, mergeService);
+				shallowUpdateService, mergeService, backupService);
 	}
 
 	public ReadIndexOperations<T, ID> createReadIndexOperations() {

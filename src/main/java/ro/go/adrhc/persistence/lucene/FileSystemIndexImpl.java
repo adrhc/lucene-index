@@ -18,6 +18,7 @@ import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -232,6 +233,11 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 	@Override
 	public void close() throws IOException {
 		indexServicesParamsFactory.close();
+	}
+
+	@Override
+	public void backup(Path indexBackupPath) throws IOException {
+		writeIndexOperations.backup(indexBackupPath);
 	}
 
 	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
