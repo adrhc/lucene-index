@@ -28,7 +28,7 @@ public class IndexWriterFactory {
 	}
 
 	private static IndexDeletionPolicy createIndexDeletionPolicy() {
-		IndexDeletionPolicy base = new KeepOnlyLastCommitDeletionPolicy(); // normal housekeeping
-		return new SnapshotDeletionPolicy(base);
+		IndexDeletionPolicy keepLast = new KeepOnlyLastCommitDeletionPolicy();
+		return new SnapshotDeletionPolicy(keepLast);
 	}
 }
