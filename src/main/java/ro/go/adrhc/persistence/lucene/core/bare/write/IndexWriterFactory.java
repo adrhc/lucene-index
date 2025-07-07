@@ -2,8 +2,7 @@ package ro.go.adrhc.persistence.lucene.core.bare.write;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.*;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -24,6 +23,12 @@ public class IndexWriterFactory {
 
 	private static IndexWriterConfig createOrAppendConfig(Analyzer analyzer) {
 		return new IndexWriterConfig(analyzer)
-				.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+			.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
+			.setIndexDeletionPolicy(createIndexDeletionPolicy());
+	}
+
+	private static IndexDeletionPolicy createIndexDeletionPolicy() {
+		IndexDeletionPolicy base = new KeepOnlyLastCommitDeletionPolicy(); // normal housekeeping
+		return new SnapshotDeletionPolicy(base);
 	}
 }
