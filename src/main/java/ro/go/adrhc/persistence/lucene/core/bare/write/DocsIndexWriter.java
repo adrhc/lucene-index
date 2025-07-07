@@ -7,6 +7,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import ro.go.adrhc.util.stream.StreamCounter;
 
 import java.io.Closeable;
@@ -77,6 +79,15 @@ public class DocsIndexWriter implements Closeable {
 		StreamCounter counter = new StreamCounter();
 		addMany(counter.countedStream(stateAfterReset));
 		log.debug("\nadded {} documents", counter.getCount());
+	}
+
+	public void copyIndex(Path destination) throws IOException {
+		Directory sourceDir = indexWriter.getDirectory();
+		try (FSDirectory fsDirectory = FSDirectory.open(destination)) {
+			for (String fileName : sourceDir.listAll()) {
+				fsDirectory.copyFrom(sourceDir, fileName, fileName, null);
+			}
+		}
 	}
 
 	public void commit() throws IOException {
