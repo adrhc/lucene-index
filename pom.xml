@@ -30,8 +30,8 @@
         <adrhc-utilities.version>1.0-SNAPSHOT</adrhc-utilities.version>
         <commons-text.version>1.13.1</commons-text.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <!-- <lucene.version>10.2.2</lucene.version> -->
-       <lucene.version>9.12.2</lucene.version>
+        <lucene.version>10.2.2</lucene.version>
+        <!-- <lucene.version>9.12.2</lucene.version> -->
     </properties>
 
     <dependencies>
