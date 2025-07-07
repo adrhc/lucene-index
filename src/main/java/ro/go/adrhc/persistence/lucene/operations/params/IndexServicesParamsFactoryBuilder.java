@@ -23,8 +23,8 @@ import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.
 
 @Slf4j
 public class IndexServicesParamsFactoryBuilder<
-		T extends Identifiable<?>,
-		E extends Enum<E> & LuceneFieldSpec<T>> {
+	T extends Identifiable<?>,
+	E extends Enum<E> & LuceneFieldSpec<T>> {
 	public static final int NUM_HITS = 10;
 	private int searchHits = NUM_HITS;
 	private SearchResultFilter<T> searchResultFilter = it -> true;
@@ -33,13 +33,12 @@ public class IndexServicesParamsFactoryBuilder<
 	private LuceneFieldSpec<T> idField;
 	private Path indexPath;
 	private Analyzer analyzer;
-	private boolean failed;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	IndexServicesParamsFactoryBuilder<T, E>
 	of(Class<T> tClass, Class<E> tFieldEnumClass, Path indexPath) {
 		IndexServicesParamsFactoryBuilder<T, E> builder =
-				new IndexServicesParamsFactoryBuilder<>();
+			new IndexServicesParamsFactoryBuilder<>();
 		builder.tClass = tClass;
 		builder.indexPath = indexPath;
 		return builder.tFieldEnumClass(tFieldEnumClass);
@@ -54,13 +53,12 @@ public class IndexServicesParamsFactoryBuilder<
 
 	public IndexServicesParamsFactoryBuilder<T, E> analyzer(Analyzer analyzer) {
 		this.analyzer = analyzer;
-		failed = false;
 		return this;
 	}
 
 	public IndexServicesParamsFactoryBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
-		setNotNullAnalyzerOrFail(defaultAnalyzer(tokenizerProperties).orElse(null));
+		this.analyzer = defaultAnalyzer(tokenizerProperties).orElseThrow();
 		return this;
 	}
 
@@ -70,7 +68,7 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	public IndexServicesParamsFactoryBuilder<T, E> searchResultFilter(
-			SearchResultFilter<T> searchResultFilter) {
+		SearchResultFilter<T> searchResultFilter) {
 		this.searchResultFilter = searchResultFilter;
 		return this;
 	}
@@ -80,20 +78,15 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
-		if (failed) {
-			return Optional.empty();
-		}
-		if (!prepareAnalyzer()) {
-			return Optional.empty();
-		}
+		useDefaultAnalyzerIfEmpty();
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, createIndexReaderPool(), typedFields, analyzer,
-					null, searchHits, searchResultFilter, indexPath));
+				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+				null, searchHits, searchResultFilter, indexPath));
 		} else {
 			return createIndexWriter().map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, createIndexReaderPool(), typedFields, analyzer,
-					indexWriter, searchHits, searchResultFilter, indexPath));
+				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+				indexWriter, searchHits, searchResultFilter, indexPath));
 		}
 	}
 
@@ -118,15 +111,9 @@ public class IndexServicesParamsFactoryBuilder<
 		return Optional.empty();
 	}
 
-	private boolean prepareAnalyzer() {
+	private void useDefaultAnalyzerIfEmpty() {
 		if (analyzer == null) {
-			setNotNullAnalyzerOrFail(AnalyzerFactory.defaultAnalyzer().orElse(null));
+			this.analyzer = AnalyzerFactory.defaultAnalyzer().orElseThrow();
 		}
-		return !failed;
-	}
-
-	private void setNotNullAnalyzerOrFail(Analyzer analyzer) {
-		this.analyzer = analyzer;
-		failed = analyzer == null;
 	}
 }

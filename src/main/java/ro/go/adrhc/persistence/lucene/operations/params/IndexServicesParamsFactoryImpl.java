@@ -24,8 +24,9 @@ import java.util.Collection;
 
 @Getter
 @Slf4j
-public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderParamsFactory<T>
-		implements IndexServicesParamsFactory<T> {
+public class IndexServicesParamsFactoryImpl<T>
+	extends AllHitsTypedIndexReaderParamsFactory<T>
+	implements IndexServicesParamsFactory<T> {
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
 	private final IndexWriter indexWriter;
@@ -35,10 +36,9 @@ public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderPa
 	private boolean closed;
 
 	public IndexServicesParamsFactoryImpl(Class<T> type, LuceneFieldSpec<T> idField,
-			IndexReaderPool indexReaderPool,
-			Collection<? extends LuceneFieldSpec<T>> typedFields, Analyzer analyzer,
-			IndexWriter indexWriter,
-			int searchHits, SearchResultFilter<T> searchResultFilter, Path indexPath) {
+		IndexReaderPool indexReaderPool, Collection<? extends LuceneFieldSpec<T>> typedFields,
+		Analyzer analyzer, IndexWriter indexWriter, int searchHits,
+		SearchResultFilter<T> searchResultFilter, Path indexPath) {
 		super(type, idField, indexReaderPool);
 		this.typedFields = typedFields;
 		this.analyzer = analyzer;
@@ -51,7 +51,7 @@ public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderPa
 	@Override
 	public IndexSearchServiceParams<T> indexSearchServiceParams() {
 		return new IndexSearchServiceParamsImpl<>(type, idField,
-				indexReaderPool, searchResultFilter, searchHits);
+			indexReaderPool, searchResultFilter, searchHits);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class IndexServicesParamsFactoryImpl<T> extends AllHitsTypedIndexReaderPa
 	@Override
 	public IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
 		return new IndexShallowUpdateServiceParamsImpl<>(type, idField,
-				indexReaderPool, typedFields, analyzer, indexWriter);
+			indexReaderPool, typedFields, analyzer, indexWriter);
 	}
 
 	@Override
