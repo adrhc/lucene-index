@@ -6,7 +6,7 @@ import org.apache.lucene.search.Query;
 
 import java.util.Optional;
 
-import static ro.go.adrhc.util.optional.OptionalUtils.ofSneaky;
+import static ro.go.adrhc.util.optional.OptionalFactory.ofSneaky;
 
 @RequiredArgsConstructor
 public class DefaultFieldAwareQueryParser {
