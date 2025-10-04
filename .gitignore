@@ -36,7 +36,11 @@ build/
 .DS_Store
 
 ### my ###
+*youtube-dl*.sh
+/*.log
+/*_tmp_rclone-virtual-storage_test-classes/
 /config/
 /dependency-tree.txt
+/rclone-virtual-storage.log
 /spring-shell.log
-*youtube-dl*.sh
+/tmp/
