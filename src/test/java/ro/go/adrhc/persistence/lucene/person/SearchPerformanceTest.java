@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.*;
+import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 
 @Disabled
 @ExtendWith(MockitoExtension.class)
@@ -35,14 +35,14 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	void keywordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = indexRepository
-				.count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
+			.count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\ncount time: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findMany(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
+			.findMany(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -52,14 +52,14 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	void wordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = indexRepository
-				.count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
+			.count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findMany(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
+			.findMany(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
@@ -69,14 +69,14 @@ public class SearchPerformanceTest extends AbstractPersonsIndexTest {
 	void phraseTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
 		int count = indexRepository
-				.count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
+			.count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
 		List<Person> people = indexRepository
-				.findMany(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
+			.findMany(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());

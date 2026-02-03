@@ -1,6 +1,7 @@
 package ro.go.adrhc.persistence.lucene.person;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,12 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Strings.concat;
 import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.ANALYZER;
 import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.NAME_QUERY_PARSER;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.*;
+import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 import static ro.go.adrhc.util.fn.FunctionFactory.nullFailResultFn;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,11 +27,36 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 	private static final Person PERSON3 = PEOPLE.get(2);
 
 	@Test
+	void hasManyTags() throws IOException {
+		Query query = PersonQueryFactory.hasAllTags(Set.of("LIKED", "LOVED"));
+		List<Person> metadata = indexRepository.findMany(query);
+		assertThat(metadata).hasSize(1);
+	}
+
+	@Test
+	void hasOneTag() throws IOException {
+		Query likedQuery = PersonQueryFactory.hasTag("LIKED");
+		List<Person> liked = indexRepository.findMany(likedQuery);
+		log.debug("\nLIKED entries:\n{}", concat(liked));
+		assertThat(liked).hasSize(2);
+
+		Query lovedQuery = PersonQueryFactory.hasTag("LOVED");
+		List<Person> loved = indexRepository.findMany(lovedQuery);
+		log.debug("\nLOVED entries:\n{}", concat(loved));
+		assertThat(loved).hasSize(2);
+
+		/*Query miscQuery = PersonQueryFactory.hasTag("DATA");
+		List<Person> misc = indexRepository.findMany(miscQuery);
+		log.debug("\nLOVED entries:\n{}", concat(misc));
+		assertThat(misc).hasSize(1);*/
+	}
+
+	@Test
 	void parse() {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = NAME_QUERY_PARSER.parse("pers*2*")
-				.map(nullFailResultFn(indexRepository::findMany))
-				.orElseGet(List::of);
+			.map(nullFailResultFn(indexRepository::findMany))
+			.orElseGet(List::of);
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
 	}
@@ -37,7 +65,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 	void closeFuzzyTokens() throws IOException {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
-				NAME_QUERIES.maxFuzzinessNearTokens(List.of("ddd", "an", "cast")));
+			NAME_QUERIES.maxFuzzinessNearTokens(List.of("ddd", "an", "cast")));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON2.id());
@@ -47,7 +75,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 	void tokenEquals() throws IOException {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
-				ALIAS_PHRASE_QUERIES.tokenEquals("aliasphraseaaiisstt123"));
+			ALIAS_PHRASE_QUERIES.tokenEquals("aliasphraseaaiisstt123"));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -60,7 +88,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		log.info("\naliasWord is:\t\t{}\nnormalized is:\t{}", aliasWord, normalized);
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
-				ALIAS_WORD_QUERIES.tokenEquals(normalized));
+			ALIAS_WORD_QUERIES.tokenEquals(normalized));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -72,7 +100,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		log.info("\naliasKeyWord is: {}", aliasKeyword);
 		// KeywordField shouldn't be normalized!
 		List<Person> result = indexRepository.findMany(
-				ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
+			ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -86,7 +114,7 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		log.info("\ntoken is:\t{}\nprefix is:\t{}", token, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
-				ALIAS_PHRASE_QUERIES.startsWith(prefix));
+			ALIAS_PHRASE_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}

@@ -28,20 +28,8 @@ public enum PersonFieldType implements LuceneFieldSpec<Person> {
 	longField(LONG, longField(Person::longField), false),
 	instantField(LONG, instantField(Person::instantField), false),
 	storedOnlyField(STORED, Person::storedOnlyField),
-	male(INT, booleanField(Person::male), false);
-
-	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(
-			PersonFieldType.nameWord);
-	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonFieldType.name);
-	public static final FieldQueries ALIAS_KEYWORD_QUERIES = FieldQueries.create(
-			PersonFieldType.aliasKeyWord);
-	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(
-			PersonFieldType.aliasWord);
-	public static final FieldQueries ALIAS_PHRASE_QUERIES = FieldQueries.create(
-			PersonFieldType.aliasPhrase);
-	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonFieldType.cnp);
-	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
-	public static final FieldQueries MALE_QUERIES = FieldQueries.create(PersonFieldType.male);
+	male(INT, booleanField(Person::male), false),
+	tags(TAGS, tagsField(Person::tags));
 
 	private final FieldType fieldType;
 	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;
@@ -51,5 +39,11 @@ public enum PersonFieldType implements LuceneFieldSpec<Person> {
 		this.fieldType = fieldType;
 		this.isIdField = false;
 		this.fieldSerde = stringField(propertyAccessor);
+	}
+
+	PersonFieldType(FieldType fieldType, ObjectLuceneFieldMapper<Person, ?> fieldSerde) {
+		this.fieldType = fieldType;
+		this.isIdField = false;
+		this.fieldSerde = fieldSerde;
 	}
 }

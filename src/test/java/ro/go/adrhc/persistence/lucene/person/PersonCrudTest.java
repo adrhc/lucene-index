@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.ALIAS_KEYWORD_QUERIES;
+import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.ALIAS_KEYWORD_QUERIES;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
