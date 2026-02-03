@@ -21,17 +21,17 @@ public class PeopleGenerator {
 		new Person(2L, "#Person2", "IMG-20210725-WA0029 ccc_ddd an CAșț.jpeg",
 			"alias_Keyword2", "alias_Word2", "alias_Phrase2",
 			222, 222L, Instant.parse("2002-01-02T03:04:05.06Z"),
-			"misc2", false, new HashSet<>(Set.of("LIKED"))),
+			"misc2", false, new HashSet<>(Set.of("LIKED", "(LOVED"))),
 		new Person(3L,
 			"Ping_Pong #name (Original)Person222 ăĂîÎșȘțȚ123",
 			"Ping_Pong #name (Original)Person222 ăĂîÎșȘțȚ123",
 			"alias_KeywordăĂîÎșȘțȚ123", "alias_WordăĂîÎșȘțȚ123",
 			"aliasPhraseăĂîÎșȘțȚ123", 333, 333L,
 			Instant.parse("2003-01-02T03:04:05.06Z"),
-			"misc3", true, new HashSet<>(Set.of("LOVED")))
+			"misc3", true, new HashSet<>(Set.of("#LIKED", "LOVED", "LIKED=LOVED")))
 //		addTags(generateGirl(4), "#LIKED"),
 //		addTags(generateGirl(5), "(LOVED")
-//		addTags(generateGirl(6), "TEST:DATA"),
+//		addTags(generateGirl(6), "TEST=DATA"),
 //		addTags(generateGirl(7), "DATA")
 	);
 

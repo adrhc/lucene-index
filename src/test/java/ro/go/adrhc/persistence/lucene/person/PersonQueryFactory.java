@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.query.FieldQueries;
 
-import java.util.Locale;
 import java.util.Set;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.query.BooleanQueryFactory.mustSatisfy;
@@ -24,7 +23,7 @@ public class PersonQueryFactory {
 	public static final FieldQueries TAGS_QUERY = FieldQueries.create(PersonFieldType.tags);
 
 	public static Query hasTag(String tag) {
-		return TAGS_QUERY.tokenEquals(tag.toLowerCase(Locale.ROOT));
+		return TAGS_QUERY.tokenEquals(tag);
 	}
 
 	public static Query hasAllTags(Set<String> tags) {

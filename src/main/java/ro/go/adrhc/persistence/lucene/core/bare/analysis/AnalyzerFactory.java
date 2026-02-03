@@ -10,6 +10,7 @@ import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -33,6 +34,10 @@ public class AnalyzerFactory {
 	public static Optional<Analyzer> defaultAnalyzer(
 			TokenizerProperties properties) {
 		return new AnalyzerFactory(properties).create();
+	}
+
+	public static Analyzer tagsAnalyzer() {
+		return new WhitespaceAnalyzer();
 	}
 
 	public Optional<Analyzer> create() {

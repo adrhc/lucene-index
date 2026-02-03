@@ -2,11 +2,13 @@ package ro.go.adrhc.persistence.lucene.operations.params;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
@@ -15,9 +17,7 @@ import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Optional;
+import java.util.*;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 
@@ -82,15 +82,33 @@ public class IndexServicesParamsFactoryBuilder<
 		if (analyzer == null) {
 			return Optional.empty();
 		}
+		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
+				tClass, idField, createIndexReaderPool(), typedFields, finalAnalyzer,
 				null, searchHits, searchResultFilter, indexPath));
 		} else {
-			return createIndexWriter().map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, createIndexReaderPool(), typedFields, analyzer,
-				indexWriter, searchHits, searchResultFilter, indexPath));
+			return createIndexWriter(finalAnalyzer)
+				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
+					tClass, idField, createIndexReaderPool(), typedFields, finalAnalyzer,
+					indexWriter, searchHits, searchResultFilter, indexPath));
 		}
+	}
+
+	private Analyzer applyPerFieldAnalyzers(Analyzer baseAnalyzer) {
+		if (typedFields == null || typedFields.isEmpty()) {
+			return baseAnalyzer;
+		}
+		Map<String, Analyzer> overrides = new HashMap<>();
+		for (LuceneFieldSpec<T> fieldSpec : typedFields) {
+			if (fieldSpec.fieldType() == FieldType.TAGS) {
+				overrides.put(fieldSpec.name(), AnalyzerFactory.tagsAnalyzer());
+			}
+		}
+		if (overrides.isEmpty()) {
+			return baseAnalyzer;
+		}
+		return new PerFieldAnalyzerWrapper(baseAnalyzer, overrides);
 	}
 
 	private IndexReaderPool createIndexReaderPool() {
@@ -105,7 +123,7 @@ public class IndexServicesParamsFactoryBuilder<
 		});
 	}
 
-	private Optional<IndexWriter> createIndexWriter() {
+	private Optional<IndexWriter> createIndexWriter(Analyzer analyzer) {
 		try {
 			return Optional.of(IndexWriterFactory.fsWriter(analyzer, indexPath));
 		} catch (IOException e) {
