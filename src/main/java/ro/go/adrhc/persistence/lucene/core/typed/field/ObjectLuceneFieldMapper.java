@@ -82,7 +82,7 @@ public record ObjectLuceneFieldMapper<T, P>(
 	public static <T> ObjectLuceneFieldMapper<T, Set<String>>
 	tagsField(Function<T, Set<String>> propertyAccessor) {
 		return new ObjectLuceneFieldMapper<>(propertyAccessor,
-			it -> stringSet(it).isEmpty() ? null : concat(" ", stringSet(it)),
+			it -> it == null || stringSet(it).isEmpty() ? null : concat(" ", stringSet(it)),
 			IndexableField::stringValue,
 			it -> it == null ? null : Set.of(((String) it).split("\\s+")));
 	}
