@@ -58,7 +58,12 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	public Stream<IndexableField> getFields(String fieldName) throws IOException {
-		return getDocProjectionStream(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
+		return getDocProjectionStream(Set.of(fieldName))
+			.mapMulti((doc, sink) -> {
+				for (IndexableField field : doc.getFields(fieldName)) {
+					sink.accept(field);
+				}
+			});
 	}
 
 	public Stream<Object> findFieldValues(
