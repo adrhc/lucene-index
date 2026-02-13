@@ -17,6 +17,9 @@ public record ObjectLuceneFieldMapper<T, P>(
 	Function<T, P> propertyAccessor,
 	Function<Object, ?> toIndexableValue,
 	Function<IndexableField, Object> indexedValueAccessor,
+	/*
+	 * Converts the value obtained from the index to the property value type (P of T).
+	 */
 	Function<Object, P> toPropertyValue) {
 	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
 		= field -> field.storedValue().getIntValue();
