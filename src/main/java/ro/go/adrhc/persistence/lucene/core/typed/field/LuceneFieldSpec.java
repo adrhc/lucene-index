@@ -32,12 +32,12 @@ public interface LuceneFieldSpec<T> {
 		return propToIndexableValue(propValue);
 	}
 
-	default Object toPropValue(Object indexableValue) {
-		return fieldSerde().toPropertyValue().apply(indexableValue);
-	}
-
 	default Object indexableFieldToPropValue(IndexableField field) {
 		Object indexedValue = fieldSerde().fieldValueAccessor().apply(field);
 		return toPropValue(indexedValue);
+	}
+
+	default Object toPropValue(Object indexableValue) {
+		return fieldSerde().toPropertyValue().apply(indexableValue);
 	}
 }
