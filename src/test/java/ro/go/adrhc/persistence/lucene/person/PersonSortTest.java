@@ -1,10 +1,7 @@
 package ro.go.adrhc.persistence.lucene.person;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortedNumericSortField;
-import org.apache.lucene.search.SortedSetSortField;
+import org.apache.lucene.search.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.apache.lucene.search.SortField.Type.LONG;
-import static org.apache.lucene.search.SortField.Type.STRING_VAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.cnp;
@@ -28,11 +24,19 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 	}
 
 	@Test
-	void findIds() throws IOException {
-		Sort sort = new Sort(new SortedNumericSortField(cnp.name(), STRING_VAL));
+	void findIdsSortedByCnp() throws IOException {
+		Sort sort = new Sort(new SortedSetSortField(cnp.name(), true));
 		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
 		assertThat(result).hasSize(100);
-		assertThat(result).containsSequence(0L, 1L, 2L);
+		assertThat(result).containsSequence(99L, 98L, 97L);
+	}
+
+	@Test
+	void findIdsSortedByName() throws IOException {
+		Sort sort = new Sort(new SortedSetSortField(cnp.name(), true));
+		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
+		assertThat(result).hasSize(100);
+		assertThat(result).containsSequence(99L, 98L, 97L);
 	}
 
 	@Test
