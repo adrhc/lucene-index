@@ -37,7 +37,7 @@ public interface LuceneFieldSpec<T> {
 		return toPropValue(indexedValue);
 	}
 
-	default <ID> ID toPropValue(Object indexableValue) {
-		return (ID) fieldSerde().toPropertyValue().apply(indexableValue);
+	default <P> P toPropValue(Object indexableValue) {
+		return (P) fieldSerde().toPropertyValue().apply(indexableValue);
 	}
 }
