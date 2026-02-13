@@ -26,7 +26,7 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 			.flatMap(Optional::stream);
 	}
 
-	public Optional<Field> toField(T t, LuceneFieldSpec<T> typedField) {
+	protected Optional<Field> toField(T t, LuceneFieldSpec<T> typedField) {
 		Object fieldValue = typedField.typedToIndexableValue(t);
 		if (fieldValue == null) {
 			return Optional.empty();
@@ -35,7 +35,7 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 		}
 	}
 
-	private Field toField(LuceneFieldSpec<?> typedField, Object fieldValue) {
+	protected Field toField(LuceneFieldSpec<?> typedField, Object fieldValue) {
 		return fieldFactory.create(typedField.mustStore(),
 			typedField.fieldType(), typedField.name(), fieldValue);
 	}
