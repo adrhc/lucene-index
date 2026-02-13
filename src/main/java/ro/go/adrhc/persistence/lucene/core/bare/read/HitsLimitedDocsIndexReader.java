@@ -5,6 +5,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
+import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -52,5 +53,10 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 
 	public Stream<Object> findFieldValues(String fieldName, Query query) throws IOException {
 		return findFieldValues(fieldName, query, numHits);
+	}
+
+	public Stream<Object> findFieldValues(
+		String fieldName, Query query, @Nullable Sort sort) throws IOException {
+		return super.findFieldValues(fieldName, query, numHits, sort);
 	}
 }

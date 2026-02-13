@@ -2,11 +2,11 @@ package ro.go.adrhc.persistence.lucene.operations.retrieve;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.BooleanQuery;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.List;

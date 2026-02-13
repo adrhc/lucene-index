@@ -1,8 +1,8 @@
 package ro.go.adrhc.persistence.lucene.person;
 
 import org.junit.jupiter.api.Test;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.Optional;

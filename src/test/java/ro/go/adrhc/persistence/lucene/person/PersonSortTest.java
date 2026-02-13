@@ -11,8 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.apache.lucene.search.SortField.Type.LONG;
+import static org.apache.lucene.search.SortField.Type.STRING_VAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.cnp;
@@ -20,9 +22,17 @@ import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.instantField
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class PersonSortTest extends AbstractPersonsIndexTest {
+class PersonSortTest extends AbstractPersonsIndexTest {
 	protected void indexRepositoryReset() throws IOException {
 		indexRepository.reset(generatePeopleList(100));
+	}
+
+	@Test
+	void findIds() throws IOException {
+		Sort sort = new Sort(new SortedNumericSortField(cnp.name(), STRING_VAL));
+		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
+		assertThat(result).hasSize(100);
+		assertThat(result).containsSequence(0L, 1L, 2L);
 	}
 
 	@Test

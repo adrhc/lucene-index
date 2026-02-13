@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.ArrayList;

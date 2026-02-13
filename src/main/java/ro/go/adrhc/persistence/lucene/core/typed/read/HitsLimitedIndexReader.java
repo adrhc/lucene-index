@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
+import org.springframework.lang.Nullable;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
@@ -46,14 +48,19 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ID> findIds(Query query) throws IOException {
-		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query)
-			.map(value -> (ID) idField.toPropValue(value));
+		return findIds(query, null);
+	}
+
+	public Stream<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
+		return hitsLimitedDocsIndexReader
+			.findFieldValues(idField.name(), query, sort)
+			.map(idField::toPropValue);
 	}
 
 	public Stream<ID> findIds(Query query, int numHits) throws IOException {
 		return hitsLimitedDocsIndexReader
 			.findFieldValues(idField.name(), query, numHits)
-			.map(value -> (ID) idField.toPropValue(value));
+			.map(idField::toPropValue);
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {

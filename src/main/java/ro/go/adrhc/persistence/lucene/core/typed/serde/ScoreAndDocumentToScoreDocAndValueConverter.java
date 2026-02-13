@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndDocument;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 
 import java.util.Optional;
 import java.util.stream.Stream;

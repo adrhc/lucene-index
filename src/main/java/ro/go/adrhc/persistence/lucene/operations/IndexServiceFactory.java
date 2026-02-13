@@ -26,7 +26,7 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 		return IndexSearchServiceImpl.create(paramsFactory.indexSearchServiceParams());
 	}
 
-	public IndexRetrieveServiceImpl<ID, T> createIdSearchService() {
+	public IndexRetrieveServiceImpl<ID, T> createRetrieveService() {
 		return IndexRetrieveServiceImpl.create(paramsFactory.typedRetrieveServiceParams());
 	}
 

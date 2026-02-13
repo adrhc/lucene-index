@@ -7,8 +7,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
+import org.springframework.lang.Nullable;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.AbstractOneStoredFieldVisitor;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.OneStoredObjectFieldVisitor;
+import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -61,10 +63,14 @@ public class DocsIndexReader implements Closeable {
 
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, int numHits) throws IOException {
+		return findFieldValues(fieldName, query, numHits, null);
+	}
+
+	public Stream<Object> findFieldValues(
+		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
-		OneStoredObjectFieldVisitor fieldVisitor =
-			new OneStoredObjectFieldVisitor(fieldName);
+		TopDocs topDocs = useIndexSearcher(s -> IndexSearcherAccessors.search(s, query, numHits, sort));
+		OneStoredObjectFieldVisitor fieldVisitor = new OneStoredObjectFieldVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
 			.map(scoreDoc -> safelyGetOneFieldValue(storedFields, fieldVisitor, scoreDoc))
 			.filter(Objects::nonNull);

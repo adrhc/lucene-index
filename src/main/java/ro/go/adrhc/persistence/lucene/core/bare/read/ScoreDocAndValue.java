@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.typed.read;
+package ro.go.adrhc.persistence.lucene.core.bare.read;
 
 import org.apache.lucene.search.ScoreDoc;
 

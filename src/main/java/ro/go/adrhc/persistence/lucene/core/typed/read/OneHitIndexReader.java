@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.core.typed.read;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
 import ro.go.adrhc.util.Breakable;

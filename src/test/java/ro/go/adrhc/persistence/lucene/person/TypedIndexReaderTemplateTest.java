@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 
-public class TypedIndexReaderTemplateTest extends AbstractPersonsIndexTest {
+class TypedIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 	@Test
 	void readTest() throws IOException {
 		HitsLimitedIndexReaderTemplate<Long, Person> readerTemplate = createPersonIndexReaderTemplate();

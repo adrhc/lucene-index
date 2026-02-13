@@ -29,8 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
-	implements FileSystemIndex<ID, T> {
+public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements FileSystemIndex<ID, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
 	protected final ReadIndexOperations<T, ID> readIndexOperations;
@@ -252,5 +251,15 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 		}
 		action.run();
 		indexServicesParamsFactory.getIndexWriter().commit();
+	}
+
+	@Override
+	public List<ID> findIds(Query query) throws IOException {
+		return readIndexOperations.findIds(query);
+	}
+
+	@Override
+	public List<ID> findIds(Query query, Sort sort) throws IOException {
+		return readIndexOperations.findIds(query, sort);
 	}
 }

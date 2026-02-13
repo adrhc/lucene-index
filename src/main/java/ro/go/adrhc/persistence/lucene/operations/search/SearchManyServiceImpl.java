@@ -8,7 +8,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.ArrayList;

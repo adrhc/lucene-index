@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 public class HitsLimitedIndexReaderTemplate<ID, T> {
 	private final SneakySupplier<HitsLimitedIndexReader<ID, T>, IOException> indexReaderFactory;
 
-	public static <ID, T> HitsLimitedIndexReaderTemplate<ID, T> create(
-		HitsLimitedIndexReaderParams<T> params) {
+	public static <ID, T> HitsLimitedIndexReaderTemplate<ID, T>
+	create(HitsLimitedIndexReaderParams<T> params) {
 		return new HitsLimitedIndexReaderTemplate<>(() -> HitsLimitedIndexReader.create(params));
 	}
 
@@ -26,12 +26,15 @@ public class HitsLimitedIndexReaderTemplate<ID, T> {
 		}
 	}
 
+	/**
+	 * The result must NOT be a Stream!!!
+	 */
 	public <R, E extends Exception> R useReader(
 		SneakyFunction<HitsLimitedIndexReader<ID, T>, R, E> indexReaderFn)
 		throws IOException, E {
 		try (HitsLimitedIndexReader<ID, T> reader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(reader);
-			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
+			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a Stream!");
 			return result;
 		}
 	}
