@@ -14,12 +14,12 @@ public class DocsIndexReaderTemplate {
 
 	public static DocsIndexReaderTemplate create(HitsLimitedDocsIndexReaderParams params) {
 		return new DocsIndexReaderTemplate(
-				() -> HitsLimitedDocsIndexReader.create(params));
+			() -> HitsLimitedDocsIndexReader.create(params));
 	}
 
 	public static DocsIndexReaderTemplate createUnlimited(IndexReaderPool indexReaderPool) {
 		return new DocsIndexReaderTemplate(
-				() -> HitsLimitedDocsIndexReader.createUnlimited(indexReaderPool));
+			() -> HitsLimitedDocsIndexReader.createUnlimited(indexReaderPool));
 	}
 
 	/*public <R, E extends Exception> R transformFields(String fieldName,
@@ -51,8 +51,8 @@ public class DocsIndexReaderTemplate {
 	 * before the Stream is return the DocsIndexReader is closed.
 	 */
 	public <R, E extends Exception> R useReader(
-			SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
-			throws IOException, E {
+		SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
+		throws IOException, E {
 		try (DocsIndexReader indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");

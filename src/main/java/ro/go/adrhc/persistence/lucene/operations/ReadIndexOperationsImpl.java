@@ -30,9 +30,15 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	private final IndexSearchService<T> searchService;
 
 	@Override
-	public Optional<T> findBestMatch(
-		BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
-		return searchService.findBestMatch(bestMatchingStrategy, query);
+	public ScoreDocAndValues<T> findManyAfter(
+		ScoreDoc after, Query query, Sort sort) throws IOException {
+		return searchService.findManyAfter(after, query, sort);
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(
+		ScoreDoc after, Query query, int hitsCount, Sort sort) throws IOException {
+		return searchService.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override
@@ -41,20 +47,32 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public List<QueryAndValue<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
+	public Optional<T> findBestMatch(
+		BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
+		return searchService.findBestMatch(bestMatchingStrategy, query);
+	}
+
+	@Override
+	public List<QueryAndValue<T>> findBestMatches(
+		Collection<? extends Query> queries) throws IOException {
+		return searchService.findBestMatches(queries);
+	}
+
+	@Override
+	public List<QueryAndValue<T>> findBestMatches(
+		BestMatchingStrategy<T> bestMatchingStrategy,
 		Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);
 	}
 
 	@Override
-	public List<QueryAndValue<T>> findBestMatches(Collection<? extends Query> queries)
-		throws IOException {
-		return searchService.findBestMatches(queries);
+	public List<T> findMany(Query query) throws IOException {
+		return searchService.findMany(query);
 	}
 
 	@Override
-	public List<T> findMany(Query query) throws IOException {
-		return searchService.findMany(query);
+	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
+		return searchService.findMany(query, sort);
 	}
 
 	@Override
@@ -65,23 +83,6 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchService.findMany(query, hitsCount, sort);
-	}
-
-	@Override
-	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
-		return searchService.findMany(query, sort);
-	}
-
-	@Override
-	public ScoreDocAndValues<T> findManyAfter(
-		ScoreDoc after, Query query, int hitsCount, Sort sort) throws IOException {
-		return searchService.findManyAfter(after, query, hitsCount, sort);
-	}
-
-	@Override
-	public ScoreDocAndValues<T> findManyAfter(
-		ScoreDoc after, Query query, Sort sort) throws IOException {
-		return searchService.findManyAfter(after, query, sort);
 	}
 
 	@Override

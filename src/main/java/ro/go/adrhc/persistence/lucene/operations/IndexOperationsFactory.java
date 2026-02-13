@@ -39,19 +39,19 @@ public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 		IndexUpsertServiceImpl<T> upsertService = srvFactory.createUpsertService();
 		IndexRemoveServiceImpl<ID> removeService = srvFactory.createRemoveService();
 		IndexMergeService<T> mergeService = new IndexMergeServiceImpl<>(
-				retrieveService, addService, upsertService);
+			retrieveService, addService, upsertService);
 		IndexResetServiceImpl<T> resetService = srvFactory.createResetService();
 		IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService =
-				srvFactory.createShallowUpdateService();
+			srvFactory.createShallowUpdateService();
 		return new IndexOperationsFactory<>(countService, retrieveService,
-				searchService, addService, upsertService, removeService,
-				mergeService, resetService, shallowUpdateService, backupService);
+			searchService, addService, upsertService, removeService,
+			mergeService, resetService, shallowUpdateService, backupService);
 	}
 
 	public WriteIndexOperations<T, ID> createWriteIndexOperations() {
 		return new WriteIndexOperationsImpl<>(
-				addService, upsertService, removeService, resetService,
-				shallowUpdateService, mergeService, backupService);
+			addService, upsertService, removeService, resetService,
+			shallowUpdateService, mergeService, backupService);
 	}
 
 	public ReadIndexOperations<T, ID> createReadIndexOperations() {

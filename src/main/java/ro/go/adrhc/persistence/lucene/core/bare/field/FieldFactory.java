@@ -52,7 +52,7 @@ public class FieldFactory {
 
 	public static TextField phraseField(boolean stored, String fieldName, Object value) {
 		return new TextField(fieldName, value.toString(),
-				stored ? Field.Store.YES : Field.Store.NO);
+			stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class FieldFactory {
 
 	public static KeywordField keywordField(boolean stored, String fieldName, Object value) {
 		return new KeywordField(fieldName, value.toString(),
-				stored ? Field.Store.YES : Field.Store.NO);
+			stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	public static StoredField storedField(Enum<?> field, Object value) {
@@ -94,9 +94,9 @@ public class FieldFactory {
 
 	public Field create(boolean stored, FieldType fieldType, String fieldName, Object value) {
 		Assert.isTrue(fieldType != STORED || stored,
-				"STORED fields must demand to be stored!");
+			"STORED fields must demand to be stored!");
 		Assert.isTrue(fieldType != INT || !stored,
-				"INT fields must not demand to be stored!");
+			"INT fields must not demand to be stored!");
 		return switch (fieldType) {
 			case KEYWORD -> keywordField(stored, fieldName, value);
 			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
