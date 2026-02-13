@@ -106,11 +106,6 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
-		return retrieveService.getFieldOfAll(field);
-	}
-
-	@Override
 	public void readAll(Consumer<Stream<T>> consumer) throws IOException {
 		retrieveService.readAll(consumer);
 	}
@@ -123,6 +118,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	@Override
 	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
 		return retrieveService.reduceIds(idsReducer);
+	}
+
+	@Override
+	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+		return retrieveService.getFieldOfAll(field);
 	}
 
 	@Override
