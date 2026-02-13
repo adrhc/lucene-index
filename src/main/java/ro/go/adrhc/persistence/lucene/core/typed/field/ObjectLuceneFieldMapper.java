@@ -14,6 +14,9 @@ import static ro.go.adrhc.util.text.StringUtils.concat;
 
 @Slf4j
 public record ObjectLuceneFieldMapper<T, P>(
+	/*
+	 * Extracts the property value (P) from the object (T).
+	 */
 	Function<T, P> propertyAccessor,
 	Function<Object, ?> toIndexableValue,
 	Function<IndexableField, Object> indexedValueAccessor,

@@ -23,13 +23,13 @@ public interface LuceneFieldSpec<T> {
 		return isIdField() || fieldType() == FieldType.STORED;
 	}
 
-	default Object propToIndexableValue(Object propValue) {
-		return fieldSerde().toIndexableValue().apply(propValue);
-	}
-
 	default Object typedToIndexableValue(T t) {
 		Object propValue = fieldSerde().propertyAccessor().apply(t);
 		return propToIndexableValue(propValue);
+	}
+
+	default Object propToIndexableValue(Object propValue) {
+		return fieldSerde().toIndexableValue().apply(propValue);
 	}
 
 	default Object indexableValueToPropValue(IndexableField field) {
