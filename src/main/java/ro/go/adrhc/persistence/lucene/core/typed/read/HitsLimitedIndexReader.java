@@ -96,7 +96,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFields(field.name())
-			.map(field::indexableFieldToPropValue)
+			.map(field::indexableValueToPropValue)
 			.map(ObjectUtils::cast);
 	}
 

@@ -15,8 +15,8 @@ import static ro.go.adrhc.util.text.StringUtils.concat;
 @Slf4j
 public record ObjectLuceneFieldMapper<T, P>(
 	Function<T, P> propertyAccessor,
-	Function<Object, ?> toFieldValue,
-	Function<IndexableField, Object> fieldValueAccessor,
+	Function<Object, ?> toIndexableValue,
+	Function<IndexableField, Object> indexedValueAccessor,
 	Function<Object, P> toPropertyValue) {
 	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
 		= field -> field.storedValue().getIntValue();
