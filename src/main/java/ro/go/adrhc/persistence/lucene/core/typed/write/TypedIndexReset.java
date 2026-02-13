@@ -14,7 +14,7 @@ public class TypedIndexReset<T> extends AbstractTypedIndexWriter<T> {
 
 	public static <T> TypedIndexReset<T> create(TypedIndexWriterParams<T> params) {
 		return new TypedIndexReset<>(TypedToDocumentConverter.create(params),
-			new DocsIndexWriter(params.indexWriter()));
+				new DocsIndexWriter(params.getIndexWriter()));
 	}
 
 	public void reset(Stream<T> stateAfterReset) throws IOException {

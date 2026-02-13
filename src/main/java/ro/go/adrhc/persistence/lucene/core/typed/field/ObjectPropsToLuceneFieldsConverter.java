@@ -16,8 +16,8 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 	public static <T> ObjectPropsToLuceneFieldsConverter<T>
 	create(ObjectPropsToLuceneFieldsConverterParams<T> params) {
 		return new ObjectPropsToLuceneFieldsConverter<>(
-			FieldFactory.create(params.analyzer()),
-			params.typedFields());
+			FieldFactory.create(params.getAnalyzer()),
+			params.getTypedFields());
 	}
 
 	public Stream<Field> toFields(T tValue) {

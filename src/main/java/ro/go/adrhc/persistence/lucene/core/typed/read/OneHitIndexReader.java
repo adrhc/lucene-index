@@ -21,11 +21,11 @@ public class OneHitIndexReader<T> implements Closeable {
 	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
 		throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
-			DocumentToTypedConverter.create(params.type());
+				DocumentToTypedConverter.create(params.getType());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
 			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 		return new OneHitIndexReader<>(toScoreAndTypedConverter,
-			HitsLimitedDocsIndexReader.create(params.indexReaderPool(), 1));
+				HitsLimitedDocsIndexReader.create(params.getIndexReaderPool(), 1));
 	}
 
 	public Optional<ScoreDocAndValue<T>> findFirst(Query query) throws IOException {

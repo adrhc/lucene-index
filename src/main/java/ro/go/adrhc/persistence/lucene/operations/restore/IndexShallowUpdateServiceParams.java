@@ -11,7 +11,7 @@ public interface IndexShallowUpdateServiceParams<T> extends TypedIndexWriterPara
 
 	HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 
-	IndexWriter indexWriter();
+	IndexWriter getIndexWriter();
 
 	TypedIndexRemoverParams typedIndexRemoverParams();
 }

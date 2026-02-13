@@ -21,7 +21,7 @@ public class TypedIndexAdder<T> extends AbstractTypedIndexWriter<T> {
 	public static <T> TypedIndexAdder<T> create(TypedIndexWriterParams<T> params) {
 		TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
 		return new TypedIndexAdder<>(toDocumentConverter,
-			new DocsIndexWriter(params.indexWriter()));
+				new DocsIndexWriter(params.getIndexWriter()));
 	}
 
 	public void addOne(T t) throws IOException {
