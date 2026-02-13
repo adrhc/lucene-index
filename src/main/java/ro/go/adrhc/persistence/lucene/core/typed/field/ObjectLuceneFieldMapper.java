@@ -13,7 +13,8 @@ import java.util.function.Function;
 import static ro.go.adrhc.util.text.StringUtils.concat;
 
 @Slf4j
-public record ObjectLuceneFieldMapper<T, P>(Function<T, P> propertyAccessor,
+public record ObjectLuceneFieldMapper<T, P>(
+	Function<T, P> propertyAccessor,
 	Function<Object, ?> toFieldValue,
 	Function<IndexableField, Object> fieldValueAccessor,
 	Function<Object, P> toPropertyValue) {
