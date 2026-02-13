@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
 		extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
-	<R> R reduce(Function<Stream<T>, R> reducer) throws IOException;
+	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;
 

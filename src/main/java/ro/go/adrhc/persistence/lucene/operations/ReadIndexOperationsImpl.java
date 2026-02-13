@@ -115,8 +115,8 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
-		return retrieveService.reduce(reducer);
+	public <R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException {
+		return retrieveService.reduceAll(reducer);
 	}
 
 	@Override

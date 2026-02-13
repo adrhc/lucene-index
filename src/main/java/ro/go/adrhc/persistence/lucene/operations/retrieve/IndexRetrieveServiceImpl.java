@@ -39,7 +39,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	}
 
 	@Override
-	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
+	public <R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException {
 		return indexReaderTemplate.useReader(reader -> reducer.apply(reader.getAll()));
 	}
 

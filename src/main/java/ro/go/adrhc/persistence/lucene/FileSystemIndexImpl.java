@@ -108,8 +108,8 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 	}
 
 	@Override
-	public <R> R reduce(Function<Stream<T>, R> reducer) throws IOException {
-		return readIndexOperations.reduce(reducer);
+	public <R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException {
+		return readIndexOperations.reduceAll(reducer);
 	}
 
 	@Override
