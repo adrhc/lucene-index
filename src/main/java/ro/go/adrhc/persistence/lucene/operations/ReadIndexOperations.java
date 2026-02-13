@@ -5,6 +5,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.operations.search.IdSearchService;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
 
@@ -17,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
-	extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
+	extends IndexCountService, IndexSearchService<T>, IdSearchService<ID>, IndexRetrieveService<ID, T> {
 	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;

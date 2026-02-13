@@ -71,6 +71,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
+	public ScoreDocAndValues<ID> findManyIds(Query query, Sort sort) throws IOException {
+		// todo
+	}
+
+	@Override
 	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
 		return searchService.findMany(query, sort);
 	}
