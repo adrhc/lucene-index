@@ -99,7 +99,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	/**
 	 * The caller must use the proper type!
 	 */
-	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+	public <P> Stream<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFields(field.name())

@@ -82,7 +82,8 @@ public class IndexServicesParamsFactoryBuilder<
 		if (analyzer == null) {
 			return Optional.empty();
 		}
-		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
+//		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
+		Analyzer finalAnalyzer = this.analyzer;
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
 				tClass, idField, createIndexReaderPool(), typedFields, finalAnalyzer,
@@ -95,7 +96,7 @@ public class IndexServicesParamsFactoryBuilder<
 		}
 	}
 
-	private Analyzer applyPerFieldAnalyzers(Analyzer baseAnalyzer) {
+	/*private Analyzer applyPerFieldAnalyzers(Analyzer baseAnalyzer) {
 		if (typedFields == null || typedFields.isEmpty()) {
 			return baseAnalyzer;
 		}
@@ -109,7 +110,7 @@ public class IndexServicesParamsFactoryBuilder<
 			return baseAnalyzer;
 		}
 		return new PerFieldAnalyzerWrapper(baseAnalyzer, overrides);
-	}
+	}*/
 
 	private IndexReaderPool createIndexReaderPool() {
 		return new IndexReaderPool(() -> {
