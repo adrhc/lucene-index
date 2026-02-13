@@ -5,7 +5,6 @@ import org.apache.lucene.document.Field;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldFactory;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -21,17 +20,17 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 	}
 
 	public Stream<Field> toFields(T tValue) {
-		return typedFields.stream()
-			.map(typedField -> toField(tValue, typedField))
-			.flatMap(Optional::stream);
+		return typedFields.stream().flatMap(typedField -> toFields(tValue, typedField));
 	}
 
-	protected Optional<Field> toField(T t, LuceneFieldSpec<T> typedField) {
+	protected Stream<Field> toFields(T t, LuceneFieldSpec<T> typedField) {
 		Object fieldValue = typedField.typedToIndexableValue(t);
 		if (fieldValue == null) {
-			return Optional.empty();
+			return Stream.empty();
+		} else if (fieldValue instanceof Collection<?> col) {
+			return col.stream().map(it -> toField(typedField, it));
 		} else {
-			return Optional.of(toField(typedField, fieldValue));
+			return Stream.of(toField(typedField, fieldValue));
 		}
 	}
 
