@@ -30,8 +30,8 @@ public record ObjectLuceneFieldMapper<T, P>(Function<T, P> propertyAccessor,
 			IndexableField::stringValue, indexedValueToPropValue);
 	}
 
-	public static <T> ObjectLuceneFieldMapper<T, String> stringField(
-		Function<T, String> propertyAccessor) {
+	public static <T> ObjectLuceneFieldMapper<T, String>
+	stringField(Function<T, String> propertyAccessor) {
 		return new ObjectLuceneFieldMapper<>(propertyAccessor,
 			it -> it, IndexableField::stringValue, it -> (String) it);
 	}
