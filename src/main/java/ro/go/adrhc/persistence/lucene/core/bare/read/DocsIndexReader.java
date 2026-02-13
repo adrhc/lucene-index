@@ -7,7 +7,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
-import org.springframework.util.Assert;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.AbstractOneStoredFieldVisitor;
 import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.OneStoredObjectFieldVisitor;
 
@@ -31,37 +30,24 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	public boolean isEmpty() throws IOException {
-		if (indexReader == null) {
-			return true;
-		} else {
-			return count() == 0;
-		}
+		return count() == 0;
 	}
 
 	public int count() throws IOException {
-		if (indexReader == null) {
-			return 0;
-		}
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(new MatchAllDocsQuery());
 	}
 
 	public int count(Query query) throws IOException {
-		if (indexReader == null) {
-			return 0;
-		}
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);
 	}
 
-	public Stream<Document> getDocumentStream() {
+	public Stream<Document> getDocumentStream() throws IOException {
 		return getDocProjectionStream(Set.of());
 	}
 
-	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) {
-		if (indexReader == null) {
-			return Stream.empty();
-		}
+	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) throws IOException {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
 		return storedFields()
@@ -69,15 +55,12 @@ public class DocsIndexReader implements Closeable {
 			.orElseGet(Stream::of);
 	}
 
-	public Stream<IndexableField> getFields(String fieldName) {
+	public Stream<IndexableField> getFields(String fieldName) throws IOException {
 		return getDocProjectionStream(Set.of(fieldName)).map(doc -> doc.getField(fieldName));
 	}
 
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, int numHits) throws IOException {
-		if (indexReader == null) {
-			return Stream.empty();
-		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
 		OneStoredObjectFieldVisitor fieldVisitor =
@@ -113,9 +96,6 @@ public class DocsIndexReader implements Closeable {
 
 	protected Stream<ScoreDocAndDocument> doFindMany(
 		SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier) throws IOException {
-		if (indexReader == null) {
-			return Stream.empty();
-		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
 		return Arrays.stream(topDocs.scoreDocs)
@@ -125,7 +105,6 @@ public class DocsIndexReader implements Closeable {
 
 	protected Stream<Document> doGetAll(Bits liveDocs,
 		Set<String> fieldNames, StoredFields storedFields) {
-		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		return IntStream.range(0, indexReader.maxDoc())
 			.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
 			.mapToObj(docIndex -> this.safelyGetDocument(
@@ -157,20 +136,12 @@ public class DocsIndexReader implements Closeable {
 		return Optional.empty();
 	}
 
-	protected Optional<StoredFields> storedFields() {
-		Assert.isTrue(indexReader != null, "indexReader must be not null!");
-		try {
-			return Optional.of(indexReader.storedFields());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
+	protected Optional<StoredFields> storedFields() throws IOException {
+		return Optional.of(indexReader.storedFields());
 	}
 
 	protected <R> R useIndexSearcher(
-		SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
-		throws IOException {
-		Assert.isTrue(indexReader != null, "indexReader must be not null!");
+		SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier) throws IOException {
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
@@ -189,5 +160,4 @@ public class DocsIndexReader implements Closeable {
 			log.error(e.getMessage(), e);
 		}
 	}
-
 }

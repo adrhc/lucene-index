@@ -36,12 +36,12 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			docToTypedConverter, toScoreAndTypedConverter, indexReader);
 	}
 
-	public Stream<T> getAll() {
+	public Stream<T> getAll() throws IOException {
 		return hitsLimitedDocsIndexReader.getDocumentStream().map(
 			docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
-	public Stream<ID> getAllIds() {
+	public Stream<ID> getAllIds() throws IOException {
 		return getFieldOfAll(idField);
 	}
 
@@ -92,7 +92,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	/**
 	 * The caller must use the proper type!
 	 */
-	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) {
+	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFields(field.name())
