@@ -16,8 +16,8 @@ public class TypedIndexRemoverTemplate<ID> {
 	}
 
 	public <E extends Exception> void useRemover(
-			SneakyConsumer<TypedIndexRemover<ID>, E> indexRemoverConsumer)
-			throws IOException, E {
+		SneakyConsumer<TypedIndexRemover<ID>, E> indexRemoverConsumer)
+		throws IOException, E {
 		try (TypedIndexRemover<ID> indexRemover = this.indexRemover) {
 			indexRemoverConsumer.accept(indexRemover);
 		}

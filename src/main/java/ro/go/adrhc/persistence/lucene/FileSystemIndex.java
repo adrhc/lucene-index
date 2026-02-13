@@ -9,7 +9,7 @@ import java.io.Closeable;
 import java.nio.file.Path;
 
 public interface FileSystemIndex<ID, T extends Indexable<ID, T>>
-		extends ReadIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
+	extends ReadIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
 	IndexServicesParamsFactory<T> getIndexServicesParamsFactory();
 
 	default Path getIndexPath() {

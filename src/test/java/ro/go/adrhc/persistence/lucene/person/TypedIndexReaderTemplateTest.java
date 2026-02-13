@@ -30,6 +30,6 @@ public class TypedIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 		List<Long> ids = readerTemplate.useReader(reader -> reader.findIds(query).toList());
 		assertThat(ids).isNotEmpty();
 		assertThat(ids).containsAll(
-				PEOPLE.stream().filter(p -> p.male() == male).map(Person::getId).toList());
+			PEOPLE.stream().filter(p -> p.male() == male).map(Person::getId).toList());
 	}
 }

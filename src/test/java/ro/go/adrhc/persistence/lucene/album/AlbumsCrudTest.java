@@ -24,7 +24,7 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 	@Test
 	void crudTest() throws IOException {
 		int count = indexRepository.count(ID_QUERIES
-				.startsWith(Path.of("/albums/album").toString()));
+			.startsWith(Path.of("/albums/album").toString()));
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(ALBUMS.size());
 
@@ -45,7 +45,7 @@ public class AlbumsCrudTest extends AbstractAlbumsIndexTest {
 	@Test
 	void findByIdsTest() throws IOException {
 		Set<Album> result = indexRepository
-				.findByIds(ALBUMS.stream().map(Album::id).collect(Collectors.toSet()));
+			.findByIds(ALBUMS.stream().map(Album::id).collect(Collectors.toSet()));
 		assertThat(result).hasSize(ALBUMS.size());
 	}
 

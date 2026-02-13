@@ -21,7 +21,7 @@ public class DocsIndexWriterTemplate {
 	}
 
 	public static DocsIndexWriterTemplate ofFsWriter(
-			Analyzer analyzer, Path indexPath) throws IOException {
+		Analyzer analyzer, Path indexPath) throws IOException {
 		return DocsIndexWriterTemplate.of(fsWriter(analyzer, indexPath));
 	}
 
@@ -30,8 +30,8 @@ public class DocsIndexWriterTemplate {
 	}
 
 	public <E extends Exception> void useWriter(
-			SneakyConsumer<DocsIndexWriter, E> indexWriterConsumer)
-			throws IOException, E {
+		SneakyConsumer<DocsIndexWriter, E> indexWriterConsumer)
+		throws IOException, E {
 		try (DocsIndexWriter indexWriter = this.indexWriter) {
 			indexWriterConsumer.accept(indexWriter);
 		}

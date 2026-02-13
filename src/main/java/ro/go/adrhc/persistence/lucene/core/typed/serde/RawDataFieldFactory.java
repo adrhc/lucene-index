@@ -21,7 +21,7 @@ public class RawDataFieldFactory<T> {
 	public static <T> RawDataFieldFactory<T> create() {
 		ObjectMapper jsonMapper = ObjectMapperFactory.createJsonMapper();
 		Function<T, Optional<String>> rawStringifier =
-				emptyFailResultFn(jsonMapper::writeValueAsString);
+			emptyFailResultFn(jsonMapper::writeValueAsString);
 		return new RawDataFieldFactory<>(rawStringifier);
 	}
 
@@ -31,6 +31,6 @@ public class RawDataFieldFactory<T> {
 
 	public Optional<Field> createField(T tValue) {
 		return rawStringifier.apply(tValue)
-				.map(json -> storedField(RAW_DATA_FIELD, json));
+			.map(json -> storedField(RAW_DATA_FIELD, json));
 	}
 }

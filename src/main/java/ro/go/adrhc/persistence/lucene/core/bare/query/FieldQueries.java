@@ -33,22 +33,22 @@ public class FieldQueries {
 	 */
 	public SpanNearQuery maxFuzzinessNearTokens(Collection<String> tokens) {
 		SpanQuery[] clausesIn = tokens.stream()
-				.map(this::toMaxFuzzinessSpanQuery)
-				.toArray(SpanQuery[]::new);
+			.map(this::toMaxFuzzinessSpanQuery)
+			.toArray(SpanQuery[]::new);
 		return new SpanNearQuery(clausesIn, 0, true);
 	}
 
 	public SpanNearQuery lowFuzzinessNearTokens(Collection<String> tokens) {
 		SpanQuery[] clausesIn = tokens.stream()
-				.map(this::toLowFuzzinessSpanQuery)
-				.toArray(SpanQuery[]::new);
+			.map(this::toLowFuzzinessSpanQuery)
+			.toArray(SpanQuery[]::new);
 		return new SpanNearQuery(clausesIn, 0, true);
 	}
 
 	public SpanNearQuery nearTokens(Collection<String> tokens) {
 		SpanQuery[] clausesIn = tokens.stream()
-				.map(this::spanTermQuery)
-				.toArray(SpanQuery[]::new);
+			.map(this::spanTermQuery)
+			.toArray(SpanQuery[]::new);
 		return new SpanNearQuery(clausesIn, 0, true);
 	}
 
@@ -56,7 +56,7 @@ public class FieldQueries {
 	 * Useful with SpanNearQuery.
 	 */
 	public SpanMultiTermQueryWrapper<FuzzyQuery> maxFuzzinessSpanMultiTermQueryWrapper(
-			String value) {
+		String value) {
 		return new SpanMultiTermQueryWrapper<>(maxFuzziness(value));
 	}
 
@@ -64,7 +64,7 @@ public class FieldQueries {
 	 * Useful with SpanNearQuery.
 	 */
 	public SpanMultiTermQueryWrapper<FuzzyQuery> lowFuzzinessSpanMultiTermQueryWrapper(
-			String value) {
+		String value) {
 		return new SpanMultiTermQueryWrapper<>(lowFuzziness(value));
 	}
 
@@ -121,6 +121,6 @@ public class FieldQueries {
 
 	private SpanQuery toLowFuzzinessSpanQuery(String token) {
 		return shouldUseTermQuery(token) ? spanTermQuery(token)
-				: lowFuzzinessSpanMultiTermQueryWrapper(token);
+			: lowFuzzinessSpanMultiTermQueryWrapper(token);
 	}
 }

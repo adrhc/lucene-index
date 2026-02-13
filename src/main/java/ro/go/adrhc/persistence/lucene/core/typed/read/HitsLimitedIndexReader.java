@@ -28,17 +28,17 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public static <ID, T> HitsLimitedIndexReader<ID, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
-				DocumentToTypedConverter.create(params.getType());
+			DocumentToTypedConverter.create(params.type());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
-				new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
+			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 		HitsLimitedDocsIndexReader indexReader = HitsLimitedDocsIndexReader.create(params);
-		return new HitsLimitedIndexReader<>(params.getIdField(),
-				docToTypedConverter, toScoreAndTypedConverter, indexReader);
+		return new HitsLimitedIndexReader<>(params.idField(),
+			docToTypedConverter, toScoreAndTypedConverter, indexReader);
 	}
 
 	public Stream<T> getAll() {
 		return hitsLimitedDocsIndexReader.getDocumentStream().map(
-				docToTypedConverter::convert).flatMap(Optional::stream);
+			docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
 	public Stream<ID> getAllIds() {
@@ -47,46 +47,46 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 
 	public Stream<ID> findIds(Query query) throws IOException {
 		return hitsLimitedDocsIndexReader.findFieldValues(idField.name(), query)
-				.map(value -> (ID) idField.toPropValue(value));
+			.map(value -> (ID) idField.toPropValue(value));
 	}
 
 	public Stream<ID> findIds(Query query, int numHits) throws IOException {
 		return hitsLimitedDocsIndexReader
-				.findFieldValues(idField.name(), query, numHits)
-				.map(value -> (ID) idField.toPropValue(value));
+			.findFieldValues(idField.name(), query, numHits)
+			.map(value -> (ID) idField.toPropValue(value));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findMany(query));
+			hitsLimitedDocsIndexReader.findMany(query));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, int numHits) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findMany(query, numHits));
+			hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(Query query, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findMany(query, sort));
+			hitsLimitedDocsIndexReader.findMany(query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findMany(
-			Query query, int numHits, Sort sort) throws IOException {
+		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
+			hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
-			Query query, Sort sort) throws IOException {
+		Query query, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
+			hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
-			Query query, int numHits, Sort sort) throws IOException {
+		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-				hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
+			hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
 	}
 
 	/**
@@ -94,10 +94,10 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	 */
 	public <F> Stream<F> getFieldOfAll(LuceneFieldSpec<T> field) {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
-				field.name() + " must have STORED type!");
+			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFields(field.name())
-				.map(field::indexableFieldToPropValue)
-				.map(ObjectUtils::cast);
+			.map(field::indexableFieldToPropValue)
+			.map(ObjectUtils::cast);
 	}
 
 	@Override

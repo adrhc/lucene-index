@@ -14,14 +14,14 @@ import static ro.go.adrhc.util.stream.StreamUtils.stream;
 @Slf4j
 public class TypedIndexAdder<T> extends AbstractTypedIndexWriter<T> {
 	public TypedIndexAdder(TypedToDocumentConverter<T> toDocumentConverter,
-			DocsIndexWriter indexWriter) {
+		DocsIndexWriter indexWriter) {
 		super(toDocumentConverter, indexWriter);
 	}
 
 	public static <T> TypedIndexAdder<T> create(TypedIndexWriterParams<T> params) {
 		TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
 		return new TypedIndexAdder<>(toDocumentConverter,
-				new DocsIndexWriter(params.getIndexWriter()));
+			new DocsIndexWriter(params.indexWriter()));
 	}
 
 	public void addOne(T t) throws IOException {
@@ -39,7 +39,7 @@ public class TypedIndexAdder<T> extends AbstractTypedIndexWriter<T> {
 		docsIndexWriter.addMany(dCounter.countedStream(documents));
 		if (tCounter.getCount() != dCounter.getCount()) {
 			log.warn("Only {} of {} were successfully converted!",
-					dCounter.getCount(), tCounter.getCount());
+				dCounter.getCount(), tCounter.getCount());
 		}
 	}
 }

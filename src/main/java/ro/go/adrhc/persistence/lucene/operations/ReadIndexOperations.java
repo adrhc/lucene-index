@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
-		extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
+	extends IndexCountService, IndexSearchService<T>, IndexRetrieveService<ID, T> {
 	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;
@@ -35,15 +35,15 @@ public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
 	Optional<T> findBestMatch(Query query) throws IOException;
 
 	Optional<T> findBestMatch(
-			BestMatchingStrategy<T> bestMatchingStrategy,
-			Query query) throws IOException;
+		BestMatchingStrategy<T> bestMatchingStrategy,
+		Query query) throws IOException;
 
 	List<QueryAndValue<T>> findBestMatches(
-			Collection<? extends Query> queries) throws IOException;
+		Collection<? extends Query> queries) throws IOException;
 
 	List<QueryAndValue<T>> findBestMatches(
-			BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries) throws IOException;
+		BestMatchingStrategy<T> bestMatchingStrategy,
+		Collection<? extends Query> queries) throws IOException;
 
 	int count() throws IOException;
 

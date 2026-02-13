@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.core.bare.read;
 
 public interface HitsLimitedDocsIndexReaderParams {
-	IndexReaderPool getIndexReaderPool();
+	IndexReaderPool indexReaderPool();
 
-	int getNumHits();
+	int numHits();
 }

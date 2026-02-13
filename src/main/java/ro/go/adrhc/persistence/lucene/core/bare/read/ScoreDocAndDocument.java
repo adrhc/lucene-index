@@ -5,7 +5,7 @@ import org.apache.lucene.search.ScoreDoc;
 import ro.go.adrhc.util.Breakable;
 
 public record ScoreDocAndDocument(ScoreDoc scoreDoc, Document document)
-		implements Breakable<ScoreDocAndDocument> {
+	implements Breakable<ScoreDocAndDocument> {
 	public String getFieldValue(Enum<?> field) {
 		return document.get(field.name());
 	}

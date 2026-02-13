@@ -23,7 +23,7 @@ public class IndexCountServiceImpl implements IndexCountService {
 	 */
 	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
 		return new IndexCountServiceImpl(
-				DocsIndexReaderTemplate.createUnlimited(indexReaderPool));
+			DocsIndexReaderTemplate.createUnlimited(indexReaderPool));
 	}
 
 	@Override

@@ -22,15 +22,15 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 	public static <T> IndexSearchServiceImpl<T>
 	create(IndexSearchServiceParams<T> params) {
 		BestMatchSearchService<T> bestMatchSearchService =
-				BestMatchSearchServiceImpl.of(params.oneHitIndexReaderParams());
+			BestMatchSearchServiceImpl.of(params.oneHitIndexReaderParams());
 		SearchReduceService<T> searchReduceService = new SearchReduceServiceImpl<>(
-				HitsLimitedIndexReaderTemplate.create(params), // limited to params.numHits
-				params.getSearchResultFilter());
+			HitsLimitedIndexReaderTemplate.create(params), // limited to params.numHits
+			params.searchResultFilter());
 		SearchManyService<T> searchManyService = new SearchManyServiceImpl<>(
-				HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
-				params.getSearchResultFilter());
+			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+			params.searchResultFilter());
 		return new IndexSearchServiceImpl<>(bestMatchSearchService,
-				searchReduceService, searchManyService);
+			searchReduceService, searchManyService);
 	}
 
 	@Override
@@ -40,20 +40,20 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(Collection<? extends Query> queries)
-			throws IOException {
+		throws IOException {
 		return bestMatchSearchService.findBestMatches(queries);
 	}
 
 	@Override
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
-			throws IOException {
+		throws IOException {
 		return searchReduceService.findBestMatch(bestMatchingStrategy, query);
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(
-			BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries) throws IOException {
+		BestMatchingStrategy<T> bestMatchingStrategy,
+		Collection<? extends Query> queries) throws IOException {
 		return searchReduceService.findBestMatches(bestMatchingStrategy, queries);
 	}
 
@@ -79,14 +79,14 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(
-			ScoreDoc after, Query query, Sort sort) throws IOException {
+		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return searchManyService.findManyAfter(after, query, sort);
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(
-			ScoreDoc after, Query query, int hitsCount, Sort sort)
-			throws IOException {
+		ScoreDoc after, Query query, int hitsCount, Sort sort)
+		throws IOException {
 		return searchManyService.findManyAfter(after, query, hitsCount, sort);
 	}
 }

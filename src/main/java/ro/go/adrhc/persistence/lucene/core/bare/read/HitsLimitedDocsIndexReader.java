@@ -14,7 +14,7 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 	private final int numHits;
 
 	public HitsLimitedDocsIndexReader(IndexReaderPool indexReaderPool,
-			IndexReader indexReader, int numHits) {
+		IndexReader indexReader, int numHits) {
 		super(indexReaderPool, indexReader);
 		this.numHits = numHits;
 	}
@@ -22,19 +22,19 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 	public static HitsLimitedDocsIndexReader
 	createUnlimited(IndexReaderPool indexReaderPool) throws IOException {
 		return new HitsLimitedDocsIndexReader(indexReaderPool,
-				indexReaderPool.getReader(), Integer.MAX_VALUE);
+			indexReaderPool.getReader(), Integer.MAX_VALUE);
 	}
 
 	public static HitsLimitedDocsIndexReader create(
-			HitsLimitedDocsIndexReaderParams params) throws IOException {
-		return new HitsLimitedDocsIndexReader(params.getIndexReaderPool(),
-				params.getIndexReaderPool().getReader(), params.getNumHits());
+		HitsLimitedDocsIndexReaderParams params) throws IOException {
+		return new HitsLimitedDocsIndexReader(params.indexReaderPool(),
+			params.indexReaderPool().getReader(), params.numHits());
 	}
 
 	public static HitsLimitedDocsIndexReader create(
-			IndexReaderPool indexReaderPool, int numHits) throws IOException {
+		IndexReaderPool indexReaderPool, int numHits) throws IOException {
 		return new HitsLimitedDocsIndexReader(
-				indexReaderPool, indexReaderPool.getReader(), numHits);
+			indexReaderPool, indexReaderPool.getReader(), numHits);
 	}
 
 	public Stream<ScoreDocAndDocument> findMany(Query query) throws IOException {
@@ -46,7 +46,7 @@ public class HitsLimitedDocsIndexReader extends DocsIndexReader {
 	}
 
 	public Stream<ScoreDocAndDocument> findManyAfter(
-			ScoreDoc after, Query query, Sort sort) throws IOException {
+		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return findManyAfter(after, query, numHits, sort);
 	}
 

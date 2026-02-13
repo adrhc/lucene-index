@@ -15,8 +15,8 @@ public class TypedIndexAdderTemplate<T> {
 	}
 
 	public <E extends Exception> void useAdder(
-			SneakyConsumer<TypedIndexAdder<T>, E> indexWriterConsumer)
-			throws IOException, E {
+		SneakyConsumer<TypedIndexAdder<T>, E> indexWriterConsumer)
+		throws IOException, E {
 		try (TypedIndexAdder<T> indexWriter = this.indexWriter) {
 			indexWriterConsumer.accept(indexWriter);
 		}

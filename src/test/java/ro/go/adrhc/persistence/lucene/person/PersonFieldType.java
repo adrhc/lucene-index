@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
-import ro.go.adrhc.persistence.lucene.core.bare.query.FieldQueries;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper;
 

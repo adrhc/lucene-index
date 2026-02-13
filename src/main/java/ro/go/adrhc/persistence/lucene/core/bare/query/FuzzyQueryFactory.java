@@ -15,7 +15,7 @@ public class FuzzyQueryFactory {
 	public static final int MAX_FUZZINESS = MAXIMUM_SUPPORTED_DISTANCE;
 	public static final int LOW_FUZZINESS = 1;
 	public static final int MIN_TERM_LENGTH_FOR_MAX_FUZZINESS =
-			MAX_TERM_LENGTH_FOR_EXACT_QUERY + MAX_FUZZINESS + 1;
+		MAX_TERM_LENGTH_FOR_EXACT_QUERY + MAX_FUZZINESS + 1;
 
 	public static FuzzyQuery maxFuzziness(String fieldName, String text) {
 		return new FuzzyQuery(new Term(fieldName, text), MAX_FUZZINESS);
@@ -30,7 +30,7 @@ public class FuzzyQueryFactory {
 	}
 
 	public static Stream<FuzzyQuery> create(
-			int levenshteinDistance, String fieldName, Collection<String> tokens) {
+		int levenshteinDistance, String fieldName, Collection<String> tokens) {
 		return tokens.stream().map(t -> create(levenshteinDistance, fieldName, t));
 	}
 

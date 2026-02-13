@@ -28,9 +28,9 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	public static <ID, T> IndexRetrieveServiceImpl<ID, T>
 	create(IndexRetrieveServiceParams<T> params) {
 		return new IndexRetrieveServiceImpl<>(
-				ExactQuery.create(params.getIdField()),
-				HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
-				OneHitIndexReaderTemplate.create(params));
+			ExactQuery.create(params.getIdField()),
+			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+			OneHitIndexReaderTemplate.create(params));
 	}
 
 	@Override
@@ -69,15 +69,15 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(r ->
-				r.findFirst(exactQuery.newExactQuery(id)).map(ScoreDocAndValue::value));
+			r.findFirst(exactQuery.newExactQuery(id)).map(ScoreDocAndValue::value));
 	}
 
 	@Override
 	public Set<T> findByIds(Set<ID> ids) throws IOException {
 		BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(ids));
 		return indexReaderTemplate.useReader(reader -> reader
-				.findMany(idsQuery)
-				.map(ScoreDocAndValue::value)
-				.collect(Collectors.toSet()));
+			.findMany(idsQuery)
+			.map(ScoreDocAndValue::value)
+			.collect(Collectors.toSet()));
 	}
 }

@@ -5,16 +5,16 @@ public class OneStoredFieldVisitorFactory {
 	create(Class<V> type, String fieldName) {
 		if (type.isAssignableFrom(String.class)) {
 			return (AbstractOneStoredFieldVisitor<V>)
-					new OneStoredStringFieldVisitor(fieldName);
+				new OneStoredStringFieldVisitor(fieldName);
 		} else if (type.isAssignableFrom(Integer.class)) {
 			return (AbstractOneStoredFieldVisitor<V>)
-					new OneStoredIntegerFieldVisitor(fieldName);
+				new OneStoredIntegerFieldVisitor(fieldName);
 		} else if (type.isAssignableFrom(Long.class)) {
 			return (AbstractOneStoredFieldVisitor<V>)
-					new OneStoredLongFieldVisitor(fieldName);
+				new OneStoredLongFieldVisitor(fieldName);
 		} else {
 			return (AbstractOneStoredFieldVisitor<V>)
-					new OneStoredObjectFieldVisitor(fieldName);
+				new OneStoredObjectFieldVisitor(fieldName);
 		}
 	}
 }

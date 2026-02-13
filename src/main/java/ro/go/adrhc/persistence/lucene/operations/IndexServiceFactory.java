@@ -36,7 +36,7 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 
 	public IndexShallowUpdateServiceImpl<ID, T> createShallowUpdateService() {
 		return IndexShallowUpdateServiceImpl.create(
-				paramsFactory.typedShallowUpdateServiceParams());
+			paramsFactory.typedShallowUpdateServiceParams());
 	}
 
 	public IndexResetServiceImpl<T> createResetService() {

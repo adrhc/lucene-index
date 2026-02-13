@@ -16,7 +16,7 @@ public class TypedIndexUpsert<T extends Identifiable<?>> extends AbstractTypedIn
 	private final ExactQuery exactQuery;
 
 	public TypedIndexUpsert(TypedToDocumentConverter<T> toDocumentConverter,
-			DocsIndexWriter indexWriter, ExactQuery exactQuery) {
+		DocsIndexWriter indexWriter, ExactQuery exactQuery) {
 		super(toDocumentConverter, indexWriter);
 		this.exactQuery = exactQuery;
 	}
@@ -24,9 +24,9 @@ public class TypedIndexUpsert<T extends Identifiable<?>> extends AbstractTypedIn
 	public static <T extends Identifiable<?>>
 	TypedIndexUpsert<T> create(TypedIndexUpsertParams<T> params) {
 		return new TypedIndexUpsert<>(
-				TypedToDocumentConverter.create(params),
-				new DocsIndexWriter(params.getIndexWriter()),
-				ExactQuery.create(params.getIdField()));
+			TypedToDocumentConverter.create(params),
+			new DocsIndexWriter(params.indexWriter()),
+			ExactQuery.create(params.idField()));
 	}
 
 	public void upsert(T t) throws IOException {

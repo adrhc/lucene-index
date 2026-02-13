@@ -23,28 +23,28 @@ public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = safelyCreateDefaultAnalyzer();
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
-			DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
+		DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	IndexServicesParamsFactory<T> createTypedIndexSpec(
-			Class<T> tClass, Class<E> typedFieldEnumClass, Path indexPath) {
+		Class<T> tClass, Class<E> typedFieldEnumClass, Path indexPath) {
 		return of(tClass, typedFieldEnumClass, indexPath)
-				.tokenizerProperties(createTokenizerProperties())
-				.build()
-				.orElseThrow(() -> new
-						RuntimeException("Can't create IndexServicesParamsFactory!"));
+			.tokenizerProperties(createTokenizerProperties())
+			.build()
+			.orElseThrow(() -> new
+				RuntimeException("Can't create IndexServicesParamsFactory!"));
 	}
 
 	private static Analyzer safelyCreateDefaultAnalyzer() {
 		return defaultAnalyzer(createTokenizerProperties())
-				.orElseThrow(() -> new RuntimeException("Can't create the default Analyzer!"));
+			.orElseThrow(() -> new RuntimeException("Can't create the default Analyzer!"));
 	}
 
 	private static TokenizerProperties createTokenizerProperties() {
 		return new TokenizerProperties(2,
-				List.of("Fixed Pattern To Remove"),
-				List.of("\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
-				Map.of("_", " "),
-				caseInsensitive("$1", "([^\\s]*)\\.jpe?g"));
+			List.of("Fixed Pattern To Remove"),
+			List.of("\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
+			Map.of("_", " "),
+			caseInsensitive("$1", "([^\\s]*)\\.jpe?g"));
 	}
 }

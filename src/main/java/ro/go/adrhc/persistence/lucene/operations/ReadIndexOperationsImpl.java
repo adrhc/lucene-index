@@ -24,14 +24,14 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
-		implements ReadIndexOperations<T, ID> {
+	implements ReadIndexOperations<T, ID> {
 	private final IndexCountService countService;
 	private final IndexRetrieveServiceImpl<ID, T> retrieveService;
 	private final IndexSearchService<T> searchService;
 
 	@Override
-	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
-			throws IOException {
+	public Optional<T> findBestMatch(
+		BestMatchingStrategy<T> bestMatchingStrategy, Query query) throws IOException {
 		return searchService.findBestMatch(bestMatchingStrategy, query);
 	}
 
@@ -42,13 +42,13 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries) throws IOException {
+		Collection<? extends Query> queries) throws IOException {
 		return searchService.findBestMatches(bestMatchingStrategy, queries);
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(Collection<? extends Query> queries)
-			throws IOException {
+		throws IOException {
 		return searchService.findBestMatches(queries);
 	}
 
@@ -73,14 +73,14 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
-			throws IOException {
+	public ScoreDocAndValues<T> findManyAfter(
+		ScoreDoc after, Query query, int hitsCount, Sort sort) throws IOException {
 		return searchService.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override
-	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, Sort sort)
-			throws IOException {
+	public ScoreDocAndValues<T> findManyAfter(
+		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return searchService.findManyAfter(after, query, sort);
 	}
 

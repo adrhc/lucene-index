@@ -39,8 +39,8 @@ public class PatternReplaceCharFilterFactory extends CharFilterFactory {
 			return Pattern.compile(require(args, PATTERN), getInt(args, FLAGS, 0));
 		} catch (PatternSyntaxException e) {
 			throw new IllegalArgumentException
-					("Configuration Error: '" + PATTERN + "' can not be parsed in " +
-							this.getClass().getSimpleName(), e);
+				("Configuration Error: '" + PATTERN + "' can not be parsed in " +
+				 this.getClass().getSimpleName(), e);
 		}
 	}
 }

@@ -25,18 +25,18 @@ public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> 
 	@Override
 	public Optional<T> findBestMatch(Query query) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(
-				r -> r.findFirst(query).map(ScoreDocAndValue::value));
+			r -> r.findFirst(query).map(ScoreDocAndValue::value));
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(
-			Collection<? extends Query> queries) throws IOException {
+		Collection<? extends Query> queries) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(r -> {
 			List<QueryAndValue<T>> result = new ArrayList<>();
 			for (Query query : queries) {
 				r.findFirst(query)
-						.map(sv -> new QueryAndValue<>(query, sv.value()))
-						.ifPresent(result::add);
+					.map(sv -> new QueryAndValue<>(query, sv.value()))
+					.ifPresent(result::add);
 			}
 			return result;
 		});

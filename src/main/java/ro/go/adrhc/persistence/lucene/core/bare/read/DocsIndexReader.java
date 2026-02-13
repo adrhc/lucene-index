@@ -65,8 +65,8 @@ public class DocsIndexReader implements Closeable {
 		// liveDocs can be null if the reader has no deletions
 		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
 		return storedFields()
-				.map(storedFields -> doGetAll(liveDocs, fieldNames, storedFields))
-				.orElseGet(Stream::of);
+			.map(storedFields -> doGetAll(liveDocs, fieldNames, storedFields))
+			.orElseGet(Stream::of);
 	}
 
 	public Stream<IndexableField> getFields(String fieldName) {
@@ -74,17 +74,17 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	public Stream<Object> findFieldValues(
-			String fieldName, Query query, int numHits) throws IOException {
+		String fieldName, Query query, int numHits) throws IOException {
 		if (indexReader == null) {
 			return Stream.empty();
 		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(s -> s.search(query, numHits));
 		OneStoredObjectFieldVisitor fieldVisitor =
-				new OneStoredObjectFieldVisitor(fieldName);
+			new OneStoredObjectFieldVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyGetOneFieldValue(storedFields, fieldVisitor, scoreDoc))
-				.filter(Objects::nonNull);
+			.map(scoreDoc -> safelyGetOneFieldValue(storedFields, fieldVisitor, scoreDoc))
+			.filter(Objects::nonNull);
 	}
 
 	/**
@@ -95,42 +95,49 @@ public class DocsIndexReader implements Closeable {
 	}
 
 	public Stream<ScoreDocAndDocument> findMany(
-			Query query, int numHits, Sort sort) throws IOException {
+		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.search(query, numHits, sort));
 	}
 
 	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
-			Query query, int numHits, Sort sort) throws IOException {
+		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.searchAfter(after, query, numHits, sort));
 	}
 
+	@Override
+	public void close() throws IOException {
+		if (indexReader != null) {
+			indexReaderPool.dismissReader(indexReader);
+		}
+	}
+
 	protected Stream<ScoreDocAndDocument> doFindMany(
-			SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
-			throws IOException {
+		SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier)
+		throws IOException {
 		if (indexReader == null) {
 			return Stream.empty();
 		}
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
 		return Arrays.stream(topDocs.scoreDocs)
-				.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
-				.flatMap(Optional::stream);
+			.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
+			.flatMap(Optional::stream);
 	}
 
 	protected Stream<Document> doGetAll(Bits liveDocs,
-			Set<String> fieldNames, StoredFields storedFields) {
+		Set<String> fieldNames, StoredFields storedFields) {
 		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		return IntStream.range(0, indexReader.maxDoc())
-				.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
-				.mapToObj(docIndex -> this.safelyGetDocument(
-						storedFields, fieldNames, docIndex))
-				.flatMap(Optional::stream);
+			.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
+			.mapToObj(docIndex -> this.safelyGetDocument(
+				storedFields, fieldNames, docIndex))
+			.flatMap(Optional::stream);
 	}
 
 	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
-			StoredFields storedFields, ScoreDoc scoreDoc) {
+		StoredFields storedFields, ScoreDoc scoreDoc) {
 		return safelyGetDocument(storedFields, null, scoreDoc.doc)
-				.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
+			.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
 	}
 
 	/**
@@ -138,7 +145,7 @@ public class DocsIndexReader implements Closeable {
 	 * is meanwhile purged (not only marked as removed)
 	 */
 	protected Optional<Document> safelyGetDocument(
-			StoredFields storedFields, Set<String> fieldNames, int docIndex) {
+		StoredFields storedFields, Set<String> fieldNames, int docIndex) {
 		try {
 			if (fieldNames == null || fieldNames.isEmpty()) {
 				return Optional.of(storedFields.document(docIndex));
@@ -161,29 +168,22 @@ public class DocsIndexReader implements Closeable {
 		return Optional.empty();
 	}
 
-	@Override
-	public void close() throws IOException {
-		if (indexReader != null) {
-			indexReaderPool.dismissReader(indexReader);
-		}
-	}
-
 	protected <R> R useIndexSearcher(
-			SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
-			throws IOException {
+		SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier)
+		throws IOException {
 		Assert.isTrue(indexReader != null, "indexReader must be not null!");
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
 	private <V> V safelyGetOneFieldValue(StoredFields storedFields,
-			AbstractOneStoredFieldVisitor<V> fieldVisitor, ScoreDoc scoreDoc) {
+		AbstractOneStoredFieldVisitor<V> fieldVisitor, ScoreDoc scoreDoc) {
 		fieldVisitor.reset();
 		safelyVisitDocument(storedFields, fieldVisitor, scoreDoc);
 		return fieldVisitor.getValue();
 	}
 
 	private void safelyVisitDocument(StoredFields storedFields,
-			StoredFieldVisitor fieldVisitor, ScoreDoc scoreDoc) {
+		StoredFieldVisitor fieldVisitor, ScoreDoc scoreDoc) {
 		try {
 			storedFields.document(scoreDoc.doc, fieldVisitor);
 		} catch (IOException e) {

@@ -28,7 +28,7 @@ public class WordFieldFactory {
 
 	public StringField wordField(boolean stored, String fieldName, Object value) {
 		return new StringField(fieldName,
-				tokenizationUtils.normalize(fieldName, value.toString()),
-				stored ? Field.Store.YES : Field.Store.NO);
+			tokenizationUtils.normalize(fieldName, value.toString()),
+			stored ? Field.Store.YES : Field.Store.NO);
 	}
 }

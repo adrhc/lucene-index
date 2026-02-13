@@ -18,8 +18,8 @@ public class OneHitIndexReaderTemplate<T> {
 	}
 
 	public <R, E extends Exception> R useOneHitReader(
-			SneakyFunction<OneHitIndexReader<T>, R, E> idsReaderFn)
-			throws IOException, E {
+		SneakyFunction<OneHitIndexReader<T>, R, E> idsReaderFn)
+		throws IOException, E {
 		try (OneHitIndexReader<T> idsReader = idReaderFactory.get()) {
 			R result = idsReaderFn.apply(idsReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");

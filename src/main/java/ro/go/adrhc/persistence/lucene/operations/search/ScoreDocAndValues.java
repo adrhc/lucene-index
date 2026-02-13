@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
-		implements StreamOwner<T> {
+	implements StreamOwner<T> {
 	public ScoreDoc firstPosition() {
 		return scoreDocs.getFirst();
 	}
@@ -19,12 +19,12 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 
 	public ScoreDocAndValues<T> removeFirst() {
 		return new ScoreDocAndValues<>(values.subList(1, values.size()),
-				scoreDocs.subList(1, scoreDocs.size()));
+			scoreDocs.subList(1, scoreDocs.size()));
 	}
 
 	public ScoreDocAndValues<T> removeLast() {
 		return new ScoreDocAndValues<>(values.subList(0, values.size() - 1),
-				scoreDocs.subList(0, scoreDocs.size() - 1));
+			scoreDocs.subList(0, scoreDocs.size() - 1));
 	}
 
 	public <U> ScoreDocAndValues<U> mapToScoreDocAndValues(Function<? super List<T>, List<U>> mapper) {

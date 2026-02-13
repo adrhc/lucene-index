@@ -22,24 +22,24 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 
 	@Override
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
-			throws IOException {
+		throws IOException {
 		return indexReaderTemplate
-				.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
-				.map(QueryAndValue::value);
+			.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
+			.map(QueryAndValue::value);
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(
-			BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries) throws IOException {
+		BestMatchingStrategy<T> bestMatchingStrategy,
+		Collection<? extends Query> queries) throws IOException {
 		return indexReaderTemplate.useReader(reader ->
-				doFindBestMatches(bestMatchingStrategy, queries, reader));
+			doFindBestMatches(bestMatchingStrategy, queries, reader));
 	}
 
 	protected List<QueryAndValue<T>>
 	doFindBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries, HitsLimitedIndexReader<?, T> reader)
-			throws IOException {
+		Collection<? extends Query> queries, HitsLimitedIndexReader<?, T> reader)
+		throws IOException {
 		List<QueryAndValue<T>> result = new ArrayList<>();
 		for (Query query : queries) {
 			doFindBestMatch(bestMatchingStrategy, query, reader).ifPresent(result::add);
@@ -48,15 +48,15 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 	}
 
 	protected Optional<QueryAndValue<T>> doFindBestMatch(
-			BestMatchingStrategy<T> bestMatchingStrategy,
-			Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
+		BestMatchingStrategy<T> bestMatchingStrategy,
+		Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
 		Stream<QueryAndScoreAndValue<T>> allMatches = doFindAllMatches(query, reader)
-				.map(sat -> new QueryAndScoreAndValue<>(query, sat));
+			.map(sat -> new QueryAndScoreAndValue<>(query, sat));
 		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
 	}
 
 	protected Stream<ScoreDocAndValue<T>> doFindAllMatches(
-			Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
+		Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return reader.findMany(query).filter(searchResultFilter::filter);
 	}

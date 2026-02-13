@@ -27,9 +27,9 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 	public static <ID, T> IndexShallowUpdateServiceImpl<ID, T>
 	create(IndexShallowUpdateServiceParams<T> params) {
 		return new IndexShallowUpdateServiceImpl<>(
-				HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
-				TypedIndexRemover.create(params.typedIndexRemoverParams()),
-				TypedIndexAdderTemplate.create(params));
+			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+			TypedIndexRemover.create(params.typedIndexRemoverParams()),
+			TypedIndexAdderTemplate.create(params));
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 
 	@Override
 	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
-			throws IOException {
+		throws IOException {
 		IndexChanges<ID> changes = getIndexChanges(dataSource, query);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
@@ -54,18 +54,18 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 	}
 
 	protected IndexChanges<ID> getIndexChanges(
-			IndexDataSource<ID, ?> dataSource, Query query) throws IOException {
+		IndexDataSource<ID, ?> dataSource, Query query) throws IOException {
 		Set<ID> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
 		Set<ID> indexedButRemovedFromDS = indexReaderTemplate
-				.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
+			.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
 		return new IndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
 
 	protected void applyIndexChanges(
-			IndexDataSource<ID, T> dataSource,
-			IndexChanges<ID> changes) throws IOException {
+		IndexDataSource<ID, T> dataSource,
+		IndexChanges<ID> changes) throws IOException {
 		log.debug("\nremoving {} surplus documents from the index",
-				changes.indexIdsMissingDataSize());
+			changes.indexIdsMissingDataSize());
 		// no IndexWriter flush
 		indexRemover.removeMany(changes.indexedButRemovedFromDS());
 		log.debug("\nextracting metadata for {} documents", changes.notIndexedSize());
@@ -80,7 +80,7 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 	 * @return ids(reader) - ids
 	 */
 	protected Set<ID> docsToRemove(Query query, Set<ID> ids,
-			HitsLimitedIndexReader<ID, ?> reader) throws IOException {
+		HitsLimitedIndexReader<ID, ?> reader) throws IOException {
 		if (query == null) {
 			return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 		} else {

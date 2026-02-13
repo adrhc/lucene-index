@@ -20,6 +20,11 @@ public abstract class AbstractTypedIndexWriter<T> implements Closeable {
 	protected final TypedToDocumentConverter<T> toDocumentConverter;
 	protected final DocsIndexWriter docsIndexWriter;
 
+	@Override
+	public void close() throws IOException {
+		docsIndexWriter.close();
+	}
+
 	protected Collection<Document> toDocuments(Collection<T> tCollection) {
 		return convertCollection(toDocumentConverter::convert, tCollection);
 	}
@@ -32,10 +37,5 @@ public abstract class AbstractTypedIndexWriter<T> implements Closeable {
 		Optional<Document> documentOptional = toDocumentConverter.convert(t);
 		Assert.isTrue(documentOptional.isPresent(), "Conversion failed!");
 		return documentOptional.get();
-	}
-
-	@Override
-	public void close() throws IOException {
-		docsIndexWriter.close();
 	}
 }

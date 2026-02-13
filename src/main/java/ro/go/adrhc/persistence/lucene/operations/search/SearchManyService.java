@@ -17,8 +17,8 @@ public interface SearchManyService<T> {
 	List<T> findMany(Query query) throws IOException;
 
 	ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
-			Query query, Sort sort) throws IOException;
+		Query query, Sort sort) throws IOException;
 
 	ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
-			Query query, int hitsCount, Sort sort) throws IOException;
+		Query query, int hitsCount, Sort sort) throws IOException;
 }

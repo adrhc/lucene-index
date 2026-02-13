@@ -11,5 +11,5 @@ public interface BestMatchSearchService<T> {
 	Optional<T> findBestMatch(Query query) throws IOException;
 
 	List<QueryAndValue<T>> findBestMatches(
-			Collection<? extends Query> queries) throws IOException;
+		Collection<? extends Query> queries) throws IOException;
 }

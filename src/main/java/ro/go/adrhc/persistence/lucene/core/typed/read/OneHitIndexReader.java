@@ -19,21 +19,21 @@ public class OneHitIndexReader<T> implements Closeable {
 	private final HitsLimitedDocsIndexReader indexReader;
 
 	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
-			throws IOException {
+		throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
-				DocumentToTypedConverter.create(params.getType());
+			DocumentToTypedConverter.create(params.type());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
-				new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
+			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 		return new OneHitIndexReader<>(toScoreAndTypedConverter,
-				HitsLimitedDocsIndexReader.create(params.getIndexReaderPool(), 1));
+			HitsLimitedDocsIndexReader.create(params.indexReaderPool(), 1));
 	}
 
 	public Optional<ScoreDocAndValue<T>> findFirst(Query query) throws IOException {
 		return indexReader.findMany(query)
-				.filter(not(Breakable::isBroken))
-				.map(toScoreDocAndValueConverter::convert)
-				.flatMap(Optional::stream)
-				.findAny(); // DocsIndexReader is created with numHits = 1
+			.filter(not(Breakable::isBroken))
+			.map(toScoreDocAndValueConverter::convert)
+			.flatMap(Optional::stream)
+			.findAny(); // DocsIndexReader is created with numHits = 1
 	}
 
 	@Override

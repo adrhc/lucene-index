@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.TrimFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class AnalyzerFactory {
 	}
 
 	public static Optional<Analyzer> defaultAnalyzer(
-			TokenizerProperties properties) {
+		TokenizerProperties properties) {
 		return new AnalyzerFactory(properties).create();
 	}
 
@@ -51,8 +51,8 @@ public class AnalyzerFactory {
 
 	private CustomAnalyzer.Builder createMaxLengthTokenCustomAnalyzerBuilder() throws IOException {
 		return CustomAnalyzer.builder()
-				.withTokenizer(StandardTokenizerFactory.NAME,
-						"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
+			.withTokenizer(StandardTokenizerFactory.NAME,
+				"maxTokenLength", String.valueOf(MAX_TOKEN_LENGTH_LIMIT));
 	}
 
 	/**
@@ -63,25 +63,25 @@ public class AnalyzerFactory {
 	 * - PatternReplaceCharFilter using regex patterns to replace with the provided replacement
 	 */
 	private void rmCharsRmTextsRmPatternsSwapPatternsCharFilter(
-			CustomAnalyzer.Builder builder) throws IOException {
+		CustomAnalyzer.Builder builder) throws IOException {
 		builder.addCharFilter(MappingCharFilterFactory.class,
-				properties.getCharactersToReplaceBeforeIndexing());
+			properties.getCharactersToReplaceBeforeIndexing());
 
 		for (String text : properties.getFixedPatternsNotToIndex()) {
 			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
-					"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | Pattern.LITERAL));
+				"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | Pattern.LITERAL));
 		}
 
 		for (String regex : properties.getRegexPatternsNotToIndex()) {
 			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
-					"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE));
+				"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE));
 		}
 
 		PatternsAndReplacement regexPatternsAndReplacement = properties.getRegexPatternsAndReplacement();
 		for (String regex : regexPatternsAndReplacement.patterns()) {
 			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
-					"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE),
-					"replacement", regexPatternsAndReplacement.replacement());
+				"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE),
+				"replacement", regexPatternsAndReplacement.replacement());
 		}
 	}
 
@@ -94,14 +94,14 @@ public class AnalyzerFactory {
 	 * - RemoveDuplicatesTokenFilter
 	 */
 	private void trimAsciiFoldingLowerLengthLimitDupsRmTokenStream(
-			CustomAnalyzer.Builder builder) throws IOException {
+		CustomAnalyzer.Builder builder) throws IOException {
 		builder
-				.addTokenFilter(TrimFilterFactory.NAME)
-				.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
-				.addTokenFilter(LengthFilterFactory.NAME,
-						MIN_KEY, String.valueOf(properties.getMinTokenLength()),
-						MAX_KEY, String.valueOf(MAX_TOKEN_LENGTH_LIMIT))
-				.addTokenFilter(LowerCaseFilterFactory.NAME)
-				.addTokenFilter(RemoveDuplicatesTokenFilterFactory.NAME);
+			.addTokenFilter(TrimFilterFactory.NAME)
+			.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
+			.addTokenFilter(LengthFilterFactory.NAME,
+				MIN_KEY, String.valueOf(properties.getMinTokenLength()),
+				MAX_KEY, String.valueOf(MAX_TOKEN_LENGTH_LIMIT))
+			.addTokenFilter(LowerCaseFilterFactory.NAME)
+			.addTokenFilter(RemoveDuplicatesTokenFilterFactory.NAME);
 	}
 }

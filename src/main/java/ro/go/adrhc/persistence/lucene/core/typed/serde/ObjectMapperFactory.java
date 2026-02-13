@@ -19,9 +19,9 @@ public class ObjectMapperFactory {
 
 	public static ObjectMapper createJsonMapper() {
 		return Jackson2ObjectMapperBuilder.json()
-				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.modulesToInstall(createPathToStringModule())
-				.build();
+			.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+			.modulesToInstall(createPathToStringModule())
+			.build();
 	}
 
 	/**

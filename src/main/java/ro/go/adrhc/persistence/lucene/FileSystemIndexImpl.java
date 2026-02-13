@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
-		implements FileSystemIndex<ID, T> {
+	implements FileSystemIndex<ID, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
 	protected final ReadIndexOperations<T, ID> readIndexOperations;
@@ -61,7 +61,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
-			throws IOException {
+		throws IOException {
 		return readIndexOperations.findBestMatch(bestMatchingStrategy, query);
 	}
 
@@ -72,13 +72,13 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
-			Collection<? extends Query> queries) throws IOException {
+		Collection<? extends Query> queries) throws IOException {
 		return readIndexOperations.findBestMatches(bestMatchingStrategy, queries);
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(Collection<? extends Query> queries)
-			throws IOException {
+		throws IOException {
 		return readIndexOperations.findBestMatches(queries);
 	}
 
@@ -139,13 +139,13 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, int hitsCount, Sort sort)
-			throws IOException {
+		throws IOException {
 		return readIndexOperations.findManyAfter(after, query, hitsCount, sort);
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after, Query query, Sort sort)
-			throws IOException {
+		throws IOException {
 		return readIndexOperations.findManyAfter(after, query, sort);
 	}
 
@@ -206,7 +206,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
-			throws IOException {
+		throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdateSubset(dataSource, query));
 	}
 
@@ -232,7 +232,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>>
 
 	@Override
 	public void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy)
-			throws IOException {
+		throws IOException {
 		executeWrite(() -> writeIndexOperations.mergeMany(tCollection, mergeStrategy));
 	}
 

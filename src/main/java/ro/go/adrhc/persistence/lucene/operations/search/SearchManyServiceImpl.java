@@ -28,7 +28,7 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query,
-			int hitsCount, Sort sort) throws IOException {
+		int hitsCount, Sort sort) throws IOException {
 		return useReader(r -> toScoreDocAndValues(r.findMany(query, hitsCount, sort)));
 	}
 
@@ -44,15 +44,15 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(
-			ScoreDoc after, Query query, Sort sort) throws IOException {
+		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return useReader(r -> toScoreDocAndValues(r.findManyAfter(after, query, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
-			Query query, int hitsCount, Sort sort) throws IOException {
+		Query query, int hitsCount, Sort sort) throws IOException {
 		return useReader(r -> toScoreDocAndValues(
-				r.findManyAfter(after, query, hitsCount, sort)));
+			r.findManyAfter(after, query, hitsCount, sort)));
 	}
 
 	protected ScoreDocAndValues<T> toScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
@@ -67,14 +67,14 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 
 	protected List<T> filterAndMap(Stream<ScoreDocAndValue<T>> stream) {
 		return stream
-				.filter(searchResultFilter::filter)
-				.map(ScoreDocAndValue::value)
-				.toList();
+			.filter(searchResultFilter::filter)
+			.map(ScoreDocAndValue::value)
+			.toList();
 	}
 
 	private <R, E extends Exception> R useReader(
-			SneakyFunction<HitsLimitedIndexReader<Object, T>, R, E> indexReaderFn)
-			throws E, IOException {
+		SneakyFunction<HitsLimitedIndexReader<Object, T>, R, E> indexReaderFn)
+		throws E, IOException {
 		return indexReaderTemplate.useReader(indexReaderFn);
 	}
 }

@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
-		implements WriteIndexOperations<T, ID> {
+	implements WriteIndexOperations<T, ID> {
 	private final IndexAddServiceImpl<T> addService;
 	private final IndexUpsertServiceImpl<T> upsertService;
 	private final IndexRemoveServiceImpl<ID> removeService;
@@ -91,7 +91,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 
 	@Override
 	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
-			throws IOException {
+		throws IOException {
 		shallowUpdateService.shallowUpdateSubset(dataSource, query);
 	}
 
@@ -107,7 +107,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 
 	@Override
 	public void mergeMany(Collection<T> tCollection, BinaryOperator<T> mergeStrategy)
-			throws IOException {
+		throws IOException {
 		mergeService.mergeMany(tCollection, mergeStrategy);
 	}
 

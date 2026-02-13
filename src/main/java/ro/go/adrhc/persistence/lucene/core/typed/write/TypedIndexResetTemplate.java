@@ -15,8 +15,8 @@ public class TypedIndexResetTemplate<T> {
 	}
 
 	public <E extends Exception> void useReset(
-			SneakyConsumer<TypedIndexReset<T>, E> indexResetConsumer)
-			throws IOException, E {
+		SneakyConsumer<TypedIndexReset<T>, E> indexResetConsumer)
+		throws IOException, E {
 		try (TypedIndexReset<T> indexReset = this.indexReset) {
 			indexResetConsumer.accept(indexReset);
 		}

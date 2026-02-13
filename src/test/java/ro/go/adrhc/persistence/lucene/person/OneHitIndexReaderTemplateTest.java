@@ -15,8 +15,8 @@ public class OneHitIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 	void readTest() throws IOException {
 		OneHitIndexReaderTemplate<Person> readerTemplate = createPersonIdIndexReaderTemplate();
 		Optional<Person> optionalPerson = readerTemplate.useOneHitReader(r -> r
-				.findFirst(ID_QUERIES.longEquals(1L))
-				.map(ScoreDocAndValue::value));
+			.findFirst(ID_QUERIES.longEquals(1L))
+			.map(ScoreDocAndValue::value));
 		assertThat(optionalPerson).isPresent();
 		assertThat(optionalPerson.get().getId()).isEqualTo(1L);
 	}

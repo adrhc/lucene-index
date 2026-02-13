@@ -7,13 +7,13 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParamsImp
 import static ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParamsImpl.allHits;
 
 public interface IndexSearchServiceParams<T> extends HitsLimitedIndexReaderParams<T> {
-	SearchResultFilter<T> getSearchResultFilter();
+	SearchResultFilter<T> searchResultFilter();
 
 	default OneHitIndexReaderParams<T> oneHitIndexReaderParams() {
-		return new OneHitIndexReaderParamsImpl<>(getIndexReaderPool(), getType());
+		return new OneHitIndexReaderParamsImpl<>(indexReaderPool(), type());
 	}
 
 	default HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
-		return allHits(getType(), getIdField(), getIndexReaderPool());
+		return allHits(type(), idField(), indexReaderPool());
 	}
 }

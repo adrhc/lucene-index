@@ -16,14 +16,14 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 	public static <T> ObjectPropsToLuceneFieldsConverter<T>
 	create(ObjectPropsToLuceneFieldsConverterParams<T> params) {
 		return new ObjectPropsToLuceneFieldsConverter<>(
-				FieldFactory.create(params.getAnalyzer()),
-				params.getTypedFields());
+			FieldFactory.create(params.analyzer()),
+			params.typedFields());
 	}
 
 	public Stream<Field> toFields(T tValue) {
 		return typedFields.stream()
-				.map(typedField -> toField(tValue, typedField))
-				.flatMap(Optional::stream);
+			.map(typedField -> toField(tValue, typedField))
+			.flatMap(Optional::stream);
 	}
 
 	public Optional<Field> toField(T t, LuceneFieldSpec<T> typedField) {
@@ -37,6 +37,6 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 
 	private Field toField(LuceneFieldSpec<?> typedField, Object fieldValue) {
 		return fieldFactory.create(typedField.mustStore(),
-				typedField.fieldType(), typedField.name(), fieldValue);
+			typedField.fieldType(), typedField.name(), fieldValue);
 	}
 }

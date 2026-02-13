@@ -7,9 +7,9 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.AllHitsTypedIndexReaderPar
 
 @Getter
 public class IndexRetrieveServiceParamsImpl<T> extends
-		AllHitsTypedIndexReaderParamsFactory<T> implements IndexRetrieveServiceParams<T> {
+	AllHitsTypedIndexReaderParamsFactory<T> implements IndexRetrieveServiceParams<T> {
 	public IndexRetrieveServiceParamsImpl(Class<T> type,
-			LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
+		LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
 		super(type, idField, indexReaderPool);
 	}
 }

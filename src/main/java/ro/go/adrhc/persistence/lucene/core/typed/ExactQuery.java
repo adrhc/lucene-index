@@ -33,8 +33,8 @@ public class ExactQuery {
 			case LONG -> newExactQuery(field.numericValue().longValue());
 			case INT -> newExactQuery(field.numericValue().intValue());
 			default -> throw new IllegalStateException(
-					"Unexpected type %s for %s! "
-							.formatted(this.field.fieldType(), this.field.name()));
+				"Unexpected type %s for %s! "
+					.formatted(this.field.fieldType(), this.field.name()));
 		};
 	}
 
@@ -45,8 +45,8 @@ public class ExactQuery {
 			case LONG -> fieldQueries.longEquals((Long) idFieldValue);
 			case INT -> fieldQueries.intEquals((Integer) idFieldValue);
 			default -> throw new IllegalStateException(
-					"Unexpected type %s for %s! "
-							.formatted(field.fieldType(), field));
+				"Unexpected type %s for %s! "
+					.formatted(field.fieldType(), field));
 		};
 	}
 }

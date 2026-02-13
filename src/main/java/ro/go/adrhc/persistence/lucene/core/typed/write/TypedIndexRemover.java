@@ -16,8 +16,8 @@ public class TypedIndexRemover<ID> implements Closeable {
 
 	public static <ID> TypedIndexRemover<ID>
 	create(TypedIndexRemoverParams params) {
-		ExactQuery exactQuery = ExactQuery.create(params.getIdField());
-		return new TypedIndexRemover<>(exactQuery, new DocsIndexWriter(params.getIndexWriter()));
+		ExactQuery exactQuery = ExactQuery.create(params.idField());
+		return new TypedIndexRemover<>(exactQuery, new DocsIndexWriter(params.indexWriter()));
 	}
 
 	public void removeOne(ID id) throws IOException {

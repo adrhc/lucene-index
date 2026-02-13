@@ -9,7 +9,7 @@ import static ro.go.adrhc.util.collection.SetUtils.mapToSet;
  */
 public interface Identifiable<ID> {
 	static <ID> Set<ID> toIds(
-			Iterable<? extends Identifiable<? extends ID>> identifiables) {
+		Iterable<? extends Identifiable<? extends ID>> identifiables) {
 		return mapToSet(identifiables, Identifiable::id);
 	}
 

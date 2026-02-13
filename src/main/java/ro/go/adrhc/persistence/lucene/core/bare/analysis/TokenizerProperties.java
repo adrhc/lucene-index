@@ -20,6 +20,6 @@ public class TokenizerProperties {
 
 	public void setMinTokenLength(Integer minTokenLength) {
 		this.minTokenLength = minTokenLength == null ?
-				DEFAULT_MIN_TOKEN_LENGTH : minTokenLength;
+			DEFAULT_MIN_TOKEN_LENGTH : minTokenLength;
 	}
 }

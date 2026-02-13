@@ -17,8 +17,8 @@ public class TypedUpsertTemplate<T extends Identifiable<?>> {
 	}
 
 	public <E extends Exception> void useUpserter(
-			SneakyConsumer<TypedIndexUpsert<T>, E> indexUpdaterConsumer)
-			throws IOException, E {
+		SneakyConsumer<TypedIndexUpsert<T>, E> indexUpdaterConsumer)
+		throws IOException, E {
 		try (TypedIndexUpsert<T> indexUpdater = this.indexUpsert) {
 			indexUpdaterConsumer.accept(indexUpdater);
 		}

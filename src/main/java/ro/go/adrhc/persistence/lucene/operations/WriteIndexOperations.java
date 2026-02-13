@@ -10,7 +10,7 @@ import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServi
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertService;
 
 public interface WriteIndexOperations<T extends Indexable<ID, T>, ID>
-		extends IndexAddService<T>, IndexUpsertService<T>,
-		IndexRemoveService<ID>, IndexShallowUpdateService<ID, T>,
-		IndexResetService<T>, IndexMergeService<T>, IndexBackupService {
+	extends IndexAddService<T>, IndexUpsertService<T>,
+	IndexRemoveService<ID>, IndexShallowUpdateService<ID, T>,
+	IndexResetService<T>, IndexMergeService<T>, IndexBackupService {
 }

@@ -42,7 +42,7 @@ public class IndexReaderPool implements Closeable {
 		}
 		if (directoryReader.getRefCount() != 1) {
 			log.error("\ndirectoryReader refCount should be 1 but is {}!",
-					directoryReader.getRefCount());
+				directoryReader.getRefCount());
 		}
 		try {
 			directoryReader.close();

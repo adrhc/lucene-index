@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public interface IndexRetrieveService<ID, T> {
 	void readAll(Consumer<Stream<T>> consumer) throws IOException;
-	
+
 	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;
 
 	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;

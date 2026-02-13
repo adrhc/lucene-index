@@ -17,9 +17,9 @@ public class TypedToDocumentConverter<T> {
 	private final RawDataFieldFactory<T> rawDataFieldFactory;
 
 	public static <T> TypedToDocumentConverter<T> create(
-			ObjectPropsToLuceneFieldsConverterParams<T> params) {
+		ObjectPropsToLuceneFieldsConverterParams<T> params) {
 		ObjectPropsToLuceneFieldsConverter<T> typedFieldsProvider = ObjectPropsToLuceneFieldsConverter.create(
-				params);
+			params);
 		return new TypedToDocumentConverter<>(typedFieldsProvider, RawDataFieldFactory.create());
 	}
 

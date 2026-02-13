@@ -23,6 +23,24 @@ public abstract class AbstractPersonsIndexTest {
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
 	protected FileSystemIndex<Long, Person> indexRepository;
 
+	protected void initObjects() {
+		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
+		indexRepository = FileSystemIndexImpl.of(peopleIndexSpec);
+	}
+
+	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
+		return HitsLimitedIndexReaderTemplate.create(
+			peopleIndexSpec.allHitsTypedIndexReaderParams());
+	}
+
+	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
+		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
+	}
+
+	protected void indexRepositoryReset() throws IOException {
+		indexRepository.reset(PEOPLE);
+	}
+
 	@BeforeAll
 	void beforeAll() throws IOException {
 		initObjects();
@@ -32,23 +50,5 @@ public abstract class AbstractPersonsIndexTest {
 	@AfterAll
 	void afterAll() throws IOException {
 		peopleIndexSpec.close();
-	}
-
-	protected void initObjects() {
-		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
-		indexRepository = FileSystemIndexImpl.of(peopleIndexSpec);
-	}
-
-	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
-		return HitsLimitedIndexReaderTemplate.create(
-				peopleIndexSpec.allHitsTypedIndexReaderParams());
-	}
-
-	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
-	}
-
-	protected void indexRepositoryReset() throws IOException {
-		indexRepository.reset(PEOPLE);
 	}
 }

@@ -8,7 +8,7 @@ import java.util.EnumSet;
 public interface LuceneFieldSpec<T> {
 	static <E extends Enum<E> & LuceneFieldSpec<?>> E getIdField(Class<E> enumClass) {
 		return EnumSet.allOf(enumClass).stream().filter(LuceneFieldSpec::isIdField).findAny()
-				.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
+			.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
 	}
 
 	ObjectLuceneFieldMapper<T, ?> fieldSerde();
