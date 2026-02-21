@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.store.AlreadyClosedException;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.Closeable;
@@ -30,7 +30,7 @@ public class IndexReaderPool implements Closeable {
 	public synchronized void dismissReader(IndexReader indexReader) throws IOException {
 		indexReader.decRef();
 		if (directoryReader != indexReader) {
-			closeIfUnused(indexReader);
+			safelyCloseIfRefIs1(indexReader);
 		}
 	}
 
@@ -40,15 +40,9 @@ public class IndexReaderPool implements Closeable {
 			log.warn("\nIndexReaderPool was never used!");
 			return;
 		}
-		if (directoryReader.getRefCount() != 1) {
-			log.error("\ndirectoryReader refCount should be 1 but is {}!",
-				directoryReader.getRefCount());
-		}
-		try {
-			directoryReader.close();
-		} catch (AlreadyClosedException ac) {
-			log.error("\nTried to close an already closed index!");
-		}
+		warnIfUsedElsewhere();
+		decRefTo1();
+		safelyCloseIfRefIs1(directoryReader);
 	}
 
 	protected void openIfChanged() throws IOException {
@@ -58,14 +52,27 @@ public class IndexReaderPool implements Closeable {
 			DirectoryReader previousIndexReader = directoryReader;
 			directoryReader = DirectoryReader.openIfChanged(directoryReader);
 			if (directoryReader != null) {
-				closeIfUnused(previousIndexReader);
+				safelyCloseIfRefIs1(previousIndexReader);
 			} else {
 				directoryReader = previousIndexReader;
 			}
 		}
 	}
 
-	private static void closeIfUnused(IndexReader indexReader) {
+	private void warnIfUsedElsewhere() {
+		if (directoryReader.getRefCount() > 1) {
+			log.error("\ndirectoryReader refCount should be 1 but is {}!",
+				directoryReader.getRefCount());
+		}
+	}
+
+	private void decRefTo1() throws IOException {
+		while (directoryReader.getRefCount() > 1) {
+			directoryReader.decRef();
+		}
+	}
+
+	private static void safelyCloseIfRefIs1(@NonNull IndexReader indexReader) {
 		if (indexReader.getRefCount() == 1) {
 			IOUtils.closeQuietly(indexReader);
 		}
