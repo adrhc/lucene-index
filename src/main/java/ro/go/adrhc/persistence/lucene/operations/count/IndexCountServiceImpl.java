@@ -23,8 +23,7 @@ public class IndexCountServiceImpl implements IndexCountService {
 	 * SearchedToQueryConverter = Optional::of
 	 */
 	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
-		return new IndexCountServiceImpl(
-			DocsIndexReaderTemplateFactory.createUnlimited(indexReaderPool));
+		return new IndexCountServiceImpl(DocsIndexReaderTemplateFactory.of(indexReaderPool));
 	}
 
 	@Override

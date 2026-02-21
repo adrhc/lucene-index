@@ -2,14 +2,10 @@ package ro.go.adrhc.persistence.lucene.operations.params;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.FSDirectory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
-import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
+import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPoolFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
@@ -17,7 +13,9 @@ import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Optional;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 
@@ -86,13 +84,13 @@ public class IndexServicesParamsFactoryBuilder<
 		Analyzer finalAnalyzer = this.analyzer;
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, createIndexReaderPool(), typedFields, finalAnalyzer,
-				null, searchHits, searchResultFilter, indexPath));
+				tClass, idField, IndexReaderPoolFactory.of(indexPath), typedFields,
+				finalAnalyzer, null, searchHits, searchResultFilter, indexPath));
 		} else {
 			return createIndexWriter(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, createIndexReaderPool(), typedFields, finalAnalyzer,
-					indexWriter, searchHits, searchResultFilter, indexPath));
+					tClass, idField, IndexReaderPoolFactory.of(indexPath), typedFields,
+					finalAnalyzer, indexWriter, searchHits, searchResultFilter, indexPath));
 		}
 	}
 
@@ -111,18 +109,6 @@ public class IndexServicesParamsFactoryBuilder<
 		}
 		return new PerFieldAnalyzerWrapper(baseAnalyzer, overrides);
 	}*/
-
-	private IndexReaderPool createIndexReaderPool() {
-		return new IndexReaderPool(() -> {
-			FSDirectory directory = FSDirectory.open(indexPath);
-			if (DirectoryReader.indexExists(directory)) {
-				return DirectoryReader.open(directory);
-			} else {
-				log.warn("\n{} is an empty index!", indexPath);
-				return null;
-			}
-		});
-	}
 
 	private Optional<IndexWriter> createIndexWriter(Analyzer analyzer) {
 		try {
