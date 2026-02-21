@@ -18,7 +18,7 @@ class DocsIndexReaderTemplateTest {
 	@Test
 	void useRAMReader() throws IOException {
 		try (var writer = IndexWriterFactory.ramWriter()) {
-			writer.commit();
+			writer.commit(); // creates the index
 			IndexReaderPool pool = IndexReaderPoolFactory.of(writer);
 			DocsIndexReaderTemplate tmpl = DocsIndexReaderTemplateFactory.of(pool);
 			Integer count = tmpl.useReader(DocsIndexReader::count);
@@ -30,7 +30,7 @@ class DocsIndexReaderTemplateTest {
 	@Test
 	void useReader() throws IOException {
 		try (var writer = IndexWriterFactory.fsWriter(tmpDir)) {
-			writer.commit();
+			writer.commit(); // creates the index
 			IndexReaderPool pool = IndexReaderPoolFactory.of(tmpDir);
 			DocsIndexReaderTemplate tmpl = DocsIndexReaderTemplateFactory.of(pool);
 			Integer count = tmpl.useReader(DocsIndexReader::count);
