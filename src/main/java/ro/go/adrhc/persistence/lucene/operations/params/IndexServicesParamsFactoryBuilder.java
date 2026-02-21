@@ -18,6 +18,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
+import static ro.go.adrhc.util.fn.SneakySupplierUtils.failToNull;
 
 @Slf4j
 public class IndexServicesParamsFactoryBuilder<
@@ -121,7 +122,7 @@ public class IndexServicesParamsFactoryBuilder<
 
 	private void useDefaultAnalyzerIfEmpty() {
 		if (analyzer == null) {
-			this.analyzer = AnalyzerFactory.defaultAnalyzer().orElse(null);
+			this.analyzer = failToNull(AnalyzerFactory::defaultAnalyzer);
 		}
 	}
 }

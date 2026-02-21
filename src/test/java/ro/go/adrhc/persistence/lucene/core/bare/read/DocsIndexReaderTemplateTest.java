@@ -16,6 +16,18 @@ class DocsIndexReaderTemplateTest {
 	protected static Path tmpDir;
 
 	@Test
+	void useRAMReader() throws IOException {
+		try (var writer = IndexWriterFactory.ramWriter()) {
+			writer.commit();
+			IndexReaderPool pool = IndexReaderPoolFactory.of(writer);
+			DocsIndexReaderTemplate tmpl = DocsIndexReaderTemplateFactory.of(pool);
+			Integer count = tmpl.useReader(DocsIndexReader::count);
+			assertEquals(0, count);
+			pool.close();
+		}
+	}
+
+	@Test
 	void useReader() throws IOException {
 		try (var writer = IndexWriterFactory.fsWriter(tmpDir)) {
 			writer.commit();

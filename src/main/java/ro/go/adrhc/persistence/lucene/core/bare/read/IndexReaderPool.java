@@ -38,10 +38,10 @@ public class IndexReaderPool implements Closeable {
 	public synchronized void close() {
 		if (directoryReader == null) {
 			log.warn("\nIndexReaderPool was never used!");
-			return;
+		} else {
+			safelyCloseIfRefIs1OrDecRefIfMore(directoryReader);
+			log.info("IndexReader ref count: {}", directoryReader.getRefCount());
 		}
-		warnIfUsedElsewhere();
-		safelyCloseIfRefIs1OrDecRefIfMore(directoryReader);
 	}
 
 	protected void openIfChanged() throws IOException {
@@ -55,13 +55,6 @@ public class IndexReaderPool implements Closeable {
 			} else {
 				directoryReader = previousIndexReader;
 			}
-		}
-	}
-
-	private void warnIfUsedElsewhere() {
-		if (directoryReader.getRefCount() > 1) {
-			log.error("\nDirectoryReader refCount should be 1 but is {}!",
-				directoryReader.getRefCount());
 		}
 	}
 

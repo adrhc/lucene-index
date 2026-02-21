@@ -27,8 +27,9 @@ import static ro.go.adrhc.util.optional.OptionalFactory.ofSilencedRiskySupplier;
 public class AnalyzerFactory {
 	private final TokenizerProperties properties;
 
-	public static Optional<Analyzer> defaultAnalyzer() {
-		return new AnalyzerFactory(new TokenizerProperties()).create();
+	public static Analyzer defaultAnalyzer() throws IOException {
+		return new AnalyzerFactory(new TokenizerProperties()).create()
+			.orElseThrow(() -> new IOException("Failed to create the default analyzer!"));
 	}
 
 	public static Optional<Analyzer> defaultAnalyzer(
