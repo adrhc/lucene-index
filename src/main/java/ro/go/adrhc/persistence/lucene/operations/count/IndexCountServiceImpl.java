@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReaderTemplateFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class IndexCountServiceImpl implements IndexCountService {
 	 */
 	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
 		return new IndexCountServiceImpl(
-			DocsIndexReaderTemplate.createUnlimited(indexReaderPool));
+			DocsIndexReaderTemplateFactory.createUnlimited(indexReaderPool));
 	}
 
 	@Override

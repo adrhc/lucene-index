@@ -12,14 +12,18 @@ import java.util.stream.Stream;
 public class DocsIndexReaderTemplate {
 	private final SneakySupplier<DocsIndexReader, IOException> indexReaderFactory;
 
-	public static DocsIndexReaderTemplate create(HitsLimitedDocsIndexReaderParams params) {
-		return new DocsIndexReaderTemplate(
-			() -> HitsLimitedDocsIndexReader.create(params));
-	}
-
-	public static DocsIndexReaderTemplate createUnlimited(IndexReaderPool indexReaderPool) {
-		return new DocsIndexReaderTemplate(
-			() -> HitsLimitedDocsIndexReader.createUnlimited(indexReaderPool));
+	/**
+	 * Make sure that songsIndexReaderFn does not return a Stream!
+	 * before the Stream is return the DocsIndexReader is closed.
+	 */
+	public <R, E extends Exception> R useReader(
+		SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
+		throws IOException, E {
+		try (DocsIndexReader indexReader = indexReaderFactory.get()) {
+			R result = indexReaderFn.apply(indexReader);
+			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
+			return result;
+		}
 	}
 
 	/*public <R, E extends Exception> R transformFields(String fieldName,
@@ -45,18 +49,4 @@ public class DocsIndexReaderTemplate {
 	public Optional<Document> findFirst(Query idQuery) throws IOException {
 		return useReader(indexReader -> indexReader.findFirst(idQuery));
 	}*/
-
-	/**
-	 * Make sure that songsIndexReaderFn does not return a Stream!
-	 * before the Stream is return the DocsIndexReader is closed.
-	 */
-	public <R, E extends Exception> R useReader(
-		SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
-		throws IOException, E {
-		try (DocsIndexReader indexReader = indexReaderFactory.get()) {
-			R result = indexReaderFn.apply(indexReader);
-			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
-			return result;
-		}
-	}
 }

@@ -20,7 +20,7 @@ public class IndexReaderPool implements Closeable {
 
 	@Nullable
 	public synchronized IndexReader getReader() throws IOException {
-		updateReader();
+		openIfChanged();
 		if (directoryReader != null) {
 			directoryReader.incRef();
 		}
@@ -51,7 +51,7 @@ public class IndexReaderPool implements Closeable {
 		}
 	}
 
-	protected void updateReader() throws IOException {
+	protected void openIfChanged() throws IOException {
 		if (directoryReader == null) {
 			directoryReader = dirReaderSupplier.get();
 		} else {
