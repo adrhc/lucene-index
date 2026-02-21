@@ -65,7 +65,7 @@ public class IndexReaderPool implements Closeable {
 		}
 	}
 
-	protected void closeIfUnused(IndexReader indexReader) {
+	private static void closeIfUnused(IndexReader indexReader) {
 		if (indexReader.getRefCount() == 1) {
 			IOUtils.closeQuietly(indexReader);
 		}
