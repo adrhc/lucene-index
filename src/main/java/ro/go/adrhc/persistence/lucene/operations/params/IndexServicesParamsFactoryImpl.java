@@ -100,7 +100,6 @@ public class IndexServicesParamsFactoryImpl<T>
 			log.info("\nIndex already closed: {}", indexPath);
 			return;
 		}
-		closed = true;
 		log.info("\nclosing {} ...", indexPath);
 		indexReaderPool.close();
 		log.info("\nIndexReaderPool closed!");
@@ -111,5 +110,6 @@ public class IndexServicesParamsFactoryImpl<T>
 			indexWriter.close();
 			log.info("\nIndexWriter closed!");
 		}
+		closed = true;
 	}
 }

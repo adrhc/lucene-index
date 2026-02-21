@@ -41,7 +41,6 @@ public class IndexReaderPool implements Closeable {
 			return;
 		}
 		warnIfUsedElsewhere();
-		safelyDecRefTo1();
 		safelyCloseIfRefIs1OrDecRefIfMore(directoryReader);
 	}
 
@@ -61,14 +60,8 @@ public class IndexReaderPool implements Closeable {
 
 	private void warnIfUsedElsewhere() {
 		if (directoryReader.getRefCount() > 1) {
-			log.error("\ndirectoryReader refCount should be 1 but is {}!",
+			log.error("\nDirectoryReader refCount should be 1 but is {}!",
 				directoryReader.getRefCount());
-		}
-	}
-
-	private void safelyDecRefTo1() {
-		while (directoryReader.getRefCount() > 1) {
-			safelyDecRef(directoryReader);
 		}
 	}
 
