@@ -30,19 +30,19 @@ public class IndexReaderPool implements Closeable {
 	public synchronized void dismissReader(IndexReader indexReader) throws IOException {
 		indexReader.decRef();
 		if (directoryReader != indexReader) {
-			safelyCloseIfRefIs1(indexReader);
+			safelyCloseIfRefIs1OrDecRefIfMore(indexReader);
 		}
 	}
 
 	@Override
-	public synchronized void close() throws IOException {
+	public synchronized void close() {
 		if (directoryReader == null) {
 			log.warn("\nIndexReaderPool was never used!");
 			return;
 		}
 		warnIfUsedElsewhere();
-		decRefTo1();
-		safelyCloseIfRefIs1(directoryReader);
+		safelyDecRefTo1();
+		safelyCloseIfRefIs1OrDecRefIfMore(directoryReader);
 	}
 
 	protected void openIfChanged() throws IOException {
@@ -52,7 +52,7 @@ public class IndexReaderPool implements Closeable {
 			DirectoryReader previousIndexReader = directoryReader;
 			directoryReader = DirectoryReader.openIfChanged(directoryReader);
 			if (directoryReader != null) {
-				safelyCloseIfRefIs1(previousIndexReader);
+				safelyCloseIfRefIs1OrDecRefIfMore(previousIndexReader);
 			} else {
 				directoryReader = previousIndexReader;
 			}
@@ -66,15 +66,25 @@ public class IndexReaderPool implements Closeable {
 		}
 	}
 
-	private void decRefTo1() throws IOException {
+	private void safelyDecRefTo1() {
 		while (directoryReader.getRefCount() > 1) {
-			directoryReader.decRef();
+			safelyDecRef(directoryReader);
 		}
 	}
 
-	private static void safelyCloseIfRefIs1(@NonNull IndexReader indexReader) {
+	private static void safelyCloseIfRefIs1OrDecRefIfMore(@NonNull IndexReader indexReader) {
 		if (indexReader.getRefCount() == 1) {
 			IOUtils.closeQuietly(indexReader);
+		} else if (indexReader.getRefCount() > 1) {
+			safelyDecRef(indexReader);
+		}
+	}
+
+	private static void safelyDecRef(@NonNull IndexReader indexReader) {
+		try {
+			indexReader.decRef();
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
 		}
 	}
 }

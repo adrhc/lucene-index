@@ -97,34 +97,19 @@ public class IndexServicesParamsFactoryImpl<T>
 	@Override
 	public void close() throws IOException {
 		if (closed) {
-			log.info("\nindex already closed: {}", indexPath);
+			log.info("\nIndex already closed: {}", indexPath);
 			return;
 		}
+		closed = true;
 		log.info("\nclosing {} ...", indexPath);
-		IOException exc = null;
-		try {
-			log.info("\nclosing IndexReaderPool ...");
-			indexReaderPool.close();
-			log.info("\nIndexReaderPool closed");
-		} catch (IOException e) {
-			log.error("\nIndexReaderPool failed to close!");
-			exc = e;
-		}
+		indexReaderPool.close();
+		log.info("\nIndexReaderPool closed!");
 		if (isReadOnly()) {
 			log.info("\nWon't close IndexWriter because the index was opened in read-only mode!");
 		} else {
-			try {
-				log.info("\nclosing IndexWriter ...");
-				indexWriter.close();
-				log.info("\nIndexWriter closed");
-			} catch (IOException e) {
-				log.error("\nIndexWriter failed to close!");
-				exc = e;
-			}
-		}
-		closed = true;
-		if (exc != null) {
-			throw exc;
+			log.info("\nclosing IndexWriter ...");
+			indexWriter.close();
+			log.info("\nIndexWriter closed!");
 		}
 	}
 }
