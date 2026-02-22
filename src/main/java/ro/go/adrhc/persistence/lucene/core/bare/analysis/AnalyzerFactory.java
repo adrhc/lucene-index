@@ -27,12 +27,11 @@ public class AnalyzerFactory {
 	private final TokenizerProperties properties;
 
 	public static Analyzer defaultAnalyzer() throws IOException {
-		return new AnalyzerFactory(new TokenizerProperties()).create()
+		return defaultAnalyzer(new TokenizerProperties())
 			.orElseThrow(() -> new IOException("Failed to create the default analyzer!"));
 	}
 
-	public static Optional<Analyzer> defaultAnalyzer(
-		TokenizerProperties properties) {
+	public static Optional<Analyzer> defaultAnalyzer(TokenizerProperties properties) {
 		return new AnalyzerFactory(properties).create();
 	}
 
