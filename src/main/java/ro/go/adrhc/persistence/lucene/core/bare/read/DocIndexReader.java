@@ -8,7 +8,6 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.StoredObjectFieldValuesVisitor;
 import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 
 import java.io.Closeable;

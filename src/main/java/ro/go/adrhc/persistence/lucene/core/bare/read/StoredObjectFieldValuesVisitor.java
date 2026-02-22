@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor;
+package ro.go.adrhc.persistence.lucene.core.bare.read;
 
 import lombok.Getter;
 import org.apache.lucene.index.FieldInfo;
