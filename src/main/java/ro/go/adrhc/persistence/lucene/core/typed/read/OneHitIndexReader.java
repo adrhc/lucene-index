@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.core.typed.read;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
@@ -18,7 +18,7 @@ import static java.util.function.Predicate.not;
 @RequiredArgsConstructor
 public class OneHitIndexReader<T> implements Closeable {
 	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
-	private final HitsLimitedDocsIndexReader indexReader;
+	private final HitsLimitedDocIndexReader indexReader;
 
 	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
 		throws IOException {
@@ -35,7 +35,7 @@ public class OneHitIndexReader<T> implements Closeable {
 			.filter(not(Breakable::isBroken))
 			.map(toScoreDocAndValueConverter::convert)
 			.flatMap(Optional::stream)
-			.findAny(); // DocsIndexReader is created with numHits = 1
+			.findAny(); // DocIndexReader is created with numHits = 1
 	}
 
 	@Override

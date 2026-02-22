@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DocsIndexReaderTemplateTest {
+class DocIndexReaderTemplateTest {
 	@TempDir
 	protected static Path tmpDir;
 
@@ -20,8 +20,8 @@ class DocsIndexReaderTemplateTest {
 		try (var writer = IndexWriterFactory.ramWriter()) {
 			writer.commit(); // creates the index
 			IndexReaderPool pool = IndexReaderPoolFactory.of(writer);
-			DocsIndexReaderTemplate tmpl = DocsIndexReaderTemplateFactory.of(pool);
-			Integer count = tmpl.useReader(DocsIndexReader::count);
+			DocIndexReaderTemplate tmpl = DocIndexReaderTemplateFactory.of(pool);
+			Integer count = tmpl.useReader(DocIndexReader::count);
 			assertEquals(0, count);
 			pool.close();
 		}
@@ -32,8 +32,8 @@ class DocsIndexReaderTemplateTest {
 		try (var writer = IndexWriterFactory.fsWriter(tmpDir)) {
 			writer.commit(); // creates the index
 			IndexReaderPool pool = IndexReaderPoolFactory.of(tmpDir);
-			DocsIndexReaderTemplate tmpl = DocsIndexReaderTemplateFactory.of(pool);
-			Integer count = tmpl.useReader(DocsIndexReader::count);
+			DocIndexReaderTemplate tmpl = DocIndexReaderTemplateFactory.of(pool);
+			Integer count = tmpl.useReader(DocIndexReader::count);
 			assertEquals(0, count);
 			pool.close();
 		}

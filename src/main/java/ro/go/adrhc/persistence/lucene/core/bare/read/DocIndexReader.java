@@ -23,12 +23,12 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocsIndexReader implements Closeable {
+public class DocIndexReader implements Closeable {
 	private final IndexReaderPool indexReaderPool;
 	private final IndexReader indexReader;
 
-	public static DocsIndexReader create(IndexReaderPool indexReaderPool) throws IOException {
-		return new DocsIndexReader(indexReaderPool, indexReaderPool.getReader());
+	public static DocIndexReader create(IndexReaderPool indexReaderPool) throws IOException {
+		return new DocIndexReader(indexReaderPool, indexReaderPool.getReader());
 	}
 
 	public boolean isEmpty() throws IOException {

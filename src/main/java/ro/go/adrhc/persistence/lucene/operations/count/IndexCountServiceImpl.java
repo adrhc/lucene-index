@@ -3,9 +3,9 @@ package ro.go.adrhc.persistence.lucene.operations.count;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReader;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocsIndexReaderTemplateFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReader;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderTemplateFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class IndexCountServiceImpl implements IndexCountService {
-	private final DocsIndexReaderTemplate docsReaderTemplate;
+	private final DocIndexReaderTemplate docsReaderTemplate;
 
 	/**
 	 * Query base IndexCountServiceImpl
@@ -23,17 +23,17 @@ public class IndexCountServiceImpl implements IndexCountService {
 	 * SearchedToQueryConverter = Optional::of
 	 */
 	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
-		return new IndexCountServiceImpl(DocsIndexReaderTemplateFactory.of(indexReaderPool));
+		return new IndexCountServiceImpl(DocIndexReaderTemplateFactory.of(indexReaderPool));
 	}
 
 	@Override
 	public boolean isEmpty() throws IOException {
-		return docsReaderTemplate.useReader(DocsIndexReader::isEmpty);
+		return docsReaderTemplate.useReader(DocIndexReader::isEmpty);
 	}
 
 	@Override
 	public int count() throws IOException {
-		return docsReaderTemplate.useReader(DocsIndexReader::count);
+		return docsReaderTemplate.useReader(DocIndexReader::count);
 	}
 
 	@Override

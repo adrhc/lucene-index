@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class DocsIndexReaderTemplate {
-	private final SneakySupplier<DocsIndexReader, IOException> indexReaderFactory;
+public class DocIndexReaderTemplate {
+	private final SneakySupplier<DocIndexReader, IOException> indexReaderFactory;
 
 	/**
 	 * Make sure that songsIndexReaderFn does not return a Stream!
-	 * before the Stream is return the DocsIndexReader is closed.
+	 * before the Stream is return the DocIndexReader is closed.
 	 */
 	public <R, E extends Exception> R useReader(
-		SneakyFunction<DocsIndexReader, R, E> indexReaderFn)
+		SneakyFunction<DocIndexReader, R, E> indexReaderFn)
 		throws IOException, E {
-		try (DocsIndexReader indexReader = indexReaderFactory.get()) {
+		try (DocIndexReader indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
 			return result;

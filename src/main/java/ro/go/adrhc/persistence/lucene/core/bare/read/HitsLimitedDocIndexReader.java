@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @Slf4j
-public class HitsLimitedDocsIndexReader extends DocsIndexReader {
+public class HitsLimitedDocIndexReader extends DocIndexReader {
 	private final int numHits;
 
-	public HitsLimitedDocsIndexReader(IndexReaderPool indexReaderPool,
+	public HitsLimitedDocIndexReader(IndexReaderPool indexReaderPool,
 		IndexReader indexReader, int numHits) {
 		super(indexReaderPool, indexReader);
 		this.numHits = numHits;

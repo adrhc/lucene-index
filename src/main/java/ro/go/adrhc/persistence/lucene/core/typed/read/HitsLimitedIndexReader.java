@@ -5,7 +5,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReader;
+import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
@@ -26,7 +26,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	private final LuceneFieldSpec<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
-	private final HitsLimitedDocsIndexReader hitsLimitedDocsIndexReader;
+	private final HitsLimitedDocIndexReader hitsLimitedDocsIndexReader;
 
 	public static <ID, T> HitsLimitedIndexReader<ID, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
@@ -34,7 +34,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			DocumentToTypedConverter.create(params.type());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
 			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
-		HitsLimitedDocsIndexReader indexReader = HitsLimitedDocsIndexReaderFactory.create(params);
+		HitsLimitedDocIndexReader indexReader = HitsLimitedDocsIndexReaderFactory.create(params);
 		return new HitsLimitedIndexReader<>(params.idField(),
 			docToTypedConverter, toScoreAndTypedConverter, indexReader);
 	}
