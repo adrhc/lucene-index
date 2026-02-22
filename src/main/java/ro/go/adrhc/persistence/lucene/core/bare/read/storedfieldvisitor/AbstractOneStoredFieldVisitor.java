@@ -14,7 +14,7 @@ public abstract class AbstractOneStoredFieldVisitor<V> extends StoredFieldVisito
 
 	@Override
 	public Status needsField(FieldInfo fieldInfo) {
-		return fieldInfo.name.equals(name) ? Status.YES : (done ? Status.STOP : Status.NO);
+		return done ? Status.STOP : (fieldInfo.name.equals(name) ? Status.YES : Status.NO);
 	}
 
 	public void reset() {

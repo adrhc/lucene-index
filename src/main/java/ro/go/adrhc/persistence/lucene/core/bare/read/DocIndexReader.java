@@ -8,13 +8,13 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.AbstractOneStoredFieldVisitor;
-import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.OneStoredObjectFieldVisitor;
+import ro.go.adrhc.persistence.lucene.core.bare.read.storedfieldvisitor.StoredObjectFieldValuesVisitor;
 import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -70,7 +70,7 @@ public class DocIndexReader implements Closeable {
 	}
 
 	/**
-	 * Returns only one fieldName field value per document!
+	 * Returns all fieldName field values across documents!
 	 */
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, int numHits) throws IOException {
@@ -81,9 +81,9 @@ public class DocIndexReader implements Closeable {
 		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(s -> IndexSearcherAccessors.search(s, query, numHits, sort));
-		OneStoredObjectFieldVisitor fieldVisitor = new OneStoredObjectFieldVisitor(fieldName);
+		StoredObjectFieldValuesVisitor fieldVisitor = new StoredObjectFieldValuesVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
-			.map(scoreDoc -> safelyGetOneFieldValue(storedFields, fieldVisitor, scoreDoc))
+			.flatMap(scoreDoc -> safelyGetFieldValues(storedFields, fieldVisitor, scoreDoc).stream())
 			.filter(Objects::nonNull);
 	}
 
@@ -162,11 +162,11 @@ public class DocIndexReader implements Closeable {
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
-	private <V> V safelyGetOneFieldValue(StoredFields storedFields,
-		AbstractOneStoredFieldVisitor<V> fieldVisitor, ScoreDoc scoreDoc) {
+	private List<Object> safelyGetFieldValues(StoredFields storedFields,
+		StoredObjectFieldValuesVisitor fieldVisitor, ScoreDoc scoreDoc) {
 		fieldVisitor.reset();
 		safelyVisitDocument(storedFields, fieldVisitor, scoreDoc);
-		return fieldVisitor.getValue();
+		return fieldVisitor.getValues();
 	}
 
 	/**
