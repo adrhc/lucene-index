@@ -15,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.TOKENIZATION_UTILS;
 
 @ExtendWith(MockitoExtension.class)
-public
-class TokenizationUtilsTest {
+public class TokenizationUtilsTest {
 	public static final String TEXT = " IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 " +
 	                                  "ăĂîÎșȘțȚ ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
 

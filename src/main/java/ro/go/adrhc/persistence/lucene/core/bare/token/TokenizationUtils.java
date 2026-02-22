@@ -47,8 +47,8 @@ public class TokenizationUtils {
 		return list;
 	}
 
-	private SortedSet<String> textToTokenSet(TokenStream tokenStream) throws IOException {
-		SortedSet<String> set = new TreeSet<>();
+	private Set<String> textToTokenSet(TokenStream tokenStream) throws IOException {
+		Set<String> set = new HashSet<>();
 		addTokensToCollection(set, tokenStream);
 		return set;
 	}
