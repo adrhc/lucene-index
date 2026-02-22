@@ -11,16 +11,13 @@ import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFacto
 import ro.go.adrhc.persistence.lucene.person.PersonFieldType;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
-import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndReplacement.caseInsensitive;
 import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryBuilder.of;
 
 @Slf4j
 public class TypedIndexParamsTestFactory {
-	public static final Analyzer ANALYZER = safelyCreateDefaultAnalyzer();
+	public static final Analyzer ANALYZER = defaultAnalyzer(new TokenizerProperties()).orElseThrow();
 	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
 		DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
@@ -29,22 +26,7 @@ public class TypedIndexParamsTestFactory {
 	IndexServicesParamsFactory<T> createTypedIndexSpec(
 		Class<T> tClass, Class<E> typedFieldEnumClass, Path indexPath) {
 		return of(tClass, typedFieldEnumClass, indexPath)
-			.tokenizerProperties(createTokenizerProperties())
 			.build()
-			.orElseThrow(() -> new
-				RuntimeException("Can't create IndexServicesParamsFactory!"));
-	}
-
-	private static Analyzer safelyCreateDefaultAnalyzer() {
-		return defaultAnalyzer(createTokenizerProperties())
-			.orElseThrow(() -> new RuntimeException("Can't create the default Analyzer!"));
-	}
-
-	private static TokenizerProperties createTokenizerProperties() {
-		return new TokenizerProperties(2,
-			List.of("Fixed Pattern To Remove"),
-			List.of("\\(\\s*Regex\\s*Pattern\\s*To\\s*Remove\\)"),
-			Map.of("_", " "),
-			caseInsensitive("$1", "([^\\s]*)\\.jpe?g"));
+			.orElseThrow(() -> new RuntimeException("Can't create IndexServicesParamsFactory!"));
 	}
 }

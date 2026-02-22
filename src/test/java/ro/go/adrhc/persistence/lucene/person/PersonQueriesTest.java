@@ -14,8 +14,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Strings.concat;
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.ANALYZER;
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.NAME_QUERY_PARSER;
+import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.*;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 import static ro.go.adrhc.util.fn.FunctionFactory.nullFailResultFn;
@@ -63,9 +62,12 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 
 	@Test
 	void closeFuzzyTokens() throws IOException {
+		log.info("\nname tokens for:{}\nare:\n{}", PERSON2.name(),
+			String.join(", ", TOKENIZATION_UTILS.textToTokenList(PERSON2.name())));
+
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
-			NAME_QUERIES.maxFuzzinessNearTokens(List.of("ddd", "an", "cast")));
+			NAME_QUERIES.maxFuzzinessNearTokens(List.of("wa0029", "ccc_ddd", "an")));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON2.id());
