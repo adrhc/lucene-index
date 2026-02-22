@@ -57,6 +57,9 @@ public class DocIndexReader implements Closeable {
 			.orElseGet(Stream::of);
 	}
 
+	/**
+	 * Returns all fieldName field values!
+	 */
 	public Stream<IndexableField> getFields(String fieldName) throws IOException {
 		return getDocProjectionStream(Set.of(fieldName))
 			.mapMulti((doc, sink) -> {
@@ -66,6 +69,9 @@ public class DocIndexReader implements Closeable {
 			});
 	}
 
+	/**
+	 * Returns only one fieldName field value per document!
+	 */
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, int numHits) throws IOException {
 		return findFieldValues(fieldName, query, numHits, null);
@@ -163,6 +169,13 @@ public class DocIndexReader implements Closeable {
 		return fieldVisitor.getValue();
 	}
 
+	/**
+	 * If a document have multiple values for the stored field "name" will
+	 * fieldVisitor (suppose it accepts "name") receive all "name" values of a document?
+	 * <p>
+	 * Yes. StoredFields.document(doc, fieldVisitor) will call the visitor for each stored
+	 * occurrence of "name" in that document, so it receives all values the visitor accepts.
+	 */
 	private void safelyVisitDocument(StoredFields storedFields,
 		StoredFieldVisitor fieldVisitor, ScoreDoc scoreDoc) {
 		try {
