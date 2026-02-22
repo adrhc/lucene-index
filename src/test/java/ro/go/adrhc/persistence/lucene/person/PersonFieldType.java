@@ -28,7 +28,7 @@ public enum PersonFieldType implements LuceneFieldSpec<Person> {
 	instantField(LONG, instantField(Person::instantField), false),
 	storedOnlyField(STORED, Person::storedOnlyField),
 	male(INT, booleanField(Person::male), false),
-	tags(TAGS, tagsField(Person::tags));
+	tags(KEYWORD_ARRAY, tagsField(Person::tags));
 
 	private final FieldType fieldType;
 	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;

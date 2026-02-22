@@ -98,7 +98,7 @@ public class FieldFactory {
 		Assert.isTrue(fieldType != INT || !stored,
 			"INT fields must not demand to be stored!");
 		return switch (fieldType) {
-			case KEYWORD, TAGS -> keywordField(stored, fieldName, value);
+			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, value);
 			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
 			case PHRASE -> phraseField(stored, fieldName, value);
 			case INT -> intField(fieldName, (Integer) value);
