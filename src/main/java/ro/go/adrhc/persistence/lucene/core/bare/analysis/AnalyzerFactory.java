@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.LengthFilterFactory;
@@ -35,10 +34,6 @@ public class AnalyzerFactory {
 	public static Optional<Analyzer> defaultAnalyzer(
 		TokenizerProperties properties) {
 		return new AnalyzerFactory(properties).create();
-	}
-
-	public static Analyzer tagsAnalyzer() {
-		return new WhitespaceAnalyzer();
 	}
 
 	public Optional<Analyzer> create() {
