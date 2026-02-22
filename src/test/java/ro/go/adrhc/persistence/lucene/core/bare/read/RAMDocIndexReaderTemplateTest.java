@@ -6,10 +6,10 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DocIndexReaderTemplateTest extends AbstractFSDocIndexTest {
+public class RAMDocIndexReaderTemplateTest extends AbstractRAMDocIndexTest {
 	@Test
-	void useReader() throws IOException {
-		useIndex((r, w) -> {
+	void useRAMReader() throws IOException {
+		useRAMIndex((r, w) -> {
 			DocIndexReaderTemplate tmpl = DocIndexReaderTemplateFactory.of(r);
 			Integer count = tmpl.useReader(DocIndexReader::count);
 			assertEquals(0, count);

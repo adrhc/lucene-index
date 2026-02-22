@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.FSDirectory;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,10 +40,16 @@ public class IndexReaderPool implements Closeable {
 	@Override
 	public synchronized void close() {
 		if (directoryReader == null) {
-			log.warn("\nIndexReaderPool was never used!");
+			indexPath().ifPresentOrElse(
+				p -> log.info("\nIndexReaderPool ({}) was never used!", p),
+				() -> log.info("\nIndexReaderPool was never used!")
+			);
 		} else {
 			safelyCloseIfRefIs1OrDecRefIfMore(directoryReader);
-			log.info("IndexReader ref count: {}", directoryReader.getRefCount());
+			indexPath().ifPresentOrElse(
+				p -> log.info("\nIndexReader ({}) ref count: {}", p, directoryReader.getRefCount()),
+				() -> log.info("\nIndexReader ref count: {}", directoryReader.getRefCount())
+			);
 		}
 	}
 
@@ -58,7 +67,7 @@ public class IndexReaderPool implements Closeable {
 		}
 	}
 
-	private static void safelyCloseIfRefIs1OrDecRefIfMore(@NonNull IndexReader indexReader) {
+	private void safelyCloseIfRefIs1OrDecRefIfMore(@NonNull IndexReader indexReader) {
 		if (indexReader.getRefCount() == 1) {
 			IOUtils.closeQuietly(indexReader);
 		} else if (indexReader.getRefCount() > 1) {
@@ -66,11 +75,20 @@ public class IndexReaderPool implements Closeable {
 		}
 	}
 
-	private static void safelyDecRef(@NonNull IndexReader indexReader) {
+	private void safelyDecRef(@NonNull IndexReader indexReader) {
 		try {
 			indexReader.decRef();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
+			indexPath().ifPresent(p -> log.info("\nIndexReader ({}) decRef failed!", p));
+		}
+	}
+
+	private Optional<Path> indexPath() {
+		if (directoryReader.directory() instanceof FSDirectory dir) {
+			return Optional.ofNullable(dir.getDirectory());
+		} else {
+			return Optional.empty();
 		}
 	}
 }
