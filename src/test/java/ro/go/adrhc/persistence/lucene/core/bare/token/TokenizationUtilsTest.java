@@ -39,6 +39,8 @@ class TokenizationUtilsTest {
 	@Test
 	void tokenizerRegexPatternsToReplaceComparison() throws IOException {
 		tokenizerComparison("filename.mp3", "filename.mp3", "filename");
+		tokenizerComparison("greengirl_15_williamson.mp3",
+			"greengirl_15_williamson.mp3", "greengirl 15 williamson");
 	}
 
 	@Test
