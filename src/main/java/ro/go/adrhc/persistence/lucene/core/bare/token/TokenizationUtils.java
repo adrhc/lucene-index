@@ -27,10 +27,11 @@ public class TokenizationUtils {
 		}
 	}
 
+	/**
+	 * @return a sorted list of tokens obtained from the given text
+	 */
 	public List<String> textToTokenList(String text) throws IOException {
-		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-			return textToTokenList(tokenStream);
-		}
+		return textToTokenSet(text).stream().sorted().toList();
 	}
 
 	public String normalize(Enum<?> field, String text) {
