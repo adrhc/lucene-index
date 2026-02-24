@@ -7,7 +7,10 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class TokenizationUtils {
@@ -40,12 +43,6 @@ public class TokenizationUtils {
 
 	public String normalize(String fieldName, String text) {
 		return analyzer.normalize(fieldName, text).utf8ToString();
-	}
-
-	private List<String> textToTokenList(TokenStream tokenStream) throws IOException {
-		List<String> list = new ArrayList<>();
-		addTokensToCollection(list, tokenStream);
-		return list;
 	}
 
 	private Set<String> textToTokenSet(TokenStream tokenStream) throws IOException {
