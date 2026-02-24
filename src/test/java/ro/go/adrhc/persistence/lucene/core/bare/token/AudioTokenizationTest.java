@@ -18,11 +18,11 @@ class AudioTokenizationTest {
 		assertAudioTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video) Version.mp3", "smiley vals version");
 		assertAudioTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
-		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
+		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "don go yaz yazoo");
 		assertAudioTokens("test (Audio Version) title.mp3", "test title");
 		assertAudioTokens("The Wallflowers - One Headlight (Official Music Video).mp3",
-			"the wallflowers one headlight");
-		assertAudioTokens("Dr Alban - Hello Africa (Official HD).mp3", "dr alban hello africa");
+			"headlight one the wallflowers");
+		assertAudioTokens("Dr Alban - Hello Africa (Official HD).mp3", "africa alban dr hello");
 	}
 
 	public static void assertAudioTokens(String text, String expectedTokens) throws IOException {
