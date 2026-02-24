@@ -13,9 +13,9 @@ import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.LITERAL;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
@@ -79,12 +79,9 @@ public class AnalyzerFactory {
 	 */
 	private void addCharReplacerRmTextsAndPatternsPatternReplacerCharFilters(
 		CustomAnalyzer.Builder builder) throws IOException {
-		builder.addCharFilter(MappingCharFilterFactory.class,
-			properties.getCharactersToReplaceBeforeIndexing());
-
 		for (String text : properties.getFixedPatternsNotToIndex()) {
 			builder.addCharFilter(PatternReplaceCharFilterFactory.class,
-				"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | Pattern.LITERAL));
+				"pattern", text, "flags", String.valueOf(CASE_INSENSITIVE | LITERAL));
 		}
 
 		for (String regex : properties.getRegexPatternsNotToIndex()) {
@@ -98,5 +95,8 @@ public class AnalyzerFactory {
 				"pattern", regex, "flags", String.valueOf(CASE_INSENSITIVE),
 				"replacement", regexPatternsAndReplacement.replacement());
 		}
+
+		builder.addCharFilter(MappingCharFilterFactory.class,
+			properties.getCharactersToReplaceBeforeIndexing());
 	}
 }

@@ -13,19 +13,19 @@ import static ro.go.adrhc.persistence.lucene.core.bare.token.AudioTokenizationUt
 class AudioTokenizationTest {
 	@Test
 	void audioTokenizerTest() throws IOException {
-		assertTokens("Smiley - Vals (Official).mp3", "smiley vals");
-		assertTokens("Smiley - Vals (Official Video) Version.mp3", "smiley vals version");
-		assertTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
-		assertTokens("Smiley - Vals Official Video) Version.mp3", "smiley vals version");
-		assertTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
-		assertTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
-		assertTokens("test (Audio Version) title.mp3", "test title");
-		assertTokens("The Wallflowers - One Headlight (Official Music Video).mp3",
+		assertAudioTokens("Smiley - Vals (Official).mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals (Official Video) Version.mp3", "smiley vals version");
+		assertAudioTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals Official Video) Version.mp3", "smiley vals version");
+		assertAudioTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
+		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
+		assertAudioTokens("test (Audio Version) title.mp3", "test title");
+		assertAudioTokens("The Wallflowers - One Headlight (Official Music Video).mp3",
 			"the wallflowers one headlight");
-		assertTokens("Dr Alban - Hello Africa (Official HD).mp3", "dr alban hello africa");
+		assertAudioTokens("Dr Alban - Hello Africa (Official HD).mp3", "dr alban hello africa");
 	}
 
-	private static void assertTokens(String text, String expectedTokens) throws IOException {
+	public static void assertAudioTokens(String text, String expectedTokens) throws IOException {
 		assertEquals(expectedTokens, join(" ", AUDIO_TOKENIZER.textToTokenList(text)));
 	}
 }

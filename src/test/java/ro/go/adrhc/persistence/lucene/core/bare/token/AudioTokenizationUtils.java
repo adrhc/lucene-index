@@ -26,10 +26,10 @@ public class AudioTokenizationUtils {
 				"(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)){2,}",
 				"\\(\\s*(Of+iciala?|Originala?)\\s*\\)"
 			),
-			// character to replace in the text before tokenization
-			Map.of("_", " "),
 			// regex patterns to replace in the text before tokenization
-			caseInsensitive("$1", "([^\\s]*)\\.mp3")
+			caseInsensitive("$1", "([^\\s]*)\\.mp3"),
+			// character to replace in the text before tokenization
+			Map.of("_", " ", ".", " ", ":", " ")
 		);
 	}
 }
