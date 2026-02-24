@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.album;
 
-import ro.go.adrhc.persistence.lucene.core.TokenizationUtilsTest;
+import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtilsTest;
 
 import java.nio.file.Path;
 import java.util.List;

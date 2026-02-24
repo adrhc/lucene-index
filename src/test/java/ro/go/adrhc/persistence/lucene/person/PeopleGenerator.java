@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.person;
 
-import ro.go.adrhc.persistence.lucene.core.TokenizationUtilsTest;
+import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtilsTest;
 
 import java.time.Instant;
 import java.util.HashSet;
