@@ -15,10 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndReplacement.caseInsensitive;
+import static ro.go.adrhc.persistence.lucene.core.bare.token.TestData.TEXT;
 
-public class TokenizationUtilsTest {
-	public static final String TEXT = " IMG-20210725-WA0029 AaA aAa .bBb ccc_ddd ccc-ddd 555-888 " +
-	                                  "ăĂîÎșȘțȚ ttt.ttt x uuu.jPg vvv.jpg .jpEg \"fixed Pattern TO Remove\" (Regex Pattern TO Remove) ";
+class TokenizationUtilsTest {
 	private static final TokenizationUtils CUSTOM_TOKENIZER =
 		new TokenizationUtils(defaultAnalyzer(createTokenizerProperties()).orElseThrow());
 

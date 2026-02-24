@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.album;
 
-import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtilsTest;
+import ro.go.adrhc.persistence.lucene.core.bare.token.TestData;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class AlbumsGenerator {
 	public static final List<Album> ALBUMS = List.of(
-		new Album(Path.of("/albums/album1"), TokenizationUtilsTest.TEXT, "storedOnlyField1"),
+		new Album(Path.of("/albums/album1"), TestData.TEXT, "storedOnlyField1"),
 		new Album(Path.of("/albums/album2"),
 			"IMG-20210725-WA0029 ccc_ddd CAșț.jpeg", "storedOnlyField2"),
 		new Album(Path.of("/albums/album3"),

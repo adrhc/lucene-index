@@ -1,6 +1,6 @@
 package ro.go.adrhc.persistence.lucene.person;
 
-import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtilsTest;
+import ro.go.adrhc.persistence.lucene.core.bare.token.TestData;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ public class PeopleGenerator {
 		// int id, String cnp, String name, String aliasKeyWord,
 		// String aliasWord, String aliasPhrase, Integer intField, Long longField,
 		// String storedOnlyField
-		new Person(1L, "#Person1", TokenizationUtilsTest.TEXT,
+		new Person(1L, "#Person1", TestData.TEXT,
 			"alias_Keyword1", "alias_Word1", "alias_Phrase1",
 			111, 111L, Instant.parse("2001-01-02T03:04:05.06Z"),
 			"misc1", false, new HashSet<>(Set.of("LIKED", "LOVED"))),
@@ -53,7 +53,7 @@ public class PeopleGenerator {
 
 	public static Person generateGirl(long id, Instant instantField) {
 		return new Person(id,
-			"#Person" + id, TokenizationUtilsTest.TEXT + " nameșț" + id,
+			"#Person" + id, TestData.TEXT + " nameșț" + id,
 			"alias_Keyword" + (id % 2), "alias_Word" + (id % 2),
 			"alias_Phrase" + (id % 2), (int) id, id,
 			instantField, "storedOnlyField" + (id % 100),
