@@ -6,6 +6,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.util.stream.StreamCounter;
 
@@ -49,13 +50,25 @@ public class DocsIndexWriter implements Closeable {
 		addMany(iterable(documents));
 	}
 
-	public void upsert(Query idQuery, Iterable<? extends IndexableField> doc) throws IOException {
-		upsertMany(idQuery, List.of(doc));
+	public void upsert(Term id, Iterable<? extends IndexableField> doc) throws IOException {
+		indexWriter.updateDocument(id, doc);
 	}
 
-	public void upsertMany(Query idsQuery,
+	/**
+	 * @param delQuery identifies the documents to be deleted (if any) before adding the new ones.
+	 * @param doc      the document to be added
+	 */
+	public void upsert(Query delQuery, Iterable<? extends IndexableField> doc) throws IOException {
+		upsertMany(delQuery, List.of(doc));
+	}
+
+	/**
+	 * @param delQuery identifies the documents to be deleted (if any) before adding the new ones.
+	 * @param docs     the documents to be added
+	 */
+	public void upsertMany(Query delQuery,
 		Iterable<? extends Iterable<? extends IndexableField>> docs) throws IOException {
-		indexWriter.updateDocuments(idsQuery, docs);
+		indexWriter.updateDocuments(delQuery, docs);
 	}
 
 	public void deleteByQuery(Query query) throws IOException {

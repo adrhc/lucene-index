@@ -25,8 +25,8 @@ public class TypedIndexUpsert<T extends Identifiable<?>> extends AbstractTypedIn
 	TypedIndexUpsert<T> create(TypedIndexUpsertParams<T> params) {
 		return new TypedIndexUpsert<>(
 			TypedToDocumentConverter.create(params),
-				new DocsIndexWriter(params.getIndexWriter()),
-				ExactQuery.create(params.getIdField()));
+			new DocsIndexWriter(params.getIndexWriter()),
+			ExactQuery.create(params.getIdField()));
 	}
 
 	public void upsert(T t) throws IOException {
