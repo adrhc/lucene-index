@@ -101,8 +101,8 @@ public class WriteIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
-		mergeService.merge(t, mergeStrategy);
+	public void mergeWithStrategy(T t, BinaryOperator<T> mergeStrategy) throws IOException {
+		mergeService.mergeWithStrategy(t, mergeStrategy);
 	}
 
 	@Override

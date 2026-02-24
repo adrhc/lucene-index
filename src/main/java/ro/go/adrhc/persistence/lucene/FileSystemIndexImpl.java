@@ -225,8 +225,8 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
-		executeWrite(() -> writeIndexOperations.merge(t, mergeStrategy));
+	public void mergeWithStrategy(T t, BinaryOperator<T> mergeStrategy) throws IOException {
+		executeWrite(() -> writeIndexOperations.mergeWithStrategy(t, mergeStrategy));
 	}
 
 	@Override

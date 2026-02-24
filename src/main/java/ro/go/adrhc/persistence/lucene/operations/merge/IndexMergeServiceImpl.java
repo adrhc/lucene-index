@@ -23,14 +23,14 @@ public class IndexMergeServiceImpl<T extends Indexable<ID, T>, ID>
 	private final IndexUpsertServiceImpl<T> upsertService;
 
 	public void merge(T t) throws IOException {
-		merge(t, T::merge);
+		mergeWithStrategy(t, T::merge);
 	}
 
 	/**
 	 * @param mergeStrategy 1st param is the stored value while the 2nd is @param t
 	 * @param t             might be added (instead of merged) if is not stored yet
 	 */
-	public void merge(T t, BinaryOperator<T> mergeStrategy) throws IOException {
+	public void mergeWithStrategy(T t, BinaryOperator<T> mergeStrategy) throws IOException {
 		Optional<T> storedOptional = retrieveService.findById(t.id());
 		if (storedOptional.isEmpty()) {
 			addService.addOne(t);
