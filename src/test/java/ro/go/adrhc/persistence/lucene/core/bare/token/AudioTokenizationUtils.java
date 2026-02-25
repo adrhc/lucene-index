@@ -12,7 +12,7 @@ import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndRepla
 
 @UtilityClass
 public class AudioTokenizationUtils {
-	public static final String SPECIAL_WORDS = "(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)";
+	public static final String SPECIAL_WORDS = "(\\d{4,4}|audio|complete|edition|hd|mix|movie|music|of+iciala?|originala?|orchestral|remaster|single|theme|version|versiunea|video|vinyl)";
 	public static final TokenizationUtils AUDIO_TOKENIZER =
 		new TokenizationUtils(new TokenStreamToStreamConverter(),
 			defaultAnalyzer(audioTokenizerProperties()).orElseThrow());
