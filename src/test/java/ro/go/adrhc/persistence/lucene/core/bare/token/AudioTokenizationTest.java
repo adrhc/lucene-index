@@ -14,6 +14,10 @@ class AudioTokenizationTest {
 	@Test
 	void audioTokenizerTest() throws IOException {
 		assertAudioTokens("Smiley - Vals (Official).mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals (2000).mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals (disc 5).mp3", "smiley vals");
+		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
+		assertAudioTokens("Dr Alban - Hello Africa (Official HD).mp3", "dr alban hello africa");
 
 		assertAudioTokens("Smiley - Vals (Official Music) Version.mp3", "smiley vals version");
 		assertAudioTokens("Smiley - Vals Music Video) Version.mp3", "smiley vals version");
@@ -24,9 +28,6 @@ class AudioTokenizationTest {
 		assertAudioTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video or Version.mp3", "smiley vals official video or version");
 		assertAudioTokens("Smiley - Vals Official Video / Version.mp3", "smiley vals official video version");
-
-		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
-		assertAudioTokens("Dr Alban - Hello Africa (Official HD).mp3", "dr alban hello africa");
 	}
 
 	public static void assertAudioTokens(String text, String expectedTokens) throws IOException {
