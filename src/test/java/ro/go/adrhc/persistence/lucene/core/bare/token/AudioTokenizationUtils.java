@@ -2,6 +2,7 @@ package ro.go.adrhc.persistence.lucene.core.bare.token;
 
 import lombok.experimental.UtilityClass;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,8 @@ import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndRepla
 @UtilityClass
 public class AudioTokenizationUtils {
 	public static final TokenizationUtils AUDIO_TOKENIZER =
-		new TokenizationUtils(defaultAnalyzer(audioTokenizerProperties()).orElseThrow());
+		new TokenizationUtils(TokenStreamToStreamConverter.of(),
+			defaultAnalyzer(audioTokenizerProperties()).orElseThrow());
 
 	private static TokenizerProperties audioTokenizerProperties() {
 		return new TokenizerProperties(2,

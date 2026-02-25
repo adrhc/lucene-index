@@ -22,9 +22,9 @@ import static ro.go.adrhc.persistence.lucene.core.bare.token.TestData.TEXT;
 
 class TokenizationUtilsTest {
 	public static final TokenizationUtils SIMPLE_TOKENIZER =
-		new TokenizationUtils(defaultAnalyzer(new TokenizerProperties()).orElseThrow());
+		TokenizationUtils.of(defaultAnalyzer(new TokenizerProperties()).orElseThrow());
 	private static final TokenizationUtils CUSTOM_TOKENIZER =
-		new TokenizationUtils(defaultAnalyzer(createTokenizerProperties()).orElseThrow());
+		TokenizationUtils.of(defaultAnalyzer(createTokenizerProperties()).orElseThrow());
 	private static final char[] SPECIAL_CHARACTERS = {
 		'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
 		':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
@@ -40,7 +40,7 @@ class TokenizationUtilsTest {
 	void tokenizerRegexPatternsToReplaceComparison() throws IOException {
 		tokenizerComparison("filename.mp3", "filename.mp3", "filename");
 		tokenizerComparison("greengirl_15_williamson.mp3",
-			"greengirl_15_williamson.mp3", "15 greengirl williamson");
+			"greengirl_15_williamson.mp3", "greengirl 15 williamson");
 	}
 
 	@Test
@@ -69,7 +69,7 @@ class TokenizationUtilsTest {
 			.flatMap(Collection::stream))
 			.containsOnly("jpg", "jpeg");
 
-		assertThat(CUSTOM_TOKENIZER.wordsToTokenSet(Set.of(".jPg123", ".jpEg123")))
+		assertThat(CUSTOM_TOKENIZER.textCollectionToTokenSet(Set.of(".jPg123", ".jpEg123")))
 			.containsOnly("123");
 	}
 

@@ -4,60 +4,52 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class TokenizationUtils {
+	private final TokenStreamToStreamConverter tokenStreamToStream;
 	private final Analyzer analyzer;
 
-	public Set<String> wordsToTokenSet(@NonNull Collection<String> words) throws IOException {
-		Set<String> result = new HashSet<>();
+	public static TokenizationUtils of(Analyzer analyzer) {
+		return new TokenizationUtils(TokenStreamToStreamConverter.of(), analyzer);
+	}
+
+	public Set<String> textCollectionToTokenSet(@NonNull Collection<String> words) throws IOException {
+		Set<String> tokens = new HashSet<>();
 		for (String w : words) {
-			result.addAll(textToTokenSet(w));
+			tokens.addAll(textToTokenSet(w));
 		}
-		return result;
+		return tokens;
 	}
 
 	public Set<String> textToTokenSet(String text) throws IOException {
-		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
-			return textToTokenSet(tokenStream);
-		}
+		return useTokenStream(ts -> tokenStreamToStream.convert(ts).collect(Collectors.toSet()), text);
 	}
 
 	/**
 	 * @return a sorted list of tokens obtained from the given text
 	 */
 	public List<String> textToTokenList(String text) throws IOException {
-		return textToTokenSet(text).stream().sorted().toList();
-	}
-
-	public String normalize(Enum<?> field, String text) {
-		return normalize(field.name(), text);
+		return useTokenStream(ts -> tokenStreamToStream.convert(ts).distinct().toList(), text);
 	}
 
 	public String normalize(String fieldName, String text) {
 		return analyzer.normalize(fieldName, text).utf8ToString();
 	}
 
-	private Set<String> textToTokenSet(TokenStream tokenStream) throws IOException {
-		Set<String> set = new HashSet<>();
-		addTokensToCollection(set, tokenStream);
-		return set;
-	}
-
-	private void addTokensToCollection(
-		Collection<String> collection, TokenStream tokenStream) throws IOException {
-		tokenStream.reset();
-		CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
-		while (tokenStream.incrementToken()) {
-			collection.add(termAttribute.toString());
+	private <T> T useTokenStream(Function<TokenStream, T> fn, String text) throws IOException {
+		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
+			tokenStream.reset();
+			return fn.apply(tokenStream);
 		}
-		tokenStream.end();
 	}
 }

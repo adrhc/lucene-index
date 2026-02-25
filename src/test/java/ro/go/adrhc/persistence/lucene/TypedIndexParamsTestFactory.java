@@ -7,6 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.query.DefaultFieldAwareQueryPars
 import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtils;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.person.PersonFieldType;
 
@@ -18,7 +19,8 @@ import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesPara
 @Slf4j
 public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(new TokenizerProperties()).orElseThrow();
-	public static final TokenizationUtils TOKENIZATION_UTILS = new TokenizationUtils(ANALYZER);
+	public static final TokenizationUtils TOKENIZATION_UTILS =
+		new TokenizationUtils(TokenStreamToStreamConverter.of(), ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
 		DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 

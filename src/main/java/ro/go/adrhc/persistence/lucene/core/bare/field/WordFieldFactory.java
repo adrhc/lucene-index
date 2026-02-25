@@ -6,13 +6,14 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StringField;
 import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtils;
+import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 
 @RequiredArgsConstructor
 public class WordFieldFactory {
 	private final TokenizationUtils tokenizationUtils;
 
 	public static WordFieldFactory of(Analyzer analyzer) {
-		return new WordFieldFactory(new TokenizationUtils(analyzer));
+		return new WordFieldFactory(new TokenizationUtils(TokenStreamToStreamConverter.of(), analyzer));
 	}
 
 	/**
