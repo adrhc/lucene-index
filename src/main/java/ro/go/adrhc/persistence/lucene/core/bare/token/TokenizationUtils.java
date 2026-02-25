@@ -51,8 +51,8 @@ public class TokenizationUtils {
 		return set;
 	}
 
-	private void addTokensToCollection(Collection<String> collection, TokenStream tokenStream)
-		throws IOException {
+	private void addTokensToCollection(
+		Collection<String> collection, TokenStream tokenStream) throws IOException {
 		tokenStream.reset();
 		CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
 		while (tokenStream.incrementToken()) {
