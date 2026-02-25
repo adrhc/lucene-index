@@ -13,7 +13,7 @@ public class WordFieldFactory {
 	private final TokenizationUtils tokenizationUtils;
 
 	public static WordFieldFactory of(Analyzer analyzer) {
-		return new WordFieldFactory(new TokenizationUtils(TokenStreamToStreamConverter.of(), analyzer));
+		return new WordFieldFactory(new TokenizationUtils(new TokenStreamToStreamConverter(), analyzer));
 	}
 
 	/**

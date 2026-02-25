@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesPara
 public class TypedIndexParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(new TokenizerProperties()).orElseThrow();
 	public static final TokenizationUtils TOKENIZATION_UTILS =
-		new TokenizationUtils(TokenStreamToStreamConverter.of(), ANALYZER);
+		new TokenizationUtils(new TokenStreamToStreamConverter(), ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
 		DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
 

@@ -12,8 +12,9 @@ import static ro.go.adrhc.persistence.lucene.core.bare.analysis.PatternsAndRepla
 
 @UtilityClass
 public class AudioTokenizationUtils {
+	public static final String SPECIAL_WORDS = "(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)";
 	public static final TokenizationUtils AUDIO_TOKENIZER =
-		new TokenizationUtils(TokenStreamToStreamConverter.of(),
+		new TokenizationUtils(new TokenStreamToStreamConverter(),
 			defaultAnalyzer(audioTokenizerProperties()).orElseThrow());
 
 	private static TokenizerProperties audioTokenizerProperties() {
@@ -22,10 +23,10 @@ public class AudioTokenizationUtils {
 			List.of(),
 			// regex patterns not to index
 			List.of(
-				"\\(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl))+\\s*\\)",
-				"\\(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl))+",
-				"(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl))+\\s*\\)",
-				"(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)(\\s*(Audio|HD|Of+iciala?|Originala?|Music|Version|Versiunea|Video|Vinyl)){2,}",
+				"\\((\\s*" + SPECIAL_WORDS + "){2,}\\s*\\)", // left & right parentheses
+				"\\((\\s*" + SPECIAL_WORDS + "){2,}", // left parentheses only
+				"(" + SPECIAL_WORDS + "\\s*){2,}\\)", // right parentheses only
+				SPECIAL_WORDS + "(\\s*" + SPECIAL_WORDS + "){2,}", // no parentheses but at least 3 special words in a row
 				"\\(\\s*(Of+iciala?|Originala?)\\s*\\)"
 			),
 			// regex patterns to replace in the text before tokenization

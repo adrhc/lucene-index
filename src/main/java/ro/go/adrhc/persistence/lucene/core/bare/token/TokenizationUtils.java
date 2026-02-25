@@ -20,7 +20,7 @@ public class TokenizationUtils {
 	private final Analyzer analyzer;
 
 	public static TokenizationUtils of(Analyzer analyzer) {
-		return new TokenizationUtils(TokenStreamToStreamConverter.of(), analyzer);
+		return new TokenizationUtils(new TokenStreamToStreamConverter(), analyzer);
 	}
 
 	public Set<String> textCollectionToTokenSet(@NonNull Collection<String> words) throws IOException {
@@ -49,7 +49,9 @@ public class TokenizationUtils {
 	private <T> T useTokenStream(Function<TokenStream, T> fn, String text) throws IOException {
 		try (TokenStream tokenStream = analyzer.tokenStream(null, text)) {
 			tokenStream.reset();
-			return fn.apply(tokenStream);
+			T t = fn.apply(tokenStream);
+			tokenStream.end();
+			return t;
 		}
 	}
 }

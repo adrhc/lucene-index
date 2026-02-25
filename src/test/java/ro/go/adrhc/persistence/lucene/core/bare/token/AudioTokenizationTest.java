@@ -15,9 +15,13 @@ class AudioTokenizationTest {
 	void audioTokenizerTest() throws IOException {
 		assertAudioTokens("Smiley - Vals (Official).mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals (Official Video) Version.mp3", "smiley vals version");
-		assertAudioTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video) Version.mp3", "smiley vals version");
+		assertAudioTokens("Smiley - Vals (Official Video Version).mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals Official Video Version).mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
+		assertAudioTokens("Smiley - Vals Official Video or Version.mp3", "smiley vals official video or version");
+		assertAudioTokens("Smiley - Vals Official Video / Version.mp3", "smiley vals official video version");
 		assertAudioTokens("Yazoo - Don'$'\\'''t Go (Official HD Video) - Yaz.mp3", "yazoo don go yaz");
 		assertAudioTokens("test (Audio Version) title.mp3", "test title");
 		assertAudioTokens("The Wallflowers - One Headlight (Official Music Video).mp3",
