@@ -27,7 +27,8 @@ public class AudioTokenizationUtils {
 				"\\((\\s*" + SPECIAL_WORDS + "){2,}", // left parentheses only
 				"(" + SPECIAL_WORDS + "\\s*){2,}\\)", // right parentheses only
 				SPECIAL_WORDS + "(\\s*" + SPECIAL_WORDS + "){2,}", // no parentheses but at least 3 special words in a row
-				"\\(\\s*(Of+iciala?|Originala?)\\s*\\)"
+				"\\(\\s*(\\d{4,4}|acoustic|ac+oustique|audio|concert|edit|lyrics?|of+iciala?|originala?|remaster|remix|rmx|rock|soundtrack)\\s*\\)",
+				"\\(\\s*(disc|parts?)\\s*\\d+\\s*\\)" // e.g., (disc 1)
 			),
 			// regex patterns to replace in the text before tokenization
 			caseInsensitive("$1", "([^\\s]*)\\.mp3"),
