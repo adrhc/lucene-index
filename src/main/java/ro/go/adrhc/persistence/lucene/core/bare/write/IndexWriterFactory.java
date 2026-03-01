@@ -5,29 +5,35 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.*;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.FSDirectory;
-import ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
+
 @UtilityClass
 public class IndexWriterFactory {
-	public static IndexWriter fsWriter(Path indexPath) throws IOException {
-		return fsWriter(AnalyzerFactory.defaultAnalyzer(), indexPath);
-	}
-
-	public static IndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
-		IndexWriterConfig config = createOrAppendConfig(analyzer);
-		return new IndexWriter(FSDirectory.open(indexPath), config);
-	}
-
 	public static IndexWriter ramWriter() throws IOException {
-		return ramWriter(AnalyzerFactory.defaultAnalyzer());
+		return ramWriter(defaultAnalyzer());
 	}
 
 	public static IndexWriter ramWriter(Analyzer analyzer) throws IOException {
 		IndexWriterConfig config = createOrAppendConfig(analyzer);
 		return new IndexWriter(new ByteBuffersDirectory(), config);
+	}
+
+	public static IndexWriter fsWriter(Path indexPath) throws IOException {
+		return fsWriter(FSDirectory.open(indexPath));
+	}
+
+	public static IndexWriter fsWriter(FSDirectory fsDirectory) throws IOException {
+		IndexWriterConfig config = createOrAppendConfig(defaultAnalyzer());
+		return new IndexWriter(fsDirectory, config);
+	}
+
+	public static IndexWriter fsWriter(Analyzer analyzer, Path indexPath) throws IOException {
+		IndexWriterConfig config = createOrAppendConfig(analyzer);
+		return new IndexWriter(FSDirectory.open(indexPath), config);
 	}
 
 	private static IndexWriterConfig createOrAppendConfig(Analyzer analyzer) {
