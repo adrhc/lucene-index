@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
+import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 @UtilityClass
@@ -17,6 +19,11 @@ public class IndexReaderPoolFactory {
 
 	public static IndexReaderPool of(Path indexPath) {
 		return new IndexReaderPool(() -> {
+			if (Files.notExists(indexPath)) {
+				try (var indWriter = IndexWriterFactory.fsWriter(indexPath)) {
+					log.warn("\n{} is missing, creating it!", indexPath);
+				}
+			}
 			FSDirectory directory = FSDirectory.open(indexPath);
 			if (DirectoryReader.indexExists(directory)) {
 				return DirectoryReader.open(directory);
