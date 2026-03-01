@@ -17,6 +17,13 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 		return scoreDocs.getLast();
 	}
 
+	/**
+	 * @return a new ScoreDocAndValues containing only the first {@code count} elements of the original lists
+	 */
+	public ScoreDocAndValues<T> truncate(int count) {
+		return new ScoreDocAndValues<>(values.subList(0, count), scoreDocs.subList(0, count));
+	}
+
 	public ScoreDocAndValues<T> removeFirst() {
 		return new ScoreDocAndValues<>(values.subList(1, values.size()),
 			scoreDocs.subList(1, scoreDocs.size()));
