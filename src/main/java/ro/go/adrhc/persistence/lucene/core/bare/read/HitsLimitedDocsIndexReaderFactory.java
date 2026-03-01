@@ -3,14 +3,9 @@ package ro.go.adrhc.persistence.lucene.core.bare.read;
 import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 @UtilityClass
 public class HitsLimitedDocsIndexReaderFactory {
-	public static HitsLimitedDocIndexReader createUnlimited(Path indexPath) throws IOException {
-		return createUnlimited(IndexReaderPoolFactory.of(indexPath));
-	}
-
 	public static HitsLimitedDocIndexReader
 	createUnlimited(IndexReaderPool indexReaderPool) throws IOException {
 		return create(indexReaderPool, Integer.MAX_VALUE);
