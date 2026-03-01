@@ -54,6 +54,11 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return readIndexOperations.hasAfter(scoreDoc, sort);
+	}
+
+	@Override
 	public int count(Query query) throws IOException {
 		return readIndexOperations.count(query);
 	}
@@ -245,14 +250,6 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 		writeIndexOperations.backup(indexBackupPath);
 	}
 
-	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
-		if (indexServicesParamsFactory.isReadOnly()) {
-			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
-		}
-		action.run();
-		indexServicesParamsFactory.getIndexWriter().commit();
-	}
-
 	@Override
 	public List<ID> findIds(Query query) throws IOException {
 		return readIndexOperations.findIds(query);
@@ -261,5 +258,13 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	@Override
 	public List<ID> findIds(Query query, Sort sort) throws IOException {
 		return readIndexOperations.findIds(query, sort);
+	}
+
+	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
+		if (indexServicesParamsFactory.isReadOnly()) {
+			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
+		}
+		action.run();
+		indexServicesParamsFactory.getIndexWriter().commit();
 	}
 }

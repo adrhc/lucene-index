@@ -12,11 +12,7 @@ import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -101,6 +97,12 @@ public class DocIndexReader implements Closeable {
 	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
 		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.searchAfter(after, query, numHits, sort));
+	}
+
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return new IndexSearcher(indexReader)
+			.searchAfter(scoreDoc, new MatchAllDocsQuery(), 1, sort)
+			.scoreDocs.length > 0;
 	}
 
 	@Override

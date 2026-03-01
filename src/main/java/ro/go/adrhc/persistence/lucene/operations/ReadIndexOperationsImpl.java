@@ -153,6 +153,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return countService.hasAfter(scoreDoc, sort);
+	}
+
+	@Override
 	public int count(Query query) throws IOException {
 		return countService.count(query);
 	}
