@@ -90,7 +90,7 @@ public class IndexServicesParamsFactoryBuilder<
 		} else {
 			return createIndexWriter(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, IndexReaderPoolFactory.of(indexPath), typedFields,
+					tClass, idField, IndexReaderPoolFactory.of(indexWriter), typedFields,
 					finalAnalyzer, indexWriter, searchHits, searchResultFilter, indexPath));
 		}
 	}
