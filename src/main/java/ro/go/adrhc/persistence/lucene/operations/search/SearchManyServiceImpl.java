@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * All methods filter the results of the underlying index reader using the provided SearchResultFilter!
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class SearchManyServiceImpl<T> implements SearchManyService<T> {

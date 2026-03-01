@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * All methods filter the results of the underlying index reader using the provided SearchResultFilter!
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
