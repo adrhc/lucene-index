@@ -35,6 +35,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	private final IndexSearchService<T> searchService;
 
 	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return searchService.hasAfter(scoreDoc, sort);
+	}
+
+	@Override
 	public ScoreDocAndValues<T> findManyAfter(
 		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return searchService.findManyAfter(after, query, sort);
@@ -150,11 +155,6 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	@Override
 	public int count() throws IOException {
 		return countService.count();
-	}
-
-	@Override
-	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
-		return countService.hasAfter(scoreDoc, sort);
 	}
 
 	@Override

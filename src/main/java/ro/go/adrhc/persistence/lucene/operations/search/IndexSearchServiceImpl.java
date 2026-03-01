@@ -89,4 +89,9 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 		throws IOException {
 		return searchManyService.findManyAfter(after, query, hitsCount, sort);
 	}
+
+	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return searchManyService.hasAfter(scoreDoc, sort);
+	}
 }

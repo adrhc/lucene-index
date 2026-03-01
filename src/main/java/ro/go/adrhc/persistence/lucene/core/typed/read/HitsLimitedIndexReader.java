@@ -97,6 +97,10 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
 	}
 
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return hitsLimitedDocsIndexReader.hasAfter(scoreDoc, sort);
+	}
+
 	/**
 	 * The caller must use the proper type!
 	 */

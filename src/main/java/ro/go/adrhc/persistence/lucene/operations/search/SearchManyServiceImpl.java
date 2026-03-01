@@ -58,6 +58,11 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 			r.findManyAfter(after, query, hitsCount, sort)));
 	}
 
+	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return useReader(r -> r.hasAfter(scoreDoc, sort));
+	}
+
 	protected ScoreDocAndValues<T> filterAndMapToScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
 		List<ScoreDoc> scoreDocs = new ArrayList<>();
 		List<T> values = new ArrayList<>();

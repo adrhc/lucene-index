@@ -21,4 +21,6 @@ public interface SearchManyService<T> {
 
 	ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 		Query query, int hitsCount, Sort sort) throws IOException;
+
+	boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException;
 }

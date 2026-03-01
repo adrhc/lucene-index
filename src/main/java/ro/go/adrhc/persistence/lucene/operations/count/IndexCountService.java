@@ -11,7 +11,5 @@ public interface IndexCountService {
 
 	int count() throws IOException;
 
-	boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException;
-
 	int count(Query query) throws IOException;
 }
