@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
+import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,39 +29,41 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query,
 		int hitsCount, Sort sort) throws IOException {
-		return useReader(r -> toScoreDocAndValues(r.findMany(query, hitsCount, sort)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, hitsCount, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
-		return useReader(r -> toScoreDocAndValues(r.findMany(query, hitsCount)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, hitsCount)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
-		return useReader(r -> toScoreDocAndValues(r.findMany(query, sort)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(
 		ScoreDoc after, Query query, Sort sort) throws IOException {
-		return useReader(r -> toScoreDocAndValues(r.findManyAfter(after, query, sort)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManyAfter(after, query, sort)));
 	}
 
 	@Override
 	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
 		Query query, int hitsCount, Sort sort) throws IOException {
-		return useReader(r -> toScoreDocAndValues(
+		return useReader(r -> filterAndMapToScoreDocAndValues(
 			r.findManyAfter(after, query, hitsCount, sort)));
 	}
 
-	protected ScoreDocAndValues<T> toScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
+	protected ScoreDocAndValues<T> filterAndMapToScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
 		List<ScoreDoc> scoreDocs = new ArrayList<>();
 		List<T> values = new ArrayList<>();
-		stream.forEach(sdv -> {
-			scoreDocs.add(sdv.scoreDoc());
-			values.add(sdv.value());
-		});
+		stream
+			.filter(searchResultFilter::filter)
+			.forEach(sdv -> {
+				scoreDocs.add(sdv.scoreDoc());
+				values.add(sdv.value());
+			});
 		return new ScoreDocAndValues<>(values, scoreDocs);
 	}
 
