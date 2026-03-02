@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # printf "HOME: $HOME\nSDKMAN_DIR: $SDKMAN_DIR"
+set +u
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # export JAVA_HOME=$TOOLS/jdk1.8.0_141
@@ -16,6 +17,7 @@
 #
 # The above is replaced by .sdkmanrc!!! see it in the project's root.
 [[ -s ".sdkmanrc" ]] && echo "applying sdkman environment" && sdk env install
+set -u
 
 # export MAVEN_OPTS="$MAVEN_OPTS --enable-preview"
 # export M2_HOME=$TOOLS/maven-3.3.9
