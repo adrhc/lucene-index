@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 import static ro.go.adrhc.util.fn.SneakySupplierUtils.failToNull;
@@ -32,6 +33,7 @@ public class IndexServicesParamsFactoryBuilder<
 	private LuceneFieldSpec<T> idField;
 	private Path indexPath;
 	private Analyzer analyzer;
+	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	IndexServicesParamsFactoryBuilder<T, E>
@@ -81,6 +83,7 @@ public class IndexServicesParamsFactoryBuilder<
 		if (analyzer == null) {
 			return Optional.empty();
 		}
+        indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
 //		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
 		Analyzer finalAnalyzer = this.analyzer;
 		if (readOnly) {
@@ -88,7 +91,7 @@ public class IndexServicesParamsFactoryBuilder<
 				tClass, idField, IndexReaderPoolFactory.of(indexPath), typedFields,
 				finalAnalyzer, null, searchHits, searchResultFilter, indexPath));
 		} else {
-			return createIndexWriter(finalAnalyzer)
+			return indexWriterFactory.apply(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
 					tClass, idField, IndexReaderPoolFactory.of(indexWriter), typedFields,
 					finalAnalyzer, indexWriter, searchHits, searchResultFilter, indexPath));
