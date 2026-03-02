@@ -18,23 +18,13 @@ public record ScoreDocAndValues<T>(List<T> values, List<ScoreDoc> scoreDocs)
 	}
 
 	/**
-	 * @return a new ScoreDocAndValues containing only the first {@code count} elements of the original lists
+	 * @return a new ScoreDocAndValues containing only the {@code count} elements of the original lists
 	 */
-	public ScoreDocAndValues<T> truncate(int count) {
-		return new ScoreDocAndValues<>(values.subList(0, count), scoreDocs.subList(0, count));
+	public ScoreDocAndValues<T> truncate(int startPosition, int count) {
+		return new ScoreDocAndValues<>(values.subList(startPosition, count), scoreDocs.subList(startPosition, count));
 	}
 
-	public ScoreDocAndValues<T> removeFirst() {
-		return new ScoreDocAndValues<>(values.subList(1, values.size()),
-			scoreDocs.subList(1, scoreDocs.size()));
-	}
-
-	public ScoreDocAndValues<T> removeLast() {
-		return new ScoreDocAndValues<>(values.subList(0, values.size() - 1),
-			scoreDocs.subList(0, scoreDocs.size() - 1));
-	}
-
-	public <U> ScoreDocAndValues<U> mapToScoreDocAndValues(Function<? super List<T>, List<U>> mapper) {
+	public <U> ScoreDocAndValues<U> mapValues(Function<? super List<T>, List<U>> mapper) {
 		return new ScoreDocAndValues<>(mapper.apply(values), scoreDocs);
 	}
 
