@@ -16,9 +16,8 @@ public class DocIndexReaderTemplate {
 	 * Make sure that songsIndexReaderFn does not return a Stream!
 	 * before the Stream is return the DocIndexReader is closed.
 	 */
-	public <R, E extends Exception> R useReader(
-		SneakyFunction<DocIndexReader, R, E> indexReaderFn)
-		throws IOException, E {
+	public <R, E extends Exception> R
+	useReader(SneakyFunction<DocIndexReader, R, E> indexReaderFn) throws IOException, E {
 		try (DocIndexReader indexReader = indexReaderFactory.get()) {
 			R result = indexReaderFn.apply(indexReader);
 			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
