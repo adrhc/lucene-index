@@ -16,7 +16,7 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 
 	public HitsLimitedDocIndexReader(IndexReaderPool indexReaderPool,
 		IndexReader indexReader, int numHits) {
-		super(indexReaderPool, indexReader);
+		super(indexReaderPool::dismissReader, indexReader);
 		this.numHits = numHits;
 	}
 
@@ -25,7 +25,7 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 	}
 
 	public Stream<ScoreDocAndDocument> findMany(Query query, Sort sort) throws IOException {
-		return findMany(query, numHits, sort);
+		return findManySorted(query, numHits, sort);
 	}
 
 	public Stream<ScoreDocAndDocument> findManyAfter(
@@ -39,6 +39,6 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, @Nullable Sort sort) throws IOException {
-		return super.findFieldValues(fieldName, query, numHits, sort);
+		return super.findFieldValuesSorted(fieldName, query, numHits, sort);
 	}
 }

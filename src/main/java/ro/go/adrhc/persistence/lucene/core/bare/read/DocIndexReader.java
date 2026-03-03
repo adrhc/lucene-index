@@ -8,12 +8,18 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
+import ro.go.adrhc.persistence.lucene.lib.IndexSearcherUtils;
+import ro.go.adrhc.util.fn.BiFunctionUtils;
+import ro.go.adrhc.util.fn.TriFunctionUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -36,28 +42,17 @@ public class DocIndexReader implements Closeable {
 		return searcher.count(new MatchAllDocsQuery());
 	}
 
-	public int count(Query query) throws IOException {
+	public int countByQuery(Query query) throws IOException {
 		IndexSearcher searcher = new IndexSearcher(indexReader);
 		return searcher.count(query);
 	}
 
-	public Stream<Document> getDocumentStream() throws IOException {
-		return getDocProjectionStream(Set.of());
-	}
-
-	public Stream<Document> getDocProjectionStream(Set<String> fieldNames) throws IOException {
-		// liveDocs can be null if the reader has no deletions
-		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
-		return storedFields()
-			.map(storedFields -> doGetAll(liveDocs, fieldNames, storedFields))
-			.orElseGet(Stream::of);
-	}
-
 	/**
-	 * Returns all fieldName field values!
+	 * @param fieldName might be multiple times in a document and all its occurrences will be returned
+	 * @return all fieldName fields
 	 */
-	public Stream<IndexableField> getFields(String fieldName) throws IOException {
-		return getDocProjectionStream(Set.of(fieldName))
+	public Stream<IndexableField> getFieldValues(String fieldName) throws IOException {
+		return getProjections(Set.of(fieldName))
 			.mapMulti((doc, sink) -> {
 				for (IndexableField field : doc.getFields(fieldName)) {
 					sink.accept(field);
@@ -65,41 +60,75 @@ public class DocIndexReader implements Closeable {
 			});
 	}
 
+	public Stream<Document> getDocuments() throws IOException {
+		return getProjections(Set.of());
+	}
+
 	/**
-	 * Returns all fieldName field values across documents!
+	 * @return documents with only fieldNames fields (if fieldNames is empty, all fields are returned)
+	 */
+	public Stream<Document> getProjections(Set<String> fieldNames) throws IOException {
+		// liveDocs can be null if the reader has no deletions
+		Bits liveDocs = MultiBits.getLiveDocs(indexReader);
+		StoredFields storedFields = indexReader.storedFields();
+		return IntStream.range(0, indexReader.maxDoc())
+			.filter(i -> liveDocs == null || liveDocs.get(i))
+			.mapToObj(i -> TriFunctionUtils.failToEmpty(
+				DocIndexReader::getDocument, storedFields, fieldNames, i))
+			.flatMap(Optional::stream);
+	}
+
+	/**
+	 * @param numHits is used by Lucene to limit the number of documents to return
+	 * @return all fieldName field values across documents
 	 */
 	public Stream<Object> findFieldValues(
 		String fieldName, Query query, int numHits) throws IOException {
-		return findFieldValues(fieldName, query, numHits, null);
-	}
-
-	public Stream<Object> findFieldValues(
-		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
-		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> IndexSearcherAccessors.search(s, query, numHits, sort));
-		StoredObjectFieldValuesVisitor fieldVisitor = new StoredObjectFieldValuesVisitor(fieldName);
-		return Arrays.stream(topDocs.scoreDocs)
-			.flatMap(scoreDoc -> safelyGetFieldValues(storedFields, fieldVisitor, scoreDoc).stream())
-			.filter(Objects::nonNull);
+		return findFieldValuesSorted(fieldName, query, numHits, null);
 	}
 
 	/**
-	 * @return limited by numHits
+	 * @param numHits is used by Lucene to limit the number of documents to return
+	 * @param sort    it is used by Lucene to sort the documents before retrieving the field values
+	 * @return all fieldName field values across documents sorted by sort
+	 */
+	public Stream<Object> findFieldValuesSorted(
+		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
+		StoredFields storedFields = indexReader.storedFields();
+		TopDocs topDocs = useIndexSearcher(s -> IndexSearcherUtils.search(s, query, numHits, sort));
+		StoredObjectFieldValuesVisitor fieldVisitor = new StoredObjectFieldValuesVisitor(fieldName);
+		return Arrays.stream(topDocs.scoreDocs)
+			.mapMulti((scoreDoc, sink) ->
+				safelyGetFieldValues(storedFields, fieldVisitor, scoreDoc).forEach(sink)
+			);
+	}
+
+	/**
+	 * @param numHits is used by Lucene to limit the number of documents to return
 	 */
 	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
 		return doFindMany(s -> s.search(query, numHits));
 	}
 
-	public Stream<ScoreDocAndDocument> findMany(
+	/**
+	 * @param numHits is used by Lucene to limit the number of documents to return
+	 */
+	public Stream<ScoreDocAndDocument> findManySorted(
 		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.search(query, numHits, sort));
 	}
 
+	/**
+	 * @param numHits is used by Lucene to limit the number of documents to return
+	 */
 	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
 		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.searchAfter(after, query, numHits, sort));
 	}
 
+	/**
+	 * @return whether there are more results after the given scoreDoc for the given sort
+	 */
 	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
 		return new IndexSearcher(indexReader)
 			.searchAfter(scoreDoc, new MatchAllDocsQuery(), 1, sort)
@@ -112,49 +141,13 @@ public class DocIndexReader implements Closeable {
 	}
 
 	protected Stream<ScoreDocAndDocument> doFindMany(
-		SneakyFunction<IndexSearcher, TopDocs, IOException> topDocsSupplier) throws IOException {
+		SneakyFunction<IndexSearcher, TopDocs, IOException> query) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(topDocsSupplier);
+		TopDocs topDocs = useIndexSearcher(query);
 		return Arrays.stream(topDocs.scoreDocs)
-			.map(scoreDoc -> safelyGetScoreAndDocument(storedFields, scoreDoc))
+			.map(scoreDoc -> BiFunctionUtils.failToEmpty(
+				DocIndexReader::toScoreAndDocument, storedFields, scoreDoc))
 			.flatMap(Optional::stream);
-	}
-
-	protected Stream<Document> doGetAll(Bits liveDocs,
-		Set<String> fieldNames, StoredFields storedFields) {
-		return IntStream.range(0, indexReader.maxDoc())
-			.filter(docIndex -> liveDocs == null || liveDocs.get(docIndex))
-			.mapToObj(docIndex -> this.safelyGetDocument(
-				storedFields, fieldNames, docIndex))
-			.flatMap(Optional::stream);
-	}
-
-	protected Optional<ScoreDocAndDocument> safelyGetScoreAndDocument(
-		StoredFields storedFields, ScoreDoc scoreDoc) {
-		return safelyGetDocument(storedFields, null, scoreDoc.doc)
-			.map(doc -> new ScoreDocAndDocument(scoreDoc, doc));
-	}
-
-	/**
-	 * indexReader.document might fail if the document
-	 * is meanwhile purged (not only marked as removed)
-	 */
-	protected Optional<Document> safelyGetDocument(
-		StoredFields storedFields, Set<String> fieldNames, int docIndex) {
-		try {
-			if (fieldNames == null || fieldNames.isEmpty()) {
-				return Optional.of(storedFields.document(docIndex));
-			} else {
-				return Optional.of(storedFields.document(docIndex, fieldNames));
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
-
-	protected Optional<StoredFields> storedFields() throws IOException {
-		return Optional.of(indexReader.storedFields());
 	}
 
 	protected <R> R useIndexSearcher(
@@ -162,6 +155,7 @@ public class DocIndexReader implements Closeable {
 		return topDocsSupplier.apply(new IndexSearcher(indexReader));
 	}
 
+	@NonNull
 	private List<Object> safelyGetFieldValues(StoredFields storedFields,
 		StoredObjectFieldValuesVisitor fieldVisitor, ScoreDoc scoreDoc) {
 		fieldVisitor.reset();
@@ -182,6 +176,24 @@ public class DocIndexReader implements Closeable {
 			storedFields.document(scoreDoc.doc, fieldVisitor);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
+		}
+	}
+
+	private static ScoreDocAndDocument toScoreAndDocument(
+		StoredFields storedFields, ScoreDoc scoreDoc) throws IOException {
+		return new ScoreDocAndDocument(scoreDoc, getDocument(storedFields, null, scoreDoc.doc));
+	}
+
+	/**
+	 * indexReader.document might fail if the document
+	 * is meanwhile purged (not only marked as removed)
+	 */
+	private static Document getDocument(StoredFields storedFields,
+		Set<String> fieldNames, int docIndex) throws IOException {
+		if (fieldNames == null || fieldNames.isEmpty()) {
+			return storedFields.document(docIndex);
+		} else {
+			return storedFields.document(docIndex, fieldNames);
 		}
 	}
 }

@@ -40,7 +40,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<T> getAll() throws IOException {
-		return hitsLimitedDocsIndexReader.getDocumentStream().map(
+		return hitsLimitedDocsIndexReader.getDocuments().map(
 			docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
@@ -82,7 +82,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public Stream<ScoreDocAndValue<T>> findMany(
 		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-			hitsLimitedDocsIndexReader.findMany(query, numHits, sort));
+			hitsLimitedDocsIndexReader.findManySorted(query, numHits, sort));
 	}
 
 	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
@@ -107,7 +107,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public <P> Stream<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
-		return hitsLimitedDocsIndexReader.getFields(field.name())
+		return hitsLimitedDocsIndexReader.getFieldValues(field.name())
 			.map(field::indexableValueToPropValue)
 			.map(ObjectUtils::cast);
 	}

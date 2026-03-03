@@ -38,6 +38,6 @@ public class IndexCountServiceImpl implements IndexCountService {
 
 	@Override
 	public int count(Query query) throws IOException {
-		return docsReaderTemplate.useReader(indexReader -> indexReader.count(query));
+		return docsReaderTemplate.useReader(indexReader -> indexReader.countByQuery(query));
 	}
 }
