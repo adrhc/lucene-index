@@ -32,10 +32,10 @@ public class AnalyzerFactory {
 	}
 
 	public static Optional<Analyzer> defaultAnalyzer(TokenizerProperties properties) {
-		return new AnalyzerFactory(properties).of();
+		return new AnalyzerFactory(properties).create();
 	}
 
-	public Optional<Analyzer> of() {
+	public Optional<Analyzer> create() {
 		return ofSneakySupplier(() -> {
 			CustomAnalyzer.Builder builder = withMaxTokenLength();
 			addTrimAsciiFoldingLengthLowerRmDupsTokenFilters(builder);
