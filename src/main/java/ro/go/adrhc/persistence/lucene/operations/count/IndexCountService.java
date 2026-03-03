@@ -1,8 +1,6 @@
 package ro.go.adrhc.persistence.lucene.operations.count;
 
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
 
 import java.io.IOException;
 

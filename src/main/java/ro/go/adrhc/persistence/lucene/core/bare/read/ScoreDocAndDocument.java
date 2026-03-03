@@ -6,10 +6,6 @@ import ro.go.adrhc.util.Breakable;
 
 public record ScoreDocAndDocument(ScoreDoc scoreDoc, Document document)
 	implements Breakable<ScoreDocAndDocument> {
-	public String getFieldValue(Enum<?> field) {
-		return document.get(field.name());
-	}
-
 	@Override
 	public boolean isBroken() {
 		return scoreDoc == null || document == null;

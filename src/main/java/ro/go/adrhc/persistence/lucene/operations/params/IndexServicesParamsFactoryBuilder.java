@@ -34,7 +34,7 @@ public class IndexServicesParamsFactoryBuilder<
 	private Path indexPath;
 	private Analyzer analyzer;
 
-    private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
+	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	IndexServicesParamsFactoryBuilder<T, E>
@@ -75,11 +75,11 @@ public class IndexServicesParamsFactoryBuilder<
 		return this;
 	}
 
-    public IndexServicesParamsFactoryBuilder<T, E>
-    indexWriterFactory(Function<Analyzer, Optional<IndexWriter>> indexWriterFactory) {
-        this.indexWriterFactory = indexWriterFactory;
-        return this;
-    }
+	public IndexServicesParamsFactoryBuilder<T, E>
+	indexWriterFactory(Function<Analyzer, Optional<IndexWriter>> indexWriterFactory) {
+		this.indexWriterFactory = indexWriterFactory;
+		return this;
+	}
 
 	public Optional<IndexServicesParamsFactory<T>> build() {
 		return build(false);
@@ -90,7 +90,7 @@ public class IndexServicesParamsFactoryBuilder<
 		if (analyzer == null) {
 			return Optional.empty();
 		}
-        indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
+		indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
 //		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
 		Analyzer finalAnalyzer = this.analyzer;
 		if (readOnly) {

@@ -10,8 +10,6 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.function.Function;
 
-import static ro.go.adrhc.util.text.StringUtils.concat;
-
 @Slf4j
 public record ObjectLuceneFieldMapper<T, P>(
 	/*

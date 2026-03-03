@@ -40,7 +40,7 @@ public class PatternReplaceCharFilterFactory extends CharFilterFactory {
 		} catch (PatternSyntaxException e) {
 			throw new IllegalArgumentException
 				("Configuration Error: '" + PATTERN + "' can not be parsed in " +
-				 this.getClass().getSimpleName(), e);
+					this.getClass().getSimpleName(), e);
 		}
 	}
 }
