@@ -6,7 +6,7 @@ import org.apache.lucene.search.Query;
 
 import java.util.Optional;
 
-import static ro.go.adrhc.util.optional.OptionalFactory.ofSilencedRiskySupplier;
+import static ro.go.adrhc.util.optional.OptionalFactory.ofSneakySupplier;
 
 @RequiredArgsConstructor
 public class DefaultFieldAwareQueryParser {
@@ -18,6 +18,6 @@ public class DefaultFieldAwareQueryParser {
 	}
 
 	public Optional<Query> parse(String query) {
-		return ofSilencedRiskySupplier(() -> queryParser.parse(defaultField, query));
+		return ofSneakySupplier(() -> queryParser.parse(defaultField, query));
 	}
 }

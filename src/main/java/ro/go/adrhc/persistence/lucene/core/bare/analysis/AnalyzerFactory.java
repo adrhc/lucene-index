@@ -19,7 +19,7 @@ import static java.util.regex.Pattern.LITERAL;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MAX_KEY;
 import static org.apache.lucene.analysis.miscellaneous.LengthFilterFactory.MIN_KEY;
 import static org.apache.lucene.analysis.standard.StandardTokenizer.MAX_TOKEN_LENGTH_LIMIT;
-import static ro.go.adrhc.util.optional.OptionalFactory.ofSilencedRiskySupplier;
+import static ro.go.adrhc.util.optional.OptionalFactory.ofSneakySupplier;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,7 +36,7 @@ public class AnalyzerFactory {
 	}
 
 	public Optional<Analyzer> create() {
-		return ofSilencedRiskySupplier(() -> {
+		return ofSneakySupplier(() -> {
 			CustomAnalyzer.Builder builder = withMaxTokenLength();
 			addTrimAsciiFoldingLengthLowerRmDupsTokenFilters(builder);
 			addCharReplacerRmTextsAndPatternsPatternReplacerCharFilters(builder);
