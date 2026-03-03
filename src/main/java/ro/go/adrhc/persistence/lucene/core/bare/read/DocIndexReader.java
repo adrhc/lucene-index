@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.core.bare.read;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class DocIndexReader implements Closeable {
-	private final IndexReaderPool indexReaderPool;
+	private final SneakyConsumer<IndexReader, IOException> closeStrategy;
 	private final IndexReader indexReader;
 
 	public static DocIndexReader create(IndexReaderPool indexReaderPool) throws IOException {
-		return new DocIndexReader(indexReaderPool, indexReaderPool.getReader());
+		return new DocIndexReader(indexReaderPool::dismissReader, indexReaderPool.getReader());
 	}
 
 	public boolean isEmpty() throws IOException {
@@ -107,9 +108,7 @@ public class DocIndexReader implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		if (indexReader != null) {
-			indexReaderPool.dismissReader(indexReader);
-		}
+		closeStrategy.accept(indexReader);
 	}
 
 	protected Stream<ScoreDocAndDocument> doFindMany(

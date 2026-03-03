@@ -31,6 +31,9 @@ public class IndexReaderPool implements Closeable {
 	}
 
 	public synchronized void dismissReader(IndexReader indexReader) throws IOException {
+		if (indexReader == null) {
+			return;
+		}
 		indexReader.decRef();
 		if (directoryReader != indexReader) {
 			safelyCloseIfRefIs1OrDecRefIfMore(indexReader);
