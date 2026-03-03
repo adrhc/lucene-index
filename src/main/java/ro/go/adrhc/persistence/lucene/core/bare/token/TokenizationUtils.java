@@ -23,6 +23,13 @@ public class TokenizationUtils {
 		return new TokenizationUtils(new TokenStreamToStreamConverter(), analyzer);
 	}
 
+	public String normalize(String fieldName, String text) {
+		return analyzer.normalize(fieldName, text).utf8ToString();
+	}
+
+	/**
+	 * @return a set of distinct tokens obtained from the given collection of texts
+	 */
 	public Set<String> textCollectionToTokenSet(@NonNull Collection<String> words) throws IOException {
 		Set<String> tokens = new HashSet<>();
 		for (String w : words) {
@@ -36,14 +43,10 @@ public class TokenizationUtils {
 	}
 
 	/**
-	 * @return a sorted list of tokens obtained from the given text
+	 * @return a sorted list of distinct tokens obtained from the given text
 	 */
 	public List<String> textToTokenList(String text) throws IOException {
 		return useTokenStream(ts -> tokenStreamToStream.convert(ts).distinct().toList(), text);
-	}
-
-	public String normalize(String fieldName, String text) {
-		return analyzer.normalize(fieldName, text).utf8ToString();
 	}
 
 	private <T> T useTokenStream(Function<TokenStream, T> fn, String text) throws IOException {

@@ -11,32 +11,40 @@ import java.util.Set;
 public class TokenComparisonUtils {
 	private final TokenizationUtils tokenizationUtils;
 
-	public boolean containedDiffersSlightly(int levenshteinDistance,
-		String containing, String contained) throws IOException {
-		Set<String> containerTokens = tokenizationUtils.textToTokenSet(containing);
-		Set<String> containedTokens = tokenizationUtils.textToTokenSet(contained);
-		return containedDiffersSlightly(levenshteinDistance, containerTokens, containedTokens);
+	/**
+	 * @return whether all tokens in textPiece are similar to some token in text
+	 */
+	public boolean isTextPieceSimilarToText(int levenshteinDistance,
+		String text, String textPiece) throws IOException {
+		Set<String> containerTokens = tokenizationUtils.textToTokenSet(text);
+		Set<String> containedTokens = tokenizationUtils.textToTokenSet(textPiece);
+		return areSimilar(levenshteinDistance, containerTokens, containedTokens);
 	}
 
-	private boolean containedDiffersSlightly(int levenshteinDistance,
-		Set<String> containerTokens, Set<String> containedTokens) {
-		return SetUtils.difference(containedTokens, containerTokens)
-			.stream().allMatch(contained -> tokenMatchSlightlyDifferent(
-				levenshteinDistance, containerTokens, contained));
+	/**
+	 * @return whether all tokens in tokenSubSet are similar to some token in tokenSet
+	 */
+	private boolean areSimilar(int levenshteinDistance,
+		Set<String> tokenSet, Set<String> tokenSubSet) {
+		return SetUtils.difference(tokenSubSet, tokenSet)
+			.stream().allMatch(contained -> containsSimilar(
+				levenshteinDistance, tokenSet, contained));
 	}
 
-	private static boolean tokenMatchSlightlyDifferent(int levenshteinDistance,
-		Set<String> containerTokens, CharSequence contained) {
-		return containerTokens.stream().anyMatch(container ->
-			leLevenshteinDistance(levenshteinDistance, contained, container));
+	/**
+	 * @return whether token is similar to some token in tokenSet
+	 */
+	private static boolean containsSimilar(int levenshteinDistance,
+		Set<String> tokenSet, CharSequence token) {
+		return tokenSet.stream().anyMatch(container ->
+			areSimilar(levenshteinDistance, token, container));
 	}
 
-	private static boolean leLevenshteinDistance(
+	/**
+	 * @return whether first and second are similar according to the given levenshteinDistance
+	 */
+	private static boolean areSimilar(
 		int levenshteinDistance, CharSequence first, CharSequence second) {
 		return LevenshteinDistance.getDefaultInstance().apply(first, second) <= levenshteinDistance;
-	}
-
-	private static Integer levenshteinDistance(CharSequence first, CharSequence second) {
-		return LevenshteinDistance.getDefaultInstance().apply(first, second);
 	}
 }
