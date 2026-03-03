@@ -22,7 +22,7 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 	public static <T> IndexSearchServiceImpl<T>
 	create(IndexSearchServiceParams<T> params) {
 		BestMatchSearchService<T> bestMatchSearchService =
-			BestMatchSearchServiceImpl.of(params.oneHitIndexReaderParams());
+			BestMatchSearchServiceImpl.of(params.typedIndexReaderParams());
 		SearchReduceService<T> searchReduceService = new SearchReduceServiceImpl<>(
 			HitsLimitedIndexReaderTemplate.create(params), // limited to params.numHits
 			params.searchResultFilter());

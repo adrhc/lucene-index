@@ -265,6 +265,6 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
 		}
 		action.run();
-		indexServicesParamsFactory.getIndexWriter().commit();
+		indexServicesParamsFactory.indexWriter().commit();
 	}
 }

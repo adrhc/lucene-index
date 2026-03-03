@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.core.bare.read;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
@@ -14,9 +15,10 @@ import java.util.stream.Stream;
 public class HitsLimitedDocIndexReader extends DocIndexReader {
 	private final int numHits;
 
-	public HitsLimitedDocIndexReader(IndexReaderPool indexReaderPool,
+	public HitsLimitedDocIndexReader(
+		SneakyConsumer<IndexReader, IOException> closeStrategy,
 		IndexReader indexReader, int numHits) {
-		super(indexReaderPool::dismissReader, indexReader);
+		super(closeStrategy, indexReader);
 		this.numHits = numHits;
 	}
 
@@ -24,7 +26,7 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 		return findMany(query, numHits);
 	}
 
-	public Stream<ScoreDocAndDocument> findMany(Query query, Sort sort) throws IOException {
+	public Stream<ScoreDocAndDocument> findManySorted(Query query, Sort sort) throws IOException {
 		return findManySorted(query, numHits, sort);
 	}
 
@@ -37,7 +39,7 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 		return findFieldValues(fieldName, query, numHits);
 	}
 
-	public Stream<Object> findFieldValues(
+	public Stream<Object> findFieldValuesSorted(
 		String fieldName, Query query, @Nullable Sort sort) throws IOException {
 		return super.findFieldValuesSorted(fieldName, query, numHits, sort);
 	}

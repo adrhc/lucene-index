@@ -13,7 +13,7 @@ public class OneHitIndexReaderTemplate<T> {
 	private final SneakySupplier<OneHitIndexReader<T>, IOException> idReaderFactory;
 
 	public static <T> OneHitIndexReaderTemplate<T>
-	create(OneHitIndexReaderParams<T> params) {
+	create(TypedIndexReaderParams<T> params) {
 		return new OneHitIndexReaderTemplate<>(() -> OneHitIndexReader.create(params));
 	}
 

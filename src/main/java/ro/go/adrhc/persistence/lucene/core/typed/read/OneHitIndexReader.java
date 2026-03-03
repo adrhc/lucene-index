@@ -3,9 +3,8 @@ package ro.go.adrhc.persistence.lucene.core.typed.read;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
-import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReaderFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
 import ro.go.adrhc.util.Breakable;
 
@@ -20,14 +19,13 @@ public class OneHitIndexReader<T> implements Closeable {
 	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
 	private final HitsLimitedDocIndexReader indexReader;
 
-	public static <T> OneHitIndexReader<T> create(OneHitIndexReaderParams<T> params)
-		throws IOException {
-		DocumentToTypedConverter<T> docToTypedConverter =
-			DocumentToTypedConverter.create(params.getType());
+	public static <T> OneHitIndexReader<T>
+	create(TypedIndexReaderParams<T> params) throws IOException {
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
-			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
-		return new OneHitIndexReader<>(toScoreAndTypedConverter,
-			HitsLimitedDocsIndexReaderFactory.create(params.getIndexReaderPool(), 1));
+			ScoreAndDocumentToScoreDocAndValueConverter.of(params.type());
+		HitsLimitedDocIndexReader limitedDocIndexReader =
+			HitsLimitedDocIndexReaderFactory.create(params, 1);
+		return new OneHitIndexReader<>(toScoreAndTypedConverter, limitedDocIndexReader);
 	}
 
 	public Optional<ScoreDocAndValue<T>> findFirst(Query query) throws IOException {

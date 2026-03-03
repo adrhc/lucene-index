@@ -14,6 +14,11 @@ public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 	implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 
+	public static <T> ScoreAndDocumentToScoreDocAndValueConverter<T> of(Class<T> type) {
+		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(type);
+		return new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
+	}
+
 	public Stream<ScoreDocAndValue<T>> convertStream(Stream<ScoreDocAndDocument> stream) {
 		return stream.map(this::convert).flatMap(Optional::stream);
 	}

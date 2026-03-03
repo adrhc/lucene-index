@@ -1,14 +1,19 @@
 package ro.go.adrhc.persistence.lucene.operations.params;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.read.AllHitsTypedIndexReaderParamsFactory;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParamsImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.write.*;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceParamsImpl;
@@ -22,36 +27,28 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
+import static ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParamsImpl.allHits;
+
+@RequiredArgsConstructor
+@Accessors(fluent = true)
 @Getter
 @Slf4j
-public class IndexServicesParamsFactoryImpl<T>
-	extends AllHitsTypedIndexReaderParamsFactory<T>
-	implements IndexServicesParamsFactory<T> {
+public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFactory<T> {
+	private final Class<T> type;
+	private final LuceneFieldSpec<T> idField;
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private final Analyzer analyzer;
+	private final IndexReaderPool indexReaderPool;
 	private final IndexWriter indexWriter;
-	private final int searchHits;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
+	private final int searchHits;
 	private boolean closed;
-
-	public IndexServicesParamsFactoryImpl(Class<T> type, LuceneFieldSpec<T> idField,
-		IndexReaderPool indexReaderPool, Collection<? extends LuceneFieldSpec<T>> typedFields,
-		Analyzer analyzer, IndexWriter indexWriter, int searchHits,
-		SearchResultFilter<T> searchResultFilter, Path indexPath) {
-		super(type, idField, indexReaderPool);
-		this.typedFields = typedFields;
-		this.analyzer = analyzer;
-		this.indexWriter = indexWriter;
-		this.searchHits = searchHits;
-		this.searchResultFilter = searchResultFilter;
-		this.indexPath = indexPath;
-	}
 
 	@Override
 	public IndexSearchServiceParams<T> indexSearchServiceParams() {
-		return new IndexSearchServiceParamsImpl<>(type, idField,
-			indexReaderPool, searchResultFilter, searchHits);
+		return new IndexSearchServiceParamsImpl<>(type,
+			idField, indexReaderPool, searchResultFilter, searchHits);
 	}
 
 	@Override
@@ -86,12 +83,23 @@ public class IndexServicesParamsFactoryImpl<T>
 	}
 
 	@Override
-	public OneHitIndexReaderParams<T> oneHitIndexReaderParams() {
-		return new OneHitIndexReaderParamsImpl<>(indexReaderPool, type);
+	public TypedIndexReaderParams<T> oneHitIndexReaderParams() {
+		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool);
 	}
 
+	@Override
+	public DocIndexReaderParams indexCountServiceParams() {
+		return new DocIndexReaderParamsImpl(indexReaderPool);
+	}
+
+	@Override
 	public boolean isReadOnly() {
 		return indexWriter == null;
+	}
+
+	@Override
+	public HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
+		return allHits(type(), idField(), indexReaderPool);
 	}
 
 	@Override

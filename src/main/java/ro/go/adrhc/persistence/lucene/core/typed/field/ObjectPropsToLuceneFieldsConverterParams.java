@@ -5,7 +5,7 @@ import org.apache.lucene.analysis.Analyzer;
 import java.util.Collection;
 
 public interface ObjectPropsToLuceneFieldsConverterParams<T> {
-	Analyzer getAnalyzer();
+	Analyzer analyzer();
 
-	Collection<? extends LuceneFieldSpec<T>> getTypedFields();
+	Collection<? extends LuceneFieldSpec<T>> typedFields();
 }

@@ -32,7 +32,7 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query,
 		int hitsCount, Sort sort) throws IOException {
-		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, hitsCount, sort)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManySorted(query, hitsCount, sort)));
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 
 	@Override
 	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
-		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, sort)));
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManySorted(query, sort)));
 	}
 
 	@Override

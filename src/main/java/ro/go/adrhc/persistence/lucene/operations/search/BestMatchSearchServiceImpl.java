@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> {
 	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
 
-	public static <T> BestMatchSearchServiceImpl<T> of(OneHitIndexReaderParams<T> params) {
+	public static <T> BestMatchSearchServiceImpl<T> of(TypedIndexReaderParams<T> params) {
 		return new BestMatchSearchServiceImpl<>(OneHitIndexReaderTemplate.create(params));
 	}
 

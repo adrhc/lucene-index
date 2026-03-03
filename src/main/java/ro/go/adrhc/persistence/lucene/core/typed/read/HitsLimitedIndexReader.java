@@ -6,7 +6,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.springframework.lang.Nullable;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
-import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocsIndexReaderFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
@@ -34,9 +34,9 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			DocumentToTypedConverter.create(params.type());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
 			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
-		HitsLimitedDocIndexReader indexReader = HitsLimitedDocsIndexReaderFactory.create(params);
+		HitsLimitedDocIndexReader docIndexReader = HitsLimitedDocIndexReaderFactory.create(params);
 		return new HitsLimitedIndexReader<>(params.idField(),
-			docToTypedConverter, toScoreAndTypedConverter, indexReader);
+			docToTypedConverter, toScoreAndTypedConverter, docIndexReader);
 	}
 
 	public Stream<T> getAll() throws IOException {
@@ -45,7 +45,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	}
 
 	public Stream<ID> getAllIds() throws IOException {
-		return getFieldOfAll(idField);
+		return getFieldValues(idField);
 	}
 
 	public Stream<ID> findIds(Query query) throws IOException {
@@ -54,7 +54,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 
 	public Stream<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
 		return hitsLimitedDocsIndexReader
-			.findFieldValues(idField.name(), query, sort)
+			.findFieldValuesSorted(idField.name(), query, sort)
 			.map(idField::toPropValue);
 	}
 
@@ -74,12 +74,12 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findMany(Query query, Sort sort) throws IOException {
+	public Stream<ScoreDocAndValue<T>> findManySorted(Query query, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
-			hitsLimitedDocsIndexReader.findMany(query, sort));
+			hitsLimitedDocsIndexReader.findManySorted(query, sort));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findMany(
+	public Stream<ScoreDocAndValue<T>> findManySorted(
 		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManySorted(query, numHits, sort));
@@ -103,8 +103,10 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 
 	/**
 	 * The caller must use the proper type!
+	 *
+	 * @return the field values of all documents
 	 */
-	public <P> Stream<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+	public <P> Stream<P> getFieldValues(LuceneFieldSpec<T> field) throws IOException {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFieldValues(field.name())

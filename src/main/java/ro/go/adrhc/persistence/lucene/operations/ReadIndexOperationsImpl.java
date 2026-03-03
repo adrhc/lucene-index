@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.operations;
 
-import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -8,7 +7,7 @@ import org.apache.lucene.search.Sort;
 import org.springframework.lang.Nullable;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
@@ -29,7 +28,7 @@ import java.util.stream.Stream;
 public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	implements ReadIndexOperations<T, ID> {
 	private final LuceneFieldSpec<T> idField;
-	private final SneakySupplier<HitsLimitedIndexReader<ID, T>, IOException> unlimitedIdxReaderFactory;
+	private final HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate;
 	private final IndexCountService countService;
 	private final IndexRetrieveService<ID, T> retrieveService;
 	private final IndexSearchService<T> searchService;
@@ -117,9 +116,8 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 
 	@Override
 	public List<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
-		try (HitsLimitedIndexReader<ID, ?> reader = unlimitedIdxReaderFactory.get()) {
-			return reader.findIds(query, sort).<ID>map(idField::toPropValue).toList();
-		}
+		return unlimitedIdxReaderTemplate.useReader(r ->
+			r.findIds(query, sort).<ID>map(idField::toPropValue).toList());
 	}
 
 	@Override

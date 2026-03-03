@@ -12,13 +12,14 @@ import java.util.List;
 
 import static org.apache.lucene.search.SortField.Type.LONG;
 import static org.assertj.core.api.Assertions.assertThat;
+import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateName;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.cnp;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.instantField;
+import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class PersonSortTest extends AbstractPersonsIndexTest {
+	@Override
 	protected void indexRepositoryReset() throws IOException {
 		indexRepository.reset(generatePeopleList(100));
 	}
@@ -27,39 +28,38 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 	void findIdsSortedByCnp() throws IOException {
 		Sort sort = new Sort(new SortedSetSortField(cnp.name(), true));
 		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
-		assertThat(result).hasSize(100);
-		assertThat(result).containsSequence(99L, 98L, 97L);
+		assertThat(result).hasSize(100).containsSequence(99L, 98L, 97L);
 	}
 
-	@Test
-	void findIdsSortedByName() throws IOException {
-		Sort sort = new Sort(new SortedSetSortField(cnp.name(), true));
-		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
-		assertThat(result).hasSize(100);
-		assertThat(result).containsSequence(99L, 98L, 97L);
-	}
+	/*@Test
+	void findIdsSortedByNameWord() throws IOException {
+		Sort sort = new Sort(new SortField(nameWord.name(), SortField.Type.STRING, true));
+		ScoreDocAndValues<Person> result = indexRepository.findMany(new MatchAllDocsQuery(), sort);
+		assertThat(result.values()).hasSize(100).map(Person::name)
+			.containsSequence(generateName(99), generateName(98), generateName(97));
+	}*/
 
 	@Test
 	void findPages() throws IOException {
-		Sort sort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
-		Sort reverseSort = new Sort(new SortedNumericSortField(
+		Sort instantFieldSort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
+		Sort instantFieldReverseSort = new Sort(new SortedNumericSortField(
 			instantField.name(), LONG, true));
 
 		// 1st page
 		ScoreDocAndValues<Person> page1 = indexRepository.findMany(
-			new MatchAllDocsQuery(), 10, sort);
+			new MatchAllDocsQuery(), 10, instantFieldSort);
 		assertThat(page1.values()).hasSize(10);
 		assertThat(page1.values()).map(Person::id).containsSequence(0L, 1L, 2L);
 
 		// 2nd page
 		ScoreDocAndValues<Person> page2 = indexRepository.findManyAfter(
-			page1.lastPosition(), new MatchAllDocsQuery(), 10, sort);
+			page1.lastPosition(), new MatchAllDocsQuery(), 10, instantFieldSort);
 		assertThat(page2.values()).hasSize(10);
 		assertThat(page2.values()).map(Person::id).containsSequence(10L, 11L, 12L);
 
 		// back to 1st page
 		ScoreDocAndValues<Person> page3 = indexRepository.findManyAfter(page2.firstPosition(),
-			new MatchAllDocsQuery(), 10, reverseSort).reverse();
+			new MatchAllDocsQuery(), 10, instantFieldReverseSort).reverse();
 		assertThat(page3.values()).hasSize(10);
 		assertThat(page3.values()).map(Person::id).containsSequence(0L, 1L, 2L);
 	}

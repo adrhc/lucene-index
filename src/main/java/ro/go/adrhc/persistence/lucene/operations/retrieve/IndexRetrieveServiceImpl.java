@@ -28,8 +28,8 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	public static <ID, T> IndexRetrieveServiceImpl<ID, T>
 	create(IndexRetrieveServiceParams<T> params) {
 		return new IndexRetrieveServiceImpl<>(
-			ExactQuery.create(params.getIdField()),
-			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+			ExactQuery.create(params.idField()),
+			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
 			OneHitIndexReaderTemplate.create(params));
 	}
 
@@ -63,7 +63,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	 */
 	@Override
 	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
-		return indexReaderTemplate.useReader(reader -> reader.<F>getFieldOfAll(field).toList());
+		return indexReaderTemplate.useReader(reader -> reader.<F>getFieldValues(field).toList());
 	}
 
 	@Override

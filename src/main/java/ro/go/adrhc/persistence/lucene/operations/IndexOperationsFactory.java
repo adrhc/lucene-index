@@ -1,10 +1,9 @@
 package ro.go.adrhc.persistence.lucene.operations;
 
-import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
@@ -18,12 +17,10 @@ import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceIm
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 	private final LuceneFieldSpec<T> idField;
-	private final SneakySupplier<HitsLimitedIndexReader<ID, T>, IOException> unlimitedIndexReaderFactory;
+	private final HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate;
 	private final IndexCountService countService;
 	private final IndexRetrieveServiceImpl<ID, T> retrieveService;
 	private final IndexSearchService<T> searchService;
@@ -50,8 +47,9 @@ public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 		IndexResetServiceImpl<T> resetService = srvFactory.createResetService();
 		IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService =
 			srvFactory.createShallowUpdateService();
-		return new IndexOperationsFactory<>(params.getIdField(),
-			() -> HitsLimitedIndexReader.create(params.allHitsTypedIndexReaderParams()),
+		HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate =
+			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams());
+		return new IndexOperationsFactory<>(params.idField(), unlimitedIdxReaderTemplate,
 			countService, retrieveService, searchService, addService, upsertService, removeService,
 			mergeService, resetService, shallowUpdateService, backupService);
 	}
@@ -63,7 +61,7 @@ public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
 	}
 
 	public ReadIndexOperations<T, ID> createReadIndexOperations() {
-		return new ReadIndexOperationsImpl<>(idField,
-			unlimitedIndexReaderFactory, countService, retrieveService, searchService);
+		return new ReadIndexOperationsImpl<>(idField, unlimitedIdxReaderTemplate,
+			countService, retrieveService, searchService);
 	}
 }

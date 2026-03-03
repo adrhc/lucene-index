@@ -19,7 +19,7 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 	private final IndexServicesParamsFactory<T> paramsFactory;
 
 	public IndexBackupService createBackupService() {
-		return new IndexBackupServiceImpl(paramsFactory.getIndexWriter());
+		return new IndexBackupServiceImpl(paramsFactory.indexWriter());
 	}
 
 	public IndexSearchServiceImpl<T> createSearchService() {
@@ -31,7 +31,7 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 	}
 
 	public IndexCountServiceImpl createCountService() {
-		return IndexCountServiceImpl.create(paramsFactory.getIndexReaderPool());
+		return IndexCountServiceImpl.create(paramsFactory.indexCountServiceParams());
 	}
 
 	public IndexShallowUpdateServiceImpl<ID, T> createShallowUpdateService() {

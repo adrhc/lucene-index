@@ -1,7 +1,10 @@
 package ro.go.adrhc.persistence.lucene.person;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.document.SortedSetDocValuesField;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.BytesRef;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,6 +94,9 @@ class PersonQueriesTest extends AbstractPersonsIndexTest {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = indexRepository.findMany(
 			ALIAS_WORD_QUERIES.tokenEquals(normalized));
+		/*List<Person> result = indexRepository.findMany(
+			SortedDocValuesField.newSlowExactQuery(
+				PersonFieldType.aliasWord.name(), new BytesRef(aliasWord)));*/
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());

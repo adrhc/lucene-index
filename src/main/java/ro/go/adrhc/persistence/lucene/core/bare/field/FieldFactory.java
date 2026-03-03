@@ -5,6 +5,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.util.BytesRef;
+import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.util.Assert;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.INT;
@@ -88,22 +89,27 @@ public class FieldFactory {
 		return new StoredField(fieldName, value.toString());
 	}
 
-	public Field create(boolean stored, FieldType fieldType, Enum<?> field, Object value) {
-		return create(stored, fieldType, field.name(), value);
-	}
-
-	public Field create(boolean stored, FieldType fieldType, String fieldName, Object value) {
+	public Field create(LuceneFieldSpec<?> typedField, Object fieldValue) {
+		boolean stored = typedField.mustStore();
+		String fieldName = typedField.name();
+		FieldType fieldType = typedField.fieldType();
 		Assert.isTrue(fieldType != STORED || stored,
 			"STORED fields must demand to be stored!");
 		Assert.isTrue(fieldType != INT || !stored,
 			"INT fields must not demand to be stored!");
 		return switch (fieldType) {
-			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, value);
-			case WORD -> wordFieldFactory.wordField(stored, fieldName, value);
-			case PHRASE -> phraseField(stored, fieldName, value);
-			case INT -> intField(fieldName, (Integer) value);
-			case LONG -> longField(stored, fieldName, (Long) value);
-			case STORED -> storedField(fieldName, value);
+			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, fieldValue);
+			case WORD -> {
+				if (typedField.mustSort()) {
+					yield new SortedDocValuesField(fieldName, new BytesRef((String) fieldValue));
+				} else {
+					yield wordFieldFactory.wordField(stored, fieldName, fieldValue);
+				}
+			}
+			case PHRASE -> phraseField(stored, fieldName, fieldValue);
+			case INT -> intField(fieldName, (Integer) fieldValue);
+			case LONG -> longField(stored, fieldName, (Long) fieldValue);
+			case STORED -> storedField(fieldName, fieldValue);
 		};
 	}
 }

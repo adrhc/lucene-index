@@ -13,7 +13,7 @@ public interface FileSystemIndex<ID, T extends Indexable<ID, T>>
 	IndexServicesParamsFactory<T> getIndexServicesParamsFactory();
 
 	default Path getIndexPath() {
-		return getIndexServicesParamsFactory().getIndexPath();
+		return getIndexServicesParamsFactory().indexPath();
 	}
 
 	default boolean isReadOnly() {

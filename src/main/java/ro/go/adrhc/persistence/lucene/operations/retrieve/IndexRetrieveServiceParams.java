@@ -2,10 +2,10 @@ package ro.go.adrhc.persistence.lucene.operations.retrieve;
 
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 
-public interface IndexRetrieveServiceParams<T> extends OneHitIndexReaderParams<T> {
-	LuceneFieldSpec<T> getIdField();
+public interface IndexRetrieveServiceParams<T> extends TypedIndexReaderParams<T> {
+	LuceneFieldSpec<T> idField();
 
-	HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams();
+	HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams();
 }

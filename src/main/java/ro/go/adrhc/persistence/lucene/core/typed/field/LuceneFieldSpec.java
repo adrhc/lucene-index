@@ -5,6 +5,8 @@ import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 
 import java.util.EnumSet;
 
+import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.WORD;
+
 public interface LuceneFieldSpec<T> {
 	static <E extends Enum<E> & LuceneFieldSpec<?>> E getIdField(Class<E> enumClass) {
 		return EnumSet.allOf(enumClass).stream().filter(LuceneFieldSpec::isIdField).findAny()
@@ -18,6 +20,16 @@ public interface LuceneFieldSpec<T> {
 	boolean isIdField();
 
 	FieldType fieldType();
+
+	/**
+	 * Only considered for WORD fields!
+	 * <p>
+	 * By default, WORD fields are sorted!
+	 */
+	default boolean mustSort() {
+		return false;
+//		return fieldType() == WORD;
+	}
 
 	default boolean mustStore() {
 		return isIdField() || fieldType() == FieldType.STORED;

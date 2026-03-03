@@ -2,10 +2,10 @@ package ro.go.adrhc.persistence.lucene.operations.params;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
-import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderParams;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexWriterParams;
@@ -17,15 +17,13 @@ import java.io.Closeable;
 import java.nio.file.Path;
 
 public interface IndexServicesParamsFactory<T> extends Closeable {
-	LuceneFieldSpec<T> getIdField();
+	LuceneFieldSpec<T> idField();
 
-	Analyzer getAnalyzer();
+	Analyzer analyzer();
 
-	IndexWriter getIndexWriter();
+	IndexWriter indexWriter();
 
-	IndexReaderPool getIndexReaderPool();
-
-	Path getIndexPath();
+	Path indexPath();
 
 	boolean isReadOnly();
 
@@ -43,7 +41,9 @@ public interface IndexServicesParamsFactory<T> extends Closeable {
 
 	TypedIndexRemoverParams typedIndexRemoverParams();
 
-	OneHitIndexReaderParams<T> oneHitIndexReaderParams();
+	TypedIndexReaderParams<T> oneHitIndexReaderParams();
+
+	DocIndexReaderParams indexCountServiceParams();
 
 	HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 }

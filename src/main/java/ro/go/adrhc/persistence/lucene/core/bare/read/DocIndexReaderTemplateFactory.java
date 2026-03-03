@@ -11,6 +11,11 @@ public class DocIndexReaderTemplateFactory {
 	}
 
 	public static DocIndexReaderTemplate of(IndexReaderPool indexReaderPool) {
-		return new DocIndexReaderTemplate(() -> DocIndexReader.create(indexReaderPool));
+		return new DocIndexReaderTemplate(() -> DocIndexReader.of(indexReaderPool));
+	}
+
+	public static DocIndexReaderTemplate of(DocIndexReaderParams params) {
+		return new DocIndexReaderTemplate(() -> new DocIndexReader(
+			params::closeIndexReader, params.createIndexReader()));
 	}
 }

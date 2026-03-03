@@ -3,10 +3,7 @@ package ro.go.adrhc.persistence.lucene.operations.count;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReader;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderTemplateFactory;
-import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
+import ro.go.adrhc.persistence.lucene.core.bare.read.*;
 
 import java.io.IOException;
 
@@ -24,6 +21,10 @@ public class IndexCountServiceImpl implements IndexCountService {
 	 */
 	public static IndexCountServiceImpl create(IndexReaderPool indexReaderPool) {
 		return new IndexCountServiceImpl(DocIndexReaderTemplateFactory.of(indexReaderPool));
+	}
+
+	public static IndexCountServiceImpl create(DocIndexReaderParams params) {
+		return new IndexCountServiceImpl(DocIndexReaderTemplateFactory.of(params));
 	}
 
 	@Override

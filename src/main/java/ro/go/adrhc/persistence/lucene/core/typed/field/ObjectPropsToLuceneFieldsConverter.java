@@ -15,8 +15,8 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 	public static <T> ObjectPropsToLuceneFieldsConverter<T>
 	create(ObjectPropsToLuceneFieldsConverterParams<T> params) {
 		return new ObjectPropsToLuceneFieldsConverter<>(
-			FieldFactory.create(params.getAnalyzer()),
-			params.getTypedFields());
+			FieldFactory.create(params.analyzer()),
+			params.typedFields());
 	}
 
 	public Stream<Field> toFields(T tValue) {
@@ -28,14 +28,9 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 		if (fieldValue == null) {
 			return Stream.empty();
 		} else if (fieldValue instanceof Collection<?> col) {
-			return col.stream().map(it -> toField(typedField, it));
+			return col.stream().map(value -> fieldFactory.create(typedField, value));
 		} else {
-			return Stream.of(toField(typedField, fieldValue));
+			return Stream.of(fieldFactory.create(typedField, fieldValue));
 		}
-	}
-
-	protected Field toField(LuceneFieldSpec<?> typedField, Object fieldValue) {
-		return fieldFactory.create(typedField.mustStore(),
-			typedField.fieldType(), typedField.name(), fieldValue);
 	}
 }

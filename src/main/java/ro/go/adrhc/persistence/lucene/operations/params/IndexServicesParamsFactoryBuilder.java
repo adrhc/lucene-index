@@ -95,13 +95,13 @@ public class IndexServicesParamsFactoryBuilder<
 		Analyzer finalAnalyzer = this.analyzer;
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, IndexReaderPoolFactory.of(indexPath), typedFields,
-				finalAnalyzer, null, searchHits, searchResultFilter, indexPath));
+				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexPath),
+				null, searchResultFilter, indexPath, searchHits));
 		} else {
 			return indexWriterFactory.apply(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, IndexReaderPoolFactory.of(indexWriter), typedFields,
-					finalAnalyzer, indexWriter, searchHits, searchResultFilter, indexPath));
+					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexWriter),
+					indexWriter, searchResultFilter, indexPath, searchHits));
 		}
 	}
 

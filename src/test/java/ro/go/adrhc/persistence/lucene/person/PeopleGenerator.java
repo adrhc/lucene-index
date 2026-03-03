@@ -53,10 +53,14 @@ public class PeopleGenerator {
 
 	public static Person generateGirl(long id, Instant instantField) {
 		return new Person(id,
-			"#Person" + id, TestData.TEXT + " nameșț" + id,
+			"#Person" + id, generateName(id),
 			"alias_Keyword" + (id % 2), "alias_Word" + (id % 2),
 			"alias_Phrase" + (id % 2), (int) id, id,
 			instantField, "storedOnlyField" + (id % 100),
 			false, new HashSet<>());
+	}
+
+	public static String generateName(long id) {
+		return TestData.TEXT + " nameșț" + id;
 	}
 }
