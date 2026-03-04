@@ -26,7 +26,7 @@ class TypedIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 	@ValueSource(booleans = {true, false})
 	void findByBoolean(boolean male) throws IOException {
 		HitsLimitedIndexReaderTemplate<Long, Person> readerTemplate = createPersonIndexReaderTemplate();
-		Query query = ExactQuery.create(PersonFieldType.male).newExactQuery(male);
+		Query query = ExactQuery.create(PersonSchema.male).newExactQuery(male);
 		List<Long> ids = readerTemplate.useReader(reader -> reader.findIds(query).toList());
 		assertThat(ids).isNotEmpty();
 		assertThat(ids).containsAll(

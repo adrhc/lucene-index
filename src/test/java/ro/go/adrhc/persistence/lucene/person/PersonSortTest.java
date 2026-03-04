@@ -14,7 +14,7 @@ import static org.apache.lucene.search.SortField.Type.LONG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateName;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
-import static ro.go.adrhc.persistence.lucene.person.PersonFieldType.*;
+import static ro.go.adrhc.persistence.lucene.person.PersonSchema.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

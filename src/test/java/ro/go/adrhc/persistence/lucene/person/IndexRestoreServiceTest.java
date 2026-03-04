@@ -42,7 +42,7 @@ public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
 		assertThat(indexRepository.findById(3L)).isEmpty(); // boy
 		assertThat(indexRepository.findById(4L)).isPresent();
 
-		Query query = ExactQuery.create(PersonFieldType.male).newExactQuery(true);
+		Query query = ExactQuery.create(PersonSchema.male).newExactQuery(true);
 		indexRepository.shallowUpdateSubset(
 			createCachedDataSource(PEOPLE.stream().filter(Person::male)),
 			query);

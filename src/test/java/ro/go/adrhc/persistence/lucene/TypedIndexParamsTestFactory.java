@@ -9,7 +9,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.person.PersonFieldType;
+import ro.go.adrhc.persistence.lucene.person.PersonSchema;
 
 import java.nio.file.Path;
 
@@ -22,7 +22,7 @@ public class TypedIndexParamsTestFactory {
 	public static final TokenizationUtils TOKENIZATION_UTILS =
 		new TokenizationUtils(new TokenStreamToStreamConverter(), ANALYZER);
 	public static final DefaultFieldAwareQueryParser NAME_QUERY_PARSER =
-		DefaultFieldAwareQueryParser.create(ANALYZER, PersonFieldType.name);
+		DefaultFieldAwareQueryParser.create(ANALYZER, PersonSchema.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
 	IndexServicesParamsFactory<T> createTypedIndexSpec(

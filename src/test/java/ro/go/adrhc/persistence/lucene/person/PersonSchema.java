@@ -15,7 +15,7 @@ import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldM
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
-public enum PersonFieldType implements LuceneFieldSpec<Person> {
+public enum PersonSchema implements LuceneFieldSpec<Person> {
 	id(LONG, longField(Person::id)),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
@@ -33,7 +33,7 @@ public enum PersonFieldType implements LuceneFieldSpec<Person> {
 	private final FieldType fieldType;
 	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;
 
-	PersonFieldType(FieldType fieldType, Function<Person, String> propertyAccessor) {
+	PersonSchema(FieldType fieldType, Function<Person, String> propertyAccessor) {
 		this.fieldType = fieldType;
 		this.fieldSerde = stringField(propertyAccessor);
 	}

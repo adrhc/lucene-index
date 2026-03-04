@@ -10,17 +10,17 @@ import static ro.go.adrhc.persistence.lucene.core.bare.query.BooleanQueryFactory
 
 @UtilityClass
 public class PersonQueryFactory {
-	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonFieldType.nameWord);
-	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonFieldType.name);
+	public static final FieldQueries NAME_WORD_QUERIES = FieldQueries.create(PersonSchema.nameWord);
+	public static final FieldQueries NAME_QUERIES = FieldQueries.create(PersonSchema.name);
 	public static final FieldQueries ALIAS_KEYWORD_QUERIES =
-		FieldQueries.create(PersonFieldType.aliasKeyWord);
-	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(PersonFieldType.aliasWord);
+		FieldQueries.create(PersonSchema.aliasKeyWord);
+	public static final FieldQueries ALIAS_WORD_QUERIES = FieldQueries.create(PersonSchema.aliasWord);
 	public static final FieldQueries ALIAS_PHRASE_QUERIES =
-		FieldQueries.create(PersonFieldType.aliasPhrase);
-	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonFieldType.cnp);
-	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonFieldType.id);
-	public static final FieldQueries MALE_QUERIES = FieldQueries.create(PersonFieldType.male);
-	public static final FieldQueries TAGS_QUERY = FieldQueries.create(PersonFieldType.tags);
+		FieldQueries.create(PersonSchema.aliasPhrase);
+	public static final FieldQueries CNP_QUERIES = FieldQueries.create(PersonSchema.cnp);
+	public static final FieldQueries ID_QUERIES = FieldQueries.create(PersonSchema.id);
+	public static final FieldQueries MALE_QUERIES = FieldQueries.create(PersonSchema.male);
+	public static final FieldQueries TAGS_QUERY = FieldQueries.create(PersonSchema.tags);
 
 	public static Query hasTag(String tag) {
 		return TAGS_QUERY.tokenEquals(tag);

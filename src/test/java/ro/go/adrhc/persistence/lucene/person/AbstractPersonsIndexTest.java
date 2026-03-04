@@ -24,7 +24,7 @@ public abstract class AbstractPersonsIndexTest {
 	protected FileSystemIndex<Long, Person> indexRepository;
 
 	protected void initObjects() {
-		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonFieldType.class, tmpDir);
+		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
 		indexRepository = FileSystemIndexImpl.of(peopleIndexSpec);
 	}
 
