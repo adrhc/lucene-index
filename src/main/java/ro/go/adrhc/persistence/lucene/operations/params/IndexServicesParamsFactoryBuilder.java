@@ -2,9 +2,11 @@ package ro.go.adrhc.persistence.lucene.operations.params;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
+import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPoolFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
@@ -13,13 +15,8 @@ import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
-
-import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
-import static ro.go.adrhc.util.fn.SneakySupplierUtils.failToNull;
 
 @Slf4j
 public class IndexServicesParamsFactoryBuilder<
@@ -32,6 +29,7 @@ public class IndexServicesParamsFactoryBuilder<
 	private Collection<? extends LuceneFieldSpec<T>> typedFields;
 	private LuceneFieldSpec<T> idField;
 	private Path indexPath;
+	private TokenizerProperties tokenizerProperties;
 	private Analyzer analyzer;
 
 	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
@@ -60,7 +58,7 @@ public class IndexServicesParamsFactoryBuilder<
 
 	public IndexServicesParamsFactoryBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
-		this.analyzer = defaultAnalyzer(tokenizerProperties).orElse(null);
+		this.tokenizerProperties = tokenizerProperties;
 		return this;
 	}
 
@@ -86,18 +84,13 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
-		useDefaultAnalyzerIfEmpty();
-		if (analyzer == null) {
-			return Optional.empty();
-		}
-		indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
-//		Analyzer finalAnalyzer = applyPerFieldAnalyzers(this.analyzer);
-		Analyzer finalAnalyzer = this.analyzer;
+		Analyzer finalAnalyzer = perFieldAnalyzer(analyzer());
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
 				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexPath),
 				null, searchResultFilter, indexPath, searchHits));
 		} else {
+			indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
 			return indexWriterFactory.apply(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
 					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexWriter),
@@ -105,21 +98,20 @@ public class IndexServicesParamsFactoryBuilder<
 		}
 	}
 
-	/*private Analyzer applyPerFieldAnalyzers(Analyzer baseAnalyzer) {
-		if (typedFields == null || typedFields.isEmpty()) {
+	private Analyzer perFieldAnalyzer(Analyzer baseAnalyzer) {
+		if (typedFields == null ||
+			typedFields.stream().noneMatch(t -> t.fieldType() == FieldType.WORD)) {
 			return baseAnalyzer;
 		}
+		Analyzer wordAnalyzer = wordAnalyzer();
 		Map<String, Analyzer> overrides = new HashMap<>();
 		for (LuceneFieldSpec<T> fieldSpec : typedFields) {
-			if (fieldSpec.fieldType() == FieldType.TAGS) {
-				overrides.put(fieldSpec.name(), AnalyzerFactory.tagsAnalyzer());
+			if (fieldSpec.fieldType() == FieldType.WORD) {
+				overrides.put(fieldSpec.name(), wordAnalyzer);
 			}
 		}
-		if (overrides.isEmpty()) {
-			return baseAnalyzer;
-		}
 		return new PerFieldAnalyzerWrapper(baseAnalyzer, overrides);
-	}*/
+	}
 
 	private Optional<IndexWriter> createIndexWriter(Analyzer analyzer) {
 		try {
@@ -130,9 +122,18 @@ public class IndexServicesParamsFactoryBuilder<
 		return Optional.empty();
 	}
 
-	private void useDefaultAnalyzerIfEmpty() {
-		if (analyzer == null) {
-			this.analyzer = failToNull(AnalyzerFactory::defaultAnalyzer);
-		}
+	private Analyzer wordAnalyzer() {
+		return AnalyzerFactory.defaultWordAnalyzer(tokenizerProperties())
+			.orElseThrow(() -> new IllegalStateException("Default WORD Analyzer can't be created!"));
+	}
+
+	private Analyzer analyzer() {
+		return analyzer != null ? analyzer :
+			AnalyzerFactory.defaultAnalyzer(tokenizerProperties())
+				.orElseThrow(() -> new IllegalStateException("Default Analyzer can't be created!"));
+	}
+
+	private TokenizerProperties tokenizerProperties() {
+		return tokenizerProperties != null ? tokenizerProperties : new TokenizerProperties();
 	}
 }

@@ -1,7 +1,6 @@
 package ro.go.adrhc.persistence.lucene.core.bare.field;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.lucene.analysis.Analyzer;
+import lombok.experimental.UtilityClass;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.util.BytesRef;
@@ -11,14 +10,8 @@ import ro.go.adrhc.util.Assert;
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.INT;
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 
-@RequiredArgsConstructor
+@UtilityClass
 public class FieldFactory {
-	private final WordFieldFactory wordFieldFactory;
-
-	public static FieldFactory create(Analyzer analyzer) {
-		return new FieldFactory(WordFieldFactory.of(analyzer));
-	}
-
 	/**
 	 * If you also need to store the value, you should
 	 * add a separate {@link StoredField} instance.
@@ -89,7 +82,23 @@ public class FieldFactory {
 		return new StoredField(fieldName, value.toString());
 	}
 
-	public Field create(LuceneFieldSpec<?> typedField, Object fieldValue) {
+	/**
+	 * The field is not tokenized, but only normalized (i.e., char-filtered) before indexing!
+	 */
+	public static TextField wordField(boolean stored, Enum<?> field, Object value) {
+		return wordField(stored, field.name(), value);
+	}
+
+	public static TextField wordField(boolean stored, String fieldName, Object value) {
+		return new TextField(fieldName, value.toString(),
+			stored ? Field.Store.YES : Field.Store.NO);
+	}
+
+	public static SortedDocValuesField createSortField(LuceneFieldSpec<?> typedField, Object value) {
+		return new SortedDocValuesField(typedField.name(), new BytesRef((String) value));
+	}
+
+	public static Field create(LuceneFieldSpec<?> typedField, Object fieldValue) {
 		boolean stored = typedField.mustStore();
 		String fieldName = typedField.name();
 		FieldType fieldType = typedField.fieldType();
@@ -99,13 +108,7 @@ public class FieldFactory {
 			"INT fields must not demand to be stored!");
 		return switch (fieldType) {
 			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, fieldValue);
-			case WORD -> {
-				if (typedField.mustSort()) {
-					yield new SortedDocValuesField(fieldName, new BytesRef((String) fieldValue));
-				} else {
-					yield wordFieldFactory.wordField(stored, fieldName, fieldValue);
-				}
-			}
+			case WORD -> wordField(stored, fieldName, fieldValue);
 			case PHRASE -> phraseField(stored, fieldName, fieldValue);
 			case INT -> intField(fieldName, (Integer) fieldValue);
 			case LONG -> longField(stored, fieldName, (Long) fieldValue);

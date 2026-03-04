@@ -26,9 +26,8 @@ public interface LuceneFieldSpec<T> {
 	 * <p>
 	 * By default, WORD fields are sorted!
 	 */
-	default boolean mustSort() {
-		return false;
-//		return fieldType() == WORD;
+	default boolean supportsSorting() {
+		return fieldType() == WORD;
 	}
 
 	default boolean mustStore() {

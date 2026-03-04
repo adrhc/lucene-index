@@ -31,13 +31,13 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 		assertThat(result).hasSize(100).containsSequence(99L, 98L, 97L);
 	}
 
-	/*@Test
+	@Test
 	void findIdsSortedByNameWord() throws IOException {
 		Sort sort = new Sort(new SortField(nameWord.name(), SortField.Type.STRING, true));
 		ScoreDocAndValues<Person> result = indexRepository.findMany(new MatchAllDocsQuery(), sort);
 		assertThat(result.values()).hasSize(100).map(Person::name)
 			.containsSequence(generateName(99), generateName(98), generateName(97));
-	}*/
+	}
 
 	@Test
 	void findPages() throws IOException {

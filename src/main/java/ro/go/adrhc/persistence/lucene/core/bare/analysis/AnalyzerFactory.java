@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.core.bare.analysis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordTokenizerFactory;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
@@ -35,10 +36,29 @@ public class AnalyzerFactory {
 		return new AnalyzerFactory(properties).create();
 	}
 
+	public static Optional<Analyzer> defaultWordAnalyzer(TokenizerProperties properties) {
+		return new AnalyzerFactory(properties).createWordAnalyzer();
+	}
+
 	public Optional<Analyzer> create() {
 		return ofSneakySupplier(() -> {
 			CustomAnalyzer.Builder builder = withMaxTokenLength();
 			addTrimAsciiFoldingLengthLowerRmDupsTokenFilters(builder);
+			addCharReplacerRmTextsAndPatternsPatternReplacerCharFilters(builder);
+			return builder.build();
+		});
+	}
+
+	public Optional<Analyzer> createWordAnalyzer() {
+		return ofSneakySupplier(() -> {
+			CustomAnalyzer.Builder builder = CustomAnalyzer
+				.builder().withTokenizer(KeywordTokenizerFactory.NAME);
+			// char filters
+			builder
+				.addTokenFilter(TrimFilterFactory.NAME)
+				.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
+				.addTokenFilter(LowerCaseFilterFactory.NAME);
+			// token filters
 			addCharReplacerRmTextsAndPatternsPatternReplacerCharFilters(builder);
 			return builder.build();
 		});
