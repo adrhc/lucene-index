@@ -37,8 +37,4 @@ public enum PersonSchema implements LuceneFieldSpec<Person> {
 		this.fieldType = fieldType;
 		this.fieldSerde = stringField(propertyAccessor);
 	}
-
-	public boolean isIdField() {
-		return this == id;
-	}
 }

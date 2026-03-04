@@ -8,6 +8,8 @@ import java.util.EnumSet;
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.WORD;
 
 public interface LuceneFieldSpec<T> {
+	String DEFAULT_ID_FILED_NAME = "id";
+
 	static <E extends Enum<E> & LuceneFieldSpec<?>> E getIdField(Class<E> enumClass) {
 		return EnumSet.allOf(enumClass).stream().filter(LuceneFieldSpec::isIdField).findAny()
 			.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
@@ -17,7 +19,12 @@ public interface LuceneFieldSpec<T> {
 
 	String name();
 
-	boolean isIdField();
+	/**
+	 * By default, "id" (case-insensitive) is considered the id field!
+	 */
+	default boolean isIdField() {
+		return DEFAULT_ID_FILED_NAME.equalsIgnoreCase(name());
+	}
 
 	FieldType fieldType();
 

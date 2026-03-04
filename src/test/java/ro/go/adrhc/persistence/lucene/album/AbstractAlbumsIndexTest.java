@@ -23,7 +23,7 @@ public abstract class AbstractAlbumsIndexTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumFieldType.class, tmpDir);
+		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumSchema.class, tmpDir);
 		indexRepository = FileSystemIndexImpl.of(albumsIndexSpec);
 		indexRepository.reset(ALBUMS);
 	}
