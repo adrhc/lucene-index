@@ -16,33 +16,29 @@ import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldM
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum PersonFieldType implements LuceneFieldSpec<Person> {
-	id(LONG, longField(Person::id), true),
+	id(LONG, longField(Person::id)),
 	cnp(KEYWORD, Person::cnp),
 	nameWord(WORD, Person::name),
 	name(PHRASE, Person::name),
 	aliasKeyWord(KEYWORD, Person::aliasKeyWord),
 	aliasWord(WORD, Person::aliasWord),
 	aliasPhrase(PHRASE, Person::aliasPhrase),
-	intField(INT, intField(Person::intField), false),
-	longField(LONG, longField(Person::longField), false),
-	instantField(LONG, instantField(Person::instantField), false),
+	intField(INT, intField(Person::intField)),
+	longField(LONG, longField(Person::longField)),
+	instantField(LONG, instantField(Person::instantField)),
 	storedOnlyField(STORED, Person::storedOnlyField),
-	male(INT, booleanField(Person::male), false),
+	male(INT, booleanField(Person::male)),
 	tags(KEYWORD_ARRAY, tagsField(Person::tags));
 
 	private final FieldType fieldType;
 	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;
-	private final boolean isIdField;
 
 	PersonFieldType(FieldType fieldType, Function<Person, String> propertyAccessor) {
 		this.fieldType = fieldType;
-		this.isIdField = false;
 		this.fieldSerde = stringField(propertyAccessor);
 	}
 
-	PersonFieldType(FieldType fieldType, ObjectLuceneFieldMapper<Person, ?> fieldSerde) {
-		this.fieldType = fieldType;
-		this.isIdField = false;
-		this.fieldSerde = fieldSerde;
+	public boolean isIdField() {
+		return this == id;
 	}
 }
