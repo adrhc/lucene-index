@@ -83,12 +83,17 @@ public class IndexReaderPool implements Closeable {
 			indexReader.decRef();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-			indexPath().ifPresent(p -> log.info("\nIndexReader ({}) decRef failed!", p));
+			indexPath().ifPresentOrElse(
+				p -> log.info("\nIndexReader ({}) decRef failed!", p),
+				() -> log.info("\nIndexReader decRef failed!")
+			);
 		}
 	}
 
 	private Optional<Path> indexPath() {
-		if (directoryReader.directory() instanceof FSDirectory dir) {
+		if (directoryReader == null) {
+			return Optional.empty();
+		} else if (directoryReader.directory() instanceof FSDirectory dir) {
 			return Optional.ofNullable(dir.getDirectory());
 		} else {
 			return Optional.empty();
