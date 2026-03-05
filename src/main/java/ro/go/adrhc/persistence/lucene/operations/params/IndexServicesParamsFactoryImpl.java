@@ -1,6 +1,5 @@
 package ro.go.adrhc.persistence.lucene.operations.params;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
