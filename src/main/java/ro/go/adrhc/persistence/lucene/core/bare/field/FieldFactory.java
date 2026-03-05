@@ -87,6 +87,9 @@ public class FieldFactory {
 		return new StoredField(fieldName, value);
 	}
 
+	/**
+	 * KEYWORD and KEYWORD_ARRAY don't need this because they are sorted by default!
+	 */
 	public static Field sortField(LuceneFieldSpec<?> typedField, Object value) {
 		return switch (typedField.fieldType()) {
 			case WORD, STORED -> new SortedDocValuesField(
@@ -97,6 +100,10 @@ public class FieldFactory {
 		};
 	}
 
+	/**
+	 * IntPoint and LongPoint can't be stored, so we need to add a
+	 * separate StoredField instance if we want to also store them.
+	 */
 	public static Field storedNumber(LuceneFieldSpec<?> typedField, Object value) {
 		return switch (typedField.fieldType()) {
 			case INT -> new StoredField(typedField.name(), (Integer) value);
@@ -109,6 +116,7 @@ public class FieldFactory {
 		boolean stored = typedField.mustStore();
 		String fieldName = typedField.name();
 		return switch (typedField.fieldType()) {
+			// sorted by default as a multi-values field
 			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, (String) indexableValue);
 			case WORD -> wordField(stored, fieldName, (String) indexableValue);
 			case PHRASE -> phraseField(stored, fieldName, (String) indexableValue);
