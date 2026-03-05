@@ -5,10 +5,6 @@ import org.apache.lucene.document.*;
 import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.util.BytesRef;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.util.Assert;
-
-import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.INT;
-import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 
 @UtilityClass
 public class FieldFactory {
@@ -28,12 +24,12 @@ public class FieldFactory {
 		return new IntPoint(fieldName, value);
 	}
 
-	public static LongField longField(boolean stored, Enum<?> field, Long value) {
-		return longField(stored, field.name(), value);
+	public static LongPoint longField(Enum<?> field, Long value) {
+		return longField(field.name(), value);
 	}
 
-	public static LongField longField(boolean stored, String fieldName, Long value) {
-		return new LongField(fieldName, value, stored ? Field.Store.YES : Field.Store.NO);
+	public static LongPoint longField(String fieldName, Long value) {
+		return new LongPoint(fieldName, value);
 	}
 
 	/**
@@ -91,31 +87,33 @@ public class FieldFactory {
 		return new StoredField(fieldName, value);
 	}
 
-	public static Field createSortField(LuceneFieldSpec<?> typedField, Object value) {
+	public static Field sortField(LuceneFieldSpec<?> typedField, Object value) {
 		return switch (typedField.fieldType()) {
 			case WORD, STORED -> new SortedDocValuesField(
 				typedField.name(), new BytesRef((String) value));
 			case INT -> new NumericDocValuesField(typedField.name(), (Integer) value);
 			case LONG -> new NumericDocValuesField(typedField.name(), (Long) value);
-			default -> throw new IllegalArgumentException(
-				"Only WORD, INT, LONG and STORED fields can be used for sorting!");
+			default -> null;
+		};
+	}
+
+	public static Field storedNumber(LuceneFieldSpec<?> typedField, Object value) {
+		return switch (typedField.fieldType()) {
+			case INT -> new StoredField(typedField.name(), (Integer) value);
+			case LONG -> new StoredField(typedField.name(), (Long) value);
+			default -> null;
 		};
 	}
 
 	public static Field create(LuceneFieldSpec<?> typedField, Object indexableValue) {
 		boolean stored = typedField.mustStore();
 		String fieldName = typedField.name();
-		FieldType fieldType = typedField.fieldType();
-		Assert.isTrue(fieldType != STORED || stored,
-			"STORED fields must demand to be stored!");
-		Assert.isTrue(fieldType != INT || !stored,
-			"INT fields must not demand to be stored!");
-		return switch (fieldType) {
+		return switch (typedField.fieldType()) {
 			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, (String) indexableValue);
 			case WORD -> wordField(stored, fieldName, (String) indexableValue);
 			case PHRASE -> phraseField(stored, fieldName, (String) indexableValue);
 			case INT -> intField(fieldName, (Integer) indexableValue);
-			case LONG -> longField(stored, fieldName, (Long) indexableValue);
+			case LONG -> longField(fieldName, (Long) indexableValue);
 			case STORED -> storedField(fieldName, (String) indexableValue);
 		};
 	}

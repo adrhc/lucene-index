@@ -5,7 +5,11 @@ import org.apache.lucene.document.Field;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldFactory;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Stream;
+
+import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldFactory.sortField;
+import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldFactory.storedNumber;
 
 @RequiredArgsConstructor
 public class ObjectPropsToLuceneFieldsConverter<T> {
@@ -26,11 +30,12 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 			return Stream.empty();
 		} else if (indexableValue instanceof Collection<?> col) {
 			return col.stream().map(value -> FieldFactory.create(typedField, value));
-		} else if (typedField.supportsSorting()) {
-			return Stream.of(FieldFactory.create(typedField, indexableValue),
-				FieldFactory.createSortField(typedField, indexableValue));
 		} else {
-			return Stream.of(FieldFactory.create(typedField, indexableValue));
+			return Stream.of(
+				FieldFactory.create(typedField, indexableValue),
+				typedField.supportsSorting() ? sortField(typedField, indexableValue) : null,
+				typedField.mustStore() ? storedNumber(typedField, indexableValue) : null
+			).filter(Objects::nonNull);
 		}
 	}
 }
