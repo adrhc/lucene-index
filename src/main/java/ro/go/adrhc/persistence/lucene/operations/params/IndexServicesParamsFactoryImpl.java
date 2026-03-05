@@ -114,9 +114,9 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 		if (isReadOnly()) {
 			log.info("\nWon't close IndexWriter because the index was opened in read-only mode!");
 		} else {
-			log.info("\nclosing IndexWriter ...");
+			log.info("\nclosing {} writer ...", indexPath);
 			indexWriter.close();
-			log.info("\nIndexWriter closed!");
+			log.info("\n{} writer closed!", indexPath);
 		}
 		closed = true;
 	}
