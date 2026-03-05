@@ -32,4 +32,9 @@ public enum AlbumSchema implements LuceneFieldSpec<Album> {
 		this.fieldType = fieldType;
 		this.fieldSerde = stringField(typedAccessor);
 	}
+
+	@Override
+	public boolean supportsSorting() {
+		return fieldType() == WORD;
+	}
 }

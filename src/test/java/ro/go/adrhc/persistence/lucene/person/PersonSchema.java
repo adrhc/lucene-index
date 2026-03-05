@@ -37,4 +37,9 @@ public enum PersonSchema implements LuceneFieldSpec<Person> {
 		this.fieldType = fieldType;
 		this.fieldSerde = stringField(propertyAccessor);
 	}
+
+	@Override
+	public boolean supportsSorting() {
+		return fieldType == WORD || fieldType == STORED;
+	}
 }

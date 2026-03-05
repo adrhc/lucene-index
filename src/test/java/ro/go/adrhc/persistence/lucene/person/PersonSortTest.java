@@ -40,6 +40,13 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 	}
 
 	@Test
+	void findIdsSortedByStoredOnly() throws IOException {
+		Sort sort = new Sort(new SortField(storedOnlyField.name(), SortField.Type.STRING));
+		ScoreDocAndValues<Person> result = indexRepository.findMany(new MatchAllDocsQuery(), sort);
+		assertThat(result.values()).hasSize(100).map(Person::id).containsSequence(0L, 1L, 10L);
+	}
+
+	@Test
 	void findPages() throws IOException {
 		Sort instantFieldSort = new Sort(new SortedNumericSortField(instantField.name(), LONG));
 		Sort instantFieldReverseSort = new Sort(new SortedNumericSortField(

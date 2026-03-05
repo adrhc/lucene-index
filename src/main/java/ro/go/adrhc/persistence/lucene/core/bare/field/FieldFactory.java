@@ -40,13 +40,23 @@ public class FieldFactory {
 	 * A field that is indexed and tokenized, without term vectors. For example this
 	 * would be used on a 'body' field, that contains the bulk of a document's text.
 	 */
-	public static TextField phraseField(boolean stored, Enum<?> field, Object value) {
-		return phraseField(stored, field.name(), value.toString());
+	public static TextField phraseField(boolean stored, Enum<?> field, String value) {
+		return phraseField(stored, field.name(), value);
 	}
 
-	public static TextField phraseField(boolean stored, String fieldName, Object value) {
-		return new TextField(fieldName, value.toString(),
-			stored ? Field.Store.YES : Field.Store.NO);
+	public static TextField phraseField(boolean stored, String fieldName, String value) {
+		return new TextField(fieldName, value, stored ? Field.Store.YES : Field.Store.NO);
+	}
+
+	/**
+	 * The field is not tokenized, but only normalized (i.e., char-filtered) before indexing!
+	 */
+	public static TextField wordField(boolean stored, Enum<?> field, String value) {
+		return wordField(stored, field.name(), value);
+	}
+
+	public static TextField wordField(boolean stored, String fieldName, String value) {
+		return new TextField(fieldName, value, stored ? Field.Store.YES : Field.Store.NO);
 	}
 
 	/**
@@ -65,40 +75,34 @@ public class FieldFactory {
 	 *   <li>{@link KeywordField#newSortField} for matching a value.
 	 * </ul>
 	 */
-	public static KeywordField keywordField(boolean stored, Enum<?> field, Object value) {
-		return keywordField(stored, field.name(), value.toString());
+	public static KeywordField keywordField(boolean stored, Enum<?> field, String value) {
+		return keywordField(stored, field.name(), value);
 	}
 
-	public static KeywordField keywordField(boolean stored, String fieldName, Object value) {
-		return new KeywordField(fieldName, value.toString(),
-			stored ? Field.Store.YES : Field.Store.NO);
+	public static KeywordField keywordField(boolean stored, String fieldName, String value) {
+		return new KeywordField(fieldName, value, stored ? Field.Store.YES : Field.Store.NO);
 	}
 
-	public static StoredField storedField(Enum<?> field, Object value) {
+	public static StoredField storedField(Enum<?> field, String value) {
 		return storedField(field.name(), value);
 	}
 
-	public static StoredField storedField(String fieldName, Object value) {
-		return new StoredField(fieldName, value.toString());
+	public static StoredField storedField(String fieldName, String value) {
+		return new StoredField(fieldName, value);
 	}
 
-	/**
-	 * The field is not tokenized, but only normalized (i.e., char-filtered) before indexing!
-	 */
-	public static TextField wordField(boolean stored, Enum<?> field, Object value) {
-		return wordField(stored, field.name(), value);
+	public static Field createSortField(LuceneFieldSpec<?> typedField, Object value) {
+		return switch (typedField.fieldType()) {
+			case WORD, STORED -> new SortedDocValuesField(
+				typedField.name(), new BytesRef((String) value));
+			case INT -> new NumericDocValuesField(typedField.name(), (Integer) value);
+			case LONG -> new NumericDocValuesField(typedField.name(), (Long) value);
+			default -> throw new IllegalArgumentException(
+				"Only WORD, INT, LONG and STORED fields can be used for sorting!");
+		};
 	}
 
-	public static TextField wordField(boolean stored, String fieldName, Object value) {
-		return new TextField(fieldName, value.toString(),
-			stored ? Field.Store.YES : Field.Store.NO);
-	}
-
-	public static SortedDocValuesField createSortField(LuceneFieldSpec<?> typedField, Object value) {
-		return new SortedDocValuesField(typedField.name(), new BytesRef((String) value));
-	}
-
-	public static Field create(LuceneFieldSpec<?> typedField, Object fieldValue) {
+	public static Field create(LuceneFieldSpec<?> typedField, Object indexableValue) {
 		boolean stored = typedField.mustStore();
 		String fieldName = typedField.name();
 		FieldType fieldType = typedField.fieldType();
@@ -107,12 +111,12 @@ public class FieldFactory {
 		Assert.isTrue(fieldType != INT || !stored,
 			"INT fields must not demand to be stored!");
 		return switch (fieldType) {
-			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, fieldValue);
-			case WORD -> wordField(stored, fieldName, fieldValue);
-			case PHRASE -> phraseField(stored, fieldName, fieldValue);
-			case INT -> intField(fieldName, (Integer) fieldValue);
-			case LONG -> longField(stored, fieldName, (Long) fieldValue);
-			case STORED -> storedField(fieldName, fieldValue);
+			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, (String) indexableValue);
+			case WORD -> wordField(stored, fieldName, (String) indexableValue);
+			case PHRASE -> phraseField(stored, fieldName, (String) indexableValue);
+			case INT -> intField(fieldName, (Integer) indexableValue);
+			case LONG -> longField(stored, fieldName, (Long) indexableValue);
+			case STORED -> storedField(fieldName, (String) indexableValue);
 		};
 	}
 }

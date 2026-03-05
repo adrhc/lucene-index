@@ -21,16 +21,16 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 	}
 
 	protected Stream<Field> toFields(T t, LuceneFieldSpec<T> typedField) {
-		Object fieldValue = typedField.typedToIndexableValue(t);
-		if (fieldValue == null) {
+		Object indexableValue = typedField.typedToIndexableValue(t);
+		if (indexableValue == null) {
 			return Stream.empty();
-		} else if (fieldValue instanceof Collection<?> col) {
+		} else if (indexableValue instanceof Collection<?> col) {
 			return col.stream().map(value -> FieldFactory.create(typedField, value));
 		} else if (typedField.supportsSorting()) {
-			return Stream.of(FieldFactory.create(typedField, fieldValue),
-				FieldFactory.createSortField(typedField, fieldValue));
+			return Stream.of(FieldFactory.create(typedField, indexableValue),
+				FieldFactory.createSortField(typedField, indexableValue));
 		} else {
-			return Stream.of(FieldFactory.create(typedField, fieldValue));
+			return Stream.of(FieldFactory.create(typedField, indexableValue));
 		}
 	}
 }
