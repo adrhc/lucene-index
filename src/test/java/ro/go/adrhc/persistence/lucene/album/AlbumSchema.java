@@ -19,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldM
 @RequiredArgsConstructor
 public enum AlbumSchema implements LuceneFieldSpec<Album> {
 	id(KEYWORD, pathToString(Album::id)),
-	name(PHRASE, Album::name),
+	name(TEXT, Album::name),
 	storedOnlyField(STORED, Album::storedOnlyField);
 
 	public static final FieldQueries NAME_QUERIES = FieldQueries.create(AlbumSchema.name);
@@ -34,7 +34,7 @@ public enum AlbumSchema implements LuceneFieldSpec<Album> {
 	}
 
 	@Override
-	public boolean supportsSorting() {
+	public boolean isSortable() {
 		return fieldType() == WORD;
 	}
 }

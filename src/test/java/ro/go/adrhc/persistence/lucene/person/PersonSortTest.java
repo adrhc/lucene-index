@@ -29,7 +29,7 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 
 	@Test
 	void findIdsSortedByKeyword() throws IOException {
-		Sort sort = new Sort(new SortedSetSortField(cnp.name(), true));
+		Sort sort = new Sort(new SortField(cnp.name(), SortField.Type.STRING, true));
 		List<Long> result = indexRepository.findIds(new MatchAllDocsQuery(), sort);
 		assertThat(result).hasSize(100).containsSequence(99L, 98L, 97L);
 	}
@@ -64,7 +64,7 @@ class PersonSortTest extends AbstractPersonsIndexTest {
 
 	@Test
 	void findSortedByKeyword() throws IOException {
-		Sort sort = new Sort(new SortedSetSortField(cnp.name(), false));
+		Sort sort = new Sort(new SortField(cnp.name(), SortField.Type.STRING, false));
 		ScoreDocAndValues<Person> result = indexRepository.findMany(new MatchAllDocsQuery(), sort);
 		assertThat(result.values()).hasSize(100).map(Person::cnp)
 			.containsSequence("#Person0", "#Person1", "#Person10");

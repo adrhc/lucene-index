@@ -33,8 +33,8 @@ public class ObjectPropsToLuceneFieldsConverter<T> {
 		} else {
 			return Stream.of(
 				FieldFactory.create(typedField, indexableValue),
-				typedField.supportsSorting() ? sortField(typedField, indexableValue) : null,
-				typedField.mustStore() ? storedNumber(typedField, indexableValue) : null
+				typedField.isSortable() ? sortField(typedField, indexableValue) : null,
+				typedField.isPersistent() ? storedNumber(typedField, indexableValue) : null
 			).filter(Objects::nonNull);
 		}
 	}

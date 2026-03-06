@@ -18,11 +18,11 @@ import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldM
 public enum PersonSchema implements LuceneFieldSpec<Person> {
 	id(LONG, longField(Person::id)),
 	cnp(KEYWORD, Person::cnp),
-	name(PHRASE, Person::name),
+	name(TEXT, Person::name),
 	nameWord(WORD, Person::name),
 	aliasKeyWord(KEYWORD, Person::aliasKeyWord),
 	aliasWord(WORD, Person::aliasWord),
-	aliasPhrase(PHRASE, Person::aliasPhrase),
+	aliasPhrase(TEXT, Person::aliasPhrase),
 	intField(INT, intField(Person::intField)),
 	longField(LONG, longField(Person::longField)),
 	instantField(LONG, instantField(Person::instantField)),
@@ -39,7 +39,8 @@ public enum PersonSchema implements LuceneFieldSpec<Person> {
 	}
 
 	@Override
-	public boolean supportsSorting() {
-		return fieldType == WORD || fieldType == INT || fieldType == LONG || fieldType == STORED;
+	public boolean isSortable() {
+		return fieldType == KEYWORD || fieldType == WORD ||
+			fieldType == INT || fieldType == LONG || fieldType == STORED;
 	}
 }

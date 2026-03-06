@@ -5,8 +5,6 @@ import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 
 import java.util.EnumSet;
 
-import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.WORD;
-
 public interface LuceneFieldSpec<T> {
 	String DEFAULT_ID_FILED_NAME = "id";
 
@@ -33,11 +31,11 @@ public interface LuceneFieldSpec<T> {
 	 * <p>
 	 * By default, WORD fields are sorted!
 	 */
-	default boolean supportsSorting() {
+	default boolean isSortable() {
 		return false;
 	}
 
-	default boolean mustStore() {
+	default boolean isPersistent() {
 		return isIdField() || fieldType() == FieldType.STORED;
 	}
 
