@@ -69,6 +69,8 @@ public class FieldFactory {
 	/**
 	 * IntPoint and LongPoint can't be stored, so we need to add a
 	 * separate StoredField instance if we want to also store them.
+	 * <p>
+	 * The field must be persistent for this method to be invoked!
 	 */
 	public static Field storedNumber(LuceneFieldSpec<?> typedField, Object value) {
 		return switch (typedField.fieldType()) {
