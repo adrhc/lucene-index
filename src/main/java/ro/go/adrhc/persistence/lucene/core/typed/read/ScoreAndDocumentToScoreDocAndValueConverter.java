@@ -1,21 +1,22 @@
-package ro.go.adrhc.persistence.lucene.core.typed.serde;
+package ro.go.adrhc.persistence.lucene.core.typed.read;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndDocument;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class ScoreAndDocumentToScoreDocAndValueConverter<T>
-	implements Converter<ScoreDocAndDocument, Optional<ScoreDocAndValue<T>>> {
+public class ScoreAndDocumentToScoreDocAndValueConverter<T> {
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 
-	public static <T> ScoreAndDocumentToScoreDocAndValueConverter<T> of(Class<T> type) {
-		DocumentToTypedConverter<T> docToTypedConverter = DocumentToTypedConverter.create(type);
+	public static <T> ScoreAndDocumentToScoreDocAndValueConverter<T>
+	of(RawFieldValueSerdes<T> rawFieldValueSerdes) {
+		DocumentToTypedConverter<T> docToTypedConverter =
+			DocumentToTypedConverter.create(rawFieldValueSerdes);
 		return new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 	}
 
@@ -23,7 +24,6 @@ public class ScoreAndDocumentToScoreDocAndValueConverter<T>
 		return stream.map(this::convert).flatMap(Optional::stream);
 	}
 
-	@Override
 	@NonNull
 	public Optional<ScoreDocAndValue<T>> convert(@NonNull ScoreDocAndDocument scoreAndDocument) {
 		if (scoreAndDocument.isBroken()) {

@@ -5,7 +5,6 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
 import ro.go.adrhc.util.Breakable;
 
 import java.io.Closeable;
@@ -22,7 +21,7 @@ public class OneHitIndexReader<T> implements Closeable {
 	public static <T> OneHitIndexReader<T>
 	create(TypedIndexReaderParams<T> params) throws IOException {
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
-			ScoreAndDocumentToScoreDocAndValueConverter.of(params.type());
+			ScoreAndDocumentToScoreDocAndValueConverter.of(params.rawFieldValueSerdes());
 		HitsLimitedDocIndexReader limitedDocIndexReader =
 			HitsLimitedDocIndexReaderFactory.create(params, 1);
 		return new OneHitIndexReader<>(toScoreAndTypedConverter, limitedDocIndexReader);

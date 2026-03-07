@@ -10,6 +10,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
@@ -39,6 +40,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	private final Analyzer analyzer;
 	private final IndexReaderPool indexReaderPool;
 	private final IndexWriter indexWriter;
+	private final RawFieldValueSerdes<T> rawFieldValueSerdes;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
 	private final int searchHits;
@@ -47,33 +49,34 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	@Override
 	public IndexSearchServiceParams<T> indexSearchServiceParams() {
 		return new IndexSearchServiceParamsImpl<>(type,
-			idField, indexReaderPool, searchResultFilter, searchHits);
+			idField, indexReaderPool, rawFieldValueSerdes, searchResultFilter, searchHits);
 	}
 
 	@Override
 	public IndexRetrieveServiceParams<T> typedRetrieveServiceParams() {
-		return new IndexRetrieveServiceParamsImpl<>(type, idField, indexReaderPool);
+		return new IndexRetrieveServiceParamsImpl<>(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override
 	public IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
 		return new IndexShallowUpdateServiceParamsImpl<>(type, idField,
-			indexReaderPool, typedFields, analyzer, indexWriter);
+			indexReaderPool, typedFields, analyzer, indexWriter, rawFieldValueSerdes);
 	}
 
 	@Override
 	public TypedIndexWriterParams<T> typedIndexWriterParams() {
-		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
+		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields, rawFieldValueSerdes);
 	}
 
 	@Override
 	public TypedIndexWriterParams<T> typedAddServiceParams() {
-		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields);
+		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields, rawFieldValueSerdes);
 	}
 
 	@Override
 	public TypedIndexUpsertParams<T> typedIndexUpsertParams() {
-		return new TypedIndexUpsertParamsImpl<>(idField, indexWriter, analyzer, typedFields);
+		return new TypedIndexUpsertParamsImpl<>(idField,
+			indexWriter, analyzer, typedFields, rawFieldValueSerdes);
 	}
 
 	@Override
@@ -83,7 +86,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 
 	@Override
 	public TypedIndexReaderParams<T> oneHitIndexReaderParams() {
-		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool);
+		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 
 	@Override
 	public HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
-		return allHits(type(), idField(), indexReaderPool);
+		return allHits(type(), idField(), indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override

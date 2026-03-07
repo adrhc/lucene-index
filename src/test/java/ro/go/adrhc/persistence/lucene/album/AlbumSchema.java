@@ -6,13 +6,13 @@ import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.bare.query.FieldQueries;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper;
+import ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper;
 
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.*;
-import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper.pathToString;
-import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper.stringField;
+import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper.pathToString;
+import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper.stringField;
 
 @Getter
 @Accessors(fluent = true)
@@ -26,7 +26,7 @@ public enum AlbumSchema implements LuceneFieldSpec<Album> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumSchema.id);
 
 	private final FieldType fieldType;
-	private final ObjectLuceneFieldMapper<Album, ?> fieldSerde;
+	private final PropertyFieldMapper<Album, ?> fieldSerde;
 
 	AlbumSchema(FieldType fieldType, Function<Album, String> typedAccessor) {
 		this.fieldType = fieldType;

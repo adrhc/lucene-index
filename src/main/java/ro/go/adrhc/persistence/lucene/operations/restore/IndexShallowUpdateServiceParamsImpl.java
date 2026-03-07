@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParamsImpl;
@@ -14,7 +15,8 @@ import static ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexRea
 
 public record IndexShallowUpdateServiceParamsImpl<T>(Class<T> type, LuceneFieldSpec<T> idField,
 	IndexReaderPool indexReaderPool, Collection<? extends LuceneFieldSpec<T>> typedFields,
-	Analyzer analyzer, IndexWriter indexWriter) implements IndexShallowUpdateServiceParams<T> {
+	Analyzer analyzer, IndexWriter indexWriter, RawFieldValueSerdes<T> rawFieldValueSerdes)
+	implements IndexShallowUpdateServiceParams<T> {
 
 	@Override
 	public TypedIndexRemoverParams typedIndexRemoverParams() {
@@ -23,6 +25,6 @@ public record IndexShallowUpdateServiceParamsImpl<T>(Class<T> type, LuceneFieldS
 
 	@Override
 	public HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
-		return allHits(type(), idField(), indexReaderPool);
+		return allHits(type(), idField(), indexReaderPool, rawFieldValueSerdes);
 	}
 }

@@ -3,14 +3,18 @@ package ro.go.adrhc.persistence.lucene.core.typed.read;
 import org.apache.lucene.index.IndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 
 import java.io.IOException;
 
 public record HitsLimitedIndexReaderParamsImpl<T>(Class<T> type, LuceneFieldSpec<T> idField,
-	IndexReaderPool indexReaderPool, int numHits) implements HitsLimitedIndexReaderParams<T> {
+	IndexReaderPool indexReaderPool, int numHits, RawFieldValueSerdes<T> rawFieldValueSerdes)
+	implements HitsLimitedIndexReaderParams<T> {
 	public static <T> HitsLimitedIndexReaderParams<T> allHits(
-		Class<T> type, LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool) {
-		return new HitsLimitedIndexReaderParamsImpl<>(type, idField, indexReaderPool, Integer.MAX_VALUE);
+		Class<T> type, LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool,
+		RawFieldValueSerdes<T> rawFieldValueSerdes) {
+		return new HitsLimitedIndexReaderParamsImpl<>(type, idField,
+			indexReaderPool, Integer.MAX_VALUE, rawFieldValueSerdes);
 	}
 
 	@Override

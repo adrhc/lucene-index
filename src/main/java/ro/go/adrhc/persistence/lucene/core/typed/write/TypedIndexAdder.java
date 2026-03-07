@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.core.typed.write;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocsIndexWriter;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.TypedToDocumentConverter;
 import ro.go.adrhc.util.stream.StreamCounter;
 
 import java.io.IOException;
@@ -19,7 +18,8 @@ public class TypedIndexAdder<T> extends AbstractTypedIndexWriter<T> {
 	}
 
 	public static <T> TypedIndexAdder<T> create(TypedIndexWriterParams<T> params) {
-		TypedToDocumentConverter<T> toDocumentConverter = TypedToDocumentConverter.create(params);
+		TypedToDocumentConverter<T> toDocumentConverter =
+			TypedToDocumentConverter.create(params);
 		return new TypedIndexAdder<>(toDocumentConverter,
 			new DocsIndexWriter(params.indexWriter()));
 	}

@@ -9,8 +9,6 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.DocumentToTypedConverter;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.ScoreAndDocumentToScoreDocAndValueConverter;
 import ro.go.adrhc.util.Assert;
 import ro.go.adrhc.util.ObjectUtils;
 
@@ -31,7 +29,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public static <ID, T> HitsLimitedIndexReader<ID, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
-			DocumentToTypedConverter.create(params.type());
+			DocumentToTypedConverter.create(params.rawFieldValueSerdes());
 		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
 			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
 		HitsLimitedDocIndexReader docIndexReader = HitsLimitedDocIndexReaderFactory.create(params);

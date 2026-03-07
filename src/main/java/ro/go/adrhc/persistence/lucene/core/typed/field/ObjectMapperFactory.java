@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.typed.serde;
+package ro.go.adrhc.persistence.lucene.core.typed.field;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -12,7 +12,6 @@ import java.nio.file.Path;
 
 @UtilityClass
 public class ObjectMapperFactory {
-
 	public static <T> ObjectReader readerFor(Class<T> tClass) {
 		return createJsonMapper().readerFor(tClass);
 	}

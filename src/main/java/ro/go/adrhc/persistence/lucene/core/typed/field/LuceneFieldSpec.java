@@ -13,7 +13,7 @@ public interface LuceneFieldSpec<T> {
 			.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
 	}
 
-	ObjectLuceneFieldMapper<T, ?> fieldSerde();
+	PropertyFieldMapper<T, ?> fieldSerde();
 
 	String name();
 

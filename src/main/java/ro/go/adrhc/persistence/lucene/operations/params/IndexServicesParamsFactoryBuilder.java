@@ -11,6 +11,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPoolFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
+import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class IndexServicesParamsFactoryBuilder<
 	private Path indexPath;
 	private TokenizerProperties tokenizerProperties;
 	private Analyzer analyzer;
+	private RawFieldValueSerdes<T> rawFieldValueSerdes;
 
 	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
@@ -84,17 +86,19 @@ public class IndexServicesParamsFactoryBuilder<
 	}
 
 	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
+		rawFieldValueSerdes = rawFieldValueSerdes == null
+			? RawFieldValueSerdes.create(tClass) : rawFieldValueSerdes;
 		Analyzer finalAnalyzer = perFieldAnalyzer(analyzer());
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
 				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexPath),
-				null, searchResultFilter, indexPath, searchHits));
+				null, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
 		} else {
 			indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
 			return indexWriterFactory.apply(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
 					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexWriter),
-					indexWriter, searchResultFilter, indexPath, searchHits));
+					indexWriter, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
 		}
 	}
 

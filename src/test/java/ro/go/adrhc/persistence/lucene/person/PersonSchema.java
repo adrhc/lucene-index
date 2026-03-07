@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper;
+import ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper;
 
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.*;
-import static ro.go.adrhc.persistence.lucene.core.typed.field.ObjectLuceneFieldMapper.*;
+import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper.*;
 
 @Getter
 @Accessors(fluent = true)
@@ -31,7 +31,7 @@ public enum PersonSchema implements LuceneFieldSpec<Person> {
 	tags(KEYWORD_ARRAY, tagsField(Person::tags));
 
 	private final FieldType fieldType;
-	private final ObjectLuceneFieldMapper<Person, ?> fieldSerde;
+	private final PropertyFieldMapper<Person, ?> fieldSerde;
 
 	PersonSchema(FieldType fieldType, Function<Person, String> propertyAccessor) {
 		this.fieldType = fieldType;

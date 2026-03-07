@@ -4,7 +4,6 @@ import org.apache.lucene.search.BooleanQuery;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocsIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.TypedToDocumentConverter;
 
 import java.io.IOException;
 import java.util.Collection;

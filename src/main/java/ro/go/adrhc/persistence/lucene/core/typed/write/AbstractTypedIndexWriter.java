@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.core.typed.write;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocsIndexWriter;
-import ro.go.adrhc.persistence.lucene.core.typed.serde.TypedToDocumentConverter;
 import ro.go.adrhc.util.Assert;
 
 import java.io.Closeable;
