@@ -10,20 +10,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface IndexRetrieveService<ID, T> {
+public interface IndexRetrieveService<I, T> {
 	void readAll(Consumer<Stream<T>> consumer) throws IOException;
 
 	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;
 
-	<R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException;
+	<R> R reduceIds(Function<Stream<I>, R> idsReducer) throws IOException;
 
 	List<T> getAll() throws IOException;
 
-	List<ID> getAllIds() throws IOException;
+	List<I> getAllIds() throws IOException;
 
-	<F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException;
+	<P> List<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException;
 
-	Optional<T> findById(ID id) throws IOException;
+	Optional<T> findById(I id) throws IOException;
 
-	Set<T> findByIds(Set<ID> ids) throws IOException;
+	Set<T> findByIds(Set<I> ids) throws IOException;
 }

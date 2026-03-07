@@ -25,12 +25,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
-	implements ReadIndexOperations<T, ID> {
+public class ReadIndexOperationsImpl<T extends Indexable<I, T>, I>
+	implements ReadIndexOperations<T, I> {
 	private final LuceneFieldSpec<T> idField;
-	private final HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate;
+	private final HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate;
 	private final IndexCountService countService;
-	private final IndexRetrieveService<ID, T> retrieveService;
+	private final IndexRetrieveService<I, T> retrieveService;
 	private final IndexSearchService<T> searchService;
 
 	@Override
@@ -95,12 +95,12 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public Optional<T> findById(ID id) throws IOException {
+	public Optional<T> findById(I id) throws IOException {
 		return retrieveService.findById(id);
 	}
 
 	@Override
-	public Set<T> findByIds(Set<ID> ids) throws IOException {
+	public Set<T> findByIds(Set<I> ids) throws IOException {
 		return retrieveService.findByIds(ids);
 	}
 
@@ -110,19 +110,19 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public List<ID> findIds(Query query) throws IOException {
+	public List<I> findIds(Query query) throws IOException {
 		return findIds(query, null);
 	}
 
 	@Override
-	public List<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
+	public List<I> findIds(Query query, @Nullable Sort sort) throws IOException {
 		return unlimitedIdxReaderTemplate
 			.useReader(r -> r.findIds(query, sort)
-				.<ID>map(idField::toPropertyValue).toList());
+				.<I>map(idField::toPropertyValue).toList());
 	}
 
 	@Override
-	public List<ID> getAllIds() throws IOException {
+	public List<I> getAllIds() throws IOException {
 		return retrieveService.getAllIds();
 	}
 
@@ -137,12 +137,12 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 	}
 
 	@Override
-	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
+	public <R> R reduceIds(Function<Stream<I>, R> idsReducer) throws IOException {
 		return retrieveService.reduceIds(idsReducer);
 	}
 
 	@Override
-	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+	public <P> List<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return retrieveService.getFieldOfAll(field);
 	}
 

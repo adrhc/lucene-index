@@ -18,13 +18,13 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 
 @RequiredArgsConstructor
-public class HitsLimitedIndexReader<ID, T> implements Closeable {
+public class HitsLimitedIndexReader<I, T> implements Closeable {
 	private final LuceneFieldSpec<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
 	private final ScoreAndDocumentToScoreAndValueConverter<T> toScoreDocAndValueConverter;
 	private final HitsLimitedDocIndexReader hitsLimitedDocsIndexReader;
 
-	public static <ID, T> HitsLimitedIndexReader<ID, T>
+	public static <I, T> HitsLimitedIndexReader<I, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
 			DocumentToTypedConverter.create(params.rawFieldValueSerdes());
@@ -40,21 +40,21 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 			docToTypedConverter::convert).flatMap(Optional::stream);
 	}
 
-	public Stream<ID> getAllIds() throws IOException {
+	public Stream<I> getAllIds() throws IOException {
 		return getFieldValues(idField);
 	}
 
-	public Stream<ID> findIds(Query query) throws IOException {
+	public Stream<I> findIds(Query query) throws IOException {
 		return findIds(query, null);
 	}
 
-	public Stream<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
+	public Stream<I> findIds(Query query, @Nullable Sort sort) throws IOException {
 		return hitsLimitedDocsIndexReader
 			.findFieldValuesSorted(idField.name(), query, sort)
 			.map(idField::toPropertyValue);
 	}
 
-	public Stream<ID> findIds(Query query, int numHits) throws IOException {
+	public Stream<I> findIds(Query query, int numHits) throws IOException {
 		return hitsLimitedDocsIndexReader
 			.findFieldValues(idField.name(), query, numHits)
 			.map(idField::toPropertyValue);

@@ -63,6 +63,9 @@ public class PropertyFieldMapperFactory {
 		return stringMapper(propertyAccessor, s -> s == null ? null : Path.of(s));
 	}
 
+	/**
+	 * See also HitsLimitedIndexReader.getFieldValues!
+	 */
 	public static <T> PropertyFieldMapper<T, Set<String>>
 	stringSetMapper(Function<T, Set<String>> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,

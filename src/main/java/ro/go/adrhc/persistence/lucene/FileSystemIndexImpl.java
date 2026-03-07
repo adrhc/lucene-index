@@ -29,17 +29,17 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements FileSystemIndex<ID, T> {
+public class FileSystemIndexImpl<I, T extends Indexable<I, T>> implements FileSystemIndex<I, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
-	protected final ReadIndexOperations<T, ID> readIndexOperations;
-	protected final WriteIndexOperations<T, ID> writeIndexOperations;
+	protected final ReadIndexOperations<T, I> readIndexOperations;
+	protected final WriteIndexOperations<T, I> writeIndexOperations;
 
-	public static <ID, T extends Indexable<ID, T>>
-	FileSystemIndex<ID, T> of(IndexServicesParamsFactory<T> params) {
-		IndexOperationsFactory<T, ID> factory = IndexOperationsFactory.of(params);
-		ReadIndexOperations<T, ID> readIndexOperations = factory.createReadIndexOperations();
-		WriteIndexOperations<T, ID> writeIndexOperations = factory.createWriteIndexOperations();
+	public static <I, T extends Indexable<I, T>>
+	FileSystemIndex<I, T> of(IndexServicesParamsFactory<T> params) {
+		IndexOperationsFactory<T, I> factory = IndexOperationsFactory.of(params);
+		ReadIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
+		WriteIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
 		return new FileSystemIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
@@ -87,12 +87,12 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public Optional<T> findById(ID id) throws IOException {
+	public Optional<T> findById(I id) throws IOException {
 		return readIndexOperations.findById(id);
 	}
 
 	@Override
-	public Set<T> findByIds(Set<ID> ids) throws IOException {
+	public Set<T> findByIds(Set<I> ids) throws IOException {
 		return readIndexOperations.findByIds(ids);
 	}
 
@@ -107,7 +107,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public List<ID> getAllIds() throws IOException {
+	public List<I> getAllIds() throws IOException {
 		return readIndexOperations.getAllIds();
 	}
 
@@ -122,7 +122,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
+	public <R> R reduceIds(Function<Stream<I>, R> idsReducer) throws IOException {
 		return readIndexOperations.reduceIds(idsReducer);
 	}
 
@@ -154,7 +154,7 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+	public <P> List<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
 		return readIndexOperations.getFieldOfAll(field);
 	}
 
@@ -184,12 +184,12 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public void removeById(ID id) throws IOException {
+	public void removeById(I id) throws IOException {
 		executeWrite(() -> writeIndexOperations.removeById(id));
 	}
 
 	@Override
-	public void removeByIds(Collection<ID> ids) throws IOException {
+	public void removeByIds(Collection<I> ids) throws IOException {
 		executeWrite(() -> writeIndexOperations.removeByIds(ids));
 	}
 
@@ -204,12 +204,12 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
+	public void shallowUpdate(IndexDataSource<I, T> dataSource) throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdate(dataSource));
 	}
 
 	@Override
-	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
+	public void shallowUpdateSubset(IndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdateSubset(dataSource, query));
 	}
@@ -251,12 +251,12 @@ public class FileSystemIndexImpl<ID, T extends Indexable<ID, T>> implements File
 	}
 
 	@Override
-	public List<ID> findIds(Query query) throws IOException {
+	public List<I> findIds(Query query) throws IOException {
 		return readIndexOperations.findIds(query);
 	}
 
 	@Override
-	public List<ID> findIds(Query query, Sort sort) throws IOException {
+	public List<I> findIds(Query query, Sort sort) throws IOException {
 		return readIndexOperations.findIds(query, sort);
 	}
 

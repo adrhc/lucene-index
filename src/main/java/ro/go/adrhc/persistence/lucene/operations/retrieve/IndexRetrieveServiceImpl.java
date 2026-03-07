@@ -62,8 +62,8 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	 * The caller must use the proper type!
 	 */
 	@Override
-	public <F> List<F> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
-		return indexReaderTemplate.useReader(reader -> reader.<F>getFieldValues(field).toList());
+	public <P> List<P> getFieldOfAll(LuceneFieldSpec<T> field) throws IOException {
+		return indexReaderTemplate.useReader(reader -> reader.<P>getFieldValues(field).toList());
 	}
 
 	@Override
