@@ -18,8 +18,22 @@ public class LuceneFieldApplier<T> {
 		typedFields.forEach(fieldSpec -> addField(fieldSpec, object, doc));
 	}
 
-	private static <T> void addField(LuceneFieldSpec<T> fieldSpec, T object, Document doc) {
-		Object value = fieldSpec.toIndexableValue(object);
+	private static <T> void addField(LuceneFieldSpec<T> fieldSpec, T tObject, Document doc) {
+		if (tObject == null) {
+			return;
+		}
+		Object value = fieldSpec.toIndexableValue(tObject);
+		if (value == null) {
+			return;
+		}
+		if (value instanceof Collection<?> col) {
+			col.forEach(e -> doAddField(fieldSpec, e, doc));
+		} else {
+			doAddField(fieldSpec, value, doc);
+		}
+	}
+
+	private static void doAddField(LuceneFieldSpec<?> fieldSpec, Object value, Document doc) {
 		doc.add(createField(fieldSpec, value));
 		addIf(fieldSpec.isPersistent(), () -> createStoredNumberField(fieldSpec, value), doc);
 		addIf(fieldSpec.isSortable(), () -> createSortedField(fieldSpec, value), doc);

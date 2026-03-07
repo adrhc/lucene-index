@@ -46,17 +46,17 @@ public record PropertyFieldMapper<T, P>(
 			IndexableField::stringValue, PropertyFieldMapper::toURI);
 	}
 
-	public static <T> PropertyFieldMapper<T, Integer> intField(
-		Function<T, Integer> propertyAccessor) {
-		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it, INT_FIELD_ACCESSOR, it -> (Integer) it);
-	}
-
 	public static <T> PropertyFieldMapper<T, Boolean> booleanField(
 		Function<T, Boolean> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
 			it -> it != null && ((Boolean) it) ? 1 : 0,
 			INT_FIELD_ACCESSOR, it -> it != null && ((Integer) it) != 0);
+	}
+
+	public static <T> PropertyFieldMapper<T, Integer> intField(
+		Function<T, Integer> propertyAccessor) {
+		return new PropertyFieldMapper<>(propertyAccessor,
+			it -> it, INT_FIELD_ACCESSOR, it -> (Integer) it);
 	}
 
 	public static <T> PropertyFieldMapper<T, Long>
