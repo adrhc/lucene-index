@@ -1,7 +1,7 @@
 package ro.go.adrhc.persistence.lucene.person;
 
 import org.junit.jupiter.api.Test;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class OneHitIndexReaderTemplateTest extends AbstractPersonsIndexTest {
 		OneHitIndexReaderTemplate<Person> readerTemplate = createPersonIdIndexReaderTemplate();
 		Optional<Person> optionalPerson = readerTemplate.useOneHitReader(r -> r
 			.findFirst(ID_QUERIES.longEquals(1L))
-			.map(ScoreDocAndValue::value));
+			.map(ScoreAndValue::value));
 		assertThat(optionalPerson).isPresent();
 		assertThat(optionalPerson.get().getId()).isEqualTo(1L);
 	}

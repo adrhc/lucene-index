@@ -10,12 +10,14 @@ public interface LuceneFieldSpec<T> {
 
 	static <E extends Enum<E> & LuceneFieldSpec<?>> E getIdField(Class<E> enumClass) {
 		return EnumSet.allOf(enumClass).stream().filter(LuceneFieldSpec::isIdField).findAny()
-			.orElseThrow(() -> new NullPointerException(enumClass + " must have an id field!"));
+			.orElseThrow(() -> new IllegalStateException(enumClass + " must have an id field!"));
 	}
 
-	PropertyFieldMapper<T, ?> fieldSerde();
-
 	String name();
+
+	FieldType fieldType();
+
+	PropertyFieldMapper<T, ?> fieldSerde();
 
 	/**
 	 * By default, "id" (case-insensitive) is considered the id field!
@@ -23,8 +25,6 @@ public interface LuceneFieldSpec<T> {
 	default boolean isIdField() {
 		return DEFAULT_ID_FILED_NAME.equalsIgnoreCase(name());
 	}
-
-	FieldType fieldType();
 
 	/**
 	 * Only considered for WORD fields!
@@ -39,21 +39,21 @@ public interface LuceneFieldSpec<T> {
 		return isIdField() || fieldType() == FieldType.STORED;
 	}
 
-	default Object typedToIndexableValue(T t) {
-		Object propValue = fieldSerde().propertyAccessor().apply(t);
+	default Object toIndexableValue(T t) {
+		Object propValue = fieldSerde().getPropertyValue(t);
 		return propToIndexableValue(propValue);
 	}
 
 	default Object propToIndexableValue(Object propValue) {
-		return fieldSerde().toIndexableValue().apply(propValue);
+		return fieldSerde().toIndexableValue(propValue);
 	}
 
-	default Object indexableValueToPropValue(IndexableField field) {
+	default Object indexedValueToPropValue(IndexableField field) {
 		Object indexedValue = fieldSerde().indexedValueAccessor().apply(field);
-		return toPropValue(indexedValue);
+		return toPropertyValue(indexedValue);
 	}
 
-	default <P> P toPropValue(Object indexableValue) {
-		return (P) fieldSerde().toPropertyValue().apply(indexableValue);
+	default <P> P toPropertyValue(Object indexedValue) {
+		return (P) fieldSerde().toPropertyValue(indexedValue);
 	}
 }

@@ -1,8 +1,8 @@
 package ro.go.adrhc.persistence.lucene.operations.search;
 
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 
 @FunctionalInterface
 public interface SearchResultFilter<T> {
-	boolean filter(ScoreDocAndValue<T> found);
+	boolean filter(ScoreAndValue<T> found);
 }

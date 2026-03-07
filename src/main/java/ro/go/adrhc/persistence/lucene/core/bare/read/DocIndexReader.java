@@ -102,14 +102,14 @@ public class DocIndexReader implements Closeable {
 	/**
 	 * @param numHits is used by Lucene to limit the number of documents to return
 	 */
-	public Stream<ScoreDocAndDocument> findMany(Query query, int numHits) throws IOException {
+	public Stream<ScoreAndDocument> findMany(Query query, int numHits) throws IOException {
 		return doFindMany(s -> s.search(query, numHits));
 	}
 
 	/**
 	 * @param numHits is used by Lucene to limit the number of documents to return
 	 */
-	public Stream<ScoreDocAndDocument> findManySorted(
+	public Stream<ScoreAndDocument> findManySorted(
 		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.search(query, numHits, sort));
 	}
@@ -117,7 +117,7 @@ public class DocIndexReader implements Closeable {
 	/**
 	 * @param numHits is used by Lucene to limit the number of documents to return
 	 */
-	public Stream<ScoreDocAndDocument> findManyAfter(ScoreDoc after,
+	public Stream<ScoreAndDocument> findManyAfter(ScoreDoc after,
 		Query query, int numHits, Sort sort) throws IOException {
 		return doFindMany(s -> s.searchAfter(after, query, numHits, sort));
 	}
@@ -136,7 +136,7 @@ public class DocIndexReader implements Closeable {
 		closeStrategy.accept(indexReader);
 	}
 
-	protected Stream<ScoreDocAndDocument> doFindMany(
+	protected Stream<ScoreAndDocument> doFindMany(
 		SneakyFunction<IndexSearcher, TopDocs, IOException> query) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
 		TopDocs topDocs = useIndexSearcher(query);
@@ -175,9 +175,9 @@ public class DocIndexReader implements Closeable {
 		}
 	}
 
-	private static ScoreDocAndDocument toScoreAndDocument(
+	private static ScoreAndDocument toScoreAndDocument(
 		StoredFields storedFields, ScoreDoc scoreDoc) throws IOException {
-		return new ScoreDocAndDocument(scoreDoc, getDocument(storedFields, null, scoreDoc.doc));
+		return new ScoreAndDocument(scoreDoc, getDocument(storedFields, null, scoreDoc.doc));
 	}
 
 	/**

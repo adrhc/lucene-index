@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.operations.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 
@@ -25,7 +25,7 @@ public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> 
 	@Override
 	public Optional<T> findBestMatch(Query query) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(
-			r -> r.findFirst(query).map(ScoreDocAndValue::value));
+			r -> r.findFirst(query).map(ScoreAndValue::value));
 	}
 
 	@Override

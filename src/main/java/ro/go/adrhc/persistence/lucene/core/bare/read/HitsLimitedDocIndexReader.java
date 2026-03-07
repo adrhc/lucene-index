@@ -22,15 +22,15 @@ public class HitsLimitedDocIndexReader extends DocIndexReader {
 		this.numHits = numHits;
 	}
 
-	public Stream<ScoreDocAndDocument> findMany(Query query) throws IOException {
+	public Stream<ScoreAndDocument> findMany(Query query) throws IOException {
 		return findMany(query, numHits);
 	}
 
-	public Stream<ScoreDocAndDocument> findManySorted(Query query, Sort sort) throws IOException {
+	public Stream<ScoreAndDocument> findManySorted(Query query, Sort sort) throws IOException {
 		return findManySorted(query, numHits, sort);
 	}
 
-	public Stream<ScoreDocAndDocument> findManyAfter(
+	public Stream<ScoreAndDocument> findManyAfter(
 		ScoreDoc after, Query query, Sort sort) throws IOException {
 		return findManyAfter(after, query, numHits, sort);
 	}

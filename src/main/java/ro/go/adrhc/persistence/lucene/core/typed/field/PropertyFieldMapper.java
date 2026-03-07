@@ -106,4 +106,20 @@ public record PropertyFieldMapper<T, P>(
 		}
 		return null;
 	}
+
+	public Object getIndexedValue(IndexableField indexableField) {
+		return indexedValueAccessor.apply(indexableField);
+	}
+
+	public P getPropertyValue(T t) {
+		return propertyAccessor.apply(t);
+	}
+
+	public Object toIndexableValue(Object propertyValue) {
+		return toIndexableValue.apply(propertyValue);
+	}
+
+	public P toPropertyValue(Object indexedValue) {
+		return toPropertyValue.apply(indexedValue);
+	}
 }

@@ -19,7 +19,7 @@ public class LuceneFieldApplier<T> {
 	}
 
 	private static <T> void addField(LuceneFieldSpec<T> fieldSpec, T object, Document doc) {
-		Object value = fieldSpec.typedToIndexableValue(object);
+		Object value = fieldSpec.toIndexableValue(object);
 		doc.add(createField(fieldSpec, value));
 		addIf(fieldSpec.isPersistent(), () -> createStoredNumberField(fieldSpec, value), doc);
 		addIf(fieldSpec.isSortable(), () -> createSortedField(fieldSpec, value), doc);

@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.operations.search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 
@@ -58,7 +58,7 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
 	}
 
-	protected Stream<ScoreDocAndValue<T>> doFindAllMatches(
+	protected Stream<ScoreAndValue<T>> doFindAllMatches(
 		Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return reader.findMany(query).filter(searchResultFilter::filter);

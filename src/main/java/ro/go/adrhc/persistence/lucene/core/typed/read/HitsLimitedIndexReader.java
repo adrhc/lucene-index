@@ -7,7 +7,6 @@ import org.apache.lucene.search.Sort;
 import org.springframework.lang.Nullable;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.util.Assert;
 import ro.go.adrhc.util.ObjectUtils;
@@ -23,15 +22,15 @@ import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	private final LuceneFieldSpec<T> idField;
 	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreDocAndValueConverter;
+	private final ScoreAndDocumentToScoreAndValueConverter<T> toScoreDocAndValueConverter;
 	private final HitsLimitedDocIndexReader hitsLimitedDocsIndexReader;
 
 	public static <ID, T> HitsLimitedIndexReader<ID, T>
 	create(HitsLimitedIndexReaderParams<T> params) throws IOException {
 		DocumentToTypedConverter<T> docToTypedConverter =
 			DocumentToTypedConverter.create(params.rawFieldValueSerdes());
-		ScoreAndDocumentToScoreDocAndValueConverter<T> toScoreAndTypedConverter =
-			new ScoreAndDocumentToScoreDocAndValueConverter<>(docToTypedConverter);
+		ScoreAndDocumentToScoreAndValueConverter<T> toScoreAndTypedConverter =
+			new ScoreAndDocumentToScoreAndValueConverter<>(docToTypedConverter);
 		HitsLimitedDocIndexReader docIndexReader = HitsLimitedDocIndexReaderFactory.create(params);
 		return new HitsLimitedIndexReader<>(params.idField(),
 			docToTypedConverter, toScoreAndTypedConverter, docIndexReader);
@@ -53,43 +52,43 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 	public Stream<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
 		return hitsLimitedDocsIndexReader
 			.findFieldValuesSorted(idField.name(), query, sort)
-			.map(idField::toPropValue);
+			.map(idField::toPropertyValue);
 	}
 
 	public Stream<ID> findIds(Query query, int numHits) throws IOException {
 		return hitsLimitedDocsIndexReader
 			.findFieldValues(idField.name(), query, numHits)
-			.map(idField::toPropValue);
+			.map(idField::toPropertyValue);
 	}
 
-	public Stream<ScoreDocAndValue<T>> findMany(Query query) throws IOException {
+	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findMany(query));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findMany(Query query, int numHits) throws IOException {
+	public Stream<ScoreAndValue<T>> findMany(Query query, int numHits) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findManySorted(Query query, Sort sort) throws IOException {
+	public Stream<ScoreAndValue<T>> findManySorted(Query query, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManySorted(query, sort));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findManySorted(
+	public Stream<ScoreAndValue<T>> findManySorted(
 		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManySorted(query, numHits, sort));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
+	public Stream<ScoreAndValue<T>> findManyAfter(ScoreDoc after,
 		Query query, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
 	}
 
-	public Stream<ScoreDocAndValue<T>> findManyAfter(ScoreDoc after,
+	public Stream<ScoreAndValue<T>> findManyAfter(ScoreDoc after,
 		Query query, int numHits, Sort sort) throws IOException {
 		return toScoreDocAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
@@ -108,7 +107,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFieldValues(field.name())
-			.map(field::indexableValueToPropValue)
+			.map(field::indexedValueToPropValue)
 			.map(ObjectUtils::cast);
 	}
 

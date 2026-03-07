@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.operations.retrieve;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.BooleanQuery;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
@@ -69,7 +69,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	@Override
 	public Optional<T> findById(ID id) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(r ->
-			r.findFirst(exactQuery.newExactQuery(id)).map(ScoreDocAndValue::value));
+			r.findFirst(exactQuery.newExactQuery(id)).map(ScoreAndValue::value));
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 		BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(ids));
 		return indexReaderTemplate.useReader(reader -> reader
 			.findMany(idsQuery)
-			.map(ScoreDocAndValue::value)
+			.map(ScoreAndValue::value)
 			.collect(Collectors.toSet()));
 	}
 }

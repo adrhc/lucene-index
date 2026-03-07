@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.core.bare.read.ScoreDocAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 
@@ -63,7 +63,7 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 		return useReader(r -> r.hasAfter(scoreDoc, sort));
 	}
 
-	protected ScoreDocAndValues<T> filterAndMapToScoreDocAndValues(Stream<ScoreDocAndValue<T>> stream) {
+	protected ScoreDocAndValues<T> filterAndMapToScoreDocAndValues(Stream<ScoreAndValue<T>> stream) {
 		List<ScoreDoc> scoreDocs = new ArrayList<>();
 		List<T> values = new ArrayList<>();
 		stream
@@ -75,10 +75,10 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 		return new ScoreDocAndValues<>(values, scoreDocs);
 	}
 
-	protected List<T> filterAndMap(Stream<ScoreDocAndValue<T>> stream) {
+	protected List<T> filterAndMap(Stream<ScoreAndValue<T>> stream) {
 		return stream
 			.filter(searchResultFilter::filter)
-			.map(ScoreDocAndValue::value)
+			.map(ScoreAndValue::value)
 			.toList();
 	}
 
