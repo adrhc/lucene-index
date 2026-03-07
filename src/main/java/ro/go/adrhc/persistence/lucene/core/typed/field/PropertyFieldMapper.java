@@ -18,16 +18,16 @@ public record PropertyFieldMapper<T, P>(
 	 */
 	Function<Object, P> indexedValueToPropertyValue) {
 
-	public Object getIndexedValue(IndexableField indexableField) {
-		return indexedValueAccessor.apply(indexableField);
-	}
-
 	public P getPropertyValue(T t) {
 		return propertyAccessor.apply(t);
 	}
 
 	public Object toIndexableValue(Object propertyValue) {
 		return propertyToIndexableValueConverter.apply(propertyValue);
+	}
+
+	public Object getIndexedValue(IndexableField indexableField) {
+		return indexedValueAccessor.apply(indexableField);
 	}
 
 	public P toPropertyValue(Object indexedValue) {
