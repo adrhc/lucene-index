@@ -11,14 +11,15 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.function.Function;
 
+import static java.time.Instant.ofEpochMilli;
+
 @UtilityClass
 @Slf4j
 public class PropertyFieldMapperFactory {
 	public static <T, P> PropertyFieldMapper<T, P> stringMapper(
-		Function<T, P> propertyAccessor,
-		Function<Object, P> indexedValueToPropValue) {
+		Function<T, P> propertyAccessor, Function<String, P> indexedValueToPropertyValueConverter) {
 		return new PropertyFieldMapper<>(propertyAccessor, PropertyFieldMapperFactory::toString,
-			IndexableField::stringValue, indexedValueToPropValue);
+			IndexableField::stringValue, indexedValueToPropertyValueConverter);
 	}
 
 	public static <T> PropertyFieldMapper<T, String>
@@ -34,8 +35,7 @@ public class PropertyFieldMapperFactory {
 
 	public static <T> PropertyFieldMapper<T, Boolean> booleanMapper(
 		Function<T, Boolean> propertyAccessor) {
-		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it != null && ((Boolean) it) ? 1 : 0,
+		return new PropertyFieldMapper<>(propertyAccessor, it -> it != null && ((Boolean) it) ? 1 : 0,
 			PropertyFieldMapperFactory::getIntValue, it -> it != null && ((Integer) it) != 0);
 	}
 
@@ -55,12 +55,12 @@ public class PropertyFieldMapperFactory {
 	instantMapper(Function<T, Instant> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
 			it -> it == null ? null : ((Instant) it).toEpochMilli(),
-			PropertyFieldMapperFactory::getLongValue, it -> Instant.ofEpochMilli((long) it));
+			PropertyFieldMapperFactory::getLongValue, it -> ofEpochMilli((long) it));
 	}
 
 	public static <T> PropertyFieldMapper<T, Path>
 	pathMapper(Function<T, Path> propertyAccessor) {
-		return stringMapper(propertyAccessor, it -> it == null ? null : Path.of((String) it));
+		return stringMapper(propertyAccessor, s -> s == null ? null : Path.of(s));
 	}
 
 	public static <T> PropertyFieldMapper<T, Set<String>>
@@ -72,7 +72,7 @@ public class PropertyFieldMapperFactory {
 
 	public static <T, E extends Enum<E>> PropertyFieldMapper<T, Enum<E>>
 	enumMapper(Class<E> enumClass, Function<T, Enum<E>> propertyAccessor) {
-		return stringMapper(propertyAccessor, it -> Enum.valueOf(enumClass, (String) it));
+		return stringMapper(propertyAccessor, s -> Enum.valueOf(enumClass, s));
 	}
 
 	private static Integer getIntValue(IndexableField field) {
