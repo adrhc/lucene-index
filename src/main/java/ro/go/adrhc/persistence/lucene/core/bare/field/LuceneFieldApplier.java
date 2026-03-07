@@ -22,14 +22,14 @@ public class LuceneFieldApplier<T> {
 		if (tObject == null) {
 			return;
 		}
-		Object value = fieldSpec.toIndexableValue(tObject);
-		if (value == null) {
+		Object fValue = fieldSpec.toIndexableValue(tObject);
+		if (fValue == null) {
 			return;
 		}
-		if (value instanceof Collection<?> col) {
-			col.forEach(e -> doAddField(fieldSpec, e, doc));
+		if (fValue instanceof Collection<?> col) {
+			col.forEach(elem -> doAddField(fieldSpec, elem, doc));
 		} else {
-			doAddField(fieldSpec, value, doc);
+			doAddField(fieldSpec, fValue, doc);
 		}
 	}
 
