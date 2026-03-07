@@ -33,7 +33,6 @@ public class IndexServicesParamsFactoryBuilder<
 	private TokenizerProperties tokenizerProperties;
 	private Analyzer analyzer;
 	private RawFieldValueSerdes<T> rawFieldValueSerdes;
-
 	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
@@ -81,6 +80,12 @@ public class IndexServicesParamsFactoryBuilder<
 		return this;
 	}
 
+	public IndexServicesParamsFactoryBuilder<T, E>
+	rawFieldValueSerdes(RawFieldValueSerdes<T> rawFieldValueSerdes) {
+		this.rawFieldValueSerdes = rawFieldValueSerdes;
+		return this;
+	}
+
 	public Optional<IndexServicesParamsFactory<T>> build() {
 		return build(false);
 	}
@@ -94,8 +99,7 @@ public class IndexServicesParamsFactoryBuilder<
 				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexPath),
 				null, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
 		} else {
-			indexWriterFactory = indexWriterFactory != null ? indexWriterFactory : this::createIndexWriter;
-			return indexWriterFactory.apply(finalAnalyzer)
+			return createIndexWriter(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
 					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexWriter),
 					indexWriter, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
@@ -119,7 +123,11 @@ public class IndexServicesParamsFactoryBuilder<
 
 	private Optional<IndexWriter> createIndexWriter(Analyzer analyzer) {
 		try {
-			return Optional.of(IndexWriterFactory.fsWriter(analyzer, indexPath));
+			if (indexWriterFactory != null) {
+				return indexWriterFactory.apply(analyzer);
+			} else {
+				return Optional.of(IndexWriterFactory.fsWriter(analyzer, indexPath));
+			}
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
