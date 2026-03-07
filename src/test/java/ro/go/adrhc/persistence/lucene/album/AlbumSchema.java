@@ -26,7 +26,7 @@ public enum AlbumSchema implements LuceneFieldSpec<Album> {
 	public static final FieldQueries ID_QUERIES = FieldQueries.create(AlbumSchema.id);
 
 	private final FieldType fieldType;
-	private final PropertyFieldMapper<Album, ?> fieldSerde;
+	private final PropertyFieldMapper<Album, ?, ?, ?> fieldSerde;
 
 	AlbumSchema(FieldType fieldType, Function<Album, String> typedAccessor) {
 		this.fieldType = fieldType;

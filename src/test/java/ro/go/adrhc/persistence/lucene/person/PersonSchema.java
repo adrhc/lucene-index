@@ -31,7 +31,7 @@ public enum PersonSchema implements LuceneFieldSpec<Person> {
 	tags(KEYWORD_ARRAY, stringSetMapper(Person::tags));
 
 	private final FieldType fieldType;
-	private final PropertyFieldMapper<Person, ?> fieldSerde;
+	private final PropertyFieldMapper<Person, ?, ?, ?> fieldSerde;
 
 	PersonSchema(FieldType fieldType, Function<Person, String> propertyAccessor) {
 		this.fieldType = fieldType;

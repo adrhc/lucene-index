@@ -16,49 +16,50 @@ import static java.time.Instant.ofEpochMilli;
 @UtilityClass
 @Slf4j
 public class PropertyFieldMapperFactory {
-	public static <T, P> PropertyFieldMapper<T, P> stringMapper(
+	public static <T, P> PropertyFieldMapper<T, P, String, String> stringMapper(
 		Function<T, P> propertyAccessor, Function<String, P> indexedValueToPropertyValueConverter) {
 		return new PropertyFieldMapper<>(propertyAccessor, PropertyFieldMapperFactory::toString,
 			IndexableField::stringValue, indexedValueToPropertyValueConverter);
 	}
 
-	public static <T> PropertyFieldMapper<T, String>
+	public static <T> PropertyFieldMapper<T, String, String, String>
 	stringMapper(Function<T, String> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it, IndexableField::stringValue, it -> (String) it);
+			it -> it, IndexableField::stringValue, it -> it);
 	}
 
-	public static <T> PropertyFieldMapper<T, URI> uriMapper(Function<T, URI> propertyAccessor) {
+	public static <T> PropertyFieldMapper<T, URI, String, String> uriMapper(
+		Function<T, URI> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor, PropertyFieldMapperFactory::toString,
 			IndexableField::stringValue, PropertyFieldMapperFactory::toURI);
 	}
 
-	public static <T> PropertyFieldMapper<T, Boolean> booleanMapper(
+	public static <T> PropertyFieldMapper<T, Boolean, Integer, Integer> booleanMapper(
 		Function<T, Boolean> propertyAccessor) {
-		return new PropertyFieldMapper<>(propertyAccessor, it -> it != null && ((Boolean) it) ? 1 : 0,
-			PropertyFieldMapperFactory::getIntValue, it -> it != null && ((Integer) it) != 0);
+		return new PropertyFieldMapper<>(propertyAccessor, it -> it != null && it ? 1 : 0,
+			PropertyFieldMapperFactory::getIntValue, it -> it != null && it != 0);
 	}
 
-	public static <T> PropertyFieldMapper<T, Integer> intMapper(
+	public static <T> PropertyFieldMapper<T, Integer, Integer, Integer> intMapper(
 		Function<T, Integer> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor, it -> it,
-			PropertyFieldMapperFactory::getIntValue, it -> (Integer) it);
+			PropertyFieldMapperFactory::getIntValue, it -> it);
 	}
 
-	public static <T> PropertyFieldMapper<T, Long>
+	public static <T> PropertyFieldMapper<T, Long, Long, Long>
 	longMapper(Function<T, Long> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor, it -> it,
-			PropertyFieldMapperFactory::getLongValue, it -> (Long) it);
+			PropertyFieldMapperFactory::getLongValue, it -> it);
 	}
 
-	public static <T> PropertyFieldMapper<T, Instant>
+	public static <T> PropertyFieldMapper<T, Instant, Long, Long>
 	instantMapper(Function<T, Instant> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it == null ? null : ((Instant) it).toEpochMilli(),
-			PropertyFieldMapperFactory::getLongValue, it -> ofEpochMilli((long) it));
+			it -> it == null ? null : it.toEpochMilli(),
+			PropertyFieldMapperFactory::getLongValue, it -> ofEpochMilli(it));
 	}
 
-	public static <T> PropertyFieldMapper<T, Path>
+	public static <T> PropertyFieldMapper<T, Path, String, String>
 	pathMapper(Function<T, Path> propertyAccessor) {
 		return stringMapper(propertyAccessor, s -> s == null ? null : Path.of(s));
 	}
@@ -66,14 +67,14 @@ public class PropertyFieldMapperFactory {
 	/**
 	 * See also HitsLimitedIndexReader.getFieldValues!
 	 */
-	public static <T> PropertyFieldMapper<T, Set<String>>
+	public static <T> PropertyFieldMapper<T, Set<String>, Set<String>, String>
 	stringSetMapper(Function<T, Set<String>> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
 			it -> it, IndexableField::stringValue,
-			it -> it == null ? null : Set.of((String) it));
+			it -> it == null ? null : Set.of(it));
 	}
 
-	public static <T, E extends Enum<E>> PropertyFieldMapper<T, Enum<E>>
+	public static <T, E extends Enum<E>> PropertyFieldMapper<T, Enum<E>, String, String>
 	enumMapper(Class<E> enumClass, Function<T, Enum<E>> propertyAccessor) {
 		return stringMapper(propertyAccessor, s -> Enum.valueOf(enumClass, s));
 	}

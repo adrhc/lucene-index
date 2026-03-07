@@ -17,7 +17,7 @@ public interface LuceneFieldSpec<T> {
 
 	FieldType fieldType();
 
-	PropertyFieldMapper<T, ?> fieldSerde();
+	PropertyFieldMapper<T, ?, ?, ?> fieldSerde();
 
 	/**
 	 * By default, "id" (case-insensitive) is considered the id field!
@@ -39,13 +39,13 @@ public interface LuceneFieldSpec<T> {
 		return isIdField() || fieldType() == FieldType.STORED;
 	}
 
-	default Object toIndexableValue(T t) {
+	default <X> X toIndexableValue(T t) {
 		Object propValue = fieldSerde().getPropertyValue(t);
 		return propToIndexableValue(propValue);
 	}
 
-	default Object propToIndexableValue(Object propValue) {
-		return fieldSerde().toIndexableValue(propValue);
+	default <X> X propToIndexableValue(Object propValue) {
+		return (X) objectFieldSerde().toIndexableValue(propValue);
 	}
 
 	default <P> P indexedValueToPropValue(IndexableField field) {
@@ -54,6 +54,10 @@ public interface LuceneFieldSpec<T> {
 	}
 
 	default <P> P toPropertyValue(Object indexedValue) {
-		return (P) fieldSerde().toPropertyValue(indexedValue);
+		return (P) objectFieldSerde().toPropertyValue(indexedValue);
+	}
+
+	private PropertyFieldMapper<T, Object, Object, Object> objectFieldSerde() {
+		return (PropertyFieldMapper<T, Object, Object, Object>) fieldSerde();
 	}
 }
