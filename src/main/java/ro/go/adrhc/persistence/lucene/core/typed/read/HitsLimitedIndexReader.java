@@ -9,7 +9,6 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.HitsLimitedDocIndexReaderFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.util.Assert;
-import ro.go.adrhc.util.ObjectUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -107,8 +106,7 @@ public class HitsLimitedIndexReader<ID, T> implements Closeable {
 		Assert.isTrue(field.isIdField() || field.fieldType() == STORED,
 			field.name() + " must have STORED type!");
 		return hitsLimitedDocsIndexReader.getFieldValues(field.name())
-			.map(field::indexedValueToPropValue)
-			.map(ObjectUtils::cast);
+			.map(field::indexedValueToPropValue);
 	}
 
 	@Override

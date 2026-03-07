@@ -116,8 +116,9 @@ public class ReadIndexOperationsImpl<T extends Indexable<ID, T>, ID>
 
 	@Override
 	public List<ID> findIds(Query query, @Nullable Sort sort) throws IOException {
-		return unlimitedIdxReaderTemplate.useReader(r ->
-			r.findIds(query, sort).<ID>map(idField::toPropertyValue).toList());
+		return unlimitedIdxReaderTemplate
+			.useReader(r -> r.findIds(query, sort)
+				.<ID>map(idField::toPropertyValue).toList());
 	}
 
 	@Override
