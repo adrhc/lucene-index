@@ -22,16 +22,11 @@ public record PropertyFieldMapper<T, P>(
 	 * Converts the value obtained from the index to the property value type (P of T).
 	 */
 	Function<Object, P> toPropertyValue) {
-	private static final Function<IndexableField, Object> INT_FIELD_ACCESSOR
-		= field -> field.storedValue().getIntValue();
-	private static final Function<IndexableField, Object> LONG_FIELD_ACCESSOR
-		= field -> field.storedValue().getLongValue();
 
 	public static <T, P> PropertyFieldMapper<T, P> stringField(
 		Function<T, P> propertyAccessor,
 		Function<Object, P> indexedValueToPropValue) {
-		return new PropertyFieldMapper<>(propertyAccessor,
-			PropertyFieldMapper::toString,
+		return new PropertyFieldMapper<>(propertyAccessor, PropertyFieldMapper::toString,
 			IndexableField::stringValue, indexedValueToPropValue);
 	}
 
@@ -50,26 +45,26 @@ public record PropertyFieldMapper<T, P>(
 		Function<T, Boolean> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
 			it -> it != null && ((Boolean) it) ? 1 : 0,
-			INT_FIELD_ACCESSOR, it -> it != null && ((Integer) it) != 0);
+			PropertyFieldMapper::getIntValue, it -> it != null && ((Integer) it) != 0);
 	}
 
 	public static <T> PropertyFieldMapper<T, Integer> intField(
 		Function<T, Integer> propertyAccessor) {
-		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it, INT_FIELD_ACCESSOR, it -> (Integer) it);
+		return new PropertyFieldMapper<>(propertyAccessor, it -> it,
+			PropertyFieldMapper::getIntValue, it -> (Integer) it);
 	}
 
 	public static <T> PropertyFieldMapper<T, Long>
 	longField(Function<T, Long> propertyAccessor) {
-		return new PropertyFieldMapper<>(propertyAccessor,
-			it -> it, LONG_FIELD_ACCESSOR, it -> (Long) it);
+		return new PropertyFieldMapper<>(propertyAccessor, it -> it,
+			PropertyFieldMapper::getLongValue, it -> (Long) it);
 	}
 
 	public static <T> PropertyFieldMapper<T, Instant>
 	instantField(Function<T, Instant> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
 			it -> it == null ? null : ((Instant) it).toEpochMilli(),
-			LONG_FIELD_ACCESSOR, it -> Instant.ofEpochMilli((long) it));
+			PropertyFieldMapper::getLongValue, it -> Instant.ofEpochMilli((long) it));
 	}
 
 	public static <T> PropertyFieldMapper<T, Path>
@@ -80,31 +75,13 @@ public record PropertyFieldMapper<T, P>(
 	public static <T> PropertyFieldMapper<T, Set<String>>
 	tagsField(Function<T, Set<String>> propertyAccessor) {
 		return new PropertyFieldMapper<>(propertyAccessor,
-			PropertyFieldMapper::stringSet, IndexableField::stringValue,
+			it -> it, IndexableField::stringValue,
 			it -> it == null ? null : Set.of((String) it));
 	}
 
 	public static <T, E extends Enum<E>> PropertyFieldMapper<T, Enum<E>>
 	enumField(Class<E> enumClass, Function<T, Enum<E>> propertyAccessor) {
-		return stringField(propertyAccessor,
-			it -> Enum.valueOf(enumClass, (String) it));
-	}
-
-	private static Set<String> stringSet(Object o) {
-		return (Set<String>) o;
-	}
-
-	private static String toString(Object s) {
-		return s == null ? null : s.toString();
-	}
-
-	private static URI toURI(Object value) {
-		try {
-			return value == null ? null : new URI((String) value);
-		} catch (URISyntaxException e) {
-			log.error(e.getMessage(), e);
-		}
-		return null;
+		return stringField(propertyAccessor, it -> Enum.valueOf(enumClass, (String) it));
 	}
 
 	public Object getIndexedValue(IndexableField indexableField) {
@@ -121,5 +98,26 @@ public record PropertyFieldMapper<T, P>(
 
 	public P toPropertyValue(Object indexedValue) {
 		return toPropertyValue.apply(indexedValue);
+	}
+
+	private static Integer getIntValue(IndexableField field) {
+		return field.storedValue().getIntValue();
+	}
+
+	private static Long getLongValue(IndexableField field) {
+		return field.storedValue().getLongValue();
+	}
+
+	private static String toString(Object s) {
+		return s == null ? null : s.toString();
+	}
+
+	private static URI toURI(Object value) {
+		try {
+			return value == null ? null : new URI((String) value);
+		} catch (URISyntaxException e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
 	}
 }

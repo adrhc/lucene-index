@@ -27,40 +27,40 @@ public class LuceneFieldApplier<T> {
 			return;
 		}
 		if (fValue instanceof Collection<?> col) {
-			col.forEach(elem -> doAddField(fieldSpec, elem, doc));
+			col.forEach(elem -> addOneField(fieldSpec, elem, doc));
 		} else {
-			doAddField(fieldSpec, fValue, doc);
+			addOneField(fieldSpec, fValue, doc);
 		}
 	}
 
-	private static void doAddField(LuceneFieldSpec<?> fieldSpec, Object value, Document doc) {
-		doc.add(createField(fieldSpec, value));
-		addIf(fieldSpec.isPersistent(), () -> createStoredNumberField(fieldSpec, value), doc);
-		addIf(fieldSpec.isSortable(), () -> createSortedField(fieldSpec, value), doc);
+	private static void addOneField(LuceneFieldSpec<?> fieldSpec, Object fValue, Document doc) {
+		doc.add(createField(fieldSpec, fValue));
+		addIf(fieldSpec.isPersistent(), () -> createStoredNumberField(fieldSpec, fValue), doc);
+		addIf(fieldSpec.isSortable(), () -> createSortedField(fieldSpec, fValue), doc);
 	}
 
-	private static Field createField(LuceneFieldSpec<?> fieldSpec, Object value) {
+	private static Field createField(LuceneFieldSpec<?> fieldSpec, Object fValue) {
 		boolean stored = fieldSpec.isPersistent();
 		String fieldName = fieldSpec.name();
 		return switch (fieldSpec.fieldType()) {
-			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, (String) value);
-			case WORD -> wordField(stored, fieldName, (String) value);
-			case TEXT -> textField(stored, fieldName, (String) value);
-			case INT -> intField(fieldName, (Integer) value);
-			case LONG -> longField(fieldName, (Long) value);
-			case STORED -> storedField(fieldName, (String) value);
+			case KEYWORD, KEYWORD_ARRAY -> keywordField(stored, fieldName, (String) fValue);
+			case WORD -> wordField(stored, fieldName, (String) fValue);
+			case TEXT -> textField(stored, fieldName, (String) fValue);
+			case INT -> intField(fieldName, (Integer) fValue);
+			case LONG -> longField(fieldName, (Long) fValue);
+			case STORED -> storedField(fieldName, (String) fValue);
 		};
 	}
 
 	/**
 	 * The field must support sorting for this method to be invoked!
 	 */
-	private static Field createSortedField(LuceneFieldSpec<?> typedField, Object value) {
+	private static Field createSortedField(LuceneFieldSpec<?> typedField, Object fValue) {
 		return switch (typedField.fieldType()) {
 			case KEYWORD, WORD, STORED -> new SortedDocValuesField(
-				typedField.name(), new BytesRef((String) value));
-			case INT -> new NumericDocValuesField(typedField.name(), (Integer) value);
-			case LONG -> new NumericDocValuesField(typedField.name(), (Long) value);
+				typedField.name(), new BytesRef((String) fValue));
+			case INT -> new NumericDocValuesField(typedField.name(), (Integer) fValue);
+			case LONG -> new NumericDocValuesField(typedField.name(), (Long) fValue);
 			default -> null;
 		};
 	}
@@ -71,10 +71,10 @@ public class LuceneFieldApplier<T> {
 	 * <p>
 	 * The field must be persistent for this method to be invoked!
 	 */
-	private static Field createStoredNumberField(LuceneFieldSpec<?> typedField, Object value) {
+	private static Field createStoredNumberField(LuceneFieldSpec<?> typedField, Object fValue) {
 		return switch (typedField.fieldType()) {
-			case INT -> new StoredField(typedField.name(), (Integer) value);
-			case LONG -> new StoredField(typedField.name(), (Long) value);
+			case INT -> new StoredField(typedField.name(), (Integer) fValue);
+			case LONG -> new StoredField(typedField.name(), (Long) fValue);
 			default -> null;
 		};
 	}
