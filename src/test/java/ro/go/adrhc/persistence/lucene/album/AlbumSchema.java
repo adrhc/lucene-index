@@ -11,14 +11,14 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper;
 import java.util.function.Function;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.*;
-import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper.pathToString;
-import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapper.stringField;
+import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapperFactory.pathMapper;
+import static ro.go.adrhc.persistence.lucene.core.typed.field.PropertyFieldMapperFactory.stringMapper;
 
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public enum AlbumSchema implements LuceneFieldSpec<Album> {
-	id(KEYWORD, pathToString(Album::id)),
+	id(KEYWORD, pathMapper(Album::id)),
 	name(TEXT, Album::name),
 	storedOnlyField(STORED, Album::storedOnlyField);
 
@@ -30,7 +30,7 @@ public enum AlbumSchema implements LuceneFieldSpec<Album> {
 
 	AlbumSchema(FieldType fieldType, Function<Album, String> typedAccessor) {
 		this.fieldType = fieldType;
-		this.fieldSerde = stringField(typedAccessor);
+		this.fieldSerde = stringMapper(typedAccessor);
 	}
 
 	@Override
