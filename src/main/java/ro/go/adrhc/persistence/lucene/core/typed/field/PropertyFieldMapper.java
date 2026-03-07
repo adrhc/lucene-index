@@ -11,7 +11,7 @@ public record PropertyFieldMapper<T, P>(
 	 * Extracts the property value (P) from the object (T).
 	 */
 	Function<T, P> propertyAccessor,
-	Function<Object, ?> toIndexableValue,
+	Function<Object, ?> propToIndexableConverter,
 	Function<IndexableField, Object> indexedValueAccessor,
 	/*
 	 * Converts the value obtained from the index to the property value type (P of T).
@@ -27,7 +27,7 @@ public record PropertyFieldMapper<T, P>(
 	}
 
 	public Object toIndexableValue(Object propertyValue) {
-		return toIndexableValue.apply(propertyValue);
+		return propToIndexableConverter.apply(propertyValue);
 	}
 
 	public P toPropertyValue(Object indexedValue) {
