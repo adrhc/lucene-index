@@ -11,10 +11,10 @@ public class DocIndexReaderTemplateFactory {
 	}
 
 	public static DocIndexReaderTemplate of(IndexReaderPool indexReaderPool) {
-		return new DocIndexReaderTemplate(() -> DocIndexReader.of(indexReaderPool));
+		return new DocIndexReaderTemplate(() -> DocIndexReaderFactory.of(indexReaderPool));
 	}
 
 	public static DocIndexReaderTemplate of(DocIndexReaderParams params) {
-		return new DocIndexReaderTemplate(() -> DocIndexReader.of(params));
+		return new DocIndexReaderTemplate(() -> DocIndexReaderFactory.of(params));
 	}
 }
