@@ -8,5 +8,5 @@ public interface IndexSearchServiceParams<T> extends HitsLimitedIndexReaderParam
 
 	TypedIndexReaderParams<T> typedIndexReaderParams();
 
-	HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams();
+	HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams();
 }

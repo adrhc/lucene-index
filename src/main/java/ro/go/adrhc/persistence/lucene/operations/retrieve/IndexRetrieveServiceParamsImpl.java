@@ -15,7 +15,7 @@ public record IndexRetrieveServiceParamsImpl<T>(Class<T> type, LuceneFieldSpec<T
 	@Override
 	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
 		return HitsLimitedIndexReaderParamsImpl.allHits(
-			type(), idField(), indexReaderPool, rawFieldValueSerdes);
+			type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override

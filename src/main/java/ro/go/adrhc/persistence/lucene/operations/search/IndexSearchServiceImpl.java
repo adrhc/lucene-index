@@ -27,7 +27,7 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 			HitsLimitedIndexReaderTemplate.create(params), // limited to params.numHits
 			params.searchResultFilter());
 		SearchManyService<T> searchManyService = new SearchManyServiceImpl<>(
-			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
 			params.searchResultFilter());
 		return new IndexSearchServiceImpl<>(bestMatchSearchService,
 			searchReduceService, searchManyService);
