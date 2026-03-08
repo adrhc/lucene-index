@@ -5,12 +5,11 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class TypedIndexRemover<I> implements Closeable {
+public class TypedIndexRemover<I> {
 	private final ExactQuery exactQuery;
 	private final DocIndexWriter indexWriter;
 
@@ -34,10 +33,5 @@ public class TypedIndexRemover<I> implements Closeable {
 
 	public void removeAll() throws IOException {
 		indexWriter.deleteAll();
-	}
-
-	@Override
-	public void close() throws IOException {
-		indexWriter.close();
 	}
 }

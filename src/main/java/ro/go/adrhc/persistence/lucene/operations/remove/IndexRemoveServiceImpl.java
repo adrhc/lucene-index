@@ -4,40 +4,39 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
-import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverTemplate;
 
 import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class IndexRemoveServiceImpl<ID> implements IndexRemoveService<ID> {
-	private final TypedIndexRemoverTemplate<ID> indexRemoverTemplate;
+public class IndexRemoveServiceImpl<I> implements IndexRemoveService<I> {
+	private final TypedIndexRemover<I> typedIndexRemover;
 
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID> IndexRemoveServiceImpl<ID>
+	public static <I> IndexRemoveServiceImpl<I>
 	create(TypedIndexRemoverParams params) {
-		return new IndexRemoveServiceImpl<>(TypedIndexRemoverTemplate.create(params));
+		return new IndexRemoveServiceImpl<>(TypedIndexRemover.create(params));
 	}
 
 	@Override
-	public void removeById(ID id) throws IOException {
-		indexRemoverTemplate.useRemover(remover -> remover.removeOne(id));
+	public void removeById(I id) throws IOException {
+		typedIndexRemover.removeOne(id);
 	}
 
 	@Override
-	public void removeByIds(Collection<ID> ids) throws IOException {
-		indexRemoverTemplate.useRemover(remover -> remover.removeMany(ids));
+	public void removeByIds(Collection<I> ids) throws IOException {
+		typedIndexRemover.removeMany(ids);
 	}
 
 	@Override
 	public void removeByQuery(Query query) throws IOException {
-		indexRemoverTemplate.useRemover(remover -> remover.removeByQuery(query));
+		typedIndexRemover.removeByQuery(query);
 	}
 
 	@Override
 	public void removeAll() throws IOException {
-		indexRemoverTemplate.useRemover(TypedIndexRemover::removeAll);
+		typedIndexRemover.removeAll();
 	}
 }

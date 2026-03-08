@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 
 import java.io.IOException;
@@ -16,25 +16,25 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
 @Slf4j
-public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateService<ID, T> {
-	private final HitsLimitedIndexReaderTemplate<ID, ?> indexReaderTemplate;
-	private final TypedIndexRemover<ID> indexRemover;
-	private final TypedIndexAdderTemplate<T> typedIndexAdderTemplate;
+public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateService<I, T> {
+	private final HitsLimitedIndexReaderTemplate<I, ?> hitsLimitedIndexReaderTemplate;
+	private final TypedIndexRemover<I> typedIndexRemover;
+	private final TypedIndexAdder<T> typedIndexAdder;
 
 	/**
 	 * constructor parameters union
 	 */
-	public static <ID, T> IndexShallowUpdateServiceImpl<ID, T>
+	public static <I, T> IndexShallowUpdateServiceImpl<I, T>
 	create(IndexShallowUpdateServiceParams<T> params) {
 		return new IndexShallowUpdateServiceImpl<>(
 			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
 			TypedIndexRemover.create(params.typedIndexRemoverParams()),
-			TypedIndexAdderTemplate.create(params));
+			TypedIndexAdder.create(params));
 	}
 
 	@Override
-	public void shallowUpdate(IndexDataSource<ID, T> dataSource) throws IOException {
-		IndexChanges<ID> changes = getIndexChanges(dataSource, null);
+	public void shallowUpdate(IndexDataSource<I, T> dataSource) throws IOException {
+		IndexChanges<I> changes = getIndexChanges(dataSource, null);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
 		} else {
@@ -43,9 +43,9 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 	}
 
 	@Override
-	public void shallowUpdateSubset(IndexDataSource<ID, T> dataSource, Query query)
+	public void shallowUpdateSubset(IndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
-		IndexChanges<ID> changes = getIndexChanges(dataSource, query);
+		IndexChanges<I> changes = getIndexChanges(dataSource, query);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
 		} else {
@@ -53,34 +53,34 @@ public class IndexShallowUpdateServiceImpl<ID, T> implements IndexShallowUpdateS
 		}
 	}
 
-	protected IndexChanges<ID> getIndexChanges(
-		IndexDataSource<ID, ?> dataSource, Query query) throws IOException {
-		Set<ID> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
-		Set<ID> indexedButRemovedFromDS = indexReaderTemplate
+	protected IndexChanges<I> getIndexChanges(
+		IndexDataSource<I, ?> dataSource, Query query) throws IOException {
+		Set<I> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
+		Set<I> indexedButRemovedFromDS = hitsLimitedIndexReaderTemplate
 			.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
 		return new IndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
 
 	protected void applyIndexChanges(
-		IndexDataSource<ID, T> dataSource,
-		IndexChanges<ID> changes) throws IOException {
+		IndexDataSource<I, T> dataSource,
+		IndexChanges<I> changes) throws IOException {
 		log.debug("\nremoving {} surplus documents from the index",
 			changes.indexIdsMissingDataSize());
-		// no IndexWriter flush
-		indexRemover.removeMany(changes.indexedButRemovedFromDS());
+		typedIndexRemover.removeMany(changes.indexedButRemovedFromDS());
 		log.debug("\nextracting metadata for {} documents", changes.notIndexedSize());
 		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
 		log.debug("\nadding missing documents to the index");
-		// with IndexWriter flush
-		typedIndexAdderTemplate.useAdder(writer -> writer.addMany(items));
+		typedIndexAdder.addMany(items);
+		log.debug("\ncommiting changes to the index");
+		typedIndexAdder.commit();
 		log.debug("\nIndex updated (shallow)!");
 	}
 
 	/**
 	 * @return ids(reader) - ids
 	 */
-	protected Set<ID> docsToRemove(Query query, Set<ID> ids,
-		HitsLimitedIndexReader<ID, ?> reader) throws IOException {
+	protected Set<I> docsToRemove(Query query, Set<I> ids,
+		HitsLimitedIndexReader<I, ?> reader) throws IOException {
 		if (query == null) {
 			return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 		} else {

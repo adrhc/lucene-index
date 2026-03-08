@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -13,13 +12,12 @@ import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertC
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
-public abstract class AbstractIndexWriter<T> implements Closeable {
+public abstract class AbstractIndexWriter<T> {
 	protected final TypedToDocumentConverter<T> toDocumentConverter;
 	protected final DocIndexWriter docIndexWriter;
 
-	@Override
-	public void close() throws IOException {
-		docIndexWriter.close();
+	public void commit() throws IOException {
+		docIndexWriter.commit();
 	}
 
 	protected Collection<Document> toDocuments(Collection<T> tCollection) {
