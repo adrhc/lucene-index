@@ -25,11 +25,7 @@ public class ScoreAndDocumentToScoreAndValueConverter<T> {
 
 	@NonNull
 	public Optional<ScoreAndValue<T>> convert(@NonNull ScoreAndDocument scoreAndDocument) {
-		if (scoreAndDocument.isBroken()) {
-			return Optional.empty();
-		} else {
-			return docToTypedConverter.convert(scoreAndDocument.document())
-				.map(t -> new ScoreAndValue<>(scoreAndDocument.scoreDoc(), t));
-		}
+		return docToTypedConverter.convert(scoreAndDocument.document())
+			.map(t -> new ScoreAndValue<>(scoreAndDocument.scoreDoc(), t));
 	}
 }

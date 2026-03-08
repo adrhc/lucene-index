@@ -10,7 +10,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.lib.IndexSearcherUtils;
+import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 import ro.go.adrhc.util.fn.BiFunctionUtils;
 import ro.go.adrhc.util.fn.TriFunctionUtils;
 
@@ -70,7 +70,7 @@ public class DocIndexReader implements Closeable {
 		return IntStream.range(0, indexReader.maxDoc())
 			.filter(i -> liveDocs == null || liveDocs.get(i))
 			.mapToObj(i -> TriFunctionUtils.failToEmpty(
-				DocIndexReader::toDocument, storedFields, fieldNames, i))
+				LuceneDocumentFactory::of, storedFields, fieldNames, i))
 			.flatMap(Optional::stream);
 	}
 
@@ -91,7 +91,7 @@ public class DocIndexReader implements Closeable {
 	public Stream<Object> findFieldValuesSorted(
 		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = executeSearch(s -> IndexSearcherUtils.search(s, query, numHits, sort));
+		TopDocs topDocs = executeSearch(s -> IndexSearcherAccessors.search(s, query, numHits, sort));
 		StoredObjectFieldValuesVisitor fieldVisitor = new StoredObjectFieldValuesVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
 			.mapMulti((scoreDoc, sink) ->
@@ -142,7 +142,7 @@ public class DocIndexReader implements Closeable {
 		TopDocs topDocs = executeSearch(searchStrategy);
 		return Arrays.stream(topDocs.scoreDocs)
 			.map(scoreDoc -> BiFunctionUtils.failToEmpty(
-				DocIndexReader::toScoreAndDocument, storedFields, scoreDoc))
+				ScoreAndDocument::of, storedFields, scoreDoc))
 			.flatMap(Optional::stream);
 	}
 
@@ -172,24 +172,6 @@ public class DocIndexReader implements Closeable {
 			storedFields.document(scoreDoc.doc, fieldVisitor);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-		}
-	}
-
-	private static ScoreAndDocument toScoreAndDocument(
-		StoredFields storedFields, ScoreDoc scoreDoc) throws IOException {
-		return new ScoreAndDocument(scoreDoc, toDocument(storedFields, null, scoreDoc.doc));
-	}
-
-	/**
-	 * indexReader.document might fail if the document
-	 * is meanwhile purged (not only marked as removed)
-	 */
-	private static Document toDocument(StoredFields storedFields,
-		Set<String> fieldNames, int docIndex) throws IOException {
-		if (fieldNames == null || fieldNames.isEmpty()) {
-			return storedFields.document(docIndex);
-		} else {
-			return storedFields.document(docIndex, fieldNames);
 		}
 	}
 }

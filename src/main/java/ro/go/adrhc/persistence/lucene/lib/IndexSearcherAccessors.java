@@ -10,7 +10,7 @@ import org.springframework.lang.Nullable;
 import java.io.IOException;
 
 @UtilityClass
-public class IndexSearcherUtils {
+public class IndexSearcherAccessors {
 	/**
 	 * @param numHits is used by Lucene to limit the number of documents to return
 	 */
