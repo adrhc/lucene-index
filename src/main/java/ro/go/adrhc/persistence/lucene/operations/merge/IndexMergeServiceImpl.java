@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
-import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
+import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import static ro.go.adrhc.persistence.lucene.core.typed.Identifiable.toIds;
 
 @RequiredArgsConstructor
 public class IndexMergeServiceImpl<T extends Indexable<I, T>, I> implements IndexMergeService<T> {
-	private final IndexRetrieveServiceImpl<I, T> retrieveService;
+	private final IndexRetrieveService<I, T> retrieveService;
 	private final TypedIndexAdder<T> typedIndexAdder;
 	private final TypedIndexUpsert<T> indexUpsert;
 

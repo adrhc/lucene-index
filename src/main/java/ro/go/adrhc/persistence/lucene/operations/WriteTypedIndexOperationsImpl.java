@@ -8,10 +8,10 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdater;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,7 +27,7 @@ public class WriteTypedIndexOperationsImpl<T extends Indexable<I, T>, I>
 	private final TypedIndexUpsert<T> indexUpsert;
 	private final TypedIndexRemover<I> indexRemover;
 	private final TypedIndexReset<T> indexReset;
-	private final TypedIndexShallowUpdaterImpl<I, T> shallowUpdateService;
+	private final TypedIndexShallowUpdater<I, T> indexShallowUpdater;
 	private final IndexMergeService<T> mergeService;
 	private final IndexBackupService backupService;
 
@@ -88,13 +88,13 @@ public class WriteTypedIndexOperationsImpl<T extends Indexable<I, T>, I>
 
 	@Override
 	public void shallowUpdate(TypedIndexDataSource<I, T> dataSource) throws IOException {
-		shallowUpdateService.shallowUpdate(dataSource);
+		indexShallowUpdater.shallowUpdate(dataSource);
 	}
 
 	@Override
 	public void shallowUpdateSubset(TypedIndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
-		shallowUpdateService.shallowUpdateSubset(dataSource, query);
+		indexShallowUpdater.shallowUpdateSubset(dataSource, query);
 	}
 
 	@Override
