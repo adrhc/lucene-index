@@ -5,9 +5,9 @@ import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
-import ro.go.adrhc.persistence.lucene.operations.remove.IndexRemoveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.reset.IndexResetServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
@@ -25,7 +25,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 	private final DocIndexWriter indexWriter;
 	private final TypedIndexAdder<T> indexAdder;
 	private final IndexUpsertServiceImpl<T> upsertService;
-	private final IndexRemoveServiceImpl<I> removeService;
+	private final TypedIndexRemover<I> indexRemover;
 	private final IndexResetServiceImpl<T> resetService;
 	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
 	private final IndexMergeService<T> mergeService;
@@ -58,22 +58,22 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 
 	@Override
 	public void removeById(I id) throws IOException {
-		removeService.removeById(id);
+		indexRemover.removeOne(id);
 	}
 
 	@Override
 	public void removeByIds(Collection<I> ids) throws IOException {
-		removeService.removeByIds(ids);
+		indexRemover.removeMany(ids);
 	}
 
 	@Override
 	public void removeByQuery(Query query) throws IOException {
-		removeService.removeByQuery(query);
+		indexRemover.removeByQuery(query);
 	}
 
 	@Override
 	public void removeAll() throws IOException {
-		removeService.removeAll();
+		indexRemover.removeAll();
 	}
 
 	@Override

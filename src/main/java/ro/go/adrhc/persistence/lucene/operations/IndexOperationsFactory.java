@@ -7,12 +7,13 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverImpl;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.remove.IndexRemoveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.reset.IndexResetServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
@@ -27,9 +28,9 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 	private final IndexRetrieveServiceImpl<I, T> retrieveService;
 	private final IndexSearchService<T> searchService;
 	private final DocIndexWriter indexWriter;
-	private final TypedIndexAdder<T> typedIndexAdder;
+	private final TypedIndexAdder<T> indexAdder;
 	private final IndexUpsertServiceImpl<T> upsertService;
-	private final IndexRemoveServiceImpl<I> removeService;
+	private final TypedIndexRemover<I> indexRemover;
 	private final IndexMergeService<T> mergeService;
 	private final IndexResetServiceImpl<T> resetService;
 	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
@@ -45,7 +46,7 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 		DocIndexWriter indexWriter = new DocIndexWriter(params.indexWriter());
 		TypedIndexAdder<T> typedIndexAdder = TypedIndexAdderImpl.create(params);
 		IndexUpsertServiceImpl<T> upsertService = srvFactory.createUpsertService();
-		IndexRemoveServiceImpl<I> removeService = srvFactory.createRemoveService();
+		TypedIndexRemover<I> indexRemover = TypedIndexRemoverImpl.create(params);
 		IndexMergeService<T> mergeService = new IndexMergeServiceImpl<>(
 			retrieveService, typedIndexAdder, upsertService);
 		IndexResetServiceImpl<T> resetService = srvFactory.createResetService();
@@ -55,12 +56,12 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams());
 		return new IndexOperationsFactory<>(params.idField(), unlimitedIdxReaderTemplate,
 			countService, retrieveService, searchService, indexWriter, typedIndexAdder, upsertService,
-			removeService, mergeService, resetService, shallowUpdateService, backupService);
+			indexRemover, mergeService, resetService, shallowUpdateService, backupService);
 	}
 
 	public WriteIndexOperations<T, I> createWriteIndexOperations() {
 		return new WriteIndexOperationsImpl<>(indexWriter,
-			typedIndexAdder, upsertService, removeService, resetService,
+			indexAdder, upsertService, indexRemover, resetService,
 			shallowUpdateService, mergeService, backupService);
 	}
 

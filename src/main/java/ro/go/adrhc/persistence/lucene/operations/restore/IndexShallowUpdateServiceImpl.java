@@ -7,6 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverImpl;
 
 import java.io.IOException;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 	create(IndexShallowUpdateServiceParams<T> params) {
 		return new IndexShallowUpdateServiceImpl<>(
 			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
-			TypedIndexRemover.create(params), TypedIndexAdderImpl.create(params));
+			TypedIndexRemoverImpl.create(params), TypedIndexAdderImpl.create(params));
 	}
 
 	@Override

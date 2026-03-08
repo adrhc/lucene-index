@@ -6,7 +6,6 @@ import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.remove.IndexRemoveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.reset.IndexResetServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
@@ -43,9 +42,5 @@ public class IndexServiceFactory<I, T extends Identifiable<I>> {
 
 	public IndexUpsertServiceImpl<T> createUpsertService() {
 		return IndexUpsertServiceImpl.create(paramsFactory);
-	}
-
-	public IndexRemoveServiceImpl<I> createRemoveService() {
-		return IndexRemoveServiceImpl.create(paramsFactory);
 	}
 }
