@@ -3,18 +3,18 @@ package ro.go.adrhc.persistence.lucene.operations.update;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
-import ro.go.adrhc.persistence.lucene.core.typed.write.TypedUpsertTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertTemplate;
 
 import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
 public class IndexUpsertServiceImpl<T extends Identifiable<?>> implements IndexUpsertService<T> {
-	private final TypedUpsertTemplate<T> indexUpsertTemplate;
+	private final TypedIndexUpsertTemplate<T> indexUpsertTemplate;
 
 	public static <T extends Identifiable<?>>
 	IndexUpsertServiceImpl<T> create(TypedIndexUpsertParams<T> params) {
-		return new IndexUpsertServiceImpl<>(TypedUpsertTemplate.create(params));
+		return new IndexUpsertServiceImpl<>(TypedIndexUpsertTemplate.create(params));
 	}
 
 	@Override

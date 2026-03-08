@@ -7,13 +7,13 @@ import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class TypedUpsertTemplate<T extends Identifiable<?>> {
+public class TypedIndexUpsertTemplate<T extends Identifiable<?>> {
 	private final TypedIndexUpsert<T> indexUpsert;
 
 	public static <T extends Identifiable<?>>
-	TypedUpsertTemplate<T> create(TypedIndexUpsertParams<T> params) {
+	TypedIndexUpsertTemplate<T> create(TypedIndexUpsertParams<T> params) {
 		TypedIndexUpsert<T> indexUpdater = TypedIndexUpsert.create(params);
-		return new TypedUpsertTemplate<>(indexUpdater);
+		return new TypedIndexUpsertTemplate<>(indexUpdater);
 	}
 
 	public <E extends Exception> void useUpserter(
