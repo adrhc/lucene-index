@@ -4,7 +4,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
@@ -16,7 +15,9 @@ import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface IndexServicesParamsFactory<T> extends Closeable {
+public interface IndexServicesParamsFactory<T>
+	extends TypedIndexWriterParams<T>, TypedIndexRemoverParams, TypedIndexUpsertParams<T>,
+	IndexShallowUpdateServiceParams<T>, Closeable {
 	LuceneFieldSpec<T> idField();
 
 	Analyzer analyzer();
@@ -31,19 +32,7 @@ public interface IndexServicesParamsFactory<T> extends Closeable {
 
 	IndexRetrieveServiceParams<T> typedRetrieveServiceParams();
 
-	IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams();
-
-	TypedIndexWriterParams<T> typedIndexWriterParams();
-
-	TypedIndexWriterParams<T> typedAddServiceParams();
-
-	TypedIndexUpsertParams<T> typedIndexUpsertParams();
-
-	TypedIndexRemoverParams typedIndexRemoverParams();
-
 	TypedIndexReaderParams<T> oneHitIndexReaderParams();
 
 	DocIndexReaderParams indexCountServiceParams();
-
-	HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams();
 }

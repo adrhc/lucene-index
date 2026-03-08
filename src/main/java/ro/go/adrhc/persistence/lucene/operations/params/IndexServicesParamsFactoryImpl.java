@@ -14,9 +14,6 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
-import ro.go.adrhc.persistence.lucene.core.typed.write.*;
-import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceParams;
-import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
@@ -58,33 +55,6 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	}
 
 	@Override
-	public IndexShallowUpdateServiceParams<T> typedShallowUpdateServiceParams() {
-		return new IndexShallowUpdateServiceParamsImpl<>(type, idField,
-			indexReaderPool, typedFields, analyzer, indexWriter, rawFieldValueSerdes);
-	}
-
-	@Override
-	public TypedIndexWriterParams<T> typedIndexWriterParams() {
-		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields, rawFieldValueSerdes);
-	}
-
-	@Override
-	public TypedIndexWriterParams<T> typedAddServiceParams() {
-		return new TypedIndexWriterParamsImpl<>(indexWriter, analyzer, typedFields, rawFieldValueSerdes);
-	}
-
-	@Override
-	public TypedIndexUpsertParams<T> typedIndexUpsertParams() {
-		return new TypedIndexUpsertParamsImpl<>(idField,
-			indexWriter, analyzer, typedFields, rawFieldValueSerdes);
-	}
-
-	@Override
-	public TypedIndexRemoverParams typedIndexRemoverParams() {
-		return new TypedIndexRemoverParamsImpl(idField, indexWriter);
-	}
-
-	@Override
 	public TypedIndexReaderParams<T> oneHitIndexReaderParams() {
 		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool, rawFieldValueSerdes);
 	}
@@ -101,7 +71,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 
 	@Override
 	public HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
-		return allHits(type(), idField(), indexReaderPool, rawFieldValueSerdes);
+		return allHits(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override

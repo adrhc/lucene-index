@@ -1,10 +1,12 @@
 package ro.go.adrhc.persistence.lucene.operations;
 
 import lombok.RequiredArgsConstructor;
+import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderImpl;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
@@ -18,49 +20,51 @@ import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 @RequiredArgsConstructor
-public class IndexOperationsFactory<T extends Indexable<ID, T>, ID> {
+public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 	private final LuceneFieldSpec<T> idField;
-	private final HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate;
+	private final HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate;
 	private final IndexCountService countService;
-	private final IndexRetrieveServiceImpl<ID, T> retrieveService;
+	private final IndexRetrieveServiceImpl<I, T> retrieveService;
 	private final IndexSearchService<T> searchService;
-	private final IndexAddServiceImpl<T> addService;
+	private final DocIndexWriter indexWriter;
+	private final TypedIndexAdder<T> typedIndexAdder;
 	private final IndexUpsertServiceImpl<T> upsertService;
-	private final IndexRemoveServiceImpl<ID> removeService;
+	private final IndexRemoveServiceImpl<I> removeService;
 	private final IndexMergeService<T> mergeService;
 	private final IndexResetServiceImpl<T> resetService;
-	private final IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService;
+	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
 	private final IndexBackupService backupService;
 
-	public static <T extends Indexable<ID, T>, ID>
-	IndexOperationsFactory<T, ID> of(IndexServicesParamsFactory<T> params) {
-		IndexServiceFactory<ID, T> srvFactory = new IndexServiceFactory<>(params);
+	public static <T extends Indexable<I, T>, I>
+	IndexOperationsFactory<T, I> of(IndexServicesParamsFactory<T> params) {
+		IndexServiceFactory<I, T> srvFactory = new IndexServiceFactory<>(params);
 		IndexCountService countService = srvFactory.createCountService();
-		IndexRetrieveServiceImpl<ID, T> retrieveService = srvFactory.createRetrieveService();
+		IndexRetrieveServiceImpl<I, T> retrieveService = srvFactory.createRetrieveService();
 		IndexBackupService backupService = srvFactory.createBackupService();
 		IndexSearchService<T> searchService = srvFactory.createSearchService();
-		IndexAddServiceImpl<T> addService = srvFactory.createAddService();
+		DocIndexWriter indexWriter = new DocIndexWriter(params.indexWriter());
+		TypedIndexAdder<T> typedIndexAdder = TypedIndexAdderImpl.create(params);
 		IndexUpsertServiceImpl<T> upsertService = srvFactory.createUpsertService();
-		IndexRemoveServiceImpl<ID> removeService = srvFactory.createRemoveService();
+		IndexRemoveServiceImpl<I> removeService = srvFactory.createRemoveService();
 		IndexMergeService<T> mergeService = new IndexMergeServiceImpl<>(
-			retrieveService, addService, upsertService);
+			retrieveService, typedIndexAdder, upsertService);
 		IndexResetServiceImpl<T> resetService = srvFactory.createResetService();
-		IndexShallowUpdateServiceImpl<ID, T> shallowUpdateService =
+		IndexShallowUpdateServiceImpl<I, T> shallowUpdateService =
 			srvFactory.createShallowUpdateService();
-		HitsLimitedIndexReaderTemplate<ID, T> unlimitedIdxReaderTemplate =
+		HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate =
 			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams());
 		return new IndexOperationsFactory<>(params.idField(), unlimitedIdxReaderTemplate,
-			countService, retrieveService, searchService, addService, upsertService, removeService,
-			mergeService, resetService, shallowUpdateService, backupService);
+			countService, retrieveService, searchService, indexWriter, typedIndexAdder, upsertService,
+			removeService, mergeService, resetService, shallowUpdateService, backupService);
 	}
 
-	public WriteIndexOperations<T, ID> createWriteIndexOperations() {
-		return new WriteIndexOperationsImpl<>(
-			addService, upsertService, removeService, resetService,
+	public WriteIndexOperations<T, I> createWriteIndexOperations() {
+		return new WriteIndexOperationsImpl<>(indexWriter,
+			typedIndexAdder, upsertService, removeService, resetService,
 			shallowUpdateService, mergeService, backupService);
 	}
 
-	public ReadIndexOperations<T, ID> createReadIndexOperations() {
+	public ReadIndexOperations<T, I> createReadIndexOperations() {
 		return new ReadIndexOperationsImpl<>(idField, unlimitedIdxReaderTemplate,
 			countService, retrieveService, searchService);
 	}

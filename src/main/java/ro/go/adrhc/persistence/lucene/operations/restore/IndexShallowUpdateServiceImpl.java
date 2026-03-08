@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateService<I, T> {
 	private final HitsLimitedIndexReaderTemplate<I, ?> hitsLimitedIndexReaderTemplate;
 	private final TypedIndexRemover<I> typedIndexRemover;
-	private final TypedIndexAdder<T> typedIndexAdder;
+	private final TypedIndexAdderImpl<T> typedIndexAdder;
 
 	/**
 	 * constructor parameters union
@@ -28,8 +28,7 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 	create(IndexShallowUpdateServiceParams<T> params) {
 		return new IndexShallowUpdateServiceImpl<>(
 			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
-			TypedIndexRemover.create(params.typedIndexRemoverParams()),
-			TypedIndexAdder.create(params));
+			TypedIndexRemover.create(params), TypedIndexAdderImpl.create(params));
 	}
 
 	@Override

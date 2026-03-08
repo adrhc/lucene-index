@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.operations;
 
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
-import ro.go.adrhc.persistence.lucene.operations.add.IndexAddServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.count.IndexCountServiceImpl;
@@ -15,7 +14,7 @@ import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 @RequiredArgsConstructor
-public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
+public class IndexServiceFactory<I, T extends Identifiable<I>> {
 	private final IndexServicesParamsFactory<T> paramsFactory;
 
 	public IndexBackupService createBackupService() {
@@ -26,7 +25,7 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 		return IndexSearchServiceImpl.create(paramsFactory.indexSearchServiceParams());
 	}
 
-	public IndexRetrieveServiceImpl<ID, T> createRetrieveService() {
+	public IndexRetrieveServiceImpl<I, T> createRetrieveService() {
 		return IndexRetrieveServiceImpl.create(paramsFactory.typedRetrieveServiceParams());
 	}
 
@@ -34,24 +33,19 @@ public class IndexServiceFactory<ID, T extends Identifiable<ID>> {
 		return IndexCountServiceImpl.create(paramsFactory.indexCountServiceParams());
 	}
 
-	public IndexShallowUpdateServiceImpl<ID, T> createShallowUpdateService() {
-		return IndexShallowUpdateServiceImpl.create(
-			paramsFactory.typedShallowUpdateServiceParams());
+	public IndexShallowUpdateServiceImpl<I, T> createShallowUpdateService() {
+		return IndexShallowUpdateServiceImpl.create(paramsFactory);
 	}
 
 	public IndexResetServiceImpl<T> createResetService() {
-		return IndexResetServiceImpl.create(paramsFactory.typedIndexWriterParams());
-	}
-
-	public IndexAddServiceImpl<T> createAddService() {
-		return IndexAddServiceImpl.create(paramsFactory.typedAddServiceParams());
+		return IndexResetServiceImpl.create(paramsFactory);
 	}
 
 	public IndexUpsertServiceImpl<T> createUpsertService() {
-		return IndexUpsertServiceImpl.create(paramsFactory.typedIndexUpsertParams());
+		return IndexUpsertServiceImpl.create(paramsFactory);
 	}
 
-	public IndexRemoveServiceImpl<ID> createRemoveService() {
-		return IndexRemoveServiceImpl.create(paramsFactory.typedIndexRemoverParams());
+	public IndexRemoveServiceImpl<I> createRemoveService() {
+		return IndexRemoveServiceImpl.create(paramsFactory);
 	}
 }

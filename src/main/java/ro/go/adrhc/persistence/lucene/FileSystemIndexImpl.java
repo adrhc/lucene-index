@@ -159,7 +159,7 @@ public class FileSystemIndexImpl<I, T extends Indexable<I, T>> implements FileSy
 	}
 
 	@Override
-	public void addMany(Collection<T> tCollection) throws IOException {
+	public void addMany(Iterable<T> tCollection) throws IOException {
 		executeWrite(() -> writeIndexOperations.addMany(tCollection));
 	}
 
@@ -258,6 +258,11 @@ public class FileSystemIndexImpl<I, T extends Indexable<I, T>> implements FileSy
 	@Override
 	public List<I> findIds(Query query, Sort sort) throws IOException {
 		return readIndexOperations.findIds(query, sort);
+	}
+
+	@Override
+	public void commit() throws IOException {
+		writeIndexOperations.commit();
 	}
 
 	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
