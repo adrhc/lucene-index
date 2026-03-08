@@ -10,21 +10,21 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class TypedIndexRemover<ID> implements Closeable {
+public class TypedIndexRemover<I> implements Closeable {
 	private final ExactQuery exactQuery;
 	private final DocIndexWriter indexWriter;
 
-	public static <ID> TypedIndexRemover<ID>
+	public static <I> TypedIndexRemover<I>
 	create(TypedIndexRemoverParams params) {
 		ExactQuery exactQuery = ExactQuery.create(params.idField());
 		return new TypedIndexRemover<>(exactQuery, new DocIndexWriter(params.indexWriter()));
 	}
 
-	public void removeOne(ID id) throws IOException {
+	public void removeOne(I id) throws IOException {
 		indexWriter.deleteByQuery(exactQuery.newExactQuery(id));
 	}
 
-	public void removeMany(Collection<? extends ID> ids) throws IOException {
+	public void removeMany(Collection<? extends I> ids) throws IOException {
 		indexWriter.deleteByQueries(exactQuery.newExactQueries(ids));
 	}
 

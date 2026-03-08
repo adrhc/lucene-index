@@ -92,6 +92,10 @@ public class DocIndexWriter implements Closeable {
 		log.debug("\nadded {} documents", counter.getCount());
 	}
 
+	public void flush() throws IOException {
+		indexWriter.flush();
+	}
+
 	public void commit() throws IOException {
 		indexWriter.commit();
 	}
