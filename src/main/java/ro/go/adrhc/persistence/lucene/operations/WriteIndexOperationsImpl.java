@@ -7,11 +7,11 @@ import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
-import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,7 +24,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 	implements WriteIndexOperations<T, I> {
 	private final DocIndexWriter indexWriter;
 	private final TypedIndexAdder<T> indexAdder;
-	private final IndexUpsertServiceImpl<T> upsertService;
+	private final TypedIndexUpsert<T> indexUpsert;
 	private final TypedIndexRemover<I> indexRemover;
 	private final TypedIndexReset<T> indexReset;
 	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
@@ -48,12 +48,12 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 
 	@Override
 	public void upsert(T t) throws IOException {
-		upsertService.upsert(t);
+		indexUpsert.upsert(t);
 	}
 
 	@Override
 	public void upsertMany(Collection<T> collection) throws IOException {
-		upsertService.upsertMany(collection);
+		indexUpsert.upsertMany(collection);
 	}
 
 	@Override

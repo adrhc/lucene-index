@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.operations.merge;
 import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
-import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -16,11 +16,10 @@ import java.util.function.BinaryOperator;
 import static ro.go.adrhc.persistence.lucene.core.typed.Identifiable.toIds;
 
 @RequiredArgsConstructor
-public class IndexMergeServiceImpl<T extends Indexable<I, T>, I>
-	implements IndexMergeService<T> {
+public class IndexMergeServiceImpl<T extends Indexable<I, T>, I> implements IndexMergeService<T> {
 	private final IndexRetrieveServiceImpl<I, T> retrieveService;
 	private final TypedIndexAdder<T> typedIndexAdder;
-	private final IndexUpsertServiceImpl<T> upsertService;
+	private final TypedIndexUpsert<T> indexUpsert;
 
 	public void merge(T t) throws IOException {
 		mergeWithStrategy(t, T::merge);
@@ -35,7 +34,7 @@ public class IndexMergeServiceImpl<T extends Indexable<I, T>, I>
 		if (storedOptional.isEmpty()) {
 			typedIndexAdder.addOne(t);
 		} else {
-			upsertService.upsert(mergeStrategy.apply(storedOptional.get(), t));
+			indexUpsert.upsert(mergeStrategy.apply(storedOptional.get(), t));
 		}
 	}
 
@@ -47,7 +46,7 @@ public class IndexMergeServiceImpl<T extends Indexable<I, T>, I>
 		BinaryOperator<T> mergeStrategy) throws IOException {
 		Map<I, T> stored = new HashMap<>();
 		retrieveService.findByIds(toIds(tCollection)).forEach(t -> stored.put(t.id(), t));
-		upsertService.upsertMany(
+		indexUpsert.upsertMany(
 			tCollection.stream().map(t -> merge(mergeStrategy, stored, t)).toList());
 	}
 

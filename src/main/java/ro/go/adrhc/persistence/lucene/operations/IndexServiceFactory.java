@@ -9,7 +9,6 @@ import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFacto
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceImpl;
-import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
 
 @RequiredArgsConstructor
 public class IndexServiceFactory<I, T extends Identifiable<I>> {
@@ -33,9 +32,5 @@ public class IndexServiceFactory<I, T extends Identifiable<I>> {
 
 	public IndexShallowUpdateServiceImpl<I, T> createShallowUpdateService() {
 		return IndexShallowUpdateServiceImpl.create(paramsFactory);
-	}
-
-	public IndexUpsertServiceImpl<T> createUpsertService() {
-		return IndexUpsertServiceImpl.create(paramsFactory);
 	}
 }
