@@ -6,19 +6,19 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class TypedIndexRemoverTemplate<ID> {
-	private final TypedIndexRemover<ID> indexRemover;
+public class TypedIndexRemoverTemplate<I> {
+	private final TypedIndexRemover<I> indexRemover;
 
-	public static <ID>
-	TypedIndexRemoverTemplate<ID> create(TypedIndexRemoverParams params) {
-		TypedIndexRemover<ID> indexRemover = TypedIndexRemover.create(params);
+	public static <I>
+	TypedIndexRemoverTemplate<I> create(TypedIndexRemoverParams params) {
+		TypedIndexRemover<I> indexRemover = TypedIndexRemover.create(params);
 		return new TypedIndexRemoverTemplate<>(indexRemover);
 	}
 
 	public <E extends Exception> void useRemover(
-		SneakyConsumer<TypedIndexRemover<ID>, E> indexRemoverConsumer)
+		SneakyConsumer<TypedIndexRemover<I>, E> indexRemoverConsumer)
 		throws IOException, E {
-		try (TypedIndexRemover<ID> indexRemover = this.indexRemover) {
+		try (TypedIndexRemover<I> indexRemover = this.indexRemover) {
 			indexRemoverConsumer.accept(indexRemover);
 		}
 	}
