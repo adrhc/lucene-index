@@ -12,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
 import ro.go.adrhc.persistence.lucene.operations.ReadDocIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.restore.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;

@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounter;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 

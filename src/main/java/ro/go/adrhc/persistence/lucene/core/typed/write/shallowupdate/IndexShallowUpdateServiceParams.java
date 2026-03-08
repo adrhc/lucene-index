@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.restore;
+package ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate;
 
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;

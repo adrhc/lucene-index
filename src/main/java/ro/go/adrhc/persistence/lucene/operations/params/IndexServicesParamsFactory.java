@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexWriterParams;
-import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceParams;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexShallowUpdateServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
 
