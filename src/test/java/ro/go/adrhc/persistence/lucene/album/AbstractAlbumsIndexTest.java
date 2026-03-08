@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.FileSystemIndex;
-import ro.go.adrhc.persistence.lucene.FileSystemIndexImpl;
+import ro.go.adrhc.persistence.lucene.FileSystemDocIndex;
+import ro.go.adrhc.persistence.lucene.FileSystemDocIndexImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
 import java.io.IOException;
@@ -19,12 +19,12 @@ public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Album> albumsIndexSpec;
-	protected FileSystemIndex<Path, Album> indexRepository;
+	protected FileSystemDocIndex<Path, Album> indexRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
 		albumsIndexSpec = createTypedIndexSpec(Album.class, AlbumSchema.class, tmpDir);
-		indexRepository = FileSystemIndexImpl.of(albumsIndexSpec);
+		indexRepository = FileSystemDocIndexImpl.of(albumsIndexSpec);
 		indexRepository.reset(ALBUMS);
 	}
 

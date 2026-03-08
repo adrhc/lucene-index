@@ -1,15 +1,15 @@
 package ro.go.adrhc.persistence.lucene;
 
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
-import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
+import ro.go.adrhc.persistence.lucene.operations.ReadDocIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface FileSystemIndex<ID, T extends Indexable<ID, T>>
-	extends ReadIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
+public interface FileSystemDocIndex<ID, T extends Indexable<ID, T>>
+	extends ReadDocIndexOperations<T, ID>, WriteIndexOperations<T, ID>, Closeable {
 	IndexServicesParamsFactory<T> getIndexServicesParamsFactory();
 
 	default Path getIndexPath() {

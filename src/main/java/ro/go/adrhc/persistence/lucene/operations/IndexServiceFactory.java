@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupServiceImpl;
-import ro.go.adrhc.persistence.lucene.operations.count.IndexCountServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounterImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
@@ -26,8 +26,8 @@ public class IndexServiceFactory<I, T extends Identifiable<I>> {
 		return IndexRetrieveServiceImpl.create(paramsFactory.typedRetrieveServiceParams());
 	}
 
-	public IndexCountServiceImpl createCountService() {
-		return IndexCountServiceImpl.create(paramsFactory.indexCountServiceParams());
+	public DocIndexCounterImpl createDocIndexCounter() {
+		return DocIndexCounterImpl.create(paramsFactory.docIndexReaderParams());
 	}
 
 	public IndexShallowUpdateServiceImpl<I, T> createShallowUpdateService() {

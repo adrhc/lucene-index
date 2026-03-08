@@ -5,10 +5,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.springframework.lang.Nullable;
+import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.count.IndexCountService;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
@@ -25,11 +25,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class ReadIndexOperationsImpl<T extends Indexable<I, T>, I>
-	implements ReadIndexOperations<T, I> {
+public class ReadDocIndexOperationsImpl<T extends Indexable<I, T>, I>
+	implements ReadDocIndexOperations<T, I> {
 	private final LuceneFieldSpec<T> idField;
 	private final HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate;
-	private final IndexCountService countService;
+	private final DocIndexCounter countService;
 	private final IndexRetrieveService<I, T> retrieveService;
 	private final IndexSearchService<T> searchService;
 

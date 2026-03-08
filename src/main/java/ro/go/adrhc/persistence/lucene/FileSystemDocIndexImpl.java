@@ -9,7 +9,7 @@ import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
-import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
+import ro.go.adrhc.persistence.lucene.operations.ReadDocIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexDataSource;
@@ -29,18 +29,18 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FileSystemIndexImpl<I, T extends Indexable<I, T>> implements FileSystemIndex<I, T> {
+public class FileSystemDocIndexImpl<I, T extends Indexable<I, T>> implements FileSystemDocIndex<I, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
-	protected final ReadIndexOperations<T, I> readIndexOperations;
+	protected final ReadDocIndexOperations<T, I> readIndexOperations;
 	protected final WriteIndexOperations<T, I> writeIndexOperations;
 
 	public static <I, T extends Indexable<I, T>>
-	FileSystemIndex<I, T> of(IndexServicesParamsFactory<T> params) {
+	FileSystemDocIndex<I, T> of(IndexServicesParamsFactory<T> params) {
 		IndexOperationsFactory<T, I> factory = IndexOperationsFactory.of(params);
-		ReadIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
+		ReadDocIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
 		WriteIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
-		return new FileSystemIndexImpl<>(params, readIndexOperations, writeIndexOperations);
+		return new FileSystemDocIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
 	@Override

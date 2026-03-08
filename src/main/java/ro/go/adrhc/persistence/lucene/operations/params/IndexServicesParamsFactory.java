@@ -34,5 +34,5 @@ public interface IndexServicesParamsFactory<T>
 
 	TypedIndexReaderParams<T> oneHitIndexReaderParams();
 
-	DocIndexReaderParams indexCountServiceParams();
+	DocIndexReaderParams docIndexReaderParams();
 }

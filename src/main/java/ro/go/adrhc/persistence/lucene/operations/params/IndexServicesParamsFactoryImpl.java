@@ -60,7 +60,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	}
 
 	@Override
-	public DocIndexReaderParams indexCountServiceParams() {
+	public DocIndexReaderParams docIndexReaderParams() {
 		return new DocIndexReaderParamsImpl(indexReaderPool);
 	}
 
