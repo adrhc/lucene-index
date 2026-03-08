@@ -70,7 +70,7 @@ public class DocIndexReader implements Closeable {
 		return IntStream.range(0, indexReader.maxDoc())
 			.filter(i -> liveDocs == null || liveDocs.get(i))
 			.mapToObj(i -> TriFunctionUtils.failToEmpty(
-				DocIndexReader::getDocument, storedFields, fieldNames, i))
+				DocIndexReader::toDocument, storedFields, fieldNames, i))
 			.flatMap(Optional::stream);
 	}
 
@@ -177,14 +177,14 @@ public class DocIndexReader implements Closeable {
 
 	private static ScoreAndDocument toScoreAndDocument(
 		StoredFields storedFields, ScoreDoc scoreDoc) throws IOException {
-		return new ScoreAndDocument(scoreDoc, getDocument(storedFields, null, scoreDoc.doc));
+		return new ScoreAndDocument(scoreDoc, toDocument(storedFields, null, scoreDoc.doc));
 	}
 
 	/**
 	 * indexReader.document might fail if the document
 	 * is meanwhile purged (not only marked as removed)
 	 */
-	private static Document getDocument(StoredFields storedFields,
+	private static Document toDocument(StoredFields storedFields,
 		Set<String> fieldNames, int docIndex) throws IOException {
 		if (fieldNames == null || fieldNames.isEmpty()) {
 			return storedFields.document(docIndex);
