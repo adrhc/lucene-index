@@ -20,8 +20,8 @@ import static ro.go.adrhc.persistence.lucene.core.bare.field.FieldType.STORED;
 @RequiredArgsConstructor
 public class HitsLimitedIndexReader<I, T> implements Closeable {
 	private final LuceneFieldSpec<T> idField;
-	private final DocumentToTypedConverter<T> docToTypedConverter;
-	private final ScoreAndDocumentToScoreAndValueConverter<T> toScoreDocAndValueConverter;
+	private final DocumentToTypedConverter<T> toTypedConverter;
+	private final ScoreAndDocumentToScoreAndValueConverter<T> toScoreAndValueConverter;
 	private final HitsLimitedDocIndexReader hitsLimitedDocsIndexReader;
 
 	public static <I, T> HitsLimitedIndexReader<I, T>
@@ -37,7 +37,7 @@ public class HitsLimitedIndexReader<I, T> implements Closeable {
 
 	public Stream<T> getAll() throws IOException {
 		return hitsLimitedDocsIndexReader.getDocuments().map(
-			docToTypedConverter::convert).flatMap(Optional::stream);
+			toTypedConverter::convert).flatMap(Optional::stream);
 	}
 
 	public Stream<I> getAllIds() throws IOException {
@@ -61,35 +61,35 @@ public class HitsLimitedIndexReader<I, T> implements Closeable {
 	}
 
 	public Stream<ScoreAndValue<T>> findMany(Query query) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findMany(query));
 	}
 
 	public Stream<ScoreAndValue<T>> findMany(Query query, int numHits) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findMany(query, numHits));
 	}
 
 	public Stream<ScoreAndValue<T>> findManySorted(Query query, Sort sort) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManySorted(query, sort));
 	}
 
 	public Stream<ScoreAndValue<T>> findManySorted(
 		Query query, int numHits, Sort sort) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManySorted(query, numHits, sort));
 	}
 
 	public Stream<ScoreAndValue<T>> findManyAfter(ScoreDoc after,
 		Query query, Sort sort) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManyAfter(after, query, sort));
 	}
 
 	public Stream<ScoreAndValue<T>> findManyAfter(ScoreDoc after,
 		Query query, int numHits, Sort sort) throws IOException {
-		return toScoreDocAndValueConverter.convertStream(
+		return toScoreAndValueConverter.convertStream(
 			hitsLimitedDocsIndexReader.findManyAfter(after, query, numHits, sort));
 	}
 
