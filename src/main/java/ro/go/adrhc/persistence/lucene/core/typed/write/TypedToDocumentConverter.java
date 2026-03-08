@@ -29,14 +29,14 @@ public class TypedToDocumentConverter<T> {
 	@NonNull
 	public Optional<Document> convert(T tValue) {
 		if (tValue == null) {
-			log.error("\nCan't add NULL!");
+			log.error("\nCan't convert NULL!");
 			return Optional.empty();
 		}
 
 		Optional<Field> rawField = serializer.apply(tValue)
 			.map(raw -> storedField(RAW_FIELD, raw));
 		if (rawField.isEmpty()) {
-			log.error("\nCan't create raw field for value: {}", tValue);
+			log.error("\nFailed to serialize: {}", tValue);
 			return Optional.empty();
 		}
 

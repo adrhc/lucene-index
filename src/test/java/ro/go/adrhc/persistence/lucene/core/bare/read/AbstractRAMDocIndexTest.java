@@ -3,7 +3,7 @@ package ro.go.adrhc.persistence.lucene.core.bare.read;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyBiConsumer;
 import org.apache.lucene.index.IndexWriter;
 import org.junit.jupiter.api.TestInstance;
-import ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 public abstract class AbstractRAMDocIndexTest {
 	<E extends Exception> void useRAMIndex(
 		SneakyBiConsumer<IndexReaderPool, IndexWriter, E> testFn) throws IOException, E {
-		try (IndexWriter writer = IndexWriterFactory.ramWriter()) {
+		try (IndexWriter writer = LuceneIndexWriterFactory.ramWriter()) {
 			writer.commit(); // creates the index
 			try (IndexReaderPool pool = IndexReaderPoolFactory.of(writer)) {
 				testFn.accept(pool, writer);

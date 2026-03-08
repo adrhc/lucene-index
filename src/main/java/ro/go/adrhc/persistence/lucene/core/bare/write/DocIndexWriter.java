@@ -17,23 +17,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory.fsWriter;
-import static ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory.ramWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.fsWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.ramWriter;
 import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DocsIndexWriter implements Closeable {
+public class DocIndexWriter implements Closeable {
 	private final IndexWriter indexWriter;
 
-	public static DocsIndexWriter
+	public static DocIndexWriter
 	ofRamWriter(Analyzer analyzer) throws IOException {
-		return new DocsIndexWriter(ramWriter(analyzer));
+		return new DocIndexWriter(ramWriter(analyzer));
 	}
 
-	public static DocsIndexWriter ofFsWriter(
+	public static DocIndexWriter ofFsWriter(
 		Analyzer analyzer, Path indexPath) throws IOException {
-		return new DocsIndexWriter(fsWriter(analyzer, indexPath));
+		return new DocIndexWriter(fsWriter(analyzer, indexPath));
 	}
 
 	public void addOne(Iterable<? extends IndexableField> document) throws IOException {

@@ -2,7 +2,7 @@ package ro.go.adrhc.persistence.lucene.core.typed.write;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.bare.write.DocsIndexWriter;
+import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 
 import java.io.Closeable;
@@ -12,12 +12,12 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class TypedIndexRemover<ID> implements Closeable {
 	private final ExactQuery exactQuery;
-	private final DocsIndexWriter indexWriter;
+	private final DocIndexWriter indexWriter;
 
 	public static <ID> TypedIndexRemover<ID>
 	create(TypedIndexRemoverParams params) {
 		ExactQuery exactQuery = ExactQuery.create(params.idField());
-		return new TypedIndexRemover<>(exactQuery, new DocsIndexWriter(params.indexWriter()));
+		return new TypedIndexRemover<>(exactQuery, new DocIndexWriter(params.indexWriter()));
 	}
 
 	public void removeOne(ID id) throws IOException {

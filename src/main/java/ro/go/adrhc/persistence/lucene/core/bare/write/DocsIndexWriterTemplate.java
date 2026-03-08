@@ -8,12 +8,12 @@ import org.apache.lucene.index.IndexWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory.fsWriter;
-import static ro.go.adrhc.persistence.lucene.core.bare.write.IndexWriterFactory.ramWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.fsWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.ramWriter;
 
 @RequiredArgsConstructor
 public class DocsIndexWriterTemplate {
-	private final DocsIndexWriter indexWriter;
+	private final DocIndexWriter indexWriter;
 
 	public static DocsIndexWriterTemplate
 	ofRamWriter(Analyzer analyzer) throws IOException {
@@ -26,13 +26,13 @@ public class DocsIndexWriterTemplate {
 	}
 
 	public static DocsIndexWriterTemplate of(IndexWriter indexWriter) {
-		return new DocsIndexWriterTemplate(new DocsIndexWriter(indexWriter));
+		return new DocsIndexWriterTemplate(new DocIndexWriter(indexWriter));
 	}
 
 	public <E extends Exception> void useWriter(
-		SneakyConsumer<DocsIndexWriter, E> indexWriterConsumer)
+		SneakyConsumer<DocIndexWriter, E> indexWriterConsumer)
 		throws IOException, E {
-		try (DocsIndexWriter indexWriter = this.indexWriter) {
+		try (DocIndexWriter indexWriter = this.indexWriter) {
 			indexWriterConsumer.accept(indexWriter);
 		}
 	}

@@ -2,26 +2,24 @@ package ro.go.adrhc.persistence.lucene.core.typed.write;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
-import ro.go.adrhc.persistence.lucene.core.bare.write.DocsIndexWriter;
-import ro.go.adrhc.util.Assert;
+import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertCollection;
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
-public abstract class AbstractTypedIndexWriter<T> implements Closeable {
+public abstract class AbstractIndexWriter<T> implements Closeable {
 	protected final TypedToDocumentConverter<T> toDocumentConverter;
-	protected final DocsIndexWriter docsIndexWriter;
+	protected final DocIndexWriter docIndexWriter;
 
 	@Override
 	public void close() throws IOException {
-		docsIndexWriter.close();
+		docIndexWriter.close();
 	}
 
 	protected Collection<Document> toDocuments(Collection<T> tCollection) {
@@ -32,9 +30,11 @@ public abstract class AbstractTypedIndexWriter<T> implements Closeable {
 		return convertStream(toDocumentConverter::convert, tStream);
 	}
 
+	/**
+	 * Throws IllegalStateException if the conversion fails!
+	 */
 	protected Document toDocument(T t) {
-		Optional<Document> documentOptional = toDocumentConverter.convert(t);
-		Assert.isTrue(documentOptional.isPresent(), "Conversion failed!");
-		return documentOptional.get();
+		return toDocumentConverter.convert(t).orElseThrow(
+			() -> new IllegalStateException("Conversion to Lucene document failed!"));
 	}
 }
