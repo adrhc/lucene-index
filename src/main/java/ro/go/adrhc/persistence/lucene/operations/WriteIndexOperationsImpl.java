@@ -6,9 +6,9 @@ import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
+import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
-import ro.go.adrhc.persistence.lucene.operations.reset.IndexResetServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.restore.IndexShallowUpdateServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.update.IndexUpsertServiceImpl;
@@ -26,7 +26,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 	private final TypedIndexAdder<T> indexAdder;
 	private final IndexUpsertServiceImpl<T> upsertService;
 	private final TypedIndexRemover<I> indexRemover;
-	private final IndexResetServiceImpl<T> resetService;
+	private final TypedIndexReset<T> indexReset;
 	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
 	private final IndexMergeService<T> mergeService;
 	private final IndexBackupService backupService;
@@ -78,12 +78,12 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 
 	@Override
 	public void reset(Stream<T> stateAfterReset) throws IOException {
-		resetService.reset(stateAfterReset);
+		indexReset.reset(stateAfterReset);
 	}
 
 	@Override
 	public void reset(Iterable<T> stateAfterReset) throws IOException {
-		resetService.reset(stateAfterReset);
+		indexReset.reset(stateAfterReset);
 	}
 
 	@Override
