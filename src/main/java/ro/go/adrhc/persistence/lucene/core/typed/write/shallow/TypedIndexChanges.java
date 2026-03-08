@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate;
+package ro.go.adrhc.persistence.lucene.core.typed.write.shallow;
 
 import java.util.Set;
 
@@ -6,7 +6,7 @@ import java.util.Set;
  * @param notIndexedIds           contains the not indexed ids
  * @param indexedButRemovedFromDS contains the indexed ids removed from the data source
  */
-public record IndexChanges<ID>(Set<ID> notIndexedIds, Set<ID> indexedButRemovedFromDS) {
+public record TypedIndexChanges<I>(Set<I> notIndexedIds, Set<I> indexedButRemovedFromDS) {
 	public boolean hasChanges() {
 		return !notIndexedIds.isEmpty() || !indexedButRemovedFromDS.isEmpty();
 	}

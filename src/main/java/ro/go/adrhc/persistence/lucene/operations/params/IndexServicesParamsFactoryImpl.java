@@ -70,7 +70,7 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	}
 
 	@Override
-	public HitsLimitedIndexReaderParams<T> allHitsTypedIndexReaderParams() {
+	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
 		return allHits(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 

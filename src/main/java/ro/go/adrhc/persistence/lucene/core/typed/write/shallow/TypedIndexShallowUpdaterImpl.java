@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate;
+package ro.go.adrhc.persistence.lucene.core.typed.write.shallow;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 
 @RequiredArgsConstructor
 @Slf4j
-public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateService<I, T> {
+public class TypedIndexShallowUpdaterImpl<I, T> implements TypedIndexShallowUpdater<I, T> {
 	private final HitsLimitedIndexReaderTemplate<I, ?> hitsLimitedIndexReaderTemplate;
 	private final TypedIndexRemover<I> typedIndexRemover;
 	private final TypedIndexAdderImpl<T> typedIndexAdder;
@@ -25,16 +25,22 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 	/**
 	 * constructor parameters union
 	 */
-	public static <I, T> IndexShallowUpdateServiceImpl<I, T>
-	create(IndexShallowUpdateServiceParams<T> params) {
-		return new IndexShallowUpdateServiceImpl<>(
-			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams()),
+	public static <I, T> TypedIndexShallowUpdaterImpl<I, T>
+	create(TypedIndexShallowUpdaterParams<T> params) {
+		return new TypedIndexShallowUpdaterImpl<>(
+			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
 			TypedIndexRemoverImpl.create(params), TypedIndexAdderImpl.create(params));
 	}
 
+	/**
+	 * All dataSource documents not present in the index are added and
+	 * all indexed documents not present in the dataSource are removed.
+	 * <p>
+	 * No existing document is updated!
+	 */
 	@Override
-	public void shallowUpdate(IndexDataSource<I, T> dataSource) throws IOException {
-		IndexChanges<I> changes = getIndexChanges(dataSource, null);
+	public void shallowUpdate(TypedIndexDataSource<I, T> dataSource) throws IOException {
+		TypedIndexChanges<I> changes = getIndexChanges(dataSource, null);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
 		} else {
@@ -42,10 +48,19 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 		}
 	}
 
+	/**
+	 * All dataSource documents not present in the index are added and
+	 * all indexed documents not present in the dataSource are removed.
+	 * <p>
+	 * The existing documents that are not part of the query result,
+	 * will be updated, if they are present in the data source!
+	 *
+	 * @param query determines which indexed documents are compared with the data source, if null all indexed documents are compared
+	 */
 	@Override
-	public void shallowUpdateSubset(IndexDataSource<I, T> dataSource, Query query)
+	public void shallowUpdateSubset(TypedIndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
-		IndexChanges<I> changes = getIndexChanges(dataSource, query);
+		TypedIndexChanges<I> changes = getIndexChanges(dataSource, query);
 		if (changes.hasChanges()) {
 			applyIndexChanges(dataSource, changes);
 		} else {
@@ -53,23 +68,26 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 		}
 	}
 
-	protected IndexChanges<I> getIndexChanges(
-		IndexDataSource<I, ?> dataSource, Query query) throws IOException {
+	/**
+	 * @param query determines which indexed documents are compared with the data source, if null all indexed documents are compared
+	 */
+	protected TypedIndexChanges<I> getIndexChanges(
+		TypedIndexDataSource<I, ?> dataSource, Query query) throws IOException {
 		Set<I> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
 		Set<I> indexedButRemovedFromDS = hitsLimitedIndexReaderTemplate
 			.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
-		return new IndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
+		return new TypedIndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
 
 	protected void applyIndexChanges(
-		IndexDataSource<I, T> dataSource,
-		IndexChanges<I> changes) throws IOException {
+		TypedIndexDataSource<I, T> dataSource,
+		TypedIndexChanges<I> changes) throws IOException {
 		log.debug("\nremoving {} surplus documents from the index",
 			changes.indexIdsMissingDataSize());
 		typedIndexRemover.removeMany(changes.indexedButRemovedFromDS());
-		log.debug("\nextracting metadata for {} documents", changes.notIndexedSize());
+		log.debug("\nextracting metadata for {} new documents", changes.notIndexedSize());
 		Stream<T> items = dataSource.loadByIds(changes.notIndexedIds());
-		log.debug("\nadding missing documents to the index");
+		log.debug("\nadding new documents to the index");
 		typedIndexAdder.addMany(items);
 		log.debug("\ncommiting changes to the index");
 		typedIndexAdder.commit();
@@ -77,7 +95,9 @@ public class IndexShallowUpdateServiceImpl<I, T> implements IndexShallowUpdateSe
 	}
 
 	/**
-	 * @return ids(reader) - ids
+	 * The found documents (all if query is null) are removed from @ids!
+	 *
+	 * @return the document ids not present in @ids, i.e., reader.findIds(query) - ids
 	 */
 	protected Set<I> docsToRemove(Query query, Set<I> ids,
 		HitsLimitedIndexReader<I, ?> reader) throws IOException {

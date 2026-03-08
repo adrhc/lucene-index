@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexWriterParams;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexShallowUpdateServiceParams;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterParams;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
 
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 
 public interface IndexServicesParamsFactory<T>
 	extends TypedIndexWriterParams<T>, TypedIndexRemoverParams, TypedIndexUpsertParams<T>,
-	IndexShallowUpdateServiceParams<T>, Closeable {
+	TypedIndexShallowUpdaterParams<T>, Closeable {
 	LuceneFieldSpec<T> idField();
 
 	Analyzer analyzer();

@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.FileSystemDocIndex;
-import ro.go.adrhc.persistence.lucene.FileSystemDocIndexImpl;
+import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndex;
+import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndexImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
@@ -21,16 +21,16 @@ public abstract class AbstractPersonsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
-	protected FileSystemDocIndex<Long, Person> indexRepository;
+	protected FileSystemDocTypedIndex<Long, Person> indexRepository;
 
 	protected void initObjects() {
 		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
-		indexRepository = FileSystemDocIndexImpl.of(peopleIndexSpec);
+		indexRepository = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
 	}
 
 	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
 		return HitsLimitedIndexReaderTemplate.create(
-			peopleIndexSpec.allHitsTypedIndexReaderParams());
+			peopleIndexSpec.allHitsIndexReaderParams());
 	}
 
 	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {

@@ -10,9 +10,9 @@ import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
 import ro.go.adrhc.persistence.lucene.operations.ReadDocIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
+import ro.go.adrhc.persistence.lucene.operations.WriteTypedIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexDataSource;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;
@@ -29,18 +29,19 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FileSystemDocIndexImpl<I, T extends Indexable<I, T>> implements FileSystemDocIndex<I, T> {
+public class FileSystemDocTypedIndexImpl<I, T extends Indexable<I, T>> implements
+	FileSystemDocTypedIndex<I, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
 	protected final ReadDocIndexOperations<T, I> readIndexOperations;
-	protected final WriteIndexOperations<T, I> writeIndexOperations;
+	protected final WriteTypedIndexOperations<T, I> writeIndexOperations;
 
 	public static <I, T extends Indexable<I, T>>
-	FileSystemDocIndex<I, T> of(IndexServicesParamsFactory<T> params) {
+	FileSystemDocTypedIndex<I, T> of(IndexServicesParamsFactory<T> params) {
 		IndexOperationsFactory<T, I> factory = IndexOperationsFactory.of(params);
 		ReadDocIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
-		WriteIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
-		return new FileSystemDocIndexImpl<>(params, readIndexOperations, writeIndexOperations);
+		WriteTypedIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
+		return new FileSystemDocTypedIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
 	@Override
@@ -204,12 +205,12 @@ public class FileSystemDocIndexImpl<I, T extends Indexable<I, T>> implements Fil
 	}
 
 	@Override
-	public void shallowUpdate(IndexDataSource<I, T> dataSource) throws IOException {
+	public void shallowUpdate(TypedIndexDataSource<I, T> dataSource) throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdate(dataSource));
 	}
 
 	@Override
-	public void shallowUpdateSubset(IndexDataSource<I, T> dataSource, Query query)
+	public void shallowUpdateSubset(TypedIndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
 		executeWrite(() -> writeIndexOperations.shallowUpdateSubset(dataSource, query));
 	}

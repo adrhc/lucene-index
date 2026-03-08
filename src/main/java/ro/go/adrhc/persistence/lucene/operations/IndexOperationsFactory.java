@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounter;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexShallowUpdateServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterImpl;
 import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 
@@ -28,7 +28,7 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 	private final TypedIndexRemover<I> indexRemover;
 	private final IndexMergeService<T> mergeService;
 	private final TypedIndexReset<T> indexReset;
-	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
+	private final TypedIndexShallowUpdaterImpl<I, T> shallowUpdateService;
 	private final IndexBackupService backupService;
 
 	public static <T extends Indexable<I, T>, I>
@@ -45,17 +45,17 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 		IndexMergeService<T> mergeService = new IndexMergeServiceImpl<>(
 			retrieveService, typedIndexAdder, indexUpsert);
 		TypedIndexReset<T> indexReset = TypedIndexResetImpl.create(params);
-		IndexShallowUpdateServiceImpl<I, T> shallowUpdateService =
+		TypedIndexShallowUpdaterImpl<I, T> shallowUpdateService =
 			srvFactory.createShallowUpdateService();
 		HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate =
-			HitsLimitedIndexReaderTemplate.create(params.allHitsTypedIndexReaderParams());
+			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams());
 		return new IndexOperationsFactory<>(params.idField(), unlimitedIdxReaderTemplate,
 			indexCounter, retrieveService, searchService, indexWriter, typedIndexAdder, indexUpsert,
 			indexRemover, mergeService, indexReset, shallowUpdateService, backupService);
 	}
 
-	public WriteIndexOperations<T, I> createWriteIndexOperations() {
-		return new WriteIndexOperationsImpl<>(indexWriter,
+	public WriteTypedIndexOperations<T, I> createWriteIndexOperations() {
+		return new WriteTypedIndexOperationsImpl<>(indexWriter,
 			indexAdder, indexUpsert, indexRemover, indexReset,
 			shallowUpdateService, mergeService, backupService);
 	}

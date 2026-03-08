@@ -10,8 +10,8 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexDataSource;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallowupdate.IndexShallowUpdateServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,14 +20,14 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
-	implements WriteIndexOperations<T, I> {
+public class WriteTypedIndexOperationsImpl<T extends Indexable<I, T>, I>
+	implements WriteTypedIndexOperations<T, I> {
 	private final DocIndexWriter indexWriter;
 	private final TypedIndexAdder<T> indexAdder;
 	private final TypedIndexUpsert<T> indexUpsert;
 	private final TypedIndexRemover<I> indexRemover;
 	private final TypedIndexReset<T> indexReset;
-	private final IndexShallowUpdateServiceImpl<I, T> shallowUpdateService;
+	private final TypedIndexShallowUpdaterImpl<I, T> shallowUpdateService;
 	private final IndexMergeService<T> mergeService;
 	private final IndexBackupService backupService;
 
@@ -87,12 +87,12 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 	}
 
 	@Override
-	public void shallowUpdate(IndexDataSource<I, T> dataSource) throws IOException {
+	public void shallowUpdate(TypedIndexDataSource<I, T> dataSource) throws IOException {
 		shallowUpdateService.shallowUpdate(dataSource);
 	}
 
 	@Override
-	public void shallowUpdateSubset(IndexDataSource<I, T> dataSource, Query query)
+	public void shallowUpdateSubset(TypedIndexDataSource<I, T> dataSource, Query query)
 		throws IOException {
 		shallowUpdateService.shallowUpdateSubset(dataSource, query);
 	}
