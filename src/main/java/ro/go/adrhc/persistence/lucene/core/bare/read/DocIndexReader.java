@@ -91,7 +91,7 @@ public class DocIndexReader implements Closeable {
 	public Stream<Object> findFieldValuesSorted(
 		String fieldName, Query query, int numHits, @Nullable Sort sort) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(s -> IndexSearcherUtils.search(s, query, numHits, sort));
+		TopDocs topDocs = executeSearch(s -> IndexSearcherUtils.search(s, query, numHits, sort));
 		StoredObjectFieldValuesVisitor fieldVisitor = new StoredObjectFieldValuesVisitor(fieldName);
 		return Arrays.stream(topDocs.scoreDocs)
 			.mapMulti((scoreDoc, sink) ->
@@ -137,18 +137,18 @@ public class DocIndexReader implements Closeable {
 	}
 
 	protected Stream<ScoreAndDocument> doFindMany(
-		SneakyFunction<IndexSearcher, TopDocs, IOException> query) throws IOException {
+		SneakyFunction<IndexSearcher, TopDocs, IOException> searchStrategy) throws IOException {
 		StoredFields storedFields = indexReader.storedFields();
-		TopDocs topDocs = useIndexSearcher(query);
+		TopDocs topDocs = executeSearch(searchStrategy);
 		return Arrays.stream(topDocs.scoreDocs)
 			.map(scoreDoc -> BiFunctionUtils.failToEmpty(
 				DocIndexReader::toScoreAndDocument, storedFields, scoreDoc))
 			.flatMap(Optional::stream);
 	}
 
-	protected <R> R useIndexSearcher(
-		SneakyFunction<IndexSearcher, R, IOException> topDocsSupplier) throws IOException {
-		return topDocsSupplier.apply(new IndexSearcher(indexReader));
+	protected <R> R executeSearch(
+		SneakyFunction<IndexSearcher, R, IOException> searchStrategy) throws IOException {
+		return searchStrategy.apply(new IndexSearcher(indexReader));
 	}
 
 	@NonNull
