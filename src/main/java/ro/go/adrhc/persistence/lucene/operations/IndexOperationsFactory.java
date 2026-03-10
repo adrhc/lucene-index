@@ -12,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.core.typed.read.retrieve.IndexRetrieveService;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 
 @RequiredArgsConstructor

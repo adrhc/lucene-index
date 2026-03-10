@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdder;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
-import ro.go.adrhc.persistence.lucene.operations.retrieve.IndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.core.typed.read.retrieve.IndexRetrieveService;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.retrieve;
+package ro.go.adrhc.persistence.lucene.core.typed.read.retrieve;
 
 import org.apache.lucene.index.IndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;

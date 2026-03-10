@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.retrieve;
+package ro.go.adrhc.persistence.lucene.core.typed.read.retrieve;
 
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 

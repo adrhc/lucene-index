@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.retrieve;
+package ro.go.adrhc.persistence.lucene.core.typed.read.retrieve;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.BooleanQuery;
