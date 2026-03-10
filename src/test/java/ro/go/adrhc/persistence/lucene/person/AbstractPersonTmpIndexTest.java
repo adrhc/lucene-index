@@ -13,18 +13,18 @@ import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFacto
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.createTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.createFSTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class AbstractPersonsIndexTest {
+public abstract class AbstractPersonTmpIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
 	protected FileSystemDocTypedIndex<Long, Person> indexRepository;
 
 	protected void initObjects() {
-		peopleIndexSpec = createTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
+		peopleIndexSpec = createFSTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
 		indexRepository = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
 	}
 

@@ -21,7 +21,7 @@ import static ro.go.adrhc.persistence.lucene.person.PersonSchema.*;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-class PersonSortTest extends AbstractPersonsIndexTest {
+class PersonSortTest extends AbstractPersonTmpIndexTest {
 	@Override
 	protected void indexRepositoryReset() throws IOException {
 		indexRepository.reset(generatePeopleList(100));

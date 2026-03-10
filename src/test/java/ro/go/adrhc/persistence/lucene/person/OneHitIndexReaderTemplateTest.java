@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.ID_QUERIES;
 
-public class OneHitIndexReaderTemplateTest extends AbstractPersonsIndexTest {
+public class OneHitIndexReaderTemplateTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void readTest() throws IOException {
 		OneHitIndexReaderTemplate<Person> readerTemplate = createPersonIdIndexReaderTemplate();

@@ -21,7 +21,7 @@ import static ro.go.adrhc.util.fn.FunctionFactory.nullFailResultFn;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-class PersonQueriesTest extends AbstractPersonsIndexTest {
+class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 	private static final Person PERSON2 = PEOPLE.get(1);
 	private static final Person PERSON3 = PEOPLE.get(2);
 

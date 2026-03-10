@@ -16,7 +16,7 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class IndexRestoreServiceTest extends AbstractPersonsIndexTest {
+public class IndexRestoreServiceTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void restoreTest() throws IOException {
 		indexRepository.addOne(generateGirl(4));

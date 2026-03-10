@@ -16,7 +16,7 @@ import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.ALIAS_KEY
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class PersonCrudTest extends AbstractPersonsIndexTest {
+public class PersonCrudTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void crudTest() throws IOException {
 		int count = indexRepository.count(ALIAS_KEYWORD_QUERIES.startsWith("alias_Keyword"));
