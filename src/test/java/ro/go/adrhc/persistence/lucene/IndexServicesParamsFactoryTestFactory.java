@@ -5,7 +5,7 @@ import org.apache.lucene.analysis.Analyzer;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.bare.query.DefaultFieldAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtils;
-import ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
@@ -39,7 +39,7 @@ public class IndexServicesParamsFactoryTestFactory {
 		IndexServiceParamsFactoryBuilder<T, E> builder =
 			IndexServiceParamsFactoryBuilder.of(tClass, schemaClass, Path.of("nowhere"));
 		builder.indexWriterFactory(analyzer ->
-			failToEmpty(LuceneIndexWriterFactory::ramWriter, analyzer));
+			failToEmpty(DocIndexWriterFactory::ramWriter, analyzer));
 		return builder.build().orElseThrow(() ->
 			new IllegalStateException("Can't create IndexServiceParamsFactory!"));
 	}

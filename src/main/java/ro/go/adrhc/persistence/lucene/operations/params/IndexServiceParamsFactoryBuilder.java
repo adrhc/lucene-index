@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.bare.field.FieldType;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPoolFactory;
-import ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory;
+import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
@@ -118,7 +118,7 @@ public class IndexServiceParamsFactoryBuilder<
 			if (indexWriterFactory != null) {
 				return indexWriterFactory.apply(analyzer);
 			} else {
-				return Optional.of(LuceneIndexWriterFactory.fsWriter(analyzer, indexPath));
+				return Optional.of(DocIndexWriterFactory.fsWriter(analyzer, indexPath));
 			}
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);

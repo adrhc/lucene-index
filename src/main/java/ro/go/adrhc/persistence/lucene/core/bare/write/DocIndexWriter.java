@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.fsWriter;
-import static ro.go.adrhc.persistence.lucene.core.bare.write.LuceneIndexWriterFactory.ramWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriterFactory.fsWriter;
+import static ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriterFactory.ramWriter;
 import static ro.go.adrhc.util.collection.IterableUtils.iterable;
 
 @RequiredArgsConstructor

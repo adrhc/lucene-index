@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
 
 @UtilityClass
-public class LuceneIndexWriterFactory {
+public class DocIndexWriterFactory {
 	public static IndexWriter ramWriter() throws IOException {
 		return ramWriter(defaultAnalyzer());
 	}
