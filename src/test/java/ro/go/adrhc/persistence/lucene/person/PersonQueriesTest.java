@@ -28,19 +28,19 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void hasManyTags() throws IOException {
 		Query query = PersonQueryFactory.hasAllTags(Set.of("LIKED", "LOVED"));
-		List<Person> metadata = indexRepository.findMany(query);
+		List<Person> metadata = index.findMany(query);
 		assertThat(metadata).hasSize(1);
 	}
 
 	@Test
 	void hasOneTag() throws IOException {
 		Query likedQuery = PersonQueryFactory.hasTag("LIKED");
-		List<Person> liked = indexRepository.findMany(likedQuery);
+		List<Person> liked = index.findMany(likedQuery);
 		log.debug("\nLIKED entries:\n{}", concat(liked));
 		assertThat(liked).hasSize(2);
 
 		Query lovedQuery = PersonQueryFactory.hasTag("LOVED");
-		List<Person> loved = indexRepository.findMany(lovedQuery);
+		List<Person> loved = index.findMany(lovedQuery);
 		log.debug("\nLOVED entries:\n{}", concat(loved));
 		assertThat(loved).hasSize(2);
 
@@ -54,7 +54,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 	void parse() {
 		// tokens (i.e. other than KeywordField) must be normalized!
 		List<Person> result = NAME_QUERY_PARSER.parse("pers*2*")
-			.map(nullFailResultFn(indexRepository::findMany))
+			.map(nullFailResultFn(index::findMany))
 			.orElseGet(List::of);
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -66,7 +66,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 			String.join(", ", TOKENIZATION_UTILS.textToTokenList(PERSON2.name())));
 
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findMany(
+		List<Person> result = index.findMany(
 			NAME_QUERIES.maxFuzzinessNearTokens(List.of("wa0029", "ccc_ddd", "an")));
 
 		assertThat(result).hasSize(1);
@@ -76,7 +76,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void tokenEquals() throws IOException {
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findMany(
+		List<Person> result = index.findMany(
 			ALIAS_PHRASE_QUERIES.tokenEquals("aliasphraseaaiisstt123"));
 
 		assertThat(result).hasSize(1);
@@ -88,7 +88,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 		String aliasWord = PERSON3.aliasWord();
 		String normalized = ANALYZER.normalize(null, aliasWord).utf8ToString();
 		log.info("\naliasWord is:\t\t{}\nnormalized is:\t{}", aliasWord, normalized);
-		List<Person> result = indexRepository.findMany(
+		List<Person> result = index.findMany(
 			ALIAS_WORD_QUERIES.tokenEquals(normalized));
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst().id()).isEqualTo(PERSON3.id());
@@ -99,7 +99,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 		String aliasKeyword = PERSON3.aliasKeyWord();
 		log.info("\naliasKeyWord is: {}", aliasKeyword);
 		// KeywordField shouldn't be normalized!
-		List<Person> result = indexRepository.findMany(
+		List<Person> result = index.findMany(
 			ALIAS_KEYWORD_QUERIES.keywordEquals(aliasKeyword));
 
 		assertThat(result).hasSize(1);
@@ -113,7 +113,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 		prefix = prefix.substring(0, prefix.length() - 1);
 		log.info("\ntoken is:\t{}\nprefix is:\t{}", token, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findMany(
+		List<Person> result = index.findMany(
 			ALIAS_PHRASE_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
@@ -126,7 +126,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 		prefix = prefix.substring(0, prefix.length() - 1);
 		log.info("\nname is:\t\t{}\nprefix is:\t{}", name, prefix);
 		// tokens (i.e. other than KeywordField) must be normalized!
-		List<Person> result = indexRepository.findMany(NAME_WORD_QUERIES.startsWith(prefix));
+		List<Person> result = index.findMany(NAME_WORD_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}
@@ -137,7 +137,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 		String prefix = cnp.substring(0, cnp.length() - 1);
 		log.info("\ncnp is:\t\t{}\nprefix is:\t{}", cnp, prefix);
 		// KeywordField shouldn't be normalized!
-		List<Person> result = indexRepository.findMany(CNP_QUERIES.startsWith(prefix));
+		List<Person> result = index.findMany(CNP_QUERIES.startsWith(prefix));
 
 		assertThat(result).hasSize(1);
 	}
@@ -145,7 +145,7 @@ class PersonQueriesTest extends AbstractPersonTmpIndexTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void findByMale(boolean male) throws IOException {
-		List<Person> result = indexRepository.findMany(MALE_QUERIES.booleanEquals(male));
+		List<Person> result = index.findMany(MALE_QUERIES.booleanEquals(male));
 		assertThat(result).hasSize((int) PEOPLE.stream().filter(p -> p.male() == male).count());
 	}
 }

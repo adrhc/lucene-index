@@ -21,11 +21,11 @@ public abstract class AbstractPersonTmpIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
-	protected FileSystemDocTypedIndex<Long, Person> indexRepository;
+	protected FileSystemDocTypedIndex<Long, Person> index;
 
 	protected void initObjects() {
 		peopleIndexSpec = createFSTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
-		indexRepository = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
+		index = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
 	}
 
 	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
@@ -37,14 +37,14 @@ public abstract class AbstractPersonTmpIndexTest {
 		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
 	}
 
-	protected void indexRepositoryReset() throws IOException {
-		indexRepository.reset(PEOPLE);
+	protected void indexReset() throws IOException {
+		index.reset(PEOPLE);
 	}
 
 	@BeforeAll
 	void beforeAll() throws IOException {
 		initObjects();
-		indexRepositoryReset();
+		indexReset();
 	}
 
 	@AfterAll

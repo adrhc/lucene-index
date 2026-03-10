@@ -15,10 +15,10 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeop
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractPersonRAMIndexTest {
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
-	protected FileSystemDocTypedIndex<Long, Person> indexRepository;
+	protected FileSystemDocTypedIndex<Long, Person> index;
 
-	protected void indexRepositoryReset() throws IOException {
-		indexRepository.reset(generatePeopleList(peopleListSize()));
+	protected void indexReset() throws IOException {
+		index.reset(generatePeopleList(peopleListSize()));
 	}
 
 	protected int peopleListSize() {
@@ -28,8 +28,8 @@ public abstract class AbstractPersonRAMIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		peopleIndexSpec = createRAMTypedIndexSpec(Person.class, PersonSchema.class);
-		indexRepository = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
-		indexRepositoryReset();
+		index = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
+		indexReset();
 	}
 
 	@AfterAll

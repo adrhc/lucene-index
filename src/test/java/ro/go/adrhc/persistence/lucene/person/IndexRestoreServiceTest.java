@@ -19,37 +19,37 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl
 public class IndexRestoreServiceTest extends AbstractPersonTmpIndexTest {
 	@Test
 	void restoreTest() throws IOException {
-		indexRepository.addOne(generateGirl(4));
+		index.addOne(generateGirl(4));
 
-		indexRepository.removeById(3L);
+		index.removeById(3L);
 
-		assertThat(indexRepository.findById(3L)).isEmpty();
-		assertThat(indexRepository.findById(4L)).isPresent();
+		assertThat(index.findById(3L)).isEmpty();
+		assertThat(index.findById(4L)).isPresent();
 
-		indexRepository.shallowUpdate(createCachedDataSource(PEOPLE));
+		index.shallowUpdate(createCachedDataSource(PEOPLE));
 
-		assertThat(indexRepository.count()).isEqualTo(PEOPLE.size());
-		assertThat(indexRepository.getAllIds()).containsOnlyOnceElementsOf(
+		assertThat(index.count()).isEqualTo(PEOPLE.size());
+		assertThat(index.getAllIds()).containsOnlyOnceElementsOf(
 			PEOPLE.stream().map(Person::id).toList());
 	}
 
 	@Test
 	void restoreSubsetTest() throws IOException {
-		indexRepository.addOne(generateGirl(4));
+		index.addOne(generateGirl(4));
 
-		indexRepository.removeById(3L);
+		index.removeById(3L);
 
-		assertThat(indexRepository.findById(3L)).isEmpty(); // boy
-		assertThat(indexRepository.findById(4L)).isPresent();
+		assertThat(index.findById(3L)).isEmpty(); // boy
+		assertThat(index.findById(4L)).isPresent();
 
 		Query query = ExactQuery.create(PersonSchema.male).newExactQuery(true);
-		indexRepository.shallowUpdateSubset(
+		index.shallowUpdateSubset(
 			createCachedDataSource(PEOPLE.stream().filter(Person::male)),
 			query);
 
-		assertThat(indexRepository.count()).isEqualTo(PEOPLE.size() + 1);
-		assertThat(indexRepository.getAllIds()).containsAll(
+		assertThat(index.count()).isEqualTo(PEOPLE.size() + 1);
+		assertThat(index.getAllIds()).containsAll(
 			PEOPLE.stream().map(Person::id).toList());
-		assertThat(indexRepository.findById(4L)).isPresent();
+		assertThat(index.findById(4L)).isPresent();
 	}
 }

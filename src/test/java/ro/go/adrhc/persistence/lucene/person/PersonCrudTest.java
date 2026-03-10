@@ -2,8 +2,6 @@ package ro.go.adrhc.persistence.lucene.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -14,38 +12,42 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl;
 import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.ALIAS_KEYWORD_QUERIES;
 
-@ExtendWith(MockitoExtension.class)
 @Slf4j
-public class PersonCrudTest extends AbstractPersonTmpIndexTest {
+class PersonCrudTest extends AbstractPersonRAMIndexTest {
+	@Override
+	protected void indexReset() throws IOException {
+		index.reset(PEOPLE);
+	}
+
 	@Test
 	void crudTest() throws IOException {
-		int count = indexRepository.count(ALIAS_KEYWORD_QUERIES.startsWith("alias_Keyword"));
+		int count = index.count(ALIAS_KEYWORD_QUERIES.startsWith("alias_Keyword"));
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(PEOPLE.size());
 
-		indexRepository.addOne(generateGirl(4));
-		assertThat(indexRepository.findById(4L)).isPresent();
+		index.addOne(generateGirl(4));
+		assertThat(index.findById(4L)).isPresent();
 
-		indexRepository.removeById(4L);
-		assertThat(indexRepository.findById(4L)).isEmpty();
+		index.removeById(4L);
+		assertThat(index.findById(4L)).isEmpty();
 	}
 
 	@Test
 	void nullInstantField() throws IOException {
-		indexRepository.addOne(PeopleGenerator.generateGirl(PEOPLE.size() + 1, null));
-		assertThat(indexRepository.findById(1L + PEOPLE.size())).isPresent();
+		index.addOne(PeopleGenerator.generateGirl(PEOPLE.size() + 1, null));
+		assertThat(index.findById(1L + PEOPLE.size())).isPresent();
 	}
 
 	@Test
 	void updateTest() throws IOException {
-		Optional<Person> optionalPerson = indexRepository.findById(1L);
+		Optional<Person> optionalPerson = index.findById(1L);
 		assertThat(optionalPerson).isPresent();
 
 		String newStoredOnlyField = Instant.now().toString();
 		Person person = optionalPerson.get().storedOnlyField(newStoredOnlyField);
-		indexRepository.upsert(person);
+		index.upsert(person);
 
-		optionalPerson = indexRepository.findById(person.getId());
+		optionalPerson = index.findById(person.getId());
 		assertThat(optionalPerson).isPresent();
 		assertThat(optionalPerson.get().storedOnlyField()).isEqualTo(newStoredOnlyField);
 	}

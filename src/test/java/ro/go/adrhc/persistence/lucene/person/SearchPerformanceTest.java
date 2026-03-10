@@ -34,14 +34,14 @@ public class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
 	@RepeatedTest(2)
 	void keywordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = indexRepository
+		int count = index
 			.count(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\ncount time: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = indexRepository
+		List<Person> people = index
 			.findMany(ALIAS_KEYWORD_QUERIES.keywordEquals("alias_Keyword0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
@@ -51,14 +51,14 @@ public class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
 	@RepeatedTest(2)
 	void wordTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = indexRepository
+		int count = index
 			.count(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = indexRepository
+		List<Person> people = index
 			.findMany(ALIAS_WORD_QUERIES.keywordEquals("alias word0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
@@ -68,14 +68,14 @@ public class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
 	@RepeatedTest(2)
 	void phraseTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = indexRepository
+		int count = index
 			.count(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isGreaterThan(1000);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = indexRepository
+		List<Person> people = index
 			.findMany(ALIAS_PHRASE_QUERIES.keywordEquals("phrase0"));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
@@ -85,13 +85,13 @@ public class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
 	@RepeatedTest(2)
 	void intTest() throws IOException {
 		StopWatch stopWatch = StopWatchUtils.start();
-		int count = indexRepository.count(ID_QUERIES.longEquals(1111));
+		int count = index.count(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\ntime: {}", stopWatch.formatTime());
 		log.info("\ncount: {}", count);
 		assertThat(count).isEqualTo(1);
 		stopWatch = StopWatchUtils.start();
-		List<Person> people = indexRepository.findMany(ID_QUERIES.longEquals(1111));
+		List<Person> people = index.findMany(ID_QUERIES.longEquals(1111));
 		stopWatch.stop();
 		log.info("\npeople time: {}", stopWatch.formatTime());
 		log.info("\npeople count: {}", people.size());
