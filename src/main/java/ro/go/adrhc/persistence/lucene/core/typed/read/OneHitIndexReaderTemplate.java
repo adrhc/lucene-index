@@ -22,7 +22,7 @@ public class OneHitIndexReaderTemplate<T> {
 		throws IOException, E {
 		try (OneHitIndexReader<T> idsReader = idReaderFactory.get()) {
 			R result = idsReaderFn.apply(idsReader);
-			Assert.isTrue(!(result instanceof Stream<?>), "Result must not be a stream!");
+			Assert.isFalse(result instanceof Stream<?>, "Result must not be a stream!");
 			return result;
 		}
 	}
