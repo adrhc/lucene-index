@@ -7,7 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.LuceneIndex;
 import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
+import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 public abstract class AbstractPersonTmpIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected IndexServiceParamsFactory<Person> peopleIndexSpec;
+	protected IndexOperationsParams<Person> peopleIndexSpec;
 	protected LuceneIndex<Long, Person> index;
 
 	protected void initObjects() {

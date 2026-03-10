@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.params;
+package ro.go.adrhc.persistence.lucene.operations;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -12,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchServiceParams
 import java.io.Closeable;
 import java.nio.file.Path;
 
-public interface IndexServiceParamsFactory<T>
+public interface IndexOperationsParams<T>
 	extends TypedIndexRemoverParams, TypedIndexUpsertParams<T>,
 	TypedIndexShallowUpdaterParams<T>, Closeable {
 	LuceneFieldSpec<T> idField();

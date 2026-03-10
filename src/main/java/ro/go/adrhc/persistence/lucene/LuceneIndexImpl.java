@@ -8,14 +8,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
-import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
-import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.core.typed.search.QueryAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.search.ScoreDocAndValues;
+import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
+import ro.go.adrhc.persistence.lucene.operations.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,15 +28,16 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements LuceneIndex<I, T> {
 	@Getter
-	protected final IndexServiceParamsFactory<T> indexServiceParamsFactory;
+	protected final IndexOperationsParams<T> indexOperationsParams;
 	protected final ReadIndexOperations<T, I> readIndexOperations;
 	protected final WriteIndexOperations<T, I> writeIndexOperations;
 
 	public static <I, T extends Indexable<I, T>>
-	LuceneIndex<I, T> of(IndexServiceParamsFactory<T> params) {
-		IndexOperationsFactory<T, I> factory = IndexOperationsFactory.of(params);
-		ReadIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
-		WriteIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
+	LuceneIndex<I, T> of(IndexOperationsParams<T> params) {
+		WriteIndexOperationsFactory<T, I> writeIndexOpFactory = WriteIndexOperationsFactory.of(params);
+		WriteIndexOperations<T, I> writeIndexOperations = writeIndexOpFactory.create();
+		ReadIndexOperationsFactory<T, I> readIndexOpFactory = ReadIndexOperationsFactory.of(params);
+		ReadIndexOperations<T, I> readIndexOperations = readIndexOpFactory.create();
 		return new LuceneIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
@@ -242,7 +240,7 @@ public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements LuceneInde
 
 	@Override
 	public void close() throws IOException {
-		indexServiceParamsFactory.close();
+		indexOperationsParams.close();
 	}
 
 	@Override
@@ -266,10 +264,10 @@ public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements LuceneInde
 	}
 
 	protected void executeWrite(SneakyRunnable<IOException> action) throws IOException {
-		if (indexServiceParamsFactory.isReadOnly()) {
+		if (indexOperationsParams.isReadOnly()) {
 			throw new UnsupportedOperationException("Can't modify, the index is read-only!");
 		}
 		action.run();
-		indexServiceParamsFactory.indexWriter().commit();
+		indexOperationsParams.indexWriter().commit();
 	}
 }

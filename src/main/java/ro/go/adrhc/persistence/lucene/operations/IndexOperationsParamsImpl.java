@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.params;
+package ro.go.adrhc.persistence.lucene.operations;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Collection;
 @Accessors(fluent = true)
 @Getter
 @Slf4j
-public class IndexServiceParamsFactoryImpl<T> implements IndexServiceParamsFactory<T> {
+public class IndexOperationsParamsImpl<T> implements IndexOperationsParams<T> {
 	private final Class<T> type;
 	private final LuceneFieldSpec<T> idField;
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
