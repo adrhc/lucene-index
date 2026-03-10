@@ -19,27 +19,41 @@ public class ExactQuery {
 		return new ExactQuery(field, new FieldQueries(field.name()));
 	}
 
-	public List<Query> newExactQueries(Collection<?> values) {
-		return values.stream().map(this::newExactQuery).toList();
+	/**
+	 * @param propertyValues will be converted to indexable values which then will be used for the query
+	 */
+	public List<Query> newExactQueries(Collection<?> propertyValues) {
+		return propertyValues.stream().map(this::newExactQuery).toList();
 	}
 
+	/**
+	 * The value to query for is the one of the field with the same name as "this".field.
+	 *
+	 * @param document is used to get the value to query for
+	 */
 	public Query newExactQuery(Document document) {
 		return newExactQuery(document.getField(field.name()));
 	}
 
-	public Query newExactQuery(IndexableField field) {
+	/**
+	 * @param valueSource is used only to get the value to query for
+	 */
+	public Query newExactQuery(IndexableField valueSource) {
 		return switch (this.field.fieldType()) {
-			case KEYWORD -> newExactQuery(field.stringValue());
-			case LONG -> newExactQuery(field.numericValue().longValue());
-			case INT -> newExactQuery(field.numericValue().intValue());
+			case KEYWORD -> newExactQuery(valueSource.stringValue());
+			case LONG -> newExactQuery(valueSource.numericValue().longValue());
+			case INT -> newExactQuery(valueSource.numericValue().intValue());
 			default -> throw new IllegalStateException(
 				"Unexpected type %s for %s! "
 					.formatted(this.field.fieldType(), this.field.name()));
 		};
 	}
 
-	public Query newExactQuery(Object typedValue) {
-		Object idFieldValue = field.propToIndexableValue(typedValue);
+	/**
+	 * @param propertyValue will be converted to an indexable value which then will be used for the query
+	 */
+	public Query newExactQuery(Object propertyValue) {
+		Object idFieldValue = field.propToIndexableValue(propertyValue);
 		return switch (field.fieldType()) {
 			case KEYWORD -> fieldQueries.keywordEquals((String) idFieldValue);
 			case LONG -> fieldQueries.longEquals((Long) idFieldValue);
