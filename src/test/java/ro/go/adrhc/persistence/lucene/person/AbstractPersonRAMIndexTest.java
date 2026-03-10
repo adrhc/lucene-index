@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndex;
 import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndexImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
 import java.io.IOException;
@@ -16,6 +17,10 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeop
 public abstract class AbstractPersonRAMIndexTest {
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
 	protected FileSystemDocTypedIndex<Long, Person> index;
+
+	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
+		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
+	}
 
 	protected void indexReset() throws IOException {
 		index.reset(generatePeopleList(peopleListSize()));

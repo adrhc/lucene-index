@@ -21,9 +21,10 @@ import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-public class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
+class SearchPerformanceTest extends AbstractPersonTmpIndexTest {
+	@Override
 	@BeforeAll
-	void beforeAll() throws IOException {
+	void beforeAll() {
 		tmpDir = Path.of("C:/Users/adpetre/Temp/test-index/people");
 		initObjects();
 //		createCreateService().createOrReplace(generatePeopleStream(0, 1_000_000));

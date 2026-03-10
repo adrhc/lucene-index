@@ -3,8 +3,6 @@ package ro.go.adrhc.persistence.lucene.person;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 
 import java.io.IOException;
@@ -14,9 +12,13 @@ import static ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndex
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl;
 
-@ExtendWith(MockitoExtension.class)
 @Slf4j
-public class IndexRestoreServiceTest extends AbstractPersonTmpIndexTest {
+class IndexRestoreServiceTest extends AbstractPersonRAMIndexTest {
+	@Override
+	protected void indexReset() throws IOException {
+		index.reset(PEOPLE);
+	}
+
 	@Test
 	void restoreTest() throws IOException {
 		index.addOne(generateGirl(4));

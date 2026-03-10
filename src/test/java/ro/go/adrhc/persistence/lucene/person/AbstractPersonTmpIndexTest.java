@@ -33,7 +33,7 @@ public abstract class AbstractPersonTmpIndexTest {
 			peopleIndexSpec.allHitsIndexReaderParams());
 	}
 
-	protected OneHitIndexReaderTemplate<Person> createPersonIdIndexReaderTemplate() {
+	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
 		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
 	}
 

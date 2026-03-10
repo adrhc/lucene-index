@@ -3,10 +3,8 @@ package ro.go.adrhc.persistence.lucene.person;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,11 +17,15 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 import static ro.go.adrhc.util.fn.FunctionFactory.nullFailResultFn;
 
-@ExtendWith(MockitoExtension.class)
 @Slf4j
-class PersonQueriesTest extends AbstractPersonTmpIndexTest {
+class PersonQueriesTest extends AbstractPersonRAMIndexTest {
 	private static final Person PERSON2 = PEOPLE.get(1);
 	private static final Person PERSON3 = PEOPLE.get(2);
+
+	@Override
+	protected void indexReset() throws IOException {
+		index.reset(PEOPLE);
+	}
 
 	@Test
 	void hasManyTags() throws IOException {

@@ -2,10 +2,11 @@ package ro.go.adrhc.persistence.lucene.person;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.LongField;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedNumericSortField;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;
 
 import java.io.IOException;
@@ -19,9 +20,8 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateName
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 import static ro.go.adrhc.persistence.lucene.person.PersonSchema.*;
 
-@ExtendWith(MockitoExtension.class)
 @Slf4j
-class PersonSortTest extends AbstractPersonTmpIndexTest {
+class PersonSortTest extends AbstractPersonRAMIndexTest {
 	@Override
 	protected void indexReset() throws IOException {
 		index.reset(generatePeopleList(100));
