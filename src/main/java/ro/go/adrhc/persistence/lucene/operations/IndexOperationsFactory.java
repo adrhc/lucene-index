@@ -54,14 +54,14 @@ public class IndexOperationsFactory<T extends Indexable<I, T>, I> {
 			indexRemover, mergeService, indexReset, shallowUpdateService, backupService);
 	}
 
-	public WriteTypedIndexOperations<T, I> createWriteIndexOperations() {
-		return new WriteTypedIndexOperationsImpl<>(indexWriter,
+	public WriteIndexOperations<T, I> createWriteIndexOperations() {
+		return new WriteIndexOperationsImpl<>(indexWriter,
 			indexAdder, indexUpsert, indexRemover, indexReset,
 			shallowUpdateService, mergeService, backupService);
 	}
 
-	public ReadDocIndexOperations<T, I> createReadIndexOperations() {
-		return new ReadDocIndexOperationsImpl<>(idField, unlimitedIdxReaderTemplate,
+	public ReadIndexOperations<T, I> createReadIndexOperations() {
+		return new ReadIndexOperationsImpl<>(idField, unlimitedIdxReaderTemplate,
 			indexCounter, retrieveService, searchService);
 	}
 }

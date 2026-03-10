@@ -20,8 +20,8 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class WriteTypedIndexOperationsImpl<T extends Indexable<I, T>, I>
-	implements WriteTypedIndexOperations<T, I> {
+public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
+	implements WriteIndexOperations<T, I> {
 	private final DocIndexWriter indexWriter;
 	private final TypedIndexAdder<T> indexAdder;
 	private final TypedIndexUpsert<T> indexUpsert;

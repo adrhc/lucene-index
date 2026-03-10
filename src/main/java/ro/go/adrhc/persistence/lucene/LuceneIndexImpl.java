@@ -9,8 +9,8 @@ import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
-import ro.go.adrhc.persistence.lucene.operations.ReadDocIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.WriteTypedIndexOperations;
+import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
+import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
@@ -29,19 +29,19 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class FileSystemDocTypedIndexImpl<I, T extends Indexable<I, T>> implements
-	FileSystemDocTypedIndex<I, T> {
+public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements
+	LuceneIndex<I, T> {
 	@Getter
 	protected final IndexServicesParamsFactory<T> indexServicesParamsFactory;
-	protected final ReadDocIndexOperations<T, I> readIndexOperations;
-	protected final WriteTypedIndexOperations<T, I> writeIndexOperations;
+	protected final ReadIndexOperations<T, I> readIndexOperations;
+	protected final WriteIndexOperations<T, I> writeIndexOperations;
 
 	public static <I, T extends Indexable<I, T>>
-	FileSystemDocTypedIndex<I, T> of(IndexServicesParamsFactory<T> params) {
+	LuceneIndex<I, T> of(IndexServicesParamsFactory<T> params) {
 		IndexOperationsFactory<T, I> factory = IndexOperationsFactory.of(params);
-		ReadDocIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
-		WriteTypedIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
-		return new FileSystemDocTypedIndexImpl<>(params, readIndexOperations, writeIndexOperations);
+		ReadIndexOperations<T, I> readIndexOperations = factory.createReadIndexOperations();
+		WriteIndexOperations<T, I> writeIndexOperations = factory.createWriteIndexOperations();
+		return new LuceneIndexImpl<>(params, readIndexOperations, writeIndexOperations);
 	}
 
 	@Override

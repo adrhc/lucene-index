@@ -30,7 +30,7 @@ public interface IndexServicesParamsFactory<T>
 
 	IndexSearchServiceParams<T> indexSearchServiceParams();
 
-	IndexRetrieveServiceParams<T> typedRetrieveServiceParams();
+	IndexRetrieveServiceParams<T> indexRetrieveServiceParams();
 
 	TypedIndexReaderParams<T> oneHitIndexReaderParams();
 

@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 
-class TypedIndexReaderTemplateTest extends AbstractPersonRAMIndexTest {
+class HitsLimitedIndexReaderTemplateTest extends AbstractPersonRAMIndexTest {
 	@Override
 	protected void indexReset() throws IOException {
 		index.reset(PEOPLE);

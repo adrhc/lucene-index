@@ -4,21 +4,21 @@ import org.apache.lucene.analysis.Analyzer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
-import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndex;
-import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndexImpl;
+import ro.go.adrhc.persistence.lucene.LuceneIndex;
+import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
 import java.io.IOException;
 
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.createRAMTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.createRAMTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractPersonRAMIndexTest {
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
-	protected FileSystemDocTypedIndex<Long, Person> index;
+	protected LuceneIndex<Long, Person> index;
 
 	protected Analyzer analyzer() {
 		return peopleIndexSpec.analyzer();
@@ -43,7 +43,7 @@ public abstract class AbstractPersonRAMIndexTest {
 	@BeforeAll
 	void beforeAll() throws IOException {
 		peopleIndexSpec = createRAMTypedIndexSpec(Person.class, PersonSchema.class);
-		index = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
+		index = LuceneIndexImpl.of(peopleIndexSpec);
 		indexReset();
 	}
 

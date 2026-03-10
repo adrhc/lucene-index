@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.operations.params.IndexServicesPara
 import static ro.go.adrhc.util.fn.FunctionUtils.failToEmpty;
 
 @Slf4j
-public class TypedIndexParamsTestFactory {
+public class IndexServicesParamsFactoryTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(new TokenizerProperties()).orElseThrow();
 	public static final TokenizationUtils TOKENIZATION_UTILS =
 		new TokenizationUtils(new TokenStreamToStreamConverter(), ANALYZER);

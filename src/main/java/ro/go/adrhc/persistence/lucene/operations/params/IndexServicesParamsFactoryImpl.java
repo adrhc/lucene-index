@@ -50,13 +50,18 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	}
 
 	@Override
-	public IndexRetrieveServiceParams<T> typedRetrieveServiceParams() {
+	public IndexRetrieveServiceParams<T> indexRetrieveServiceParams() {
 		return new IndexRetrieveServiceParamsImpl<>(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override
 	public TypedIndexReaderParams<T> oneHitIndexReaderParams() {
 		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool, rawFieldValueSerdes);
+	}
+
+	@Override
+	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
+		return allHits(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override
@@ -67,11 +72,6 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	@Override
 	public boolean isReadOnly() {
 		return indexWriter == null;
-	}
-
-	@Override
-	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
-		return allHits(type, idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override

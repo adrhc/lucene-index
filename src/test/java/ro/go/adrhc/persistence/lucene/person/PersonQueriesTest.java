@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Strings.concat;
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.*;
+import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.*;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PersonQueryFactory.*;
 import static ro.go.adrhc.util.fn.FunctionFactory.nullFailResultFn;

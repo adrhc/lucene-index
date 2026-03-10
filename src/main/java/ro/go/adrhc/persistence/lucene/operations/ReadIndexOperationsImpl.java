@@ -25,8 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class ReadDocIndexOperationsImpl<T extends Indexable<I, T>, I>
-	implements ReadDocIndexOperations<T, I> {
+public class ReadIndexOperationsImpl<T extends Indexable<I, T>, I>
+	implements ReadIndexOperations<T, I> {
 	private final LuceneFieldSpec<T> idField;
 	private final HitsLimitedIndexReaderTemplate<I, T> unlimitedIdxReaderTemplate;
 	private final DocIndexCounter countService;

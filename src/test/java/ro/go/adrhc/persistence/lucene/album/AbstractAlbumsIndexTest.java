@@ -4,14 +4,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndex;
-import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndexImpl;
+import ro.go.adrhc.persistence.lucene.LuceneIndex;
+import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.TypedIndexParamsTestFactory.createFSTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.createFSTypedIndexSpec;
 import static ro.go.adrhc.persistence.lucene.album.AlbumsGenerator.ALBUMS;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -19,12 +19,12 @@ public abstract class AbstractAlbumsIndexTest {
 	@TempDir
 	protected static Path tmpDir;
 	protected IndexServicesParamsFactory<Album> albumsIndexSpec;
-	protected FileSystemDocTypedIndex<Path, Album> indexRepository;
+	protected LuceneIndex<Path, Album> indexRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
 		albumsIndexSpec = createFSTypedIndexSpec(Album.class, AlbumSchema.class, tmpDir);
-		indexRepository = FileSystemDocTypedIndexImpl.of(albumsIndexSpec);
+		indexRepository = LuceneIndexImpl.of(albumsIndexSpec);
 		indexRepository.reset(ALBUMS);
 	}
 
