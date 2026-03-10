@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.person;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -17,6 +18,10 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeop
 public abstract class AbstractPersonRAMIndexTest {
 	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
 	protected FileSystemDocTypedIndex<Long, Person> index;
+
+	protected Analyzer analyzer() {
+		return peopleIndexSpec.analyzer();
+	}
 
 	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
 		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
