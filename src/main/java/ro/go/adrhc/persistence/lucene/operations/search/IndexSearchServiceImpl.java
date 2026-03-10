@@ -23,12 +23,12 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 	create(IndexSearchServiceParams<T> params) {
 		BestMatchSearchService<T> bestMatchSearchService =
 			BestMatchSearchServiceImpl.of(params.typedIndexReaderParams());
-		SearchReduceService<T> searchReduceService = new SearchReduceServiceImpl<>(
-			HitsLimitedIndexReaderTemplate.create(params), // limited to params.numHits
-			params.searchResultFilter());
-		SearchManyService<T> searchManyService = new SearchManyServiceImpl<>(
-			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
-			params.searchResultFilter());
+		HitsLimitedIndexReaderTemplate<Object, T> allHits =
+			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams());
+		SearchReduceService<T> searchReduceService =
+			new SearchReduceServiceImpl<>(allHits, params.searchResultFilter());
+		SearchManyService<T> searchManyService =
+			new SearchManyServiceImpl<>(allHits, params.searchResultFilter());
 		return new IndexSearchServiceImpl<>(bestMatchSearchService,
 			searchReduceService, searchManyService);
 	}

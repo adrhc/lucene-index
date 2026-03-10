@@ -21,10 +21,7 @@ import java.util.function.Function;
 
 @Slf4j
 public class IndexServicesParamsFactoryBuilder<
-	T extends Identifiable<?>,
-	E extends Enum<E> & LuceneFieldSpec<T>> {
-	public static final int NUM_HITS = 10;
-	private int searchHits = NUM_HITS;
+	T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>> {
 	private SearchResultFilter<T> searchResultFilter = it -> true;
 	private Class<T> tClass;
 	private Collection<? extends LuceneFieldSpec<T>> typedFields;
@@ -63,11 +60,6 @@ public class IndexServicesParamsFactoryBuilder<
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E> searchHits(int searchHits) {
-		this.searchHits = searchHits;
-		return this;
-	}
-
 	public IndexServicesParamsFactoryBuilder<T, E> searchResultFilter(
 		SearchResultFilter<T> searchResultFilter) {
 		this.searchResultFilter = searchResultFilter;
@@ -96,13 +88,13 @@ public class IndexServicesParamsFactoryBuilder<
 		Analyzer finalAnalyzer = perFieldAnalyzer(analyzer());
 		if (readOnly) {
 			return Optional.of(new IndexServicesParamsFactoryImpl<>(
-				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexPath),
-				null, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
+				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory
+				.of(indexPath), null, rawFieldValueSerdes, searchResultFilter, indexPath));
 		} else {
 			return createIndexWriter(finalAnalyzer)
 				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
-					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory.of(indexWriter),
-					indexWriter, rawFieldValueSerdes, searchResultFilter, indexPath, searchHits));
+					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory
+					.of(indexWriter), indexWriter, rawFieldValueSerdes, searchResultFilter, indexPath));
 		}
 	}
 

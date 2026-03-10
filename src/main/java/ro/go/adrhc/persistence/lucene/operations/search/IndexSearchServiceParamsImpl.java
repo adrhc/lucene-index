@@ -11,9 +11,9 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl
 
 import java.io.IOException;
 
-public record IndexSearchServiceParamsImpl<T>(Class<T> type, LuceneFieldSpec<T> idField,
-	IndexReaderPool indexReaderPool, RawFieldValueSerdes<T> rawFieldValueSerdes,
-	SearchResultFilter<T> searchResultFilter, int numHits)
+public record IndexSearchServiceParamsImpl<T>(Class<T> type,
+	LuceneFieldSpec<T> idField, IndexReaderPool indexReaderPool,
+	RawFieldValueSerdes<T> rawFieldValueSerdes, SearchResultFilter<T> searchResultFilter)
 	implements IndexSearchServiceParams<T> {
 	@Override
 	public void closeIndexReader(IndexReader indexReader) throws IOException {

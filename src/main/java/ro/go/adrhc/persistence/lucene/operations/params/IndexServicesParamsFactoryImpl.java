@@ -40,13 +40,12 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	private final RawFieldValueSerdes<T> rawFieldValueSerdes;
 	private final SearchResultFilter<T> searchResultFilter;
 	private final Path indexPath;
-	private final int searchHits;
 	private boolean closed;
 
 	@Override
 	public IndexSearchServiceParams<T> indexSearchServiceParams() {
-		return new IndexSearchServiceParamsImpl<>(type,
-			idField, indexReaderPool, rawFieldValueSerdes, searchResultFilter, searchHits);
+		return new IndexSearchServiceParamsImpl<>(type, idField,
+			indexReaderPool, rawFieldValueSerdes, searchResultFilter);
 	}
 
 	@Override
