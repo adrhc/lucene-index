@@ -12,7 +12,7 @@ import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertC
 import static ro.go.adrhc.util.conversion.OptionalResultConversionUtils.convertStream;
 
 @RequiredArgsConstructor
-public abstract class AbstractIndexWriter<T> implements IndexServiceOperations {
+public abstract class AbstractIndexWriter<T> implements BasicIndexOperations {
 	protected final TypedToDocumentConverter<T> toDocumentConverter;
 	protected final DocIndexWriter docIndexWriter;
 

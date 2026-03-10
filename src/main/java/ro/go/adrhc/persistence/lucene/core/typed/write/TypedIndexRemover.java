@@ -5,7 +5,7 @@ import org.apache.lucene.search.Query;
 import java.io.IOException;
 import java.util.Collection;
 
-public interface TypedIndexRemover<I> extends IndexServiceOperations {
+public interface TypedIndexRemover<I> extends BasicIndexOperations {
 	void removeOne(I id) throws IOException;
 
 	void removeMany(Collection<? extends I> ids) throws IOException;
