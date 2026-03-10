@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.core.bare.read;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import com.rainerhahnekamp.sneakythrow.functional.SneakySupplier;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,13 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class DocIndexReaderTemplate {
 	private final SneakySupplier<DocIndexReader, IOException> indexReaderFactory;
+
+	public <E extends Exception> void withReader(
+		SneakyConsumer<DocIndexReader, E> indexReaderConsumer) throws IOException, E {
+		try (DocIndexReader indexReader = indexReaderFactory.get()) {
+			indexReaderConsumer.accept(indexReader);
+		}
+	}
 
 	/**
 	 * Make sure that songsIndexReaderFn does not return a Stream!
