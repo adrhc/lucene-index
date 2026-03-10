@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RAMDocIndexReaderTemplateTest extends AbstractRAMDocIndexTest {
+class RAMDocIndexReaderTemplateTest extends AbstractRAMDocIndexTest {
 	@Test
 	void useRAMReader() throws IOException {
 		useRAMIndex((r, w) -> {
