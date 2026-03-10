@@ -29,8 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements
-	LuceneIndex<I, T> {
+public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements LuceneIndex<I, T> {
 	@Getter
 	protected final IndexServiceParamsFactory<T> indexServiceParamsFactory;
 	protected final ReadIndexOperations<T, I> readIndexOperations;

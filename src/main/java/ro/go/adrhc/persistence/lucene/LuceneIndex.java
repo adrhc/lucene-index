@@ -10,13 +10,13 @@ import java.nio.file.Path;
 
 public interface LuceneIndex<I, T extends Indexable<I, T>>
 	extends ReadIndexOperations<T, I>, WriteIndexOperations<T, I>, Closeable {
-	IndexServiceParamsFactory<T> getIndexServicesParamsFactory();
+	IndexServiceParamsFactory<T> getIndexServiceParamsFactory();
 
 	default Path getIndexPath() {
-		return getIndexServicesParamsFactory().indexPath();
+		return getIndexServiceParamsFactory().indexPath();
 	}
 
 	default boolean isReadOnly() {
-		return getIndexServicesParamsFactory().isReadOnly();
+		return getIndexServiceParamsFactory().isReadOnly();
 	}
 }
