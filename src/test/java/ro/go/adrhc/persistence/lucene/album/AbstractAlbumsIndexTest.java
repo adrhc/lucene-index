@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.createFSTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.IndexOperationsParamsTestFactory.createFSIndexParams;
 import static ro.go.adrhc.persistence.lucene.album.AlbumsGenerator.ALBUMS;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -23,7 +23,7 @@ public abstract class AbstractAlbumsIndexTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		albumsIndexSpec = createFSTypedIndexSpec(Album.class, AlbumSchema.class, tmpDir);
+		albumsIndexSpec = createFSIndexParams(Album.class, AlbumSchema.class, tmpDir);
 		indexRepository = LuceneIndexImpl.of(albumsIndexSpec);
 		indexRepository.reset(ALBUMS);
 	}

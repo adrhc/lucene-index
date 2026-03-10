@@ -20,7 +20,7 @@ import static ro.go.adrhc.persistence.lucene.operations.IndexOperationsParamsBui
 import static ro.go.adrhc.util.fn.FunctionUtils.failToEmpty;
 
 @Slf4j
-public class IndexServicesParamsFactoryTestFactory {
+public class IndexOperationsParamsTestFactory {
 	public static final Analyzer ANALYZER = defaultAnalyzer(new TokenizerProperties()).orElseThrow();
 	public static final TokenizationUtils TOKENIZATION_UTILS =
 		new TokenizationUtils(new TokenStreamToStreamConverter(), ANALYZER);
@@ -28,14 +28,13 @@ public class IndexServicesParamsFactoryTestFactory {
 		DefaultFieldAwareQueryParser.create(ANALYZER, PersonSchema.name);
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
-	IndexOperationsParams<T>
-	createFSTypedIndexSpec(Class<T> tClass, Class<E> schemaClass, Path indexPath) {
+	IndexOperationsParams<T> createFSIndexParams(Class<T> tClass, Class<E> schemaClass, Path indexPath) {
 		return of(tClass, schemaClass, indexPath).build()
 			.orElseThrow(() -> new IllegalStateException("Can't create IndexOperationsParams!"));
 	}
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
-	IndexOperationsParams<T> createRAMTypedIndexSpec(Class<T> tClass, Class<E> schemaClass) {
+	IndexOperationsParams<T> createRAMIndexParams(Class<T> tClass, Class<E> schemaClass) {
 		IndexOperationsParamsBuilder<T, E> builder =
 			IndexOperationsParamsBuilder.of(tClass, schemaClass, Path.of("nowhere"));
 		builder.indexWriterFactory(analyzer ->

@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
 
 import java.io.IOException;
 
-import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.createRAMTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.IndexOperationsParamsTestFactory.createRAMIndexParams;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,7 +37,7 @@ public abstract class AbstractPersonRAMIndexTest {
 
 	@BeforeAll
 	void beforeAll() throws IOException {
-		peopleIndexSpec = createRAMTypedIndexSpec(Person.class, PersonSchema.class);
+		peopleIndexSpec = createRAMIndexParams(Person.class, PersonSchema.class);
 		index = LuceneIndexImpl.of(peopleIndexSpec);
 		indexReset();
 	}

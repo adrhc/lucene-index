@@ -12,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static ro.go.adrhc.persistence.lucene.IndexServicesParamsFactoryTestFactory.createFSTypedIndexSpec;
+import static ro.go.adrhc.persistence.lucene.IndexOperationsParamsTestFactory.createFSIndexParams;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -23,7 +23,7 @@ public abstract class AbstractPersonTmpIndexTest {
 	protected LuceneIndex<Long, Person> index;
 
 	protected void initObjects() {
-		peopleIndexSpec = createFSTypedIndexSpec(Person.class, PersonSchema.class, tmpDir);
+		peopleIndexSpec = createFSIndexParams(Person.class, PersonSchema.class, tmpDir);
 		index = LuceneIndexImpl.of(peopleIndexSpec);
 	}
 
