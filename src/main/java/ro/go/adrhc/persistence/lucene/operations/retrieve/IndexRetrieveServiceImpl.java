@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.persistence.lucene.core.bare.query.BooleanQueryFactory.shouldSatisfy;
 
 @RequiredArgsConstructor
-public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID, T> {
+public class IndexRetrieveServiceImpl<I, T> implements IndexRetrieveService<I, T> {
 	private final ExactQuery exactQuery;
-	private final HitsLimitedIndexReaderTemplate<ID, T> indexReaderTemplate;
+	private final HitsLimitedIndexReaderTemplate<I, T> indexReaderTemplate;
 	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
 
-	public static <ID, T> IndexRetrieveServiceImpl<ID, T>
+	public static <I, T> IndexRetrieveServiceImpl<I, T>
 	create(IndexRetrieveServiceParams<T> params) {
 		return new IndexRetrieveServiceImpl<>(
 			ExactQuery.create(params.idField()),
@@ -44,7 +44,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	}
 
 	@Override
-	public <R> R reduceIds(Function<Stream<ID>, R> idsReducer) throws IOException {
+	public <R> R reduceIds(Function<Stream<I>, R> idsReducer) throws IOException {
 		return indexReaderTemplate.useReader(reader -> idsReducer.apply(reader.getAllIds()));
 	}
 
@@ -54,7 +54,7 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	}
 
 	@Override
-	public List<ID> getAllIds() throws IOException {
+	public List<I> getAllIds() throws IOException {
 		return indexReaderTemplate.useReader(reader -> reader.getAllIds().toList());
 	}
 
@@ -67,13 +67,13 @@ public class IndexRetrieveServiceImpl<ID, T> implements IndexRetrieveService<ID,
 	}
 
 	@Override
-	public Optional<T> findById(ID id) throws IOException {
+	public Optional<T> findById(I id) throws IOException {
 		return oneHitIndexReaderTemplate.useOneHitReader(r ->
 			r.findFirst(exactQuery.newExactQuery(id)).map(ScoreAndValue::value));
 	}
 
 	@Override
-	public Set<T> findByIds(Set<ID> ids) throws IOException {
+	public Set<T> findByIds(Set<I> ids) throws IOException {
 		BooleanQuery idsQuery = shouldSatisfy(exactQuery.newExactQueries(ids));
 		return indexReaderTemplate.useReader(reader -> reader
 			.findMany(idsQuery)
