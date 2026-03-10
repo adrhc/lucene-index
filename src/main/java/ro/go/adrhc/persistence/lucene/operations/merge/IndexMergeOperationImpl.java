@@ -16,7 +16,7 @@ import java.util.function.BinaryOperator;
 import static ro.go.adrhc.persistence.lucene.core.typed.Identifiable.toIds;
 
 @RequiredArgsConstructor
-public class IndexMergeServiceImpl<T extends Indexable<I, T>, I> implements IndexMergeService<T> {
+public class IndexMergeOperationImpl<T extends Indexable<I, T>, I> implements IndexMergeOperation<T> {
 	private final IndexReadService<I, T> retrieveService;
 	private final TypedIndexAdder<T> typedIndexAdder;
 	private final TypedIndexUpsert<T> indexUpsert;

@@ -7,14 +7,14 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.core.typed.write.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdater;
-import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
+import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeOperation;
 
 import java.io.IOException;
 import java.util.Collection;
 
 public interface WriteIndexOperations<T extends Indexable<I, T>, I>
 	extends TypedIndexAdder<T>, TypedIndexUpsert<T>, TypedIndexShallowUpdater<I, T>,
-	TypedIndexReset<T>, IndexMergeService<T>, IndexBackupService {
+	TypedIndexReset<T>, IndexMergeOperation<T>, IndexBackupService {
 
 	void removeById(I id) throws IOException;
 

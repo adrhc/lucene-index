@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.function.BinaryOperator;
 
-public interface IndexMergeService<T> {
+public interface IndexMergeOperation<T> {
 	void merge(T t) throws IOException;
 
 	/**

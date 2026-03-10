@@ -11,7 +11,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.core.typed.write.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdater;
-import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
+import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeOperation;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class WriteIndexOperationsImpl<T extends Indexable<I, T>, I>
 	private final TypedIndexRemover<I> indexRemover;
 	private final TypedIndexReset<T> indexReset;
 	private final TypedIndexShallowUpdater<I, T> indexShallowUpdater;
-	private final IndexMergeService<T> mergeService;
+	private final IndexMergeOperation<T> mergeService;
 	private final IndexBackupService backupService;
 
 	@Override
