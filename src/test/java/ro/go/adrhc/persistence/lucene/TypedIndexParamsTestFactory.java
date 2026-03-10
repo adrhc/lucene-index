@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexWriter;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
 import ro.go.adrhc.persistence.lucene.core.bare.query.DefaultFieldAwareQueryParser;
 import ro.go.adrhc.persistence.lucene.core.bare.token.TokenizationUtils;
@@ -14,7 +13,6 @@ import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFacto
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactoryBuilder;
 import ro.go.adrhc.persistence.lucene.person.PersonSchema;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 import static ro.go.adrhc.persistence.lucene.core.bare.analysis.AnalyzerFactory.defaultAnalyzer;
@@ -40,13 +38,6 @@ public class TypedIndexParamsTestFactory {
 	IndexServicesParamsFactory<T> createRAMTypedIndexSpec(Class<T> tClass, Class<E> schemaClass) {
 		IndexServicesParamsFactoryBuilder<T, E> builder =
 			IndexServicesParamsFactoryBuilder.of(tClass, schemaClass, Path.of("nowhere"));
-		IndexWriter writer = null;
-		try {
-			writer = LuceneIndexWriterFactory.ramWriter();
-			writer.commit(); // creates the index
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
 		builder.indexWriterFactory(analyzer ->
 			failToEmpty(LuceneIndexWriterFactory::ramWriter, analyzer));
 		return builder.build().orElseThrow(() ->
