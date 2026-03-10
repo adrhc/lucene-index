@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndex;
 import ro.go.adrhc.persistence.lucene.FileSystemDocTypedIndexImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
 
@@ -25,6 +26,10 @@ public abstract class AbstractPersonRAMIndexTest {
 
 	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
 		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
+	}
+
+	protected HitsLimitedIndexReaderTemplate<Long, Person> createHitsLimitedIndexReaderTemplate() {
+		return HitsLimitedIndexReaderTemplate.create(peopleIndexSpec.allHitsIndexReaderParams());
 	}
 
 	protected void indexReset() throws IOException {

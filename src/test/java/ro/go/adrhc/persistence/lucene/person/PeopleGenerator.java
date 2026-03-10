@@ -3,11 +3,11 @@ package ro.go.adrhc.persistence.lucene.person;
 import ro.go.adrhc.persistence.lucene.core.bare.token.TestData;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 public class PeopleGenerator {
 	public static final List<Person> PEOPLE = List.of(
@@ -34,30 +34,37 @@ public class PeopleGenerator {
 //		addTags(generateGirl(6), "TEST=DATA"),
 //		addTags(generateGirl(7), "DATA")
 	);
+	private static final Instant MOMENT = Instant.parse("2000-01-01T03:04:05.32Z");
 
 	public static List<Person> generatePeopleList(long size) {
 		return LongStream.range(0, size)
-			.mapToObj(PeopleGenerator::generateGirl)
+			.mapToObj(i -> generatePerson(i, i % 2 == 0))
 			.toList();
 	}
 
-	public static Stream<Person> generatePeopleStream(int start, int end) {
-		return LongStream.range(start, end)
-			.mapToObj(PeopleGenerator::generateGirl);
+	public static Person generateBoy(long id) {
+		return generatePerson(id, true);
 	}
 
 	public static Person generateGirl(long id) {
-		String millis = "%03d".formatted(id % 1000);
-		return generateGirl(id, Instant.parse("2000-01-01T03:04:05.%sZ".formatted(millis)));
+		return generatePerson(id, false);
 	}
 
 	public static Person generateGirl(long id, Instant instantField) {
+		return generatePerson(id, instantField, false);
+	}
+
+	public static Person generatePerson(long id, boolean isBoy) {
+		return generatePerson(id, MOMENT.plus(id, ChronoUnit.SECONDS), isBoy);
+	}
+
+	public static Person generatePerson(long id, Instant instantField, boolean isBoy) {
 		return new Person(id,
 			"#Person" + id, generateName(id),
 			"alias_Keyword" + (id % 2), "alias_Word" + (id % 2),
 			"alias_Phrase" + (id % 2), (int) id, id,
 			instantField, "storedOnlyField" + (id % 100),
-			false, new HashSet<>());
+			isBoy, new HashSet<>());
 	}
 
 	public static String generateName(long id) {

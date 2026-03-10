@@ -13,10 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 
-class TypedIndexReaderTemplateTest extends AbstractPersonTmpIndexTest {
+class TypedIndexReaderTemplateTest extends AbstractPersonRAMIndexTest {
+	@Override
+	protected void indexReset() throws IOException {
+		index.reset(PEOPLE);
+	}
+
 	@Test
 	void readTest() throws IOException {
-		HitsLimitedIndexReaderTemplate<Long, Person> readerTemplate = createPersonIndexReaderTemplate();
+		HitsLimitedIndexReaderTemplate<Long, Person>
+			readerTemplate = createHitsLimitedIndexReaderTemplate();
 		List<Long> ids = readerTemplate.useReader(reader -> reader.getAllIds().toList());
 		assertThat(ids).isNotEmpty();
 		assertThat(ids).containsAll(PEOPLE.stream().map(Person::getId).toList());
@@ -25,7 +31,8 @@ class TypedIndexReaderTemplateTest extends AbstractPersonTmpIndexTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void findByBoolean(boolean male) throws IOException {
-		HitsLimitedIndexReaderTemplate<Long, Person> readerTemplate = createPersonIndexReaderTemplate();
+		HitsLimitedIndexReaderTemplate<Long, Person>
+			readerTemplate = createHitsLimitedIndexReaderTemplate();
 		Query query = ExactQuery.create(PersonSchema.male).newExactQuery(male);
 		List<Long> ids = readerTemplate.useReader(reader -> reader.findIds(query).toList());
 		assertThat(ids).isNotEmpty();

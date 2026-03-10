@@ -28,7 +28,7 @@ public abstract class AbstractPersonTmpIndexTest {
 		index = FileSystemDocTypedIndexImpl.of(peopleIndexSpec);
 	}
 
-	protected HitsLimitedIndexReaderTemplate<Long, Person> createPersonIndexReaderTemplate() {
+	protected HitsLimitedIndexReaderTemplate<Long, Person> createHitsLimitedIndexReaderTemplate() {
 		return HitsLimitedIndexReaderTemplate.create(
 			peopleIndexSpec.allHitsIndexReaderParams());
 	}
