@@ -11,8 +11,8 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.backup.IndexBackupService
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdater;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchService;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchServiceImpl;
 
 @RequiredArgsConstructor
 public class IndexServiceFactory<I, T extends Identifiable<I>> {

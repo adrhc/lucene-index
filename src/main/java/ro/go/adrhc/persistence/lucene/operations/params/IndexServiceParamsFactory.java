@@ -7,7 +7,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsertParams;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdaterParams;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchServiceParams;
 
 import java.io.Closeable;
 import java.nio.file.Path;

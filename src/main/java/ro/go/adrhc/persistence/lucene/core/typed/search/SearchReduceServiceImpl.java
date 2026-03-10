@@ -1,9 +1,8 @@
-package ro.go.adrhc.persistence.lucene.operations.search;
+package ro.go.adrhc.persistence.lucene.core.typed.search;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReader;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 
@@ -27,7 +26,7 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 	public Optional<T> findBestMatch(BestMatchingStrategy<T> bestMatchingStrategy, Query query)
 		throws IOException {
 		return indexReaderTemplate
-			.useReader(reader -> doFindBestMatch(bestMatchingStrategy, query, reader))
+			.useReader(r -> doFindBestMatch(bestMatchingStrategy, query, r))
 			.map(QueryAndValue::value);
 	}
 
@@ -53,14 +52,9 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 	protected Optional<QueryAndValue<T>> doFindBestMatch(
 		BestMatchingStrategy<T> bestMatchingStrategy,
 		Query query, TypedIndexReader<?, T> reader) throws IOException {
-		Stream<QueryAndScoreAndValue<T>> allMatches = doFindAllMatches(query, reader)
+		Stream<QueryAndScoreAndValue<T>> allMatches = reader
+			.findMany(query).filter(searchResultFilter::filter)
 			.map(sat -> new QueryAndScoreAndValue<>(query, sat));
 		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
-	}
-
-	protected Stream<ScoreAndValue<T>> doFindAllMatches(
-		Query query, TypedIndexReader<?, T> reader) throws IOException {
-		// log.debug("\nQuery used to search:\n{}", query);
-		return reader.findMany(query).filter(searchResultFilter::filter);
 	}
 }

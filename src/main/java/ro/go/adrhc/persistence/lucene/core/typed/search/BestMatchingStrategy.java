@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.search;
+package ro.go.adrhc.persistence.lucene.core.typed.search;
 
 import java.util.Optional;
 import java.util.stream.Stream;

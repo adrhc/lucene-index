@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.search;
+package ro.go.adrhc.persistence.lucene.core.typed.search;
 
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;

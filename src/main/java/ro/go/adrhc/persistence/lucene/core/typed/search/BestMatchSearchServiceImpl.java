@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.search;
+package ro.go.adrhc.persistence.lucene.core.typed.search;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> {
-	private final TypedIndexReaderTemplate<?, T> typedIndexReaderTemplate;
+	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
 
 	public static <T> BestMatchSearchServiceImpl<T> of(TypedIndexReaderParams<T> params) {
 		return new BestMatchSearchServiceImpl<>(TypedIndexReaderTemplate.create(params));
@@ -24,15 +24,14 @@ public class BestMatchSearchServiceImpl<T> implements BestMatchSearchService<T> 
 
 	@Override
 	public Optional<T> findBestMatch(Query query) throws IOException {
-		return typedIndexReaderTemplate.useReader(
-			r -> r.findMany(query, 1)
-				.map(ScoreAndValue::value).findFirst());
+		return indexReaderTemplate.useReader(r ->
+			r.findMany(query, 1).map(ScoreAndValue::value).findFirst());
 	}
 
 	@Override
 	public List<QueryAndValue<T>> findBestMatches(
 		Collection<? extends Query> queries) throws IOException {
-		return typedIndexReaderTemplate.useReader(r -> {
+		return indexReaderTemplate.useReader(r -> {
 			List<QueryAndValue<T>> result = new ArrayList<>();
 			for (Query query : queries) {
 				r.findMany(query, 1)

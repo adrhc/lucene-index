@@ -13,7 +13,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallow
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeServiceImpl;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchService;
 
 @RequiredArgsConstructor
 public class IndexOperationsFactory<T extends Indexable<I, T>, I> {

@@ -13,9 +13,9 @@ import ro.go.adrhc.persistence.lucene.operations.IndexOperationsFactory;
 import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
 import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
-import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
-import ro.go.adrhc.persistence.lucene.operations.search.ScoreDocAndValues;
+import ro.go.adrhc.persistence.lucene.core.typed.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.core.typed.search.QueryAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.search.ScoreDocAndValues;
 
 import java.io.IOException;
 import java.nio.file.Path;

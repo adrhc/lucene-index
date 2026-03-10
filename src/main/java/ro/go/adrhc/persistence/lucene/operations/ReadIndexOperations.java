@@ -5,9 +5,9 @@ import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.read.IndexReadService;
-import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
-import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchService;
+import ro.go.adrhc.persistence.lucene.core.typed.search.QueryAndValue;
 
 import java.io.IOException;
 import java.util.Collection;

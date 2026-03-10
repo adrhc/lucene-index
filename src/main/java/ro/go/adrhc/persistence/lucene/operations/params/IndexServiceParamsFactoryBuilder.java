@@ -12,7 +12,7 @@ import ro.go.adrhc.persistence.lucene.core.bare.write.DocIndexWriterFactory;
 import ro.go.adrhc.persistence.lucene.core.typed.Identifiable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
-import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
+import ro.go.adrhc.persistence.lucene.core.typed.search.SearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;

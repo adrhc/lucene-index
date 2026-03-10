@@ -13,9 +13,9 @@ import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
-import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParamsImpl;
-import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchServiceParams;
+import ro.go.adrhc.persistence.lucene.core.typed.search.IndexSearchServiceParamsImpl;
+import ro.go.adrhc.persistence.lucene.core.typed.search.SearchResultFilter;
 
 import java.io.IOException;
 import java.nio.file.Path;

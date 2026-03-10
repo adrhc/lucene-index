@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.search;
+package ro.go.adrhc.persistence.lucene.core.typed.search;
 
 import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 
