@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.backup;
+package ro.go.adrhc.persistence.lucene.core.typed.write.backup;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

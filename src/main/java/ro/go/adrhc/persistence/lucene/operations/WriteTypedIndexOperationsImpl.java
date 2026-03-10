@@ -10,7 +10,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexReset;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexUpsert;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
 import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexShallowUpdater;
-import ro.go.adrhc.persistence.lucene.operations.backup.IndexBackupService;
+import ro.go.adrhc.persistence.lucene.core.typed.write.backup.IndexBackupService;
 import ro.go.adrhc.persistence.lucene.operations.merge.IndexMergeService;
 
 import java.io.IOException;

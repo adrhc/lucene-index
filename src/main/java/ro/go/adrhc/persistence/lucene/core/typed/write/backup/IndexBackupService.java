@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.operations.backup;
+package ro.go.adrhc.persistence.lucene.core.typed.write.backup;
 
 import java.io.IOException;
 import java.nio.file.Path;
