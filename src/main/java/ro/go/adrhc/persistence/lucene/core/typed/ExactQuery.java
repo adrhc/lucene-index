@@ -36,16 +36,17 @@ public class ExactQuery {
 	}
 
 	/**
+	 * The value from valueSource won't be converted to an indexable value because it's already an indexable value.
+	 *
 	 * @param valueSource is used only to get the value to query for
 	 */
 	public Query newExactQuery(IndexableField valueSource) {
 		return switch (this.field.fieldType()) {
-			case KEYWORD -> newExactQuery(valueSource.stringValue());
-			case LONG -> newExactQuery(valueSource.numericValue().longValue());
-			case INT -> newExactQuery(valueSource.numericValue().intValue());
+			case KEYWORD -> fieldQueries.keywordEquals(valueSource.stringValue());
+			case LONG -> fieldQueries.longEquals(valueSource.numericValue().longValue());
+			case INT -> fieldQueries.intEquals(valueSource.numericValue().intValue());
 			default -> throw new IllegalStateException(
-				"Unexpected type %s for %s! "
-					.formatted(this.field.fieldType(), this.field.name()));
+				"Unexpected type %s for %s! ".formatted(this.field.fieldType(), this.field.name()));
 		};
 	}
 
@@ -59,8 +60,7 @@ public class ExactQuery {
 			case LONG -> fieldQueries.longEquals((Long) idFieldValue);
 			case INT -> fieldQueries.intEquals((Integer) idFieldValue);
 			default -> throw new IllegalStateException(
-				"Unexpected type %s for %s! "
-					.formatted(field.fieldType(), field));
+				"Unexpected type %s for %s! ".formatted(field.fieldType(), field));
 		};
 	}
 }
