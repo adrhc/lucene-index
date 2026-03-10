@@ -7,8 +7,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class SearchManyServiceImpl<T> implements SearchManyService<T> {
-	private final HitsLimitedIndexReaderTemplate<Object, T> indexReaderTemplate;
+	private final TypedIndexReaderTemplate<Object, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
 
 	@Override
@@ -83,7 +83,7 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	}
 
 	private <R, E extends Exception> R useReader(
-		SneakyFunction<HitsLimitedIndexReader<Object, T>, R, E> indexReaderFn)
+		SneakyFunction<TypedIndexReader<Object, T>, R, E> indexReaderFn)
 		throws E, IOException {
 		return indexReaderTemplate.useReader(indexReaderFn);
 	}

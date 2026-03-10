@@ -3,8 +3,8 @@ package ro.go.adrhc.persistence.lucene.core.typed.write.shallow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexAdderImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemover;
 import ro.go.adrhc.persistence.lucene.core.typed.write.TypedIndexRemoverImpl;
@@ -18,7 +18,7 @@ import static ro.go.adrhc.util.stream.StreamUtils.collectToHashSet;
 @RequiredArgsConstructor
 @Slf4j
 public class TypedIndexShallowUpdaterImpl<I, T> implements TypedIndexShallowUpdater<I, T> {
-	private final HitsLimitedIndexReaderTemplate<I, ?> hitsLimitedIndexReaderTemplate;
+	private final TypedIndexReaderTemplate<I, ?> typedIndexReaderTemplate;
 	private final TypedIndexRemover<I> typedIndexRemover;
 	private final TypedIndexAdderImpl<T> typedIndexAdder;
 
@@ -28,7 +28,7 @@ public class TypedIndexShallowUpdaterImpl<I, T> implements TypedIndexShallowUpda
 	public static <I, T> TypedIndexShallowUpdaterImpl<I, T>
 	create(TypedIndexShallowUpdaterParams<T> params) {
 		return new TypedIndexShallowUpdaterImpl<>(
-			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
+			TypedIndexReaderTemplate.create(params.typedIndexReaderParams()),
 			TypedIndexRemoverImpl.create(params), TypedIndexAdderImpl.create(params));
 	}
 
@@ -74,7 +74,7 @@ public class TypedIndexShallowUpdaterImpl<I, T> implements TypedIndexShallowUpda
 	protected TypedIndexChanges<I> getIndexChanges(
 		TypedIndexDataSource<I, ?> dataSource, Query query) throws IOException {
 		Set<I> notIndexedIds = collectToHashSet(dataSource.loadAllIds());
-		Set<I> indexedButRemovedFromDS = hitsLimitedIndexReaderTemplate
+		Set<I> indexedButRemovedFromDS = typedIndexReaderTemplate
 			.useReader(reader -> docsToRemove(query, notIndexedIds, reader));
 		return new TypedIndexChanges<>(notIndexedIds, indexedButRemovedFromDS);
 	}
@@ -100,7 +100,7 @@ public class TypedIndexShallowUpdaterImpl<I, T> implements TypedIndexShallowUpda
 	 * @return the document ids not present in @ids, i.e., reader.findIds(query) - ids
 	 */
 	protected Set<I> docsToRemove(Query query, Set<I> ids,
-		HitsLimitedIndexReader<I, ?> reader) throws IOException {
+		TypedIndexReader<I, ?> reader) throws IOException {
 		if (query == null) {
 			return collectToHashSet(reader.getAllIds().filter(id -> !ids.remove(id)));
 		} else {

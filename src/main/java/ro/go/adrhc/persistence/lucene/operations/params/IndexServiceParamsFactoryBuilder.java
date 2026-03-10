@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
-public class IndexServicesParamsFactoryBuilder<
+public class IndexServiceParamsFactoryBuilder<
 	T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>> {
 	private SearchResultFilter<T> searchResultFilter = it -> true;
 	private Class<T> tClass;
@@ -33,66 +33,66 @@ public class IndexServicesParamsFactoryBuilder<
 	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
 	public static <T extends Identifiable<?>, E extends Enum<E> & LuceneFieldSpec<T>>
-	IndexServicesParamsFactoryBuilder<T, E>
+	IndexServiceParamsFactoryBuilder<T, E>
 	of(Class<T> tClass, Class<E> tFieldEnumClass, Path indexPath) {
-		IndexServicesParamsFactoryBuilder<T, E> builder =
-			new IndexServicesParamsFactoryBuilder<>();
+		IndexServiceParamsFactoryBuilder<T, E> builder =
+			new IndexServiceParamsFactoryBuilder<>();
 		builder.tClass = tClass;
 		builder.indexPath = indexPath;
 		return builder.tFieldEnumClass(tFieldEnumClass);
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E>
+	public IndexServiceParamsFactoryBuilder<T, E>
 	tFieldEnumClass(Class<E> tFieldEnumClass) {
 		typedFields = EnumSet.allOf(tFieldEnumClass);
 		idField = LuceneFieldSpec.getIdField(tFieldEnumClass);
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E> analyzer(Analyzer analyzer) {
+	public IndexServiceParamsFactoryBuilder<T, E> analyzer(Analyzer analyzer) {
 		this.analyzer = analyzer;
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E>
+	public IndexServiceParamsFactoryBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
 		this.tokenizerProperties = tokenizerProperties;
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E> searchResultFilter(
+	public IndexServiceParamsFactoryBuilder<T, E> searchResultFilter(
 		SearchResultFilter<T> searchResultFilter) {
 		this.searchResultFilter = searchResultFilter;
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E>
+	public IndexServiceParamsFactoryBuilder<T, E>
 	indexWriterFactory(Function<Analyzer, Optional<IndexWriter>> indexWriterFactory) {
 		this.indexWriterFactory = indexWriterFactory;
 		return this;
 	}
 
-	public IndexServicesParamsFactoryBuilder<T, E>
+	public IndexServiceParamsFactoryBuilder<T, E>
 	rawFieldValueSerdes(RawFieldValueSerdes<T> rawFieldValueSerdes) {
 		this.rawFieldValueSerdes = rawFieldValueSerdes;
 		return this;
 	}
 
-	public Optional<IndexServicesParamsFactory<T>> build() {
+	public Optional<IndexServiceParamsFactory<T>> build() {
 		return build(false);
 	}
 
-	public Optional<IndexServicesParamsFactory<T>> build(boolean readOnly) {
+	public Optional<IndexServiceParamsFactory<T>> build(boolean readOnly) {
 		rawFieldValueSerdes = rawFieldValueSerdes == null
 			? RawFieldValueSerdes.create(tClass) : rawFieldValueSerdes;
 		Analyzer finalAnalyzer = perFieldAnalyzer(analyzer());
 		if (readOnly) {
-			return Optional.of(new IndexServicesParamsFactoryImpl<>(
+			return Optional.of(new IndexServiceParamsFactoryImpl<>(
 				tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory
 				.of(indexPath), null, rawFieldValueSerdes, searchResultFilter, indexPath));
 		} else {
 			return createIndexWriter(finalAnalyzer)
-				.map(indexWriter -> new IndexServicesParamsFactoryImpl<>(
+				.map(indexWriter -> new IndexServiceParamsFactoryImpl<>(
 					tClass, idField, typedFields, finalAnalyzer, IndexReaderPoolFactory
 					.of(indexWriter), indexWriter, rawFieldValueSerdes, searchResultFilter, indexPath));
 		}

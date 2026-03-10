@@ -11,11 +11,8 @@ import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
-import ro.go.adrhc.persistence.lucene.core.typed.read.retrieve.IndexRetrieveServiceParams;
-import ro.go.adrhc.persistence.lucene.core.typed.read.retrieve.IndexRetrieveServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParams;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchServiceParamsImpl;
 import ro.go.adrhc.persistence.lucene.operations.search.SearchResultFilter;
@@ -24,13 +21,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParamsImpl.allHits;
-
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
 @Slf4j
-public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFactory<T> {
+public class IndexServiceParamsFactoryImpl<T> implements IndexServiceParamsFactory<T> {
 	private final Class<T> type;
 	private final LuceneFieldSpec<T> idField;
 	private final Collection<? extends LuceneFieldSpec<T>> typedFields;
@@ -49,18 +44,8 @@ public class IndexServicesParamsFactoryImpl<T> implements IndexServicesParamsFac
 	}
 
 	@Override
-	public IndexRetrieveServiceParams<T> indexRetrieveServiceParams() {
-		return new IndexRetrieveServiceParamsImpl<>(type, idField, indexReaderPool, rawFieldValueSerdes);
-	}
-
-	@Override
-	public TypedIndexReaderParams<T> oneHitIndexReaderParams() {
-		return new TypedIndexReaderParamsImpl<>(type, indexReaderPool, rawFieldValueSerdes);
-	}
-
-	@Override
-	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
-		return allHits(type, idField, indexReaderPool, rawFieldValueSerdes);
+	public TypedIndexReaderParams<T> typedIndexReaderParams() {
+		return new TypedIndexReaderParamsImpl<>(idField, indexReaderPool, rawFieldValueSerdes);
 	}
 
 	@Override

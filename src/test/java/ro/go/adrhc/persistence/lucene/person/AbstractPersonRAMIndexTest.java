@@ -6,9 +6,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import ro.go.adrhc.persistence.lucene.LuceneIndex;
 import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
 
 import java.io.IOException;
 
@@ -17,19 +16,15 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeop
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractPersonRAMIndexTest {
-	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
+	protected IndexServiceParamsFactory<Person> peopleIndexSpec;
 	protected LuceneIndex<Long, Person> index;
 
 	protected Analyzer analyzer() {
 		return peopleIndexSpec.analyzer();
 	}
 
-	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
-	}
-
-	protected HitsLimitedIndexReaderTemplate<Long, Person> createHitsLimitedIndexReaderTemplate() {
-		return HitsLimitedIndexReaderTemplate.create(peopleIndexSpec.allHitsIndexReaderParams());
+	protected TypedIndexReaderTemplate<Long, Person> typedIndexReaderTemplate() {
+		return TypedIndexReaderTemplate.create(peopleIndexSpec.typedIndexReaderParams());
 	}
 
 	protected void indexReset() throws IOException {

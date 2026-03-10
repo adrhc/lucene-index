@@ -1,12 +1,9 @@
-package ro.go.adrhc.persistence.lucene.core.typed.read.retrieve;
+package ro.go.adrhc.persistence.lucene.core.typed.read;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.BooleanQuery;
-import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
 import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,17 +17,15 @@ import java.util.stream.Stream;
 import static ro.go.adrhc.persistence.lucene.core.bare.query.BooleanQueryFactory.shouldSatisfy;
 
 @RequiredArgsConstructor
-public class IndexRetrieveServiceImpl<I, T> implements IndexRetrieveService<I, T> {
+public class IndexReadServiceImpl<I, T> implements IndexReadService<I, T> {
 	private final ExactQuery exactQuery;
-	private final HitsLimitedIndexReaderTemplate<I, T> indexReaderTemplate;
-	private final OneHitIndexReaderTemplate<T> oneHitIndexReaderTemplate;
+	private final TypedIndexReaderTemplate<I, T> indexReaderTemplate;
 
-	public static <I, T> IndexRetrieveServiceImpl<I, T>
-	create(IndexRetrieveServiceParams<T> params) {
-		return new IndexRetrieveServiceImpl<>(
+	public static <I, T> IndexReadServiceImpl<I, T>
+	create(TypedIndexReaderParams<T> params) {
+		return new IndexReadServiceImpl<>(
 			ExactQuery.create(params.idField()),
-			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams()),
-			OneHitIndexReaderTemplate.create(params));
+			TypedIndexReaderTemplate.create(params));
 	}
 
 	@Override
@@ -68,8 +63,9 @@ public class IndexRetrieveServiceImpl<I, T> implements IndexRetrieveService<I, T
 
 	@Override
 	public Optional<T> findById(I id) throws IOException {
-		return oneHitIndexReaderTemplate.useOneHitReader(r ->
-			r.findFirst(exactQuery.newExactQuery(id)).map(ScoreAndValue::value));
+		return indexReaderTemplate.useReader(r ->
+			r.findMany(exactQuery.newExactQuery(id), 1)
+				.map(ScoreAndValue::value).findFirst());
 	}
 
 	@Override

@@ -11,6 +11,10 @@ import static ro.go.adrhc.persistence.lucene.core.bare.token.AudioTokenizationUt
 
 @Slf4j
 class AudioTokenizationTest {
+	public static void assertAudioTokens(String text, String expectedTokens) throws IOException {
+		assertEquals(expectedTokens, join(" ", AUDIO_TOKENIZER.textToTokenList(text)));
+	}
+
 	@Test
 	void audioTokenizerTest() throws IOException {
 		assertAudioTokens("Smiley - Vals (Official).mp3", "smiley vals");
@@ -26,11 +30,9 @@ class AudioTokenizationTest {
 		assertAudioTokens("Smiley - Vals (Official Video Version.mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video Version).mp3", "smiley vals");
 		assertAudioTokens("Smiley - Vals Official Video Version.mp3", "smiley vals");
-		assertAudioTokens("Smiley - Vals Official Video or Version.mp3", "smiley vals official video or version");
-		assertAudioTokens("Smiley - Vals Official Video / Version.mp3", "smiley vals official video version");
-	}
-
-	public static void assertAudioTokens(String text, String expectedTokens) throws IOException {
-		assertEquals(expectedTokens, join(" ", AUDIO_TOKENIZER.textToTokenList(text)));
+		assertAudioTokens("Smiley - Vals Official Video or Version.mp3",
+			"smiley vals official video or version");
+		assertAudioTokens("Smiley - Vals Official Video / Version.mp3",
+			"smiley vals official video version");
 	}
 }

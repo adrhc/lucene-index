@@ -4,8 +4,6 @@ import org.apache.lucene.index.IndexReader;
 import ro.go.adrhc.persistence.lucene.core.bare.read.IndexReaderPool;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 import ro.go.adrhc.persistence.lucene.core.typed.field.RawFieldValueSerdes;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParams;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderParamsImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParams;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderParamsImpl;
 
@@ -27,12 +25,6 @@ public record IndexSearchServiceParamsImpl<T>(Class<T> type,
 
 	@Override
 	public TypedIndexReaderParams<T> typedIndexReaderParams() {
-		return new TypedIndexReaderParamsImpl<>(type(), indexReaderPool, rawFieldValueSerdes);
-	}
-
-	@Override
-	public HitsLimitedIndexReaderParams<T> allHitsIndexReaderParams() {
-		return HitsLimitedIndexReaderParamsImpl.allHits(
-			type, idField, indexReaderPool, rawFieldValueSerdes);
+		return new TypedIndexReaderParamsImpl<>(idField, indexReaderPool, rawFieldValueSerdes);
 	}
 }

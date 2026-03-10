@@ -6,9 +6,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 import ro.go.adrhc.persistence.lucene.LuceneIndex;
 import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.core.typed.read.OneHitIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.params.IndexServicesParamsFactory;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.operations.params.IndexServiceParamsFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,7 +19,7 @@ import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 public abstract class AbstractPersonTmpIndexTest {
 	@TempDir
 	protected static Path tmpDir;
-	protected IndexServicesParamsFactory<Person> peopleIndexSpec;
+	protected IndexServiceParamsFactory<Person> peopleIndexSpec;
 	protected LuceneIndex<Long, Person> index;
 
 	protected void initObjects() {
@@ -28,13 +27,8 @@ public abstract class AbstractPersonTmpIndexTest {
 		index = LuceneIndexImpl.of(peopleIndexSpec);
 	}
 
-	protected HitsLimitedIndexReaderTemplate<Long, Person> createHitsLimitedIndexReaderTemplate() {
-		return HitsLimitedIndexReaderTemplate.create(
-			peopleIndexSpec.allHitsIndexReaderParams());
-	}
-
-	protected OneHitIndexReaderTemplate<Person> createOneHitIndexReaderTemplate() {
-		return OneHitIndexReaderTemplate.create(peopleIndexSpec.oneHitIndexReaderParams());
+	protected TypedIndexReaderTemplate<Long, Person> typedIndexReaderTemplate() {
+		return TypedIndexReaderTemplate.create(peopleIndexSpec.typedIndexReaderParams());
 	}
 
 	protected void indexReset() throws IOException {

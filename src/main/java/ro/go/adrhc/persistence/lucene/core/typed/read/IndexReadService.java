@@ -1,4 +1,4 @@
-package ro.go.adrhc.persistence.lucene.core.typed.read.retrieve;
+package ro.go.adrhc.persistence.lucene.core.typed.read;
 
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
 
@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface IndexRetrieveService<I, T> {
+public interface IndexReadService<I, T> {
 	void readAll(Consumer<Stream<T>> consumer) throws IOException;
 
 	<R> R reduceAll(Function<Stream<T>, R> reducer) throws IOException;

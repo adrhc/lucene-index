@@ -65,7 +65,7 @@ public class PropertyFieldMapperFactory {
 	}
 
 	/**
-	 * See also HitsLimitedIndexReader.getFieldValues!
+	 * See also TypedIndexReader.getFieldValues!
 	 */
 	public static <T> PropertyFieldMapper<T, Set<String>, Set<String>, String>
 	stringSetMapper(Function<T, Set<String>> propertyAccessor) {

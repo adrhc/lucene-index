@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -23,12 +23,12 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 	create(IndexSearchServiceParams<T> params) {
 		BestMatchSearchService<T> bestMatchSearchService =
 			BestMatchSearchServiceImpl.of(params.typedIndexReaderParams());
-		HitsLimitedIndexReaderTemplate<Object, T> allHits =
-			HitsLimitedIndexReaderTemplate.create(params.allHitsIndexReaderParams());
+		TypedIndexReaderTemplate<Object, T>
+			typedIndexReaderTemplate = TypedIndexReaderTemplate.create(params);
 		SearchReduceService<T> searchReduceService =
-			new SearchReduceServiceImpl<>(allHits, params.searchResultFilter());
+			new SearchReduceServiceImpl<>(typedIndexReaderTemplate, params.searchResultFilter());
 		SearchManyService<T> searchManyService =
-			new SearchManyServiceImpl<>(allHits, params.searchResultFilter());
+			new SearchManyServiceImpl<>(typedIndexReaderTemplate, params.searchResultFilter());
 		return new IndexSearchServiceImpl<>(bestMatchSearchService,
 			searchReduceService, searchManyService);
 	}

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.Query;
 import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReader;
-import ro.go.adrhc.persistence.lucene.core.typed.read.HitsLimitedIndexReaderTemplate;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
-	private final HitsLimitedIndexReaderTemplate<?, T> indexReaderTemplate;
+	private final TypedIndexReaderTemplate<?, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
 
 	@Override
@@ -41,7 +41,7 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 
 	protected List<QueryAndValue<T>>
 	doFindBestMatches(BestMatchingStrategy<T> bestMatchingStrategy,
-		Collection<? extends Query> queries, HitsLimitedIndexReader<?, T> reader)
+		Collection<? extends Query> queries, TypedIndexReader<?, T> reader)
 		throws IOException {
 		List<QueryAndValue<T>> result = new ArrayList<>();
 		for (Query query : queries) {
@@ -52,14 +52,14 @@ public class SearchReduceServiceImpl<T> implements SearchReduceService<T> {
 
 	protected Optional<QueryAndValue<T>> doFindBestMatch(
 		BestMatchingStrategy<T> bestMatchingStrategy,
-		Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
+		Query query, TypedIndexReader<?, T> reader) throws IOException {
 		Stream<QueryAndScoreAndValue<T>> allMatches = doFindAllMatches(query, reader)
 			.map(sat -> new QueryAndScoreAndValue<>(query, sat));
 		return bestMatchingStrategy.bestMatch(allMatches).map(QueryAndValue::of);
 	}
 
 	protected Stream<ScoreAndValue<T>> doFindAllMatches(
-		Query query, HitsLimitedIndexReader<?, T> reader) throws IOException {
+		Query query, TypedIndexReader<?, T> reader) throws IOException {
 		// log.debug("\nQuery used to search:\n{}", query);
 		return reader.findMany(query).filter(searchResultFilter::filter);
 	}

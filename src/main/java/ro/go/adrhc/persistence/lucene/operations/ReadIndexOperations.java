@@ -4,7 +4,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.bare.read.DocIndexCounter;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
-import ro.go.adrhc.persistence.lucene.core.typed.read.retrieve.IndexRetrieveService;
+import ro.go.adrhc.persistence.lucene.core.typed.read.IndexReadService;
 import ro.go.adrhc.persistence.lucene.operations.search.BestMatchingStrategy;
 import ro.go.adrhc.persistence.lucene.operations.search.IndexSearchService;
 import ro.go.adrhc.persistence.lucene.operations.search.QueryAndValue;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface ReadIndexOperations<T extends Indexable<ID, T>, ID>
-	extends DocIndexCounter, IndexSearchService<T>, IndexRetrieveService<ID, T> {
+	extends DocIndexCounter, IndexSearchService<T>, IndexReadService<ID, T> {
 	List<ID> findIds(Query query) throws IOException;
 
 	List<ID> findIds(Query query, Sort sort) throws IOException;
