@@ -8,11 +8,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
 import ro.go.adrhc.persistence.lucene.core.typed.field.LuceneFieldSpec;
-import ro.go.adrhc.persistence.lucene.core.typed.search.BestMatchingStrategy;
-import ro.go.adrhc.persistence.lucene.core.typed.search.QueryAndValue;
-import ro.go.adrhc.persistence.lucene.core.typed.search.ScoreDocAndValues;
-import ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSource;
-import ro.go.adrhc.persistence.lucene.operations.*;
+import ro.go.adrhc.persistence.lucene.operation.*;
+import ro.go.adrhc.persistence.lucene.service.search.BestMatchingStrategy;
+import ro.go.adrhc.persistence.lucene.service.search.QueryAndValue;
+import ro.go.adrhc.persistence.lucene.service.search.ScoreDocAndValues;
+import ro.go.adrhc.persistence.lucene.service.shallow.TypedIndexDataSource;
 
 import java.io.IOException;
 import java.nio.file.Path;

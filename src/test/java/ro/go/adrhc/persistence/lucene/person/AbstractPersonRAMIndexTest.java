@@ -7,11 +7,11 @@ import org.junit.jupiter.api.TestInstance;
 import ro.go.adrhc.persistence.lucene.LuceneIndex;
 import ro.go.adrhc.persistence.lucene.LuceneIndexImpl;
 import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
-import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
+import ro.go.adrhc.persistence.lucene.operation.IndexOperationsParams;
 
 import java.io.IOException;
 
-import static ro.go.adrhc.persistence.lucene.IndexOperationsParamsTestFactory.createRAMIndexParams;
+import static ro.go.adrhc.persistence.lucene.IndexOperationsParamsGenerator.createRAMIndexParams;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generatePeopleList;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

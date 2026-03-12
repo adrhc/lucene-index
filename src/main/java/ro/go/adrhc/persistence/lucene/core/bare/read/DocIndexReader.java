@@ -10,7 +10,6 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.Bits;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import ro.go.adrhc.persistence.lucene.lib.IndexSearcherAccessors;
 import ro.go.adrhc.util.fn.BiFunctionUtils;
 import ro.go.adrhc.util.fn.TriFunctionUtils;
 

@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 
 import java.io.IOException;
 import java.util.Collection;

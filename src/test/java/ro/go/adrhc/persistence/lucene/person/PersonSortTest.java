@@ -7,7 +7,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortedNumericSortField;
 import org.junit.jupiter.api.Test;
-import ro.go.adrhc.persistence.lucene.core.typed.search.ScoreDocAndValues;
+import ro.go.adrhc.persistence.lucene.service.search.ScoreDocAndValues;
 
 import java.io.IOException;
 import java.util.List;

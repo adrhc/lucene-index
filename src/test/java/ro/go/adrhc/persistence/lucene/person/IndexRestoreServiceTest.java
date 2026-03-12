@@ -8,7 +8,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.ExactQuery;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ro.go.adrhc.persistence.lucene.core.typed.write.shallow.TypedIndexDataSourceFactory.createCachedDataSource;
+import static ro.go.adrhc.persistence.lucene.service.shallow.TypedIndexDataSourceFactory.createCachedDataSource;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.PEOPLE;
 import static ro.go.adrhc.persistence.lucene.person.PeopleGenerator.generateGirl;
 

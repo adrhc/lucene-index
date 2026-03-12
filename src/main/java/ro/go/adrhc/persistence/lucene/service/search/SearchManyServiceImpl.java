@@ -1,0 +1,90 @@
+package ro.go.adrhc.persistence.lucene.service.search;
+
+import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import ro.go.adrhc.persistence.lucene.core.typed.read.ScoreAndValue;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReader;
+import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+/**
+ * All methods filter the results of the underlying index reader using the provided SearchResultFilter!
+ */
+@RequiredArgsConstructor
+@Slf4j
+public class SearchManyServiceImpl<T> implements SearchManyService<T> {
+	private final TypedIndexReaderTemplate<Object, T> indexReaderTemplate;
+	private final SearchResultFilter<T> searchResultFilter;
+
+	@Override
+	public List<T> findMany(Query query) throws IOException {
+		return useReader(r -> filterAndMap(r.findMany(query)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query,
+		int hitsCount, Sort sort) throws IOException {
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManySorted(query, hitsCount, sort)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query, int hitsCount) throws IOException {
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findMany(query, hitsCount)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findMany(Query query, Sort sort) throws IOException {
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManySorted(query, sort)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(
+		ScoreDoc after, Query query, Sort sort) throws IOException {
+		return useReader(r -> filterAndMapToScoreDocAndValues(r.findManyAfter(after, query, sort)));
+	}
+
+	@Override
+	public ScoreDocAndValues<T> findManyAfter(ScoreDoc after,
+		Query query, int hitsCount, Sort sort) throws IOException {
+		return useReader(r -> filterAndMapToScoreDocAndValues(
+			r.findManyAfter(after, query, hitsCount, sort)));
+	}
+
+	@Override
+	public boolean hasAfter(ScoreDoc scoreDoc, Sort sort) throws IOException {
+		return useReader(r -> r.hasAfter(scoreDoc, sort));
+	}
+
+	protected ScoreDocAndValues<T> filterAndMapToScoreDocAndValues(Stream<ScoreAndValue<T>> stream) {
+		List<ScoreDoc> scoreDocs = new ArrayList<>();
+		List<T> values = new ArrayList<>();
+		stream
+			.filter(searchResultFilter::filter)
+			.forEach(sdv -> {
+				scoreDocs.add(sdv.scoreDoc());
+				values.add(sdv.value());
+			});
+		return new ScoreDocAndValues<>(values, scoreDocs);
+	}
+
+	protected List<T> filterAndMap(Stream<ScoreAndValue<T>> stream) {
+		return stream
+			.filter(searchResultFilter::filter)
+			.map(ScoreAndValue::value)
+			.toList();
+	}
+
+	private <R, E extends Exception> R useReader(
+		SneakyFunction<TypedIndexReader<Object, T>, R, E> indexReaderFn)
+		throws E, IOException {
+		return indexReaderTemplate.useReader(indexReaderFn);
+	}
+}

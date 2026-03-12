@@ -1,9 +1,9 @@
 package ro.go.adrhc.persistence.lucene;
 
 import ro.go.adrhc.persistence.lucene.core.typed.Indexable;
-import ro.go.adrhc.persistence.lucene.operations.ReadIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.WriteIndexOperations;
-import ro.go.adrhc.persistence.lucene.operations.IndexOperationsParams;
+import ro.go.adrhc.persistence.lucene.operation.ReadIndexOperations;
+import ro.go.adrhc.persistence.lucene.operation.WriteIndexOperations;
+import ro.go.adrhc.persistence.lucene.operation.IndexOperationsParams;
 
 import java.io.Closeable;
 import java.nio.file.Path;

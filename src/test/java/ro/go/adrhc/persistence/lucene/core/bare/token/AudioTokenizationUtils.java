@@ -2,7 +2,6 @@ package ro.go.adrhc.persistence.lucene.core.bare.token;
 
 import lombok.experimental.UtilityClass;
 import ro.go.adrhc.persistence.lucene.core.bare.analysis.TokenizerProperties;
-import ro.go.adrhc.persistence.lucene.lib.TokenStreamToStreamConverter;
 
 import java.util.List;
 import java.util.Map;
