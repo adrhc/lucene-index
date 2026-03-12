@@ -29,6 +29,7 @@ public class IndexOperationsParamsBuilder<
 	private Path indexPath;
 	private TokenizerProperties tokenizerProperties;
 	private Analyzer analyzer;
+	private Analyzer wordAnalyzer;
 	private RawFieldValueSerdes<T> rawFieldValueSerdes;
 	private Function<Analyzer, Optional<IndexWriter>> indexWriterFactory;
 
@@ -54,6 +55,14 @@ public class IndexOperationsParamsBuilder<
 		return this;
 	}
 
+	public IndexOperationsParamsBuilder<T, E> wordAnalyzer(Analyzer analyzer) {
+		this.wordAnalyzer = analyzer;
+		return this;
+	}
+
+	/**
+	 * @param tokenizerProperties is used to construct the "default" and "word" analyzers (if not set explicitly)
+	 */
 	public IndexOperationsParamsBuilder<T, E>
 	tokenizerProperties(TokenizerProperties tokenizerProperties) {
 		this.tokenizerProperties = tokenizerProperties;
@@ -127,8 +136,9 @@ public class IndexOperationsParamsBuilder<
 	}
 
 	private Analyzer wordAnalyzer() {
-		return AnalyzerFactory.defaultWordAnalyzer(tokenizerProperties())
-			.orElseThrow(() -> new IllegalStateException("Default WORD Analyzer can't be created!"));
+		return wordAnalyzer != null ? wordAnalyzer :
+			AnalyzerFactory.defaultWordAnalyzer(tokenizerProperties())
+				.orElseThrow(() -> new IllegalStateException("Default WORD Analyzer can't be created!"));
 	}
 
 	private Analyzer analyzer() {
