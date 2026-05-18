@@ -12,7 +12,7 @@
     <groupId>ro.go.adrhc.persistence</groupId>
     <artifactId>lucene-index</artifactId>
     <!-- Version pattern: Java version - Spring Boot version - SNAPSHOT -->
-    <version>25-3.5.14-SNAPSHOT</version>
+	<version>25-${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <name>lucene-index</name>
