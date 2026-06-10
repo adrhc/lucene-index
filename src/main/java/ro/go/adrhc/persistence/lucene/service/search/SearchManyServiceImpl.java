@@ -1,5 +1,6 @@
 package ro.go.adrhc.persistence.lucene.service.search;
 
+import com.rainerhahnekamp.sneakythrow.functional.SneakyConsumer;
 import com.rainerhahnekamp.sneakythrow.functional.SneakyFunction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import ro.go.adrhc.persistence.lucene.core.typed.read.TypedIndexReaderTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -20,9 +22,14 @@ import java.util.stream.Stream;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class SearchManyServiceImpl<T> implements SearchManyService<T> {
-	private final TypedIndexReaderTemplate<Object, T> indexReaderTemplate;
+public class SearchManyServiceImpl<I, T> implements SearchManyService<T> {
+	private final TypedIndexReaderTemplate<I, T> indexReaderTemplate;
 	private final SearchResultFilter<T> searchResultFilter;
+
+	@Override
+	public void useMany(Query query, Consumer<T> consumer) throws IOException {
+		withReader(r -> filterAndMap(r.findMany(query)).forEach(consumer));
+	}
 
 	@Override
 	public List<T> findMany(Query query) throws IOException {
@@ -83,8 +90,14 @@ public class SearchManyServiceImpl<T> implements SearchManyService<T> {
 	}
 
 	private <R, E extends Exception> R useReader(
-		SneakyFunction<TypedIndexReader<Object, T>, R, E> indexReaderFn)
+		SneakyFunction<TypedIndexReader<I, T>, R, E> indexReaderFn)
 		throws E, IOException {
 		return indexReaderTemplate.useReader(indexReaderFn);
+	}
+
+	private <E extends Exception> void withReader(
+		SneakyConsumer<TypedIndexReader<I, T>, E> indexReaderConsumer)
+		throws E, IOException {
+		indexReaderTemplate.withReader(indexReaderConsumer);
 	}
 }

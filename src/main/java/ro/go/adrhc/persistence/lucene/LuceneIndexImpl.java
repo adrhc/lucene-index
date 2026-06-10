@@ -125,6 +125,11 @@ public class LuceneIndexImpl<I, T extends Indexable<I, T>> implements LuceneInde
 	}
 
 	@Override
+	public void useMany(Query query, Consumer<T> consumer) throws IOException {
+		readIndexOperations.useMany(query, consumer);
+	}
+
+	@Override
 	public ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return readIndexOperations.findMany(query, hitsCount, sort);
 	}

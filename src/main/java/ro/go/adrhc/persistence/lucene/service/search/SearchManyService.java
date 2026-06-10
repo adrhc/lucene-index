@@ -6,8 +6,11 @@ import org.apache.lucene.search.Sort;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface SearchManyService<T> {
+	void useMany(Query query, Consumer<T> consumer) throws IOException;
+
 	ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException;
 
 	ScoreDocAndValues<T> findMany(Query query, int numHits) throws IOException;

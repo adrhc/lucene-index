@@ -90,6 +90,11 @@ public class ReadIndexOperationsImpl<T extends Indexable<I, T>, I>
 	}
 
 	@Override
+	public void useMany(Query query, Consumer<T> consumer) throws IOException {
+		searchService.useMany(query, consumer);
+	}
+
+	@Override
 	public ScoreDocAndValues<T> findMany(Query query, int hitsCount, Sort sort) throws IOException {
 		return searchService.findMany(query, hitsCount, sort);
 	}

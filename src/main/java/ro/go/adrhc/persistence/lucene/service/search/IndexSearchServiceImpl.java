@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -55,6 +56,11 @@ public class IndexSearchServiceImpl<T> implements IndexSearchService<T> {
 		BestMatchingStrategy<T> bestMatchingStrategy,
 		Collection<? extends Query> queries) throws IOException {
 		return searchReduceService.findBestMatches(bestMatchingStrategy, queries);
+	}
+
+	@Override
+	public void useMany(Query query, Consumer<T> consumer) throws IOException {
+		searchManyService.useMany(query, consumer);
 	}
 
 	@Override
