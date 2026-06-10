@@ -3,6 +3,7 @@ package ro.go.adrhc.persistence.lucene.core.typed.field;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ext.NioPathDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.experimental.UtilityClass;
@@ -19,7 +20,7 @@ public class ObjectMapperFactory {
 	public static ObjectMapper createJsonMapper() {
 		return Jackson2ObjectMapperBuilder.json()
 			.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-			.modulesToInstall(createPathToStringModule())
+			.modulesToInstall(createPathSerdesModule())
 			.build();
 	}
 
@@ -27,9 +28,10 @@ public class ObjectMapperFactory {
 	 * Path is badly (JSON) serialized, see:
 	 * <a href="https://stackoverflow.com/questions/40557821/jackson-2-incorrectly-serializing-java-java-nio-file-path">...</a>
 	 */
-	private static SimpleModule createPathToStringModule() {
+	private static SimpleModule createPathSerdesModule() {
 		SimpleModule simpleModule = new SimpleModule("PathToString");
 		simpleModule.addSerializer(Path.class, new ToStringSerializer());
+		simpleModule.addDeserializer(Path.class, new NioPathDeserializer());
 		return simpleModule;
 	}
 }
