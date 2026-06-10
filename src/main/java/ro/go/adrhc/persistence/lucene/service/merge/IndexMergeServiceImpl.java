@@ -26,6 +26,8 @@ public class IndexMergeServiceImpl<T extends Indexable<I, T>, I> implements Inde
 	}
 
 	/**
+	 * It'll skip the index update (but not the insert) if the merged outcome equals @param t!
+	 *
 	 * @param mergeStrategy 1st param is the stored value while the 2nd is @param t
 	 * @param t             might be added (instead of merged) if is not stored yet
 	 */
@@ -34,7 +36,11 @@ public class IndexMergeServiceImpl<T extends Indexable<I, T>, I> implements Inde
 		if (storedOptional.isEmpty()) {
 			typedIndexAdder.addOne(t);
 		} else {
-			indexUpsert.upsert(mergeStrategy.apply(storedOptional.get(), t));
+			T stored = storedOptional.get();
+			T merged = mergeStrategy.apply(stored, t);
+			if (!merged.equals(stored)) {
+				indexUpsert.upsert(merged);
+			}
 		}
 	}
 
