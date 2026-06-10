@@ -3,7 +3,6 @@ package ro.go.adrhc.persistence.lucene.core.typed.field;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.ext.NioPathDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.experimental.UtilityClass;
@@ -31,7 +30,7 @@ public class ObjectMapperFactory {
 	private static SimpleModule createPathSerdesModule() {
 		SimpleModule simpleModule = new SimpleModule("PathSerdes");
 		simpleModule.addSerializer(Path.class, new ToStringSerializer());
-		simpleModule.addDeserializer(Path.class, new NioPathDeserializer());
+		simpleModule.addDeserializer(Path.class, new PathDeserializer());
 		return simpleModule;
 	}
 }
