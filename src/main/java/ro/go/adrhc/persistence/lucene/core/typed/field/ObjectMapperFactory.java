@@ -29,7 +29,7 @@ public class ObjectMapperFactory {
 	 * <a href="https://stackoverflow.com/questions/40557821/jackson-2-incorrectly-serializing-java-java-nio-file-path">...</a>
 	 */
 	private static SimpleModule createPathSerdesModule() {
-		SimpleModule simpleModule = new SimpleModule("PathToString");
+		SimpleModule simpleModule = new SimpleModule("PathSerdes");
 		simpleModule.addSerializer(Path.class, new ToStringSerializer());
 		simpleModule.addDeserializer(Path.class, new NioPathDeserializer());
 		return simpleModule;
