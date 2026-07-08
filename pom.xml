@@ -31,7 +31,7 @@
         <!--<lombok.version>1.18.46</lombok.version>-->
         <spring-boot.version>${project.parent.version}</spring-boot.version>
 
-        <adrhc-utilities.version>25-3.5.14-SNAPSHOT</adrhc-utilities.version>
+        <adrhc-utilities.version>25-3.5.14</adrhc-utilities.version>
         <commons-text.version>1.15.0</commons-text.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <lucene.version>10.2.2</lucene.version>
